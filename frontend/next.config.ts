@@ -10,6 +10,7 @@ const nextConfig: NextConfig = {
   reactStrictMode: true,
   output: isGithubActions ? "export" : "standalone",
   basePath: isGithubActions ? "/DINARP" : "",
+  trailingSlash: isGithubActions ? true : false,
   turbopack: {
     root: process.cwd(),
   },
