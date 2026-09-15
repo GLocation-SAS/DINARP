@@ -426,7 +426,6 @@ export function GeoportalHeader({
   extraActions?: React.ReactNode;
 }) {
   const pathname = usePathname();
-  const searchParams = useSearchParams();
   const [displayNavItems, setDisplayNavItems] = React.useState(customNavItems || defaultNavItems);
   const [headerConfig, setHeaderConfig] = React.useState(defaultHeaderConfig);
   const [searchOpen, setSearchOpen] = React.useState(false);
@@ -469,21 +468,7 @@ export function GeoportalHeader({
 
   const isActive = (href: string) => {
     if (href === "/") return pathname === "/";
-    if (href.startsWith("?")) {
-      const searchParamsObj = new URLSearchParams(href);
-      let isMatch = true;
-      for (const [key, val] of Array.from(searchParamsObj.entries())) {
-        const currentVal = searchParams.get(key);
-        console.log(`isActive check: href=${href}, key=${key}, val=${val}, currentVal=${currentVal}, pathname=${pathname}`);
-        // Special case: category defaults to 'foundations' when not present
-        if (key === "category" && val === "foundations" && !currentVal) {
-          continue;
-        }
-        if (currentVal !== val) isMatch = false;
-      }
-      const keysLength = Array.from(searchParamsObj.keys()).length;
-      return isMatch && keysLength > 0;
-    }
+    if (href.startsWith("?")) return false;
     return pathname.startsWith(href);
   };
 

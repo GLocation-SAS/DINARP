@@ -1,13 +1,10 @@
 import { getRequestConfig } from "next-intl/server";
 import { routing } from "@/routing";
 
-export default getRequestConfig(async ({ requestLocale }) => {
-  let locale = await requestLocale;
-
-  // Validate that the incoming locale is supported
-  if (!locale || !routing.locales.includes(locale as "es")) {
-    locale = routing.defaultLocale;
-  }
+export default getRequestConfig(async () => {
+  // Para static export (Github Pages), forzamos español (único locale disponible)
+  // Esto evita que next-intl intente leer la cookie o headers de requestLocale
+  const locale = routing.defaultLocale;
 
   return {
     locale,
