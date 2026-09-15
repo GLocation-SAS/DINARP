@@ -4,13 +4,17 @@ import createNextIntlPlugin from "next-intl/plugin";
 
 const withNextIntl = createNextIntlPlugin("./src/i18n/request.ts");
 
+const isGithubActions = process.env.GITHUB_ACTIONS || false;
+
 const nextConfig: NextConfig = {
   reactStrictMode: true,
-  output: "standalone",
+  output: isGithubActions ? "export" : "standalone",
+  basePath: isGithubActions ? "/DINARP" : "",
   turbopack: {
     root: process.cwd(),
   },
   images: {
+    unoptimized: isGithubActions ? true : false,
     remotePatterns: [
       {
         protocol: "https",
