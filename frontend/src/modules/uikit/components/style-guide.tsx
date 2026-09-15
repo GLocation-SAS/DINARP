@@ -1,0 +1,1798 @@
+"use client";
+import { SubSection } from "./sub-section";
+
+import React, { useState } from "react";
+import { Card } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { cn } from "@/lib/utils";
+import { toast } from "sonner";
+import {
+  Palette,
+  Layers,
+  Type,
+  Box,
+  SquareDashed,
+  Moon,
+  Sun,
+  Circle,
+  Download,
+  Contrast,
+  Image as ImageIcon,
+  Edit2,
+  Ruler,
+  LayoutGrid,
+  Accessibility,
+  ShieldCheck,
+  Pointer,
+  Monitor,
+  AlertTriangle,
+  Check,
+  X,
+} from "lucide-react";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+import { Button } from "@/components/ui/button";
+import { LogoManagerCard } from "./logo-manager-card";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import {
+  Combobox,
+  ComboboxInput,
+  ComboboxContent,
+  ComboboxList,
+  ComboboxItem,
+} from "@/components/ui/combobox";
+import { Spinner } from "@/components/ui/data-display";
+import { AccessibilityAudit } from "./accessibility-audit";
+
+const SEMANTIC_COLORS = [
+  {
+    name: "Primary",
+    title: "Primary",
+    hex: "#0F2A4A",
+    variable: "--primary",
+    class: "bg-primary",
+    foreground: "text-primary-foreground",
+    description: (
+      <>
+        Color principal para acciones importantes y elementos institucionales.
+        Se utiliza, por ejemplo, en botones principales, navegación y
+        encabezados destacados.
+      </>
+    ),
+  },
+  {
+    name: "Secondary",
+    title: "Secondary",
+    hex: "#10759D",
+    variable: "--secondary",
+    class: "bg-secondary",
+    foreground: "text-secondary-foreground",
+    description: (
+      <>
+        Color de apoyo para acciones menos prioritarias, etiquetas, elementos
+        complementarios y fondos suaves.
+      </>
+    ),
+  },
+  {
+    name: "Success",
+    title: "Success",
+    hex: "#0D9488",
+    variable: "--success",
+    class: "bg-success",
+    foreground: "text-success-foreground",
+    description: (
+      <>
+        Indica que una acción se realizó correctamente o que un proceso terminó
+        de forma satisfactoria.
+      </>
+    ),
+  },
+  {
+    name: "Warning",
+    title: "Warning",
+    hex: "#EA580C",
+    variable: "--warning",
+    class: "bg-warning",
+    foreground: "text-warning-foreground",
+    description: (
+      <>
+        Advierte sobre una situación que requiere atención, pero que todavía no
+        representa un error crítico.
+      </>
+    ),
+  },
+  {
+    name: "Danger",
+    title: "Danger",
+    hex: "#9F1239",
+    variable: "--danger",
+    class: "bg-danger",
+    foreground: "text-danger-foreground",
+    description: (
+      <>
+        Indica errores, situaciones críticas o acciones que pueden tener
+        consecuencias importantes.
+      </>
+    ),
+  },
+  {
+    name: "Info",
+    title: "Info",
+    hex: "#8B5CF6",
+    variable: "--info",
+    class: "bg-info",
+    foreground: "text-info-foreground",
+    description: (
+      <>
+        Se utiliza para mostrar información útil, instrucciones, ayuda o
+        contexto adicional.
+      </>
+    ),
+  },
+  {
+    name: "Surface",
+    title: "Surface",
+    hex: "#F4F7F9",
+    variable: "--surface",
+    class: "bg-surface",
+    foreground: "text-foreground",
+    description: (
+      <>
+        Color utilizado como fondo de tarjetas, paneles y áreas donde se
+        organiza el contenido.
+      </>
+    ),
+  },
+  {
+    name: "Muted",
+    title: "Muted",
+    hex: "#6F7F8F",
+    variable: "--muted",
+    class: "bg-muted",
+    foreground: "text-muted-foreground",
+    description: (
+      <>
+        Se utiliza en información que debe permanecer visible pero con menor
+        importancia visual.
+      </>
+    ),
+  },
+  {
+    name: "Accent",
+    title: "Accent",
+    hex: "#2A4A7F",
+    variable: "--accent",
+    class: "bg-accent",
+    foreground: "text-accent-foreground",
+    description: (
+      <>
+        Color utilizado para destacar elementos específicos de la interfaz sin
+        reemplazar el color principal.
+      </>
+    ),
+  },
+];
+
+const FULL_SCALES = [
+  {
+    name: "Primary",
+    title: "Primary",
+    prefix: "primary",
+    colors: [
+      { level: "50", hex: "#EBF1F7" },
+      { level: "100", hex: "#CFDEF0" },
+      { level: "200", hex: "#A4C1E3" },
+      { level: "300", hex: "#73A0D3" },
+      { level: "400", hex: "#3F70AB" },
+      { level: "500", hex: "#0F2A4A" },
+      { level: "600", hex: "#12243D" },
+      { level: "700", hex: "#0D1A2C" },
+      { level: "800", hex: "#09121D" },
+      { level: "900", hex: "#05080E" },
+    ],
+  },
+  {
+    name: "Secondary",
+    title: "Secondary",
+    prefix: "secondary",
+    colors: [
+      { level: "50", hex: "#F3F8FA" },
+      { level: "100", hex: "#E7F1F5" },
+      { level: "200", hex: "#B7D6E2" },
+      { level: "300", hex: "#88BACE" },
+      { level: "400", hex: "#589EBA" },
+      { level: "500", hex: "#10759D" },
+      { level: "600", hex: "#0D5E7E" },
+      { level: "700", hex: "#0A465E" },
+      { level: "800", hex: "#062F3F" },
+      { level: "900", hex: "#03171F" },
+    ],
+  },
+  {
+    name: "Success",
+    title: "Success",
+    prefix: "success",
+    colors: [
+      { level: "50", hex: "#F3FAF9" },
+      { level: "100", hex: "#E7F4F3" },
+      { level: "200", hex: "#B6DFDB" },
+      { level: "300", hex: "#86CAC4" },
+      { level: "400", hex: "#56B4AC" },
+      { level: "500", hex: "#0D9488" },
+      { level: "600", hex: "#0A766D" },
+      { level: "700", hex: "#085952" },
+      { level: "800", hex: "#053B36" },
+      { level: "900", hex: "#031E1B" },
+    ],
+  },
+  {
+    name: "Warning",
+    title: "Warning",
+    prefix: "warning",
+    colors: [
+      { level: "50", hex: "#FEF7F3" },
+      { level: "100", hex: "#FDEEE7" },
+      { level: "200", hex: "#F9CDB6" },
+      { level: "300", hex: "#F5AC86" },
+      { level: "400", hex: "#F08A55" },
+      { level: "500", hex: "#EA580C" },
+      { level: "600", hex: "#BB460A" },
+      { level: "700", hex: "#8C3507" },
+      { level: "800", hex: "#5E2305" },
+      { level: "900", hex: "#2F1202" },
+    ],
+  },
+  {
+    name: "Danger",
+    title: "Danger",
+    prefix: "danger",
+    colors: [
+      { level: "50", hex: "#FAF3F5" },
+      { level: "100", hex: "#F5E7EB" },
+      { level: "200", hex: "#E2B8C4" },
+      { level: "300", hex: "#CF899C" },
+      { level: "400", hex: "#BC5974" },
+      { level: "500", hex: "#9F1239" },
+      { level: "600", hex: "#7F0E2E" },
+      { level: "700", hex: "#5F0B22" },
+      { level: "800", hex: "#400717" },
+      { level: "900", hex: "#20040B" },
+    ],
+  },
+  {
+    name: "Info",
+    title: "Info",
+    prefix: "info",
+    colors: [
+      { level: "50", hex: "#F5F3FF" },
+      { level: "100", hex: "#EDE9FE" },
+      { level: "200", hex: "#DDD6FE" },
+      { level: "300", hex: "#C4B5FD" },
+      { level: "400", hex: "#A78BFA" },
+      { level: "500", hex: "#8B5CF6" },
+      { level: "600", hex: "#7C3AED" },
+      { level: "700", hex: "#6D28D9" },
+      { level: "800", hex: "#5B21B6" },
+      { level: "900", hex: "#4C1D95" },
+    ],
+  },
+  {
+    name: "Neutral",
+    title: "Gris base",
+    prefix: "neutral",
+    colors: [
+      { level: "50", hex: "#FFFFFF" },
+      { level: "100", hex: "#F8F9FA" },
+      { level: "200", hex: "#E9ECEF" },
+      { level: "300", hex: "#DEE2E6" },
+      { level: "400", hex: "#CED4DA" },
+      { level: "500", hex: "#ADB5BD" },
+      { level: "600", hex: "#6C757D" },
+      { level: "700", hex: "#495057" },
+      { level: "800", hex: "#343A40" },
+      { level: "900", hex: "#212529" },
+    ],
+  },
+  {
+    name: "Surface",
+    title: "Surface",
+    prefix: "surface",
+    colors: [
+      { level: "50", hex: "#FEFFFF" },
+      { level: "100", hex: "#FEFEFE" },
+      { level: "200", hex: "#FCFDFD" },
+      { level: "300", hex: "#FAFBFC" },
+      { level: "400", hex: "#F7F9FB" },
+      { level: "500", hex: "#F4F7F9" },
+      { level: "600", hex: "#C3C6C7" },
+      { level: "700", hex: "#929495" },
+      { level: "800", hex: "#626364" },
+      { level: "900", hex: "#313132" },
+    ],
+  },
+  {
+    name: "Muted",
+    title: "Muted",
+    prefix: "muted",
+    colors: [
+      { level: "50", hex: "#F8F9F9" },
+      { level: "100", hex: "#F1F2F4" },
+      { level: "200", hex: "#D4D9DD" },
+      { level: "300", hex: "#B7BFC7" },
+      { level: "400", hex: "#9AA5B1" },
+      { level: "500", hex: "#6F7F8F" },
+      { level: "600", hex: "#596672" },
+      { level: "700", hex: "#434C56" },
+      { level: "800", hex: "#2C3339" },
+      { level: "900", hex: "#16191D" },
+    ],
+  },
+  {
+    name: "Accent",
+    title: "Accent",
+    prefix: "accent",
+    colors: [
+      { level: "50", hex: "#F4F6F9" },
+      { level: "100", hex: "#EAEDF2" },
+      { level: "200", hex: "#BFC9D9" },
+      { level: "300", hex: "#95A5BF" },
+      { level: "400", hex: "#6A80A5" },
+      { level: "500", hex: "#2A4A7F" },
+      { level: "600", hex: "#223B66" },
+      { level: "700", hex: "#192C4C" },
+      { level: "800", hex: "#111E33" },
+      { level: "900", hex: "#080F19" },
+    ],
+  },
+  {
+    name: "Data",
+    title: "Gráficos y Datos",
+    prefix: "chart",
+    colors: [
+      { level: "1", hex: "#2563EB" },
+      { level: "2", hex: "#0891B2" },
+      { level: "3", hex: "#7C3AED" },
+      { level: "4", hex: "#15803D" },
+      { level: "5", hex: "#D97706" },
+      { level: "6", hex: "#BE185D" },
+    ],
+  },
+  {
+    name: "Avatar",
+    title: "Avatar Dinámico",
+    prefix: "avatar",
+    colors: [
+      { level: "0-bg", hex: "#FEE2E2" },
+      { level: "1-bg", hex: "#FFEDD5" },
+      { level: "2-bg", hex: "#FEF3C7" },
+      { level: "3-bg", hex: "#ECFCCB" },
+      { level: "4-bg", hex: "#DCFCE7" },
+      { level: "5-bg", hex: "#D1FAE5" },
+      { level: "6-bg", hex: "#CCFBF1" },
+      { level: "7-bg", hex: "#CFFAFE" },
+      { level: "8-bg", hex: "#E0F2FE" },
+      { level: "9-bg", hex: "#DBEAFE" },
+      { level: "10-bg", hex: "#E0E7FF" },
+      { level: "11-bg", hex: "#EDE9FE" },
+      { level: "12-bg", hex: "#F3E8FF" },
+      { level: "13-bg", hex: "#FAE8FF" },
+      { level: "14-bg", hex: "#FCE7F3" },
+      { level: "15-bg", hex: "#FFE4E6" },
+    ],
+  },
+];
+
+const TYPOGRAPHY_SCALE = [
+  {
+    level: "H1",
+    style: "Título Principal",
+    size: "32px",
+    lineHeight: "40px",
+    weight: "700",
+    usage: "Encabezados principales de página",
+    className: "text-h1 font-heading font-bold",
+  },
+  {
+    level: "H2",
+    style: "Título Secundario",
+    size: "24px",
+    lineHeight: "32px",
+    weight: "600",
+    usage: "Secciones dentro de una página",
+    className: "text-h2 font-heading font-semibold",
+  },
+  {
+    level: "H3",
+    style: "Título Terciario",
+    size: "20px",
+    lineHeight: "28px",
+    weight: "600",
+    usage: "Subsecciones o tarjetas",
+    className: "text-h3 font-heading font-semibold",
+  },
+  {
+    level: "Body",
+    style: "Texto del Cuerpo",
+    size: "16px",
+    lineHeight: "24px",
+    weight: "400",
+    usage: "Contenido principal y párrafos",
+    className: "text-body font-normal",
+  },
+  {
+    level: "Body Small",
+    style: "Texto Secundario",
+    size: "14px",
+    lineHeight: "20px",
+    weight: "400",
+    usage: "Descripciones cortas, listas",
+    className: "text-body-sm font-normal",
+  },
+  {
+    level: "Caption",
+    style: "Nota al Pie",
+    size: "12px",
+    lineHeight: "16px",
+    weight: "400",
+    usage: "Metadatos, avisos legales",
+    className: "text-caption font-normal",
+  },
+  {
+    level: "Button",
+    style: "Texto del Botón",
+    size: "14px",
+    lineHeight: "20px",
+    weight: "500",
+    usage: "Etiquetas de botones y acciones",
+    className: "text-body-sm font-medium",
+  },
+];
+
+export function StyleGuide({
+  registerSection,
+}: {
+  registerSection?: (id: string, el: HTMLElement | null) => void;
+}) {
+  const [activeScaleName, setActiveScaleName] = useState(FULL_SCALES[0].name);
+  const activeScale =
+    FULL_SCALES.find((s) => s.name === activeScaleName) || FULL_SCALES[0];
+  const [simulatedColors, setSimulatedColors] = useState<
+    Record<string, string>
+  >({});
+  const [editingColor, setEditingColor] = useState<{
+    name: string;
+    hex: string;
+    newHex?: string;
+    scaleId?: string;
+    level?: string;
+  } | null>(null);
+  const [isApplyingColor, setIsApplyingColor] = useState(false);
+
+  // Tipografía
+  const [simulatedFonts, setSimulatedFonts] = useState<{
+    heading: string;
+    body: string;
+  }>({ heading: "Nunito", body: "Montserrat" });
+  const [editingFontFamily, setEditingFontFamily] = useState<{
+    id: "heading" | "body";
+    title: string;
+    currentFont: string;
+    newFont?: string;
+  } | null>(null);
+  const [isApplyingFont, setIsApplyingFont] = useState(false);
+  const [showConfirmFont, setShowConfirmFont] = useState(false);
+
+  const handleCopy = (text: string, label: string) => {
+    navigator.clipboard.writeText(text);
+    toast.success(`${label} copiada: ${text}`);
+  };
+
+  return (
+    <div className="w-full flex flex-col gap-8 md:gap-12">
+      {/* Subsección 0: Brand Assets / Logos Oficiales */}
+      <SubSection
+        id="foundations-logos"
+        registerSection={registerSection}
+        title="Recursos de Marca: Logotipos"
+        icon={ImageIcon}
+      >
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-4 gap-6 w-full">
+          {/* Card 1: Horizontal */}
+          <LogoManagerCard
+            slot="horizontal"
+            title="Logotipo Horizontal"
+            description="Versión principal del logotipo. Recomendada para encabezados, páginas web, documentos y espacios horizontales."
+            badge1="HORIZONTAL"
+            badge2="PRINCIPAL"
+            defaultLightImg="/Logo-horizontal.svg"
+            defaultDarkImg="/Logo-horizontal-alternativo.svg"
+            monoLightImg="/Logo-horizontal-negro.svg"
+            monoDarkImg="/Logo-horizontal-blanco.svg"
+            editLabel="Editar logotipo"
+          />
+
+          {/* Card 2: Vertical */}
+          <LogoManagerCard
+            slot="vertical"
+            title="Logotipo Vertical"
+            description="Versión alternativa para espacios más estrechos o composiciones verticales, donde el logotipo horizontal no se adapta correctamente."
+            badge1="VERTICAL"
+            badge2="SECUNDARIO"
+            defaultLightImg="/Logo-vertical.svg"
+            defaultDarkImg="/Logo-vertical-alternativo.svg"
+            monoLightImg="/Logo-vertical-negro.svg"
+            monoDarkImg="/Logo-vertical-blanco.svg"
+            editLabel="Editar logotipo"
+            maxHeightClass="max-h-24"
+          />
+
+          {/* Card 4: Favicon */}
+          <LogoManagerCard
+            slot="favicon"
+            title="Favicon"
+            description="Versión simplificada del símbolo que identifica el sitio en la pestaña del navegador y en espacios digitales de tamaño muy pequeño."
+            badge1="FAVICON"
+            badge2="MÍNIMO"
+            defaultLightImg="/Favicon.svg"
+            defaultDarkImg="/Favicon alternativo.svg"
+            editLabel="Editar favicon"
+            allowedFormats=".svg,.png,.ico"
+          />
+
+          {/* Card 5: Logos sin lema */}
+          <LogoManagerCard
+            slot="sin-lema"
+            title="Logos sin lema"
+            description="Versiones del logotipo sin el lema o slogan institucional, ideales para aplicaciones donde se requiere mayor legibilidad en menor espacio."
+            badge1="SIN LEMA"
+            badge2="ALTERNATIVA"
+            defaultLightImg="/logo.svg"
+            defaultDarkImg="/logo-alternativo.svg"
+            monoLightImg="/logo-negro.svg"
+            monoDarkImg="/logo-blanco.svg"
+            editLabel="Editar logotipo"
+          />
+        </div>
+      </SubSection>
+
+      {/* Subsección 1.5: Colores de Marca */}
+      <SubSection
+        id="foundations-colors"
+        registerSection={registerSection}
+        title="Colores Generales Base y Semánticos"
+        icon={Contrast}
+        description="Los colores semánticos ayudan a reconocer rápidamente qué está ocurriendo en la interfaz. Cada color comunica un significado específico, como éxito, advertencia, error o información. Estos son colores generales base y semánticos."
+      >
+        <div className="flex flex-col gap-12">
+          {[
+            {
+              title: "Los Principales",
+              dot: "bg-primary",
+              filters: ["Primary", "Secondary", "Accent"],
+            },
+            {
+              title: "Semánticos",
+              dot: "bg-info",
+              filters: ["Success", "Warning", "Danger", "Info"],
+            },
+            { title: "Otros", dot: "bg-muted", filters: ["Surface", "Muted"] },
+          ].map((category) => (
+            <div key={category.title} className="flex flex-col gap-6">
+              <h4 className="text-xl font-heading font-black text-foreground flex items-center gap-3">
+                <div className={`w-1.5 h-6 rounded-full ${category.dot}`} />
+                {category.title}
+              </h4>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                {SEMANTIC_COLORS.filter((color) =>
+                  category.filters.includes(color.name),
+                ).map((color) => (
+                  <div
+                    key={color.name}
+                    className="flex flex-col rounded-xl border border-border/60 shadow-sm overflow-hidden bg-surface group hover:shadow-md transition-all duration-300 hover:-translate-y-1"
+                  >
+                    {/* Top Half (Color) */}
+                    <div
+                      className={cn(
+                        "p-5 flex flex-col justify-between h-36 transition-all duration-300 group-hover:brightness-105 relative overflow-hidden",
+                        color.class,
+                        color.foreground,
+                      )}
+                    >
+                      <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent opacity-50 pointer-events-none" />
+                      <div className="flex justify-between items-center w-full relative z-10">
+                        <Badge
+                          tone="secondary"
+                          className="bg-black/30 text-white hover:bg-black/40 border-transparent pointer-events-none shadow-sm backdrop-blur-sm"
+                        >
+                          {color.name}
+                        </Badge>
+                        <Badge
+                          tone="secondary"
+                          className="bg-black/30 text-white hover:bg-black/40 border-transparent font-mono pointer-events-none shadow-sm backdrop-blur-sm"
+                        >
+                          {color.hex}
+                        </Badge>
+                      </div>
+                      <h3 className="text-2xl font-heading font-bold text-left relative z-10 drop-shadow-md">
+                        {color.title}
+                      </h3>
+                    </div>
+
+                    {/* Bottom Half (Details) */}
+                    <div className="p-5 flex flex-col gap-4 bg-surface/40 flex-1 relative z-10">
+                      <p className="text-sm text-muted-foreground leading-relaxed">
+                        {color.description}
+                      </p>
+
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          ))}
+        </div>
+      </SubSection>
+
+      {/* Subsección 2: Escalas Cromáticas Primitivas */}
+      <SubSection
+        id="foundations-scales"
+        registerSection={registerSection}
+        title="Escalas Cromáticas"
+        icon={Palette}
+        description={
+          <div className="flex flex-col gap-4">
+            <span className="font-mono text-xs uppercase tracking-wider text-muted-foreground">
+              Escalas cromáticas primitivas · 50–900
+            </span>
+            <p>
+              Cada color principal cuenta con diferentes tonos, desde los más
+              claros hasta los más oscuros. Estas variaciones permiten crear
+              fondos, bordes, estados al pasar el cursor, elementos
+              seleccionados y textos manteniendo una misma familia visual.
+            </p>
+          </div>
+        }
+      >
+        {/* Tabs */}
+        <div className="mb-8 w-full">
+          <Tabs
+            value={activeScaleName}
+            onValueChange={setActiveScaleName}
+            className="w-full"
+          >
+            <TabsList className="flex flex-wrap h-auto w-full justify-start md:w-auto md:inline-flex">
+              {FULL_SCALES.map((scale) => (
+                <TabsTrigger
+                  key={scale.name}
+                  value={scale.name}
+                  className="gap-2"
+                >
+                  <span
+                    className={cn(
+                      "w-2 h-2 rounded-full",
+                      activeScaleName !== scale.name && "opacity-70",
+                    )}
+                    style={{
+                      backgroundColor:
+                        scale.colors.find((c) => c.level === "500")?.hex ||
+                        "transparent",
+                    }}
+                  />
+                  {scale.name}
+                </TabsTrigger>
+              ))}
+            </TabsList>
+          </Tabs>
+        </div>
+
+        {/* Selected Scale Card */}
+        <div className="bg-card rounded-[2rem] border border-border/50 p-6 sm:p-8 shadow-sm">
+          {/* Header */}
+          <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6 mb-10 bg-surface/40 p-4 sm:p-5 rounded-3xl border border-border/40 shadow-sm relative overflow-hidden">
+            <div className="flex items-center gap-5 relative z-10">
+
+              <div>
+                <h3 className="text-2xl sm:text-3xl font-heading font-black text-foreground tracking-tight flex items-center gap-3">
+                  {activeScale.title}
+                </h3>
+                <div className="flex flex-wrap items-center gap-2 sm:gap-3 mt-2 sm:mt-3">
+                  <Badge
+                    tone="neutral"
+                    appearance="soft"
+                    className="text-[9px] sm:text-[10px] px-2 py-0.5 uppercase tracking-widest font-extrabold shadow-sm bg-muted/60 pointer-events-none"
+                  >
+                    Ref. Técnica
+                  </Badge>
+                  <code className="text-primary font-mono text-[11px] sm:text-xs font-bold bg-primary/10 px-2.5 py-1 rounded-md shadow-sm border border-primary/20">
+                    bg-{activeScale.prefix}-500
+                  </code>
+                  <span className="text-muted-foreground font-mono text-[11px] sm:text-xs font-medium px-2 py-1 bg-surface rounded-md border border-border/50">
+                    {activeScale.colors.find((c) => c.level === "500")?.hex}
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            {/* Large gradient bar and Edit action */}
+            <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 sm:gap-6 relative z-10">
+              <div className="hidden lg:flex h-4 w-64 rounded-full overflow-hidden shadow-inner ring-1 ring-border/50 group">
+                {activeScale.colors.map((c) => (
+                  <div
+                    key={c.level}
+                    className="h-full flex-1 transition-all duration-300 hover:scale-y-150 origin-center"
+                    style={{ backgroundColor: c.hex }}
+                    title={c.level}
+                  />
+                ))}
+              </div>
+            </div>
+          </div>
+
+          {/* Swatches Grid */}
+          <div className="grid grid-cols-2 sm:grid-cols-5 md:grid-cols-10 gap-4">
+            {activeScale.colors.map((color) => {
+              const specificSimulatedColor =
+                simulatedColors[`${activeScale.name}-${color.level}`];
+              const isSimulatedBase = !!simulatedColors[activeScale.name];
+              const isMain =
+                color.level === "500" ||
+                color.level === "1" ||
+                color.level === "0-bg";
+
+              const displayHex =
+                specificSimulatedColor ||
+                (isSimulatedBase && isMain
+                  ? simulatedColors[activeScale.name]
+                  : color.hex);
+              const isOutdated =
+                isSimulatedBase && !isMain && !specificSimulatedColor;
+
+              return (
+                <div
+                  key={color.level}
+                  className={cn(
+                    "group relative flex flex-col items-center justify-center p-3 py-4 rounded-2xl bg-surface border border-border/40 transition-all duration-300 overflow-hidden",
+                    !isOutdated && "hover:bg-surface/70 hover:-translate-y-1",
+                    isOutdated && "opacity-60 bg-muted/20",
+                  )}
+                >
+                  {/* Copiar color click area */}
+                  <div
+                    className="absolute inset-0 cursor-pointer z-0"
+                    onClick={() =>
+                      handleCopy(
+                        `bg-${activeScale.prefix}-${color.level}`,
+                        "Clase Tailwind",
+                      )
+                    }
+                    title={`Copiar bg-${activeScale.prefix}-${color.level}`}
+                  />
+
+
+
+                  <div
+                    className={cn(
+                      "w-12 h-12 sm:w-14 sm:h-14 rounded-full shadow-sm mb-3 shrink-0 transition-transform duration-300 relative z-10 pointer-events-none",
+                      !isOutdated && "group-hover:scale-110",
+                    )}
+                    style={{ backgroundColor: displayHex }}
+                  />
+                  <div className="flex flex-col items-center gap-0.5 z-10 w-full pointer-events-none">
+                    <span className="text-sm font-bold text-foreground truncate w-full text-center">
+                      {color.level}
+                    </span>
+                    <span
+                      className={cn(
+                        "text-[10px] text-muted-foreground uppercase font-mono truncate w-full text-center",
+                        specificSimulatedColor || (isSimulatedBase && isMain)
+                          ? "font-bold text-primary"
+                          : "opacity-80",
+                      )}
+                    >
+                      {displayHex}
+                    </span>
+                  </div>
+
+                  {isOutdated && (
+                    <div className="absolute inset-0 bg-background/40 backdrop-blur-[1px] flex flex-col items-center justify-center pointer-events-none p-1 z-20">
+                      <Badge
+                        tone="warning"
+                        appearance="solid"
+                        className="text-[8px] h-4 px-1 absolute top-2 whitespace-normal text-center leading-tight pointer-events-none shadow-none"
+                      >
+                        Desactualizado
+                      </Badge>
+                    </div>
+                  )}
+                  {specificSimulatedColor && !isMain && (
+                    <div className="absolute top-2 left-1/2 -translate-x-1/2 pointer-events-none z-20">
+                      <Badge
+                        tone="success"
+                        appearance="solid"
+                        className="text-[8px] h-4 px-1 whitespace-nowrap shadow-sm"
+                      >
+                        Modificado
+                      </Badge>
+                    </div>
+                  )}
+                  {isSimulatedBase && isMain && (
+                    <div className="absolute top-2 left-1/2 -translate-x-1/2 pointer-events-none z-20">
+                      <Badge
+                        tone="success"
+                        appearance="solid"
+                        className="text-[8px] h-4 px-1 whitespace-nowrap shadow-sm"
+                      >
+                        Base nuevo
+                      </Badge>
+                    </div>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      </SubSection>
+
+      {/* Subsección 3: Sistema Tipográfico */}
+      <SubSection
+        id="foundations-typography"
+        registerSection={registerSection}
+        title="Tipografía"
+        icon={Type}
+        description={
+          <>
+            Jerarquía visual utilizando{" "}
+            <strong className="text-foreground">
+              {simulatedFonts.heading}
+            </strong>{" "}
+            para títulos y encabezados, combinada con{" "}
+            <strong className="text-foreground">{simulatedFonts.body}</strong>{" "}
+            para cuerpo de texto.
+          </>
+        }
+      >
+        <div className="flex flex-col gap-10">
+          {[
+            {
+              id: "heading" as const,
+              title: "Tipografía de títulos",
+              currentFont: simulatedFonts.heading,
+              items: TYPOGRAPHY_SCALE.filter((t) =>
+                t.className.includes("font-heading"),
+              ),
+            },
+            {
+              id: "body" as const,
+              title: "Tipografía de cuerpo",
+              currentFont: simulatedFonts.body,
+              items: TYPOGRAPHY_SCALE.filter(
+                (t) => !t.className.includes("font-heading"),
+              ),
+            },
+          ].map((group) => (
+            <div key={group.id} className="flex flex-col gap-4">
+              <div className="flex items-center justify-between">
+                <h4 className="text-h4 font-bold text-foreground flex items-center gap-2">
+                  {group.title}{" "}
+                  <Badge
+                    appearance="soft"
+                    tone="neutral"
+                    className="ml-2 font-mono"
+                  >
+                    {group.currentFont}
+                  </Badge>
+                </h4>
+
+              </div>
+
+              <div className="flex flex-col border border-border rounded-xl overflow-hidden bg-card text-left shadow-sm">
+                <div className="hidden md:grid grid-cols-12 gap-6 px-8 py-4 border-b border-border bg-muted/30 text-xs font-bold text-muted-foreground uppercase tracking-wider">
+                  <div className="col-span-2">Token</div>
+                  <div className="col-span-3">Estilo & Peso</div>
+                  <div className="col-span-2">Tamaño</div>
+                  <div className="col-span-5">Muestra</div>
+                </div>
+                {group.items.map((type, i) => (
+                  <div
+                    key={type.level}
+                    className={cn(
+                      "grid grid-cols-1 md:grid-cols-12 gap-6 px-8 py-6 md:items-center",
+                      i !== group.items.length - 1 && "border-b border-border",
+                    )}
+                  >
+                    <div className="md:col-span-2 flex items-center justify-start">
+                      <span className="font-mono text-sm font-bold text-primary">
+                        {type.level}
+                      </span>
+                    </div>
+                    <div className="md:col-span-3 flex flex-col justify-center items-start text-left">
+                      <span className="text-sm font-medium text-foreground">
+                        {type.style}
+                      </span>
+                      <span className="text-caption text-muted-foreground mt-0.5">
+                        {type.weight}
+                      </span>
+                    </div>
+                    <div className="md:col-span-2 flex flex-col items-start justify-center gap-1">
+                      <Badge
+                        tone="neutral"
+                        appearance="soft"
+                        size="md"
+                        className="font-mono"
+                      >
+                        {type.size}
+                      </Badge>
+                      <span className="text-[10px] text-muted-foreground font-mono">
+                        LH: {type.lineHeight}
+                      </span>
+                    </div>
+                    <div
+                      className={cn(
+                        "md:col-span-5 truncate text-left flex items-center justify-start text-foreground",
+                        type.className,
+                      )}
+                      style={{ fontFamily: group.currentFont }}
+                    >
+                      El veloz murciélago hindú comía...
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          ))}
+        </div>
+      </SubSection>
+
+      {/* Subsección 4: Sombras y Elevación */}
+      <SubSection
+        id="foundations-shadows"
+        registerSection={registerSection}
+        title="Sombras y Elevación"
+        icon={Layers}
+        description="Sistema de sombras semánticas para establecer jerarquía y crear sensación de volumen real."
+      >
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+          {[
+            {
+              level: "xs",
+              class: "shadow-xs",
+              desc: "Elementos interactivos pequeños, inputs",
+            },
+            {
+              level: "sm",
+              class: "shadow-sm",
+              desc: "Botones, tarjetas sutiles",
+            },
+            {
+              level: "md",
+              class: "shadow-md",
+              desc: "Dropdowns, menús, tarjetas elevadas",
+            },
+            {
+              level: "lg",
+              class: "shadow-lg",
+              desc: "Modales, popovers destacados",
+            },
+          ].map((shadow) => (
+            <div key={shadow.level} className="flex flex-col group">
+              <div className="h-64 flex items-center justify-center p-6 relative bg-white dark:bg-neutral-950 rounded-[2rem] border border-border/40 mb-6 transition-all duration-300">
+                <div
+                  className={cn(
+                    "w-36 h-36 bg-surface border border-border/30 rounded-2xl flex flex-col items-center justify-center relative z-10 transition-transform duration-500 group-hover:-translate-y-2",
+                    shadow.class,
+                  )}
+                >
+                  <span className="text-3xl font-heading font-bold text-foreground">
+                    {shadow.level.toUpperCase()}
+                  </span>
+                </div>
+              </div>
+              <div className="flex flex-col px-2">
+                <div className="flex items-center gap-3 mb-2">
+                  <span className="font-heading text-xl font-bold text-foreground uppercase">
+                    {shadow.level}
+                  </span>
+                  <Badge
+                    tone="neutral"
+                    appearance="soft"
+                    size="sm"
+                    className="font-mono pointer-events-none"
+                  >
+                    var(--elevation-{shadow.level})
+                  </Badge>
+                </div>
+                <p className="text-sm text-muted-foreground leading-relaxed">
+                  {shadow.desc}
+                </p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </SubSection>
+
+      {/* Subsección 5: Radios y Bordes */}
+      <SubSection
+        id="foundations-radius"
+        registerSection={registerSection}
+        title="Radios y Bordes"
+        icon={SquareDashed}
+        description="Redondez base del sistema (0.75rem) aplicada proporcionalmente a los elementos."
+      >
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-6">
+          {[
+            {
+              level: "sm",
+              class: "rounded-sm",
+              px: "4.8px",
+              desc: "Inputs o chips compactos",
+            },
+            {
+              level: "md",
+              class: "rounded-md",
+              px: "9.6px",
+              desc: "Controles y elementos secundarios",
+            },
+            {
+              level: "lg",
+              class: "rounded-lg",
+              px: "12px",
+              desc: "Tarjetas y paneles",
+            },
+            {
+              level: "xl",
+              class: "rounded-xl",
+              px: "16.8px",
+              desc: "Modales y contenedores grandes",
+            },
+            {
+              level: "full",
+              class: "rounded-full",
+              px: "100%",
+              desc: "Botones principales y avatares",
+            },
+          ].map((radius) => (
+            <div key={radius.level} className="flex flex-col group">
+              <div className="h-64 flex items-center justify-center p-6 relative bg-white dark:bg-neutral-950 rounded-[2rem] border border-border/40 mb-6 transition-all duration-300">
+                <div
+                  className={cn(
+                    "w-36 h-36 bg-surface border-2 border-border/60 flex flex-col items-center justify-center relative z-10 transition-transform duration-500 group-hover:scale-105 shadow-sm",
+                    radius.class,
+                  )}
+                >
+                  <span className="font-mono text-xl font-bold text-foreground tracking-tight">
+                    {radius.px}
+                  </span>
+                </div>
+              </div>
+              <div className="flex flex-col px-2">
+                <div className="flex items-center gap-3 mb-2">
+                  <span className="font-heading text-xl font-bold text-foreground uppercase">
+                    {radius.level}
+                  </span>
+                  <Badge
+                    tone="neutral"
+                    appearance="soft"
+                    size="sm"
+                    className="font-mono pointer-events-none"
+                  >
+                    var(--radius-{radius.level})
+                  </Badge>
+                </div>
+                <p className="text-sm text-muted-foreground leading-relaxed">
+                  {radius.desc}
+                </p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </SubSection>
+
+      {/* Subsección 6: Espaciado */}
+      <SubSection
+        id="foundations-spacing"
+        registerSection={registerSection}
+        title="Espaciado"
+        icon={Ruler}
+        description="Escala utilizada para mantener consistencia en márgenes, paddings y separación entre elementos."
+      >
+        <div className="flex flex-col gap-6">
+          <p className="text-sm text-muted-foreground">
+            GRisk utiliza la escala de espaciado definida por el sistema. Se
+            recomienda evitar valores arbitrarios fuera de esta escala.
+          </p>
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+            {[
+              { px: "4px", token: "space-1", w: "w-1" },
+              { px: "8px", token: "space-2", w: "w-2" },
+              { px: "12px", token: "space-3", w: "w-3" },
+              { px: "16px", token: "space-4", w: "w-4" },
+              { px: "20px", token: "space-5", w: "w-5" },
+              { px: "24px", token: "space-6", w: "w-6" },
+              { px: "32px", token: "space-8", w: "w-8" },
+              { px: "40px", token: "space-10", w: "w-10" },
+              { px: "48px", token: "space-12", w: "w-12" },
+            ].map((space) => (
+              <div
+                key={space.token}
+                className="flex items-center gap-4 p-4 rounded-2xl border border-border/60 bg-surface shadow-sm hover:-translate-y-1 transition-transform duration-300"
+              >
+                <div className="w-16 flex flex-col gap-0.5 shrink-0">
+                  <span className="font-bold text-foreground">{space.px}</span>
+                  <span className="text-[10px] text-muted-foreground font-mono bg-muted/30 w-fit px-1.5 py-0.5 rounded border border-border">
+                    {space.token}
+                  </span>
+                </div>
+                <div className="flex-1 flex justify-start">
+                  <div
+                    className={cn(
+                      "h-6 bg-primary/20 rounded-sm border border-primary/30",
+                      space.w,
+                    )}
+                  />
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </SubSection>
+
+      {/* Subsección 7: Grid y Layout */}
+      <SubSection
+        id="foundations-grid-layout"
+        registerSection={registerSection}
+        title="Grid y Layout"
+        icon={LayoutGrid}
+        description="Estructura utilizada para organizar y alinear el contenido en las diferentes resoluciones de GRisk."
+      >
+        <div className="flex flex-col gap-12">
+          {/* Grid visual */}
+          <div className="flex flex-col gap-6">
+            <h4 className="text-xl font-heading font-black text-foreground">
+              Grid Responsivo
+            </h4>
+
+            <div className="flex flex-col gap-4 text-muted-foreground text-sm leading-relaxed max-w-4xl mb-2">
+              <p>
+                <strong className="text-foreground">¿Para qué usamos un grid?</strong><br />
+                El grid crea una estructura invisible que divide el espacio disponible en columnas. Estas columnas sirven como referencia para ubicar y dimensionar los componentes de una pantalla, manteniendo alineación, proporción y consistencia entre los diferentes módulos de GRisk.
+              </p>
+
+              <ul className="flex flex-col gap-2 mt-1 list-disc pl-5">
+                <li><strong className="text-foreground">Columnas:</strong> divisiones verticales que sirven como guía para definir cuánto espacio ocupa cada componente. Un elemento puede ocupar una o varias columnas.</li>
+                <li><strong className="text-foreground">Gutter:</strong> espacio existente entre una columna y otra. Evita que los elementos queden demasiado juntos.</li>
+                <li><strong className="text-foreground">Margin:</strong> espacio de seguridad entre el grid y los bordes de la pantalla.</li>
+              </ul>
+
+              <p className="mt-2">
+                <strong className="text-foreground">Adaptabilidad según dispositivo</strong><br />
+                La cantidad de columnas cambia para ajustarse al espacio disponible sin perder el orden:
+              </p>
+              <ul className="flex flex-col gap-2 mt-1 list-disc pl-5">
+                <li><strong className="text-foreground">Desktop (12 columnas):</strong> permite mayor flexibilidad para distribuir tablas, formularios, cards, filtros y contenidos complejos.</li>
+                <li><strong className="text-foreground">Tablet (8 columnas):</strong> reduce la cantidad de divisiones para adaptarse al menor espacio disponible manteniendo la estructura.</li>
+                <li><strong className="text-foreground">Mobile (4 columnas):</strong> simplifica la distribución para priorizar lectura, jerarquía y componentes principalmente apilados.</li>
+              </ul>
+
+              <div className="p-4 bg-surface border border-border/60 rounded-xl mt-2 text-sm shadow-sm">
+                <strong className="text-foreground font-bold">Ejemplo de uso:</strong><br />
+                En desktop, un formulario puede ocupar 8 de las 12 columnas y un panel lateral 4 columnas. En mobile, ambos elementos pueden pasar a ocupar las 4 columnas disponibles y mostrarse uno debajo del otro.
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+              {/* Desktop */}
+              <div className="flex flex-col gap-4 border border-border/60 rounded-[2rem] p-6 bg-surface shadow-sm">
+                <div className="flex items-center justify-between">
+                  <h5 className="font-bold text-foreground">Desktop</h5>
+                  <Badge tone="neutral" appearance="soft" size="sm">
+                    12 columnas
+                  </Badge>
+                </div>
+                <div className="flex gap-2 text-xs text-muted-foreground mb-2">
+                  <span>Gutter: 24px</span>
+                  <span>·</span>
+                  <span>Margen: 32px</span>
+                </div>
+                <div className="flex gap-1 h-32 w-full px-4 border-x-[3px] border-primary bg-primary/5 rounded-lg shadow-inner">
+                  {Array.from({ length: 12 }).map((_, i) => (
+                    <div
+                      key={i}
+                      className="flex-1 bg-primary/20 rounded border border-primary/30 h-full shadow-sm"
+                    />
+                  ))}
+                </div>
+              </div>
+
+              {/* Tablet */}
+              <div className="flex flex-col gap-4 border border-border/60 rounded-[2rem] p-6 bg-surface shadow-sm hover:shadow-md transition-shadow">
+                <div className="flex items-center justify-between">
+                  <h5 className="font-bold text-foreground">Tablet</h5>
+                  <Badge tone="neutral" appearance="soft" size="sm">
+                    8 columnas
+                  </Badge>
+                </div>
+                <div className="flex gap-2 text-xs text-muted-foreground mb-2">
+                  <span>Gutter: 24px</span>
+                  <span>·</span>
+                  <span>Margen: 24px</span>
+                </div>
+                <div className="flex gap-1.5 h-32 w-full px-3 border-x-[3px] border-primary bg-primary/5 rounded-lg shadow-inner">
+                  {Array.from({ length: 8 }).map((_, i) => (
+                    <div
+                      key={i}
+                      className="flex-1 bg-primary/20 rounded border border-primary/30 h-full shadow-sm"
+                    />
+                  ))}
+                </div>
+              </div>
+
+              {/* Mobile */}
+              <div className="flex flex-col gap-4 border border-border/60 rounded-[2rem] p-6 bg-surface shadow-sm hover:shadow-md transition-shadow">
+                <div className="flex items-center justify-between">
+                  <h5 className="font-bold text-foreground">Mobile</h5>
+                  <Badge tone="neutral" appearance="soft" size="sm">
+                    4 columnas
+                  </Badge>
+                </div>
+                <div className="flex gap-2 text-xs text-muted-foreground mb-2">
+                  <span>Gutter: 16px</span>
+                  <span>·</span>
+                  <span>Margen: 16px</span>
+                </div>
+                <div className="flex gap-2 h-32 w-full px-2 border-x-[3px] border-primary bg-primary/5 rounded-lg shadow-inner">
+                  {Array.from({ length: 4 }).map((_, i) => (
+                    <div
+                      key={i}
+                      className="flex-1 bg-primary/20 rounded border border-primary/30 h-full shadow-sm"
+                    />
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+
+
+        </div>
+      </SubSection>
+
+      {/* Subsección 8: Accesibilidad */}
+      <SubSection
+        id="foundations-accessibility"
+        registerSection={registerSection}
+        title="Accesibilidad"
+        icon={Accessibility}
+        description="Principios básicos para mantener interfaces claras, legibles y fáciles de utilizar dentro de GRisk."
+      >
+        <AccessibilityAudit />
+      </SubSection>
+
+      <Dialog
+        open={!!editingColor}
+        onOpenChange={(open) => !open && setEditingColor(null)}
+      >
+        <DialogContent variant="warning" className="sm:max-w-2xl">
+          <DialogHeader>
+            <DialogTitle className="text-warning">
+              Editar color {editingColor?.name}
+            </DialogTitle>
+            <DialogDescription>
+              Vas a modificar el color base del sistema.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="py-2 flex flex-col gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {/* Left Column: Color actual */}
+              <div className="flex flex-col gap-2 items-center">
+                <span className="text-sm font-bold text-foreground">
+                  Color actual
+                </span>
+                <div className="flex items-center gap-3 p-4 rounded-xl border border-border bg-surface w-full">
+                  <div
+                    className="w-12 h-12 rounded-lg shadow-sm"
+                    style={{ backgroundColor: editingColor?.hex }}
+                  />
+                  <span className="font-mono text-base font-bold uppercase">
+                    {editingColor?.hex}
+                  </span>
+                </div>
+              </div>
+
+              {/* Right Column: Nuevo color */}
+              <div className="flex flex-col gap-2 items-center">
+                <span className="text-sm font-bold text-foreground">
+                  Nuevo color (Simulación)
+                </span>
+                <div className="flex items-center gap-3 p-4 rounded-xl border border-border bg-surface w-full relative">
+                  <div
+                    className="w-12 h-12 rounded-lg shadow-sm relative overflow-hidden"
+                    style={{
+                      backgroundColor:
+                        editingColor?.newHex || editingColor?.hex,
+                    }}
+                  >
+                    <input
+                      type="color"
+                      value={
+                        editingColor?.newHex || editingColor?.hex || "#000000"
+                      }
+                      onChange={(e) =>
+                        setEditingColor((prev) =>
+                          prev ? { ...prev, newHex: e.target.value } : null,
+                        )
+                      }
+                      className="absolute inset-[-10px] w-[150%] h-[150%] cursor-pointer opacity-0"
+                    />
+                  </div>
+                  <span className="font-mono text-base font-bold uppercase">
+                    {editingColor?.newHex || editingColor?.hex}
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            {/* Alert */}
+            <div className="p-4 bg-warning/10 border border-warning/30 rounded-xl flex items-center gap-3 font-sans">
+              <svg
+                className="size-5 text-warning shrink-0"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                strokeWidth={2}
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
+                />
+              </svg>
+              <div className="flex flex-col gap-2 flex-1">
+                {editingColor &&
+                  [
+                    "Government Accent 1",
+                    "Government Accent 2",
+                    "Government Accent 3",
+                  ].includes(editingColor.name) ? (
+                  <p className="text-sm text-warning-900 dark:text-warning-200 text-left font-normal">
+                    Este color es un acento gubernamental y{" "}
+                    <strong className="font-bold">
+                      no cuenta con una escala cromática
+                    </strong>{" "}
+                    de 10 tonos en el sistema. Su modificación solo afectará a
+                    esta variable en particular.
+                  </p>
+                ) : (
+                  <p className="text-sm text-warning-900 dark:text-warning-200 text-left font-normal">
+                    Estás editando el color base (
+                    <strong className="font-bold">tono 500</strong>) de la
+                    escala. El resto de los tonos debe{" "}
+                    <strong className="font-bold">
+                      terminar de editarse en la escala
+                    </strong>
+                    , por lo que se recomienda crear o generar la escala a
+                    partir de este.
+                  </p>
+                )}
+
+                {editingColor &&
+                  [
+                    "Government Primary",
+                    "Government Secondary",
+                    "Government Info",
+                  ].includes(editingColor.name) && (
+                    <p className="text-sm text-warning-900 dark:text-warning-200 font-medium mt-1 text-left">
+                      Al cambiar este color gubernamental, también estás
+                      modificando el color base de la escala semántica{" "}
+                      <strong className="font-bold">
+                        {editingColor.name === "Government Primary"
+                          ? "Primary"
+                          : editingColor.name === "Government Secondary"
+                            ? "Secondary"
+                            : "Info"}
+                      </strong>
+                      , lo que afectará las variables y componentes de
+                      desarrollo.
+                    </p>
+                  )}
+
+                {editingColor &&
+                  editingColor.scaleId &&
+                  editingColor.level === "500" && (
+                    <p className="text-sm text-warning-900 dark:text-warning-200 font-medium mt-1 text-left">
+                      Al editar el tono 500, estás modificando el color
+                      principal de toda la escala{" "}
+                      <strong className="font-bold">
+                        {editingColor.scaleId}
+                      </strong>
+                      {["Primary", "Secondary", "Info"].includes(
+                        editingColor.scaleId,
+                      ) &&
+                        ` y su color gubernamental asociado, lo que impactará directamente en las variables de desarrollo y el diseño general.`}
+                    </p>
+                  )}
+              </div>
+            </div>
+          </div>
+
+          <DialogFooter className="w-full pt-4">
+            <div className="grid grid-cols-2 w-full gap-3">
+              <Button
+                variant="outline"
+                className="w-full"
+                onClick={() => setEditingColor(null)}
+              >
+                Cancelar
+              </Button>
+              <Button
+                variant="warning"
+                className="w-full whitespace-nowrap"
+                disabled={isApplyingColor}
+                onClick={async () => {
+                  if (!editingColor?.newHex) {
+                    setEditingColor(null);
+                    return;
+                  }
+
+                  const updates: Record<string, string> = {};
+                  if (editingColor.scaleId) {
+                    if (editingColor.level === "500" || !editingColor.level) {
+                      updates[editingColor.scaleId] = editingColor.newHex;
+                      if (editingColor.scaleId === "Primary")
+                        updates["Government Primary"] = editingColor.newHex;
+                      if (editingColor.scaleId === "Secondary")
+                        updates["Government Secondary"] = editingColor.newHex;
+                      if (editingColor.scaleId === "Info")
+                        updates["Government Info"] = editingColor.newHex;
+                    } else {
+                      updates[`${editingColor.scaleId}-${editingColor.level}`] =
+                        editingColor.newHex;
+                    }
+                  } else {
+                    updates[editingColor.name] = editingColor.newHex;
+                    if (editingColor.name === "Government Primary")
+                      updates["Primary"] = editingColor.newHex;
+                    if (editingColor.name === "Government Secondary")
+                      updates["Secondary"] = editingColor.newHex;
+                    if (editingColor.name === "Government Info")
+                      updates["Info"] = editingColor.newHex;
+                  }
+
+                  setIsApplyingColor(true);
+                  try {
+                    const res = await fetch("/api/kit-colors", {
+                      method: "POST",
+                      headers: { "Content-Type": "application/json" },
+                      body: JSON.stringify({ updates }),
+                    });
+                    if (!res.ok)
+                      throw new Error(
+                        (await res.json().catch(() => null))?.error ??
+                        `HTTP ${res.status}`,
+                      );
+
+                    setSimulatedColors((prev) => ({ ...prev, ...updates }));
+                    toast.success("Color actualizado", {
+                      description:
+                        "Se guardó en el bucket de borrador del kit.",
+                    });
+                  } catch (err) {
+                    toast.error("No se pudo guardar el color", {
+                      description:
+                        err instanceof Error
+                          ? err.message
+                          : "Error desconocido.",
+                    });
+                  } finally {
+                    setIsApplyingColor(false);
+                    setEditingColor(null);
+                  }
+                }}
+              >
+                {isApplyingColor ? (
+                  <>
+                    <Spinner size="sm" className="mr-2" />
+                    Guardando...
+                  </>
+                ) : (
+                  "Confirmar cambio"
+                )}
+              </Button>
+            </div>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Typography Family Edit Dialog */}
+      <Dialog
+        open={!!editingFontFamily && !showConfirmFont}
+        onOpenChange={(open) => !open && setEditingFontFamily(null)}
+      >
+        <DialogContent
+          variant="info"
+          className="sm:max-w-xl"
+          onInteractOutside={(e) => {
+            const target = e.target as HTMLElement;
+            if (target?.closest?.('[data-slot="combobox-content"]')) {
+              e.preventDefault();
+            }
+          }}
+          onPointerDownOutside={(e) => {
+            const target = e.target as HTMLElement;
+            if (target?.closest?.('[data-slot="combobox-content"]')) {
+              e.preventDefault();
+            }
+          }}
+          onFocusOutside={(e) => {
+            const target = e.target as HTMLElement;
+            if (target?.closest?.('[data-slot="combobox-content"]')) {
+              e.preventDefault();
+            }
+          }}
+        >
+          <DialogHeader>
+            <DialogTitle className="text-info">Cambiar tipografía</DialogTitle>
+            <DialogDescription>
+              Selecciona la nueva familia tipográfica que utilizará esta escala.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="py-2 flex flex-col gap-6">
+            {/* Combobox container */}
+            <div className="flex flex-col gap-4">
+              <div className="flex items-center justify-between px-1">
+                <span className="text-sm font-semibold text-foreground">
+                  Tipografía actual
+                </span>
+                <Badge
+                  appearance="outline"
+                  tone="neutral"
+                  size="md"
+                  className="capitalize"
+                >
+                  {editingFontFamily?.currentFont}
+                </Badge>
+              </div>
+
+              <div className="flex flex-col gap-2 w-full">
+                <span className="text-sm font-semibold text-foreground text-left px-1">
+                  Nueva tipografía
+                </span>
+                <div className="w-full">
+                  <Combobox
+                    value={editingFontFamily?.newFont || ""}
+                    onValueChange={(val) => {
+                      if (val)
+                        setEditingFontFamily((prev) =>
+                          prev ? { ...prev, newFont: val as string } : null,
+                        );
+                    }}
+                  >
+                    <ComboboxInput placeholder="Buscar o seleccionar tipografía..." />
+                    <ComboboxContent>
+                      <ComboboxList>
+                        {[
+                          "Nunito",
+                          "Montserrat",
+                          "Roboto",
+                          "Inter",
+                          "Open Sans",
+                          "Poppins",
+                          "Lato",
+                          "Oswald",
+                        ].map((font) => (
+                          <ComboboxItem
+                            key={font}
+                            value={font}
+                            className={cn(
+                              "flex items-center justify-between",
+                              editingFontFamily?.newFont === font &&
+                              "bg-primary/5 text-primary font-bold",
+                            )}
+                          >
+                            <span style={{ fontFamily: font }}>{font}</span>
+                          </ComboboxItem>
+                        ))}
+                      </ComboboxList>
+                    </ComboboxContent>
+                  </Combobox>
+                </div>
+                <div className="p-4 bg-info/10 border border-info/30 rounded-xl flex items-center gap-3 mt-1">
+                  <svg
+                    className="size-5 text-info shrink-0"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                    strokeWidth={2}
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                    />
+                  </svg>
+                  <p className="text-sm text-info-900 dark:text-info-200 flex-1 text-left">
+                    Selecciona únicamente la familia tipográfica. La escala de
+                    tamaños, pesos y alturas de línea se conservará.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            {/* Vista previa */}
+            <div className="flex flex-col gap-3">
+              <span className="text-sm font-semibold text-foreground">
+                Vista previa
+              </span>
+              <div className="grid grid-cols-2 gap-4">
+                {/* Left: Actual */}
+                <div className="p-4 rounded-xl border border-border bg-surface flex flex-col gap-3">
+                  <span className="text-xs font-bold text-muted-foreground uppercase">
+                    Actual
+                  </span>
+                  <span className="font-medium">
+                    {editingFontFamily?.currentFont}
+                  </span>
+                  <div
+                    className="text-4xl"
+                    style={{ fontFamily: editingFontFamily?.currentFont }}
+                  >
+                    Aa
+                  </div>
+                  <div
+                    className="text-lg font-bold"
+                    style={{ fontFamily: editingFontFamily?.currentFont }}
+                  >
+                    Título de ejemplo
+                  </div>
+                  <div
+                    className="text-sm"
+                    style={{ fontFamily: editingFontFamily?.currentFont }}
+                  >
+                    Texto de ejemplo
+                  </div>
+                </div>
+
+                {/* Right: Nueva */}
+                <div className="p-4 rounded-xl border border-primary/20 bg-primary/5 flex flex-col gap-3">
+                  <span className="text-xs font-bold text-primary uppercase">
+                    Nueva
+                  </span>
+                  <span className="font-medium text-primary">
+                    {editingFontFamily?.newFont}
+                  </span>
+                  <div
+                    className="text-4xl text-primary"
+                    style={{ fontFamily: editingFontFamily?.newFont }}
+                  >
+                    Aa
+                  </div>
+                  <div
+                    className="text-lg font-bold text-primary"
+                    style={{ fontFamily: editingFontFamily?.newFont }}
+                  >
+                    Título de ejemplo
+                  </div>
+                  <div
+                    className="text-sm text-primary"
+                    style={{ fontFamily: editingFontFamily?.newFont }}
+                  >
+                    Texto de ejemplo
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <DialogFooter className="w-full pt-4">
+            <div className="grid grid-cols-2 w-full gap-3">
+              <Button
+                variant="outline"
+                className="w-full"
+                onClick={() => setEditingFontFamily(null)}
+              >
+                Cancelar
+              </Button>
+              <Button
+                variant="info"
+                className="w-full whitespace-nowrap"
+                onClick={() => setShowConfirmFont(true)}
+                disabled={
+                  !editingFontFamily?.newFont ||
+                  editingFontFamily.newFont === editingFontFamily.currentFont
+                }
+              >
+                Aplicar tipografía
+              </Button>
+            </div>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Confirm Font Dialog */}
+      <Dialog open={showConfirmFont} onOpenChange={setShowConfirmFont}>
+        <DialogContent variant="warning" className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle className="text-warning">
+              ¿Cambiar esta tipografía?
+            </DialogTitle>
+            <DialogDescription>
+              La nueva familia se aplicará a todos los estilos asociados a esta
+              escala tipográfica. Los tamaños, pesos y alturas de línea se
+              conservarán.
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter className="w-full pt-4 mt-2">
+            <div className="flex flex-col w-full gap-3">
+              <Button
+                variant="warning"
+                className="w-full"
+                disabled={isApplyingFont}
+                onClick={async () => {
+                  if (!editingFontFamily?.newFont) return;
+                  setIsApplyingFont(true);
+                  try {
+                    const res = await fetch("/api/kit-fonts", {
+                      method: "POST",
+                      headers: { "Content-Type": "application/json" },
+                      body: JSON.stringify({
+                        role: editingFontFamily.id,
+                        family: editingFontFamily.newFont,
+                      }),
+                    });
+                    if (!res.ok)
+                      throw new Error(
+                        (await res.json().catch(() => null))?.error ??
+                        `HTTP ${res.status}`,
+                      );
+
+                    setSimulatedFonts((prev) => ({
+                      ...prev,
+                      [editingFontFamily.id]: editingFontFamily.newFont!,
+                    }));
+                    toast.success("Tipografía actualizada", {
+                      description:
+                        "Se descargó la fuente y se guardó en el bucket de borrador del kit.",
+                    });
+                    setEditingFontFamily(null);
+                    setShowConfirmFont(false);
+                  } catch (err) {
+                    toast.error("No se pudo aplicar la tipografía", {
+                      description:
+                        err instanceof Error
+                          ? err.message
+                          : "Error desconocido.",
+                    });
+                  } finally {
+                    setIsApplyingFont(false);
+                  }
+                }}
+              >
+                {isApplyingFont ? (
+                  <>
+                    <Spinner size="sm" className="mr-2" />
+                    Aplicando...
+                  </>
+                ) : (
+                  "Confirmar cambio"
+                )}
+              </Button>
+              <Button
+                variant="outline"
+                className="w-full"
+                disabled={isApplyingFont}
+                onClick={() => setShowConfirmFont(false)}
+              >
+                Cancelar
+              </Button>
+            </div>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+    </div>
+  );
+}
