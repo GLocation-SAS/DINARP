@@ -252,8 +252,8 @@ export default function DesignSystemLoginPage() {
             {/* Footer */}
             <div className="w-full flex items-end justify-between mt-auto pt-4">
               <div className="text-left text-xs text-muted-foreground/70 flex flex-col gap-1">
-                <p>&copy; {new Date().getFullYear()} Ministerio de Educación.</p>
-                <p>Sistema de gestión de riesgos.</p>
+                <p>&copy; {new Date().getFullYear()} DINARP.</p>
+                <p>Dirección Nacional de Registros Públicos.</p>
               </div>
 
               <TooltipProvider>
