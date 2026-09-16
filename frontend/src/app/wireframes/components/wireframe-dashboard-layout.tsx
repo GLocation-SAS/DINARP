@@ -24,7 +24,7 @@ import {
   X,
 } from "lucide-react";
 
-import { cn } from "@/lib/utils";
+import { cn, getAssetPath } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { UserMenu } from "@/components/shared/user-menu";
 import { NotificationsMenu } from "@/components/shared/notifications-menu";
@@ -102,13 +102,12 @@ export function WireframeDashboardLayout({
       >
         {/* Brand Header */}
         <div className="h-16 px-6 flex items-center justify-between border-b border-border/40 shrink-0">
-          <Link href="/wireframes/dashboard" className="flex flex-col">
-            <span className="font-heading font-extrabold text-xl tracking-tight text-foreground leading-none">
-              DINARP
-            </span>
-            <span className="text-[11px] text-muted-foreground font-medium leading-tight mt-0.5">
-              Gobierno del Ecuador
-            </span>
+          <Link href="/wireframes/dashboard" className="flex items-center">
+            <img
+              src={getAssetPath("/logotipo.png")}
+              alt="Logo DINARP - Gobierno del Ecuador"
+              className="h-9 w-auto max-w-[170px] object-contain"
+            />
           </Link>
 
           <Button
@@ -196,17 +195,26 @@ export function WireframeDashboardLayout({
       <div className="flex-1 flex flex-col min-w-0 overflow-x-hidden">
         {/* Top Header */}
         <header className="h-16 px-4 sm:px-8 flex items-center justify-between border-b border-border/40 bg-surface/50 backdrop-blur-xs shrink-0">
-          {/* Mobile Burger */}
-          <Button
-            type="button"
-            variant="ghost"
-            size="icon"
-            className="lg:hidden text-muted-foreground hover:bg-muted/50"
-            onClick={() => setMobileMenuOpen(true)}
-            aria-label="Abrir menú"
-          >
-            <Menu className="size-5" />
-          </Button>
+          {/* Mobile Burger & Mobile Logo */}
+          <div className="flex items-center gap-3">
+            <Button
+              type="button"
+              variant="ghost"
+              size="icon"
+              className="lg:hidden text-muted-foreground hover:bg-muted/50"
+              onClick={() => setMobileMenuOpen(true)}
+              aria-label="Abrir menú"
+            >
+              <Menu className="size-5" />
+            </Button>
+            <Link href="/wireframes/dashboard" className="lg:hidden flex items-center">
+              <img
+                src={getAssetPath("/logotipo.png")}
+                alt="Logo DINARP"
+                className="h-8 w-auto max-w-[130px] object-contain"
+              />
+            </Link>
+          </div>
 
           <div className="hidden lg:block" />
 

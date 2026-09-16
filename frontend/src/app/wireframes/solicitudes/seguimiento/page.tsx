@@ -249,10 +249,10 @@ export default function WireframeSolicitudSeguimientoPage() {
                       <div className="relative flex flex-col items-center">
                         <div
                           className={`relative z-10 flex size-11 sm:size-12 shrink-0 items-center justify-center rounded-full border transition-all ${isCurrent
-                              ? "bg-foreground text-background border-foreground shadow-md ring-4 ring-foreground/15"
-                              : isCompleted
-                                ? "bg-muted/80 text-foreground border-border"
-                                : "bg-surface text-muted-foreground border-border/60"
+                            ? "bg-foreground text-background border-foreground shadow-md ring-4 ring-foreground/15"
+                            : isCompleted
+                              ? "bg-muted/80 text-foreground border-border"
+                              : "bg-surface text-muted-foreground border-border/60"
                             }`}
                         >
                           <Icon className="size-4 sm:size-5 stroke-[2]" />
@@ -269,8 +269,8 @@ export default function WireframeSolicitudSeguimientoPage() {
                       {/* Contenido del Evento */}
                       <div
                         className={`flex-1 rounded-2xl p-4 sm:p-5 border transition-all ${isCurrent
-                            ? "bg-muted/40 border-foreground/30 shadow-xs"
-                            : "bg-surface border-border/60"
+                          ? "bg-muted/40 border-foreground/30 shadow-xs"
+                          : "bg-surface border-border/60"
                           }`}
                       >
                         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-2">
