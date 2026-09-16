@@ -461,9 +461,9 @@ export default function WireframeRevisionSolicitudPage() {
               </Button>
               <Button
                 type="button"
-                variant="destructive"
+                variant="danger"
                 onClick={handleConfirmRechazar}
-                className="w-full h-11 rounded-xl text-xs font-semibold bg-danger text-white hover:bg-danger/90"
+                className="w-full h-11 rounded-xl text-xs font-semibold"
               >
                 Rechazar solicitud
               </Button>
