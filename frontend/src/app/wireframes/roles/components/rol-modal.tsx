@@ -524,7 +524,7 @@ export function RolModal({
                 type="button"
                 variant="neutral"
                 onClick={() => setActiveTab("general")}
-                className="rounded-xl"
+                className="rounded-full"
               >
                 Volver a datos
               </Button>
@@ -533,7 +533,7 @@ export function RolModal({
                 type="button"
                 variant="neutral"
                 onClick={() => onOpenChange(false)}
-                className="rounded-xl"
+                className="rounded-full"
               >
                 Cancelar
               </Button>
@@ -544,7 +544,7 @@ export function RolModal({
                 type="button"
                 variant="primary"
                 onClick={() => setActiveTab("permisos")}
-                className="rounded-xl"
+                className="rounded-full"
               >
                 Continuar a Permisos →
               </Button>
@@ -553,7 +553,7 @@ export function RolModal({
                 type="submit"
                 form="rol-form"
                 variant="primary"
-                className=""
+                className="rounded-full"
               >
                 {isEditing ? "Guardar cambios" : "Crear rol"}
               </Button>
