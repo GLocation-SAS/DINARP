@@ -19,7 +19,6 @@ const buttonVariants = cva(
     "rounded-full",
     "border-2",
 
-
     "font-semibold",
     "outline-none",
     "select-none",
@@ -57,10 +56,6 @@ const buttonVariants = cva(
           "dark:text-secondary-200",
           "bg-secondary/5",
           "dark:bg-secondary/10",
-
-          
-          
-
           "hover:bg-secondary/15",
           "hover:text-secondary",
           "dark:hover:text-white",
@@ -102,39 +97,20 @@ const buttonVariants = cva(
           "[--glow:var(--primitive-info-600)]",
           "hover:text-white/90",
         ].join(" "),
+
         ghost: [
-          // Colors
           "border-transparent",
           "text-foreground",
-
-          // Transparent base
           "bg-transparent",
-
-          // Radial
-          "",
-
-          // Glow
-          "",
-
-          // Hover
           "hover:text-foreground",
           "hover:border-border/40",
           "hover:bg-muted/30",
         ].join(" "),
 
         neutral: [
-          // Base
           "border-border",
           "bg-muted",
           "text-foreground",
-
-          // Radial
-          "",
-
-          // Glow
-          "",
-
-          // Hover
           "hover:bg-muted-foreground",
           "hover:text-white",
           "dark:hover:bg-muted-foreground",
@@ -144,18 +120,9 @@ const buttonVariants = cva(
         ].join(" "),
 
         outline: [
-          // Base
           "border-border",
           "bg-muted/40",
           "text-foreground",
-
-          // Radial
-          "",
-
-          // Glow
-          "",
-
-          // Hover
           "hover:border-foreground/20",
           "hover:bg-muted/60",
           "hover:text-foreground",
@@ -294,7 +261,18 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
       <>
         {innerContent}
         {/* CONTENT */}
-        <span className="pointer-events-none relative z-[4] flex w-full items-center justify-center gap-2">
+        <span
+          className={cn(
+            "pointer-events-none relative z-[4] flex w-full items-center gap-2",
+            className?.includes("justify-between")
+              ? "justify-between"
+              : className?.includes("justify-start")
+              ? "justify-start"
+              : className?.includes("justify-end")
+              ? "justify-end"
+              : "justify-center"
+          )}
+        >
           {leftIcon}
           {childNode}
           {rightIcon}
@@ -336,7 +314,3 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
 Button.displayName = "Button"
 
 export { Button, buttonVariants }
-
-
-
-

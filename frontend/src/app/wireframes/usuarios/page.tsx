@@ -218,160 +218,158 @@ export default function WireframeListadoUsuariosPage() {
         </div>
 
         {/* ── 3. Tabla de Usuarios ── */}
-        <div className="overflow-x-auto rounded-2xl border border-border bg-surface shadow-xs">
-          <Table className="w-full border-spacing-0">
-            <TableHeader>
-              <TableRow className="border-b border-border/80 bg-muted/30 hover:bg-muted/30">
-                <TableHead className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider py-3.5 px-6 text-left">
-                  NOMBRE
-                </TableHead>
-                <TableHead className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider py-3.5 px-6 text-left">
-                  CORREO ELECTRÓNICO
-                </TableHead>
-                <TableHead className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider py-3.5 px-6 text-left">
-                  INSTITUCIÓN
-                </TableHead>
-                <TableHead className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider py-3.5 px-6 text-left">
-                  ROL
-                </TableHead>
-                <TableHead className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider py-3.5 px-6 text-left">
-                  ESTADO
-                </TableHead>
-                <TableHead className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider py-3.5 px-6 text-left">
-                  ÚLTIMO ACCESO
-                </TableHead>
-                <TableHead className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider py-3.5 px-6 text-right">
-                  ACCIONES
-                </TableHead>
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead>
+                NOMBRE
+              </TableHead>
+              <TableHead>
+                CORREO ELECTRÓNICO
+              </TableHead>
+              <TableHead>
+                INSTITUCIÓN
+              </TableHead>
+              <TableHead>
+                ROL
+              </TableHead>
+              <TableHead>
+                ESTADO
+              </TableHead>
+              <TableHead>
+                ÚLTIMO ACCESO
+              </TableHead>
+              <TableHead className="text-right">
+                ACCIONES
+              </TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {filteredData.length === 0 ? (
+              <TableRow>
+                <TableCell colSpan={7} className="text-center py-10 text-muted-foreground text-sm">
+                  No se encontraron usuarios con los filtros aplicados.
+                </TableCell>
               </TableRow>
-            </TableHeader>
-            <TableBody>
-              {filteredData.length === 0 ? (
-                <TableRow>
-                  <TableCell colSpan={7} className="text-center py-10 text-muted-foreground text-sm">
-                    No se encontraron usuarios con los filtros aplicados.
-                  </TableCell>
-                </TableRow>
-              ) : (
-                filteredData.map((row) => (
-                  <TableRow
-                    key={row.id}
-                    className="border-b border-border/40 hover:bg-muted/20 transition-colors cursor-pointer"
-                    onClick={() => router.push(`/wireframes/usuarios/${row.id}`)}
-                  >
-                    {/* Nombre con Avatar de Iniciales */}
-                    <TableCell className="py-4 px-6 whitespace-nowrap">
-                      <div className="flex items-center gap-3">
-                        <div className="size-8 rounded-full bg-muted-foreground/20 text-foreground font-bold text-xs flex items-center justify-center shrink-0">
-                          {row.iniciales}
-                        </div>
-                        <span className="text-xs font-bold text-foreground">
-                          {row.nombre}
-                        </span>
+            ) : (
+              filteredData.map((row) => (
+                <TableRow
+                  key={row.id}
+                  className="cursor-pointer"
+                  onClick={() => router.push(`/wireframes/usuarios/${row.id}`)}
+                >
+                  {/* Nombre con Avatar de Iniciales */}
+                  <TableCell>
+                    <div className="flex items-center gap-3">
+                      <div className="size-8 rounded-full bg-muted text-foreground font-bold text-xs flex items-center justify-center shrink-0">
+                        {row.iniciales}
                       </div>
-                    </TableCell>
+                      <span className="font-bold text-foreground">
+                        {row.nombre}
+                      </span>
+                    </div>
+                  </TableCell>
 
-                    {/* Correo Electrónico */}
-                    <TableCell className="py-4 px-6 text-xs text-muted-foreground whitespace-nowrap">
-                      {row.correo}
-                    </TableCell>
+                  {/* Correo Electrónico */}
+                  <TableCell className="text-muted-foreground font-medium">
+                    {row.correo}
+                  </TableCell>
 
-                    {/* Institución */}
-                    <TableCell className="py-4 px-6 text-xs text-muted-foreground whitespace-nowrap">
-                      {row.institucion}
-                    </TableCell>
+                  {/* Institución */}
+                  <TableCell className="text-muted-foreground font-medium">
+                    {row.institucion}
+                  </TableCell>
 
-                    {/* Rol */}
-                    <TableCell className="py-4 px-6 text-xs text-foreground font-medium whitespace-nowrap">
-                      {row.rol}
-                    </TableCell>
+                  {/* Rol */}
+                  <TableCell className="text-foreground font-semibold">
+                    {row.rol}
+                  </TableCell>
 
-                    {/* Estado Badge */}
-                    <TableCell className="py-4 px-6 whitespace-nowrap">
-                      <Badge
-                        tone={row.estado === "Activo" ? "success" : "danger"}
-                        appearance="soft"
-                        size="sm"
-                        className="font-medium gap-1 text-xs"
-                      >
-                        {row.estado}
-                      </Badge>
-                    </TableCell>
+                  {/* Estado Badge */}
+                  <TableCell>
+                    <Badge
+                      tone={row.estado === "Activo" ? "success" : "danger"}
+                      appearance="soft"
+                      size="sm"
+                      className="font-medium gap-1 text-xs"
+                    >
+                      {row.estado}
+                    </Badge>
+                  </TableCell>
 
-                    {/* Último acceso */}
-                    <TableCell className="py-4 px-6 text-xs text-muted-foreground whitespace-nowrap font-mono">
-                      {row.ultimoAcceso}
-                    </TableCell>
+                  {/* Último acceso */}
+                  <TableCell className="text-muted-foreground font-mono">
+                    {row.ultimoAcceso}
+                  </TableCell>
 
-                    {/* Acciones */}
-                    <TableCell className="py-4 px-6 text-right whitespace-nowrap" onClick={(e) => e.stopPropagation()}>
-                      <div className="flex items-center justify-end gap-1">
+                  {/* Acciones */}
+                  <TableCell className="text-right" onClick={(e) => e.stopPropagation()}>
+                    <div className="flex items-center justify-end gap-1">
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <Button
+                            type="button"
+                            variant="ghost"
+                            size="icon-sm"
+                            onClick={() => router.push(`/wireframes/usuarios/${row.id}/editar`)}
+                            className="size-8 text-muted-foreground hover:text-foreground hover:bg-muted/50"
+                            aria-label="Editar usuario"
+                          >
+                            <Pencil className="size-3.5" />
+                          </Button>
+                        </TooltipTrigger>
+                        <TooltipContent>Editar usuario</TooltipContent>
+                      </Tooltip>
+
+                      <DropdownMenu>
                         <Tooltip>
                           <TooltipTrigger asChild>
-                            <Button
-                              type="button"
-                              variant="ghost"
-                              size="icon-sm"
-                              onClick={() => router.push(`/wireframes/usuarios/${row.id}/editar`)}
-                              className="size-8 text-muted-foreground hover:text-foreground hover:bg-muted/50"
-                              aria-label="Editar usuario"
-                            >
-                              <Pencil className="size-3.5" />
-                            </Button>
+                            <DropdownMenuTrigger asChild>
+                              <Button
+                                type="button"
+                                variant="ghost"
+                                size="icon-sm"
+                                className="size-8 text-muted-foreground hover:text-foreground hover:bg-muted/50"
+                                aria-label="Más opciones"
+                              >
+                                <MoreVertical className="size-3.5" />
+                              </Button>
+                            </DropdownMenuTrigger>
                           </TooltipTrigger>
-                          <TooltipContent>Editar usuario</TooltipContent>
+                          <TooltipContent>Más opciones</TooltipContent>
                         </Tooltip>
-
-                        <DropdownMenu>
-                          <Tooltip>
-                            <TooltipTrigger asChild>
-                              <DropdownMenuTrigger asChild>
-                                <Button
-                                  type="button"
-                                  variant="ghost"
-                                  size="icon-sm"
-                                  className="size-8 text-muted-foreground hover:text-foreground hover:bg-muted/50"
-                                  aria-label="Más opciones"
-                                >
-                                  <MoreVertical className="size-3.5" />
-                                </Button>
-                              </DropdownMenuTrigger>
-                            </TooltipTrigger>
-                            <TooltipContent>Más opciones</TooltipContent>
-                          </Tooltip>
-                          <DropdownMenuContent align="end" className="w-40">
-                            <DropdownMenuItem onClick={() => router.push(`/wireframes/usuarios/${row.id}`)}>
-                              <Eye className="size-3.5 mr-2" />
-                              <span>Ver detalle</span>
-                            </DropdownMenuItem>
-                            <DropdownMenuItem onClick={() => router.push(`/wireframes/usuarios/${row.id}/editar`)}>
-                              <Pencil className="size-3.5 mr-2" />
-                              <span>Editar</span>
-                            </DropdownMenuItem>
-                            <DropdownMenuSeparator />
-                            <DropdownMenuItem className="text-destructive focus:text-destructive">
-                              <Lock className="size-3.5 mr-2" />
-                              <span>Desactivar</span>
-                            </DropdownMenuItem>
-                          </DropdownMenuContent>
-                        </DropdownMenu>
-                      </div>
-                    </TableCell>
-                  </TableRow>
-                ))
-              )}
-            </TableBody>
-          </Table>
-        </div>
+                        <DropdownMenuContent align="end" className="w-40">
+                          <DropdownMenuItem onClick={() => router.push(`/wireframes/usuarios/${row.id}`)}>
+                            <Eye className="size-3.5 mr-2" />
+                            <span>Ver detalle</span>
+                          </DropdownMenuItem>
+                          <DropdownMenuItem onClick={() => router.push(`/wireframes/usuarios/${row.id}/editar`)}>
+                            <Pencil className="size-3.5 mr-2" />
+                            <span>Editar</span>
+                          </DropdownMenuItem>
+                          <DropdownMenuSeparator />
+                          <DropdownMenuItem className="text-destructive focus:text-destructive">
+                            <Lock className="size-3.5 mr-2" />
+                            <span>Desactivar</span>
+                          </DropdownMenuItem>
+                        </DropdownMenuContent>
+                      </DropdownMenu>
+                    </div>
+                  </TableCell>
+                </TableRow>
+              ))
+            )}
+          </TableBody>
+        </Table>
 
         {/* ── 4. Paginación ── */}
-        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-2">
-          <p className="text-xs text-muted-foreground">
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-4">
+          <p className="text-xs text-muted-foreground font-medium">
             Mostrando 1 a {filteredData.length} de 42 usuarios
           </p>
 
           <Pagination className="mx-0 w-auto justify-end">
-            <PaginationContent className="gap-1">
+            <PaginationContent className="gap-1.5">
               <PaginationItem>
                 <PaginationPrevious
                   href="#"
@@ -379,31 +377,30 @@ export default function WireframeListadoUsuariosPage() {
                     e.preventDefault();
                     if (currentPage > 1) setCurrentPage((p) => p - 1);
                   }}
-                  className="size-8 rounded-lg border border-border"
                 />
               </PaginationItem>
               <PaginationItem>
-                <PaginationLink href="#" isActive className="size-8 rounded-lg text-xs">
+                <PaginationLink href="#" isActive className="size-9">
                   1
                 </PaginationLink>
               </PaginationItem>
               <PaginationItem>
-                <PaginationLink href="#" className="size-8 rounded-lg text-xs">
+                <PaginationLink href="#" className="size-9">
                   2
                 </PaginationLink>
               </PaginationItem>
               <PaginationItem>
-                <PaginationLink href="#" className="size-8 rounded-lg text-xs">
+                <PaginationLink href="#" className="size-9">
                   3
                 </PaginationLink>
               </PaginationItem>
               <PaginationItem>
-                <PaginationLink href="#" className="size-8 rounded-lg text-xs">
+                <PaginationLink href="#" className="size-9">
                   4
                 </PaginationLink>
               </PaginationItem>
               <PaginationItem>
-                <PaginationLink href="#" className="size-8 rounded-lg text-xs">
+                <PaginationLink href="#" className="size-9">
                   5
                 </PaginationLink>
               </PaginationItem>
@@ -413,7 +410,6 @@ export default function WireframeListadoUsuariosPage() {
                   onClick={(e) => {
                     e.preventDefault();
                   }}
-                  className="size-8 rounded-lg border border-border"
                 />
               </PaginationItem>
             </PaginationContent>

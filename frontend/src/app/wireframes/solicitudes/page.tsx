@@ -3,6 +3,7 @@
 import React, { useState, useMemo } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { cn } from "@/lib/utils";
 import {
   FileText,
   Clock,
@@ -368,32 +369,32 @@ export default function WireframeSolicitudesPage() {
         {/* ── Tabla de Solicitudes con Table UI Component ── */}
         <Table>
           <TableHeader>
-            <TableRow className="hover:bg-transparent border-b-0">
-              <TableHead className="font-bold">
+            <TableRow>
+              <TableHead>
                 CÓDIGO
               </TableHead>
-              <TableHead className="font-bold">
+              <TableHead>
                 SOLICITUD
               </TableHead>
-              <TableHead className="font-bold">
+              <TableHead>
                 INSTITUCIÓN SOLICITANTE
               </TableHead>
-              <TableHead className="font-bold">
+              <TableHead>
                 INSTITUCIÓN FUENTE
               </TableHead>
-              <TableHead className="font-bold">
+              <TableHead>
                 ESTADO
               </TableHead>
-              <TableHead className="font-bold">
+              <TableHead>
                 PRIORIDAD
               </TableHead>
-              <TableHead className="font-bold">
+              <TableHead>
                 <span className="inline-flex items-center gap-1">
                   ÚLTIMA ACTUALIZACIÓN
                   <ArrowDown className="size-3" />
                 </span>
               </TableHead>
-              <TableHead className="text-right font-bold">
+              <TableHead className="text-right">
                 ACCIONES
               </TableHead>
             </TableRow>
@@ -407,57 +408,56 @@ export default function WireframeSolicitudesPage() {
               </TableRow>
             ) : (
               filteredSolicitudes.map((item) => (
-                <TableRow
-                  key={item.codigo}
-                >
+                <TableRow key={item.codigo}>
                   {/* Código */}
-                  <TableCell className="text-xs font-mono font-medium text-foreground whitespace-nowrap">
+                  <TableCell className="font-mono font-bold text-foreground">
                     {item.codigo}
                   </TableCell>
 
                   {/* Solicitud */}
-                  <TableCell className="text-xs font-semibold text-foreground max-w-[220px]">
+                  <TableCell className="font-semibold text-foreground">
                     {item.solicitud}
                   </TableCell>
 
                   {/* Institución Solicitante */}
-                  <TableCell className="text-xs text-muted-foreground">
+                  <TableCell className="text-muted-foreground font-medium">
                     {item.institucionSolicitante}
                   </TableCell>
 
                   {/* Institución Fuente */}
-                  <TableCell className="text-xs text-muted-foreground whitespace-nowrap">
+                  <TableCell className="text-muted-foreground font-medium">
                     {item.institucionFuente}
                   </TableCell>
 
-                  {/* Estado con Badge UI */}
-                  <TableCell className="whitespace-nowrap">
-                    <Badge
-                      tone="neutral"
-                      appearance="soft"
-                      size="sm"
-                      className="font-medium gap-1.5 capitalize text-xs"
-                    >
-                      <span className="size-1.5 rounded-full bg-foreground" />
+                  {/* Estado con punto e indicador limpio */}
+                  <TableCell>
+                    <span className="inline-flex items-center gap-1.5 text-xs font-semibold text-foreground">
+                      <span className={cn(
+                        "size-1.5 rounded-full shrink-0",
+                        item.estado === "Aprobada" && "bg-success",
+                        item.estado === "En revisión" && "bg-warning",
+                        item.estado === "Observada" && "bg-danger",
+                        item.estado === "Borrador" && "bg-muted-foreground"
+                      )} />
                       {item.estado}
-                    </Badge>
+                    </span>
                   </TableCell>
 
-                  {/* Prioridad con Badge UI */}
-                  <TableCell className="whitespace-nowrap">
+                  {/* Prioridad con punto */}
+                  <TableCell>
                     <span className="inline-flex items-center gap-1.5 text-xs text-muted-foreground font-medium">
-                      <span className="size-1.5 rounded-full bg-muted-foreground" />
+                      <span className="size-1.5 rounded-full bg-muted-foreground/60 shrink-0" />
                       {item.prioridad}
                     </span>
                   </TableCell>
 
                   {/* Última Actualización */}
-                  <TableCell className="text-xs text-muted-foreground whitespace-nowrap">
+                  <TableCell className="text-muted-foreground font-medium">
                     {item.ultimaActualizacion}
                   </TableCell>
 
                   {/* Acciones con Tooltip UI */}
-                  <TableCell className="text-right whitespace-nowrap">
+                  <TableCell className="text-right">
                     <div className="inline-flex items-center justify-end gap-1">
                       <Tooltip>
                         <TooltipTrigger asChild>
@@ -467,7 +467,7 @@ export default function WireframeSolicitudesPage() {
                             size="icon-sm"
                             aria-label="Ver detalles"
                             onClick={() => router.push("/wireframes/solicitudes/detalle")}
-                            className="size-8 text-muted-foreground hover:text-foreground hover:bg-muted/50 cursor-pointer"
+                            className="size-8 text-muted-foreground hover:text-foreground hover:bg-muted/50"
                           >
                             <Eye className="size-4" />
                           </Button>
@@ -513,13 +513,13 @@ export default function WireframeSolicitudesPage() {
         </Table>
 
         {/* ── Footer: Resultados & Paginación con Pagination UI Component ── */}
-        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-2">
-          <p className="text-xs text-muted-foreground">
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-4">
+          <p className="text-xs text-muted-foreground font-medium">
             Mostrando 1 a 7 de 24 resultados
           </p>
 
           <Pagination className="mx-0 w-auto justify-end">
-            <PaginationContent className="gap-1">
+            <PaginationContent className="gap-1.5">
               <PaginationItem>
                 <PaginationPrevious
                   href="#"
@@ -527,7 +527,6 @@ export default function WireframeSolicitudesPage() {
                     e.preventDefault();
                     if (currentPage > 1) setCurrentPage((p) => p - 1);
                   }}
-                  className="size-8 rounded-lg border border-border"
                 />
               </PaginationItem>
 
@@ -540,7 +539,6 @@ export default function WireframeSolicitudesPage() {
                       e.preventDefault();
                       setCurrentPage(page);
                     }}
-                    className="size-8 rounded-lg text-xs"
                   >
                     {page}
                   </PaginationLink>
@@ -554,7 +552,6 @@ export default function WireframeSolicitudesPage() {
                     e.preventDefault();
                     if (currentPage < 4) setCurrentPage((p) => p + 1);
                   }}
-                  className="size-8 rounded-lg border border-border"
                 />
               </PaginationItem>
             </PaginationContent>

@@ -3,6 +3,7 @@
 import React, { useState, useMemo } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { cn } from "@/lib/utils";
 import {
   ChevronDown,
   RotateCcw,
@@ -335,120 +336,118 @@ export default function WireframeBandejaAprobacionesPage() {
 
           {/* ── 5. Tabla de Solicitudes ── */}
           <TabsContent value={activeTab} className="mt-0 space-y-4">
-            <div className="overflow-x-auto rounded-2xl border border-border bg-surface shadow-xs">
-              <Table className="w-full border-spacing-0">
-                <TableHeader>
-                  <TableRow className="border-b border-border/80 bg-muted/30 hover:bg-muted/30">
-                    <TableHead className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider py-3.5 px-4 text-left">
-                      CÓDIGO
-                    </TableHead>
-                    <TableHead className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider py-3.5 px-4 text-left">
-                      SOLICITUD / PROYECTO
-                    </TableHead>
-                    <TableHead className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider py-3.5 px-4 text-left">
-                      ENTIDAD
-                    </TableHead>
-                    <TableHead className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider py-3.5 px-4 text-left">
-                      FUENTE
-                    </TableHead>
-                    <TableHead className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider py-3.5 px-4 text-left">
-                      FECHA
-                    </TableHead>
-                    <TableHead className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider py-3.5 px-4 text-left">
-                      ESTADO
-                    </TableHead>
-                    <TableHead className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider py-3.5 px-4 text-right">
-                      ACCIÓN
-                    </TableHead>
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>
+                    CÓDIGO
+                  </TableHead>
+                  <TableHead>
+                    SOLICITUD / PROYECTO
+                  </TableHead>
+                  <TableHead>
+                    ENTIDAD
+                  </TableHead>
+                  <TableHead>
+                    FUENTE
+                  </TableHead>
+                  <TableHead>
+                    FECHA
+                  </TableHead>
+                  <TableHead>
+                    ESTADO
+                  </TableHead>
+                  <TableHead className="text-right">
+                    ACCIÓN
+                  </TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {filteredSolicitudes.length === 0 ? (
+                  <TableRow>
+                    <TableCell colSpan={7} className="text-center py-10 text-muted-foreground text-sm">
+                      No hay solicitudes en esta sección con los filtros aplicados.
+                    </TableCell>
                   </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {filteredSolicitudes.length === 0 ? (
-                    <TableRow>
-                      <TableCell colSpan={7} className="text-center py-10 text-muted-foreground text-sm">
-                        No hay solicitudes en esta sección con los filtros aplicados.
+                ) : (
+                  filteredSolicitudes.map((row) => (
+                    <TableRow
+                      key={row.codigo}
+                      className="cursor-pointer"
+                      onClick={() => handleRowAction(row.codigo)}
+                    >
+                      {/* Código */}
+                      <TableCell className="font-mono font-bold text-foreground">
+                        {row.codigo}
+                      </TableCell>
+
+                      {/* Solicitud / Proyecto */}
+                      <TableCell className="font-semibold text-foreground">
+                        {row.solicitud}
+                      </TableCell>
+
+                      {/* Entidad */}
+                      <TableCell className="text-muted-foreground font-medium">
+                        {row.entidad}
+                      </TableCell>
+
+                      {/* Fuente */}
+                      <TableCell className="text-muted-foreground font-medium">
+                        {row.fuente}
+                      </TableCell>
+
+                      {/* Fecha */}
+                      <TableCell className="text-muted-foreground font-medium">
+                        {row.fecha}
+                      </TableCell>
+
+                      {/* Estado */}
+                      <TableCell>
+                        <span className="inline-flex items-center gap-1.5 text-xs font-semibold text-foreground">
+                          <span className={cn(
+                            "size-1.5 rounded-full shrink-0",
+                            row.estado === "Aprobada" && "bg-success",
+                            (row.estado === "En revisión" || row.estado === "Pendiente") && "bg-warning",
+                            row.estado === "Rechazada" && "bg-danger"
+                          )} />
+                          {row.estado}
+                        </span>
+                      </TableCell>
+
+                      {/* Acción */}
+                      <TableCell className="text-right" onClick={(e) => e.stopPropagation()}>
+                        <div className="inline-flex items-center justify-end">
+                          <Tooltip>
+                            <TooltipTrigger asChild>
+                              <Button
+                                type="button"
+                                variant="ghost"
+                                size="icon-sm"
+                                aria-label={row.accionLabel}
+                                onClick={() => handleRowAction(row.codigo)}
+                                className="size-8 text-muted-foreground hover:text-foreground hover:bg-muted/50"
+                              >
+                                {row.accionLabel === "Revisar" ? <Eye className="size-4" /> : <ArrowRight className="size-4" />}
+                              </Button>
+                            </TooltipTrigger>
+                            <TooltipContent>{row.accionLabel}</TooltipContent>
+                          </Tooltip>
+                        </div>
                       </TableCell>
                     </TableRow>
-                  ) : (
-                    filteredSolicitudes.map((row) => (
-                      <TableRow
-                        key={row.codigo}
-                        className="border-b border-border/40 hover:bg-muted/20 transition-colors cursor-pointer"
-                        onClick={() => handleRowAction(row.codigo)}
-                      >
-                        {/* Código */}
-                        <TableCell className="py-4 px-4 text-xs font-mono font-bold text-foreground whitespace-nowrap">
-                          {row.codigo}
-                        </TableCell>
-
-                        {/* Solicitud / Proyecto */}
-                        <TableCell className="py-4 px-4 text-xs font-semibold text-foreground max-w-[200px]">
-                          {row.solicitud}
-                        </TableCell>
-
-                        {/* Entidad */}
-                        <TableCell className="py-4 px-4 text-xs text-muted-foreground whitespace-nowrap">
-                          {row.entidad}
-                        </TableCell>
-
-                        {/* Fuente */}
-                        <TableCell className="py-4 px-4 text-xs text-muted-foreground whitespace-nowrap">
-                          {row.fuente}
-                        </TableCell>
-
-                        {/* Fecha */}
-                        <TableCell className="py-4 px-4 text-xs text-muted-foreground whitespace-nowrap">
-                          {row.fecha}
-                        </TableCell>
-
-                        {/* Estado */}
-                        <TableCell className="py-4 px-4 whitespace-nowrap">
-                          <Badge
-                            tone="neutral"
-                            appearance="soft"
-                            size="sm"
-                            className="font-medium gap-1.5 text-xs capitalize"
-                          >
-                            <span className="size-1.5 rounded-full bg-foreground" />
-                            {row.estado}
-                          </Badge>
-                        </TableCell>
-
-                        {/* Acción */}
-                        <TableCell className="py-4 px-4 text-right whitespace-nowrap" onClick={(e) => e.stopPropagation()}>
-                          <div className="inline-flex items-center justify-end">
-                            <Tooltip>
-                              <TooltipTrigger asChild>
-                                <Button
-                                  type="button"
-                                  variant="ghost"
-                                  size="icon-sm"
-                                  aria-label={row.accionLabel}
-                                  onClick={() => handleRowAction(row.codigo)}
-                                  className="size-8 text-muted-foreground hover:text-foreground hover:bg-muted/50 cursor-pointer"
-                                >
-                                  {row.accionLabel === "Revisar" ? <Eye className="size-4" /> : <ArrowRight className="size-4" />}
-                                </Button>
-                              </TooltipTrigger>
-                              <TooltipContent>{row.accionLabel}</TooltipContent>
-                            </Tooltip>
-                          </div>
-                        </TableCell>
-                      </TableRow>
-                    ))
-                  )}
-                </TableBody>
-              </Table>
-            </div>
+                  ))
+                )}
+              </TableBody>
+            </Table>
 
             {/* ── 6. Paginación ── */}
-            <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-2">
-              <p className="text-xs text-muted-foreground">
+            <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-4">
+              <p className="text-xs text-muted-foreground font-medium">
                 Mostrando 1 a {filteredSolicitudes.length} de 12 resultados
               </p>
 
               <Pagination className="mx-0 w-auto justify-end">
-                <PaginationContent className="gap-1">
+                <PaginationContent className="gap-1.5">
                   <PaginationItem>
                     <PaginationPrevious
                       href="#"
@@ -456,22 +455,28 @@ export default function WireframeBandejaAprobacionesPage() {
                         e.preventDefault();
                         if (currentPage > 1) setCurrentPage((p) => p - 1);
                       }}
-                      className="size-8 rounded-lg border border-border"
                     />
                   </PaginationItem>
                   <PaginationItem>
-                    <PaginationLink href="#" isActive className="size-8 rounded-lg text-xs">
+                    <PaginationLink
+                      href="#"
+                      isActive={currentPage === 1}
+                      onClick={(e) => {
+                        e.preventDefault();
+                        setCurrentPage(1);
+                      }}
+                    >
                       1
                     </PaginationLink>
                   </PaginationItem>
                   <PaginationItem>
                     <PaginationLink
                       href="#"
+                      isActive={currentPage === 2}
                       onClick={(e) => {
                         e.preventDefault();
                         setCurrentPage(2);
                       }}
-                      className="size-8 rounded-lg text-xs"
                     >
                       2
                     </PaginationLink>
@@ -479,11 +484,11 @@ export default function WireframeBandejaAprobacionesPage() {
                   <PaginationItem>
                     <PaginationLink
                       href="#"
+                      isActive={currentPage === 3}
                       onClick={(e) => {
                         e.preventDefault();
                         setCurrentPage(3);
                       }}
-                      className="size-8 rounded-lg text-xs"
                     >
                       3
                     </PaginationLink>
@@ -493,8 +498,8 @@ export default function WireframeBandejaAprobacionesPage() {
                       href="#"
                       onClick={(e) => {
                         e.preventDefault();
+                        if (currentPage < 3) setCurrentPage((p) => p + 1);
                       }}
-                      className="size-8 rounded-lg border border-border"
                     />
                   </PaginationItem>
                 </PaginationContent>

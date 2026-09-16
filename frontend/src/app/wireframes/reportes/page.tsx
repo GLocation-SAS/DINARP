@@ -243,10 +243,10 @@ export default function WireframeReportesPage() {
                   <DropdownMenuTrigger asChild>
                     <Button
                       variant="outline"
-                      className="h-10 px-3 flex items-center justify-between bg-surface border-border/80 rounded-xl text-left w-full text-xs font-medium"
+                      className="h-10 px-3.5 flex items-center justify-between bg-surface border-border/80 rounded-xl text-left w-full text-xs font-medium"
                     >
-                      <span className="truncate">{institucion}</span>
-                      <ChevronDown className="size-3.5 text-muted-foreground shrink-0" />
+                      <span className="truncate text-left flex-1">{institucion}</span>
+                      <ChevronDown className="size-3.5 text-muted-foreground shrink-0 ml-2" />
                     </Button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="start" className="w-52">
@@ -270,10 +270,10 @@ export default function WireframeReportesPage() {
                   <DropdownMenuTrigger asChild>
                     <Button
                       variant="outline"
-                      className="h-10 px-3 flex items-center justify-between bg-surface border-border/80 rounded-xl text-left w-full text-xs font-medium"
+                      className="h-10 px-3.5 flex items-center justify-between bg-surface border-border/80 rounded-xl text-left w-full text-xs font-medium"
                     >
-                      <span className="truncate">{tipoInstitucion}</span>
-                      <ChevronDown className="size-3.5 text-muted-foreground shrink-0" />
+                      <span className="truncate text-left flex-1">{tipoInstitucion}</span>
+                      <ChevronDown className="size-3.5 text-muted-foreground shrink-0 ml-2" />
                     </Button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="start" className="w-52">
@@ -296,10 +296,10 @@ export default function WireframeReportesPage() {
                   <DropdownMenuTrigger asChild>
                     <Button
                       variant="outline"
-                      className="h-10 px-3 flex items-center justify-between bg-surface border-border/80 rounded-xl text-left w-full text-xs font-medium"
+                      className="h-10 px-3.5 flex items-center justify-between bg-surface border-border/80 rounded-xl text-left w-full text-xs font-medium"
                     >
-                      <span className="truncate">{fuente}</span>
-                      <ChevronDown className="size-3.5 text-muted-foreground shrink-0" />
+                      <span className="truncate text-left flex-1">{fuente}</span>
+                      <ChevronDown className="size-3.5 text-muted-foreground shrink-0 ml-2" />
                     </Button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="start" className="w-52">
@@ -323,10 +323,10 @@ export default function WireframeReportesPage() {
                   <DropdownMenuTrigger asChild>
                     <Button
                       variant="outline"
-                      className="h-10 px-3 flex items-center justify-between bg-surface border-border/80 rounded-xl text-left w-full text-xs font-medium"
+                      className="h-10 px-3.5 flex items-center justify-between bg-surface border-border/80 rounded-xl text-left w-full text-xs font-medium"
                     >
-                      <span className="truncate">{consumidor}</span>
-                      <ChevronDown className="size-3.5 text-muted-foreground shrink-0" />
+                      <span className="truncate text-left flex-1">{consumidor}</span>
+                      <ChevronDown className="size-3.5 text-muted-foreground shrink-0 ml-2" />
                     </Button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="start" className="w-52">
@@ -350,10 +350,10 @@ export default function WireframeReportesPage() {
                   <DropdownMenuTrigger asChild>
                     <Button
                       variant="outline"
-                      className="h-10 px-3 flex items-center justify-between bg-surface border-border/80 rounded-xl text-left w-full text-xs font-medium"
+                      className="h-10 px-3.5 flex items-center justify-between bg-surface border-border/80 rounded-xl text-left w-full text-xs font-medium"
                     >
-                      <span className="truncate">{tipoIntercambio}</span>
-                      <ChevronDown className="size-3.5 text-muted-foreground shrink-0" />
+                      <span className="truncate text-left flex-1">{tipoIntercambio}</span>
+                      <ChevronDown className="size-3.5 text-muted-foreground shrink-0 ml-2" />
                     </Button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="start" className="w-52">
@@ -376,10 +376,10 @@ export default function WireframeReportesPage() {
                   <DropdownMenuTrigger asChild>
                     <Button
                       variant="outline"
-                      className="h-10 px-3 flex items-center justify-between bg-surface border-border/80 rounded-xl text-left w-full text-xs font-medium"
+                      className="h-10 px-3.5 flex items-center justify-between bg-surface border-border/80 rounded-xl text-left w-full text-xs font-medium"
                     >
-                      <span className="truncate">{estado}</span>
-                      <ChevronDown className="size-3.5 text-muted-foreground shrink-0" />
+                      <span className="truncate text-left flex-1">{estado}</span>
+                      <ChevronDown className="size-3.5 text-muted-foreground shrink-0 ml-2" />
                     </Button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="start" className="w-52">

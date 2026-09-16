@@ -75,8 +75,8 @@ function Card({ className, innerClassName, size = "default", variant = "default"
         "relative z-10 flex flex-col w-full flex-1",
         // --- Default Layout ---
         isDefault && [
-          "items-center text-center gap-4 py-10 px-8",
-          "group-data-[size=sm]/card:gap-3 group-data-[size=sm]/card:py-6 group-data-[size=sm]/card:px-4"
+          "items-start text-left gap-4 p-6",
+          "group-data-[size=sm]/card:gap-3 group-data-[size=sm]/card:p-4"
         ],
         // --- Featured Layout ---
         variant === "featured" && [
@@ -97,7 +97,7 @@ function CardHeader({ className, ...props }: React.ComponentProps<"div">) {
     <div
       data-slot="card-header"
       className={cn(
-        "flex flex-col items-center gap-4 w-full",
+        "flex flex-col items-start text-left gap-1.5 w-full",
         // When inside featured card, align left
         "group-data-[variant=featured]/card:items-start group-data-[variant=featured]/card:gap-2",
         className
@@ -114,7 +114,7 @@ function CardTitle({ className, ...props }: React.ComponentProps<"div">) {
     <div
       data-slot="card-title"
       className={cn(
-        "font-heading text-lg font-bold tracking-tight text-foreground h-[3.5rem] flex items-start",
+        "font-heading text-lg font-bold tracking-tight text-foreground flex items-center text-left",
         "group-data-[size=sm]/card:text-base",
         // Featured: slightly smaller title, allow wrapping
         "group-data-[variant=featured]/card:text-base group-data-[variant=featured]/card:leading-snug",
@@ -132,7 +132,7 @@ function CardDescription({ className, ...props }: React.ComponentProps<"div">) {
     <div
       data-slot="card-description"
       className={cn(
-        "text-sm leading-relaxed text-muted-foreground font-medium",
+        "text-sm leading-relaxed text-muted-foreground font-medium text-left",
         className
       )}
       {...props}
@@ -210,7 +210,7 @@ function CardFooter({ className, ...props }: React.ComponentProps<"div">) {
     <div
       data-slot="card-footer"
       className={cn(
-        "flex items-center justify-center pt-2",
+        "flex items-center justify-start pt-2",
         "group-data-[variant=featured]/card:justify-start group-data-[variant=featured]/card:pt-1",
         className
       )}

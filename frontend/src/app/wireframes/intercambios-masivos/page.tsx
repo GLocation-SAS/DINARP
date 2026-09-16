@@ -3,6 +3,7 @@
 import React, { useState, useMemo } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { cn } from "@/lib/utils";
 import {
   Search,
   Plus,
@@ -332,128 +333,126 @@ export default function WireframeIntercambiosMasivosPage() {
         </div>
 
         {/* ── 4. Tabla de Intercambios Masivos ── */}
-        <div className="overflow-x-auto rounded-2xl border border-border bg-surface shadow-xs">
-          <Table className="w-full border-spacing-0">
-            <TableHeader>
-              <TableRow className="border-b border-border/80 bg-muted/30 hover:bg-muted/30">
-                <TableHead className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider py-3.5 px-4 text-left">
-                  CÓDIGO
-                </TableHead>
-                <TableHead className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider py-3.5 px-4 text-left">
-                  SOLICITUD / PROYECTO
-                </TableHead>
-                <TableHead className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider py-3.5 px-4 text-left">
-                  FUENTE
-                </TableHead>
-                <TableHead className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider py-3.5 px-4 text-left">
-                  CONSUMIDOR
-                </TableHead>
-                <TableHead className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider py-3.5 px-4 text-left">
-                  TIPO DE INFORMACIÓN
-                </TableHead>
-                <TableHead className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider py-3.5 px-4 text-left">
-                  ESTADO
-                </TableHead>
-                <TableHead className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider py-3.5 px-4 text-left">
-                  FECHA CREACIÓN
-                </TableHead>
-                <TableHead className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider py-3.5 px-4 text-right">
-                  ACCIONES
-                </TableHead>
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead>
+                CÓDIGO
+              </TableHead>
+              <TableHead>
+                SOLICITUD / PROYECTO
+              </TableHead>
+              <TableHead>
+                FUENTE
+              </TableHead>
+              <TableHead>
+                CONSUMIDOR
+              </TableHead>
+              <TableHead>
+                TIPO DE INFORMACIÓN
+              </TableHead>
+              <TableHead>
+                ESTADO
+              </TableHead>
+              <TableHead>
+                FECHA CREACIÓN
+              </TableHead>
+              <TableHead className="text-right">
+                ACCIONES
+              </TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {filteredData.length === 0 ? (
+              <TableRow>
+                <TableCell colSpan={8} className="text-center py-10 text-muted-foreground text-sm">
+                  No se encontraron solicitudes de intercambio masivo.
+                </TableCell>
               </TableRow>
-            </TableHeader>
-            <TableBody>
-              {filteredData.length === 0 ? (
-                <TableRow>
-                  <TableCell colSpan={8} className="text-center py-10 text-muted-foreground text-sm">
-                    No se encontraron solicitudes de intercambio masivo.
+            ) : (
+              filteredData.map((b) => (
+                <TableRow
+                  key={b.codigo}
+                  className="cursor-pointer"
+                  onClick={() => router.push(b.href)}
+                >
+                  {/* Código */}
+                  <TableCell className="font-mono font-bold text-foreground">
+                    {b.codigo}
+                  </TableCell>
+
+                  {/* Proyecto */}
+                  <TableCell className="font-semibold text-foreground">
+                    {b.proyecto}
+                  </TableCell>
+
+                  {/* Fuente */}
+                  <TableCell className="text-muted-foreground font-medium">
+                    {b.fuente}
+                  </TableCell>
+
+                  {/* Consumidor */}
+                  <TableCell className="text-muted-foreground font-medium">
+                    {b.consumidor}
+                  </TableCell>
+
+                  {/* Tipo de Información */}
+                  <TableCell className="text-muted-foreground font-medium max-w-[180px] truncate">
+                    {b.tipoInformacion}
+                  </TableCell>
+
+                  {/* Estado */}
+                  <TableCell>
+                    <span className="inline-flex items-center gap-1.5 text-xs font-semibold text-foreground">
+                      <span className={cn(
+                        "size-1.5 rounded-full shrink-0",
+                        (b.estado === "Aprobado" || b.estado === "Finalizado") && "bg-success",
+                        b.estado === "En revisión" && "bg-warning",
+                        b.estado === "Rechazado" && "bg-danger"
+                      )} />
+                      {b.estado}
+                    </span>
+                  </TableCell>
+
+                  {/* Fecha de Creación */}
+                  <TableCell className="text-muted-foreground font-mono">
+                    {b.fechaCreacion}
+                  </TableCell>
+
+                  {/* Acciones */}
+                  <TableCell className="text-right" onClick={(e) => e.stopPropagation()}>
+                    <div className="inline-flex items-center justify-end">
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <Button
+                            type="button"
+                            variant="ghost"
+                            size="icon-sm"
+                            onClick={() => router.push(b.href)}
+                            className="size-8 text-muted-foreground hover:text-foreground hover:bg-muted/50 cursor-pointer"
+                            aria-label="Ver detalle"
+                          >
+                            <Eye className="size-4" />
+                          </Button>
+                        </TooltipTrigger>
+                        <TooltipContent>Ver detalle</TooltipContent>
+                      </Tooltip>
+                    </div>
                   </TableCell>
                 </TableRow>
-              ) : (
-                filteredData.map((b) => (
-                  <TableRow
-                    key={b.codigo}
-                    className="border-b border-border/40 hover:bg-muted/20 transition-colors cursor-pointer"
-                    onClick={() => router.push(b.href)}
-                  >
-                    {/* Código */}
-                    <TableCell className="py-4 px-4 text-xs font-mono font-bold text-foreground whitespace-nowrap">
-                      {b.codigo}
-                    </TableCell>
-
-                    {/* Proyecto */}
-                    <TableCell className="py-4 px-4 text-xs font-semibold text-foreground max-w-[220px]">
-                      {b.proyecto}
-                    </TableCell>
-
-                    {/* Fuente */}
-                    <TableCell className="py-4 px-4 text-xs text-muted-foreground whitespace-nowrap">
-                      {b.fuente}
-                    </TableCell>
-
-                    {/* Consumidor */}
-                    <TableCell className="py-4 px-4 text-xs text-muted-foreground whitespace-nowrap">
-                      {b.consumidor}
-                    </TableCell>
-
-                    {/* Tipo de Información */}
-                    <TableCell className="py-4 px-4 text-xs text-muted-foreground max-w-[180px] truncate">
-                      {b.tipoInformacion}
-                    </TableCell>
-
-                    {/* Estado */}
-                    <TableCell className="py-4 px-4 whitespace-nowrap">
-                      <Badge
-                        tone="neutral"
-                        appearance="soft"
-                        size="sm"
-                        className="font-medium gap-1.5 text-xs capitalize"
-                      >
-                        <span className="size-1.5 rounded-full bg-foreground" />
-                        {b.estado}
-                      </Badge>
-                    </TableCell>
-
-                    {/* Fecha de Creación */}
-                    <TableCell className="py-4 px-4 text-xs text-muted-foreground whitespace-nowrap">
-                      {b.fechaCreacion}
-                    </TableCell>
-
-                    {/* Acciones */}
-                    <TableCell className="py-4 px-4 text-right whitespace-nowrap" onClick={(e) => e.stopPropagation()}>
-                      <div className="inline-flex items-center justify-end">
-                        <Tooltip>
-                          <TooltipTrigger asChild>
-                            <Button
-                              type="button"
-                              variant="ghost"
-                              size="icon-sm"
-                              onClick={() => router.push(b.href)}
-                              className="size-8 text-muted-foreground hover:text-foreground hover:bg-muted/50 cursor-pointer"
-                              aria-label="Ver detalle"
-                            >
-                              <Eye className="size-4" />
-                            </Button>
-                          </TooltipTrigger>
-                          <TooltipContent>Ver detalle</TooltipContent>
-                        </Tooltip>
-                      </div>
-                    </TableCell>
-                  </TableRow>
-                ))
-              )}
-            </TableBody>
-          </Table>
-        </div>
+              ))
+            )}
+          </TableBody>
+        </Table>
 
         {/* ── 5. Paginación ── */}
-        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-2">
-          <p className="text-xs text-muted-foreground">
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-4">
+          <p className="text-xs text-muted-foreground font-medium">
             Mostrando 1 a {filteredData.length} de {BATCH_DATA.length} solicitudes de intercambio masivo
           </p>
 
           <Pagination className="mx-0 w-auto justify-end">
-            <PaginationContent className="gap-1">
+            <PaginationContent className="gap-1.5">
               <PaginationItem>
                 <PaginationPrevious
                   href="#"
@@ -461,11 +460,10 @@ export default function WireframeIntercambiosMasivosPage() {
                     e.preventDefault();
                     if (currentPage > 1) setCurrentPage((p) => p - 1);
                   }}
-                  className="size-8 rounded-lg border border-border"
                 />
               </PaginationItem>
               <PaginationItem>
-                <PaginationLink href="#" isActive className="size-8 rounded-lg text-xs">
+                <PaginationLink href="#" isActive className="size-9">
                   1
                 </PaginationLink>
               </PaginationItem>
@@ -475,7 +473,6 @@ export default function WireframeIntercambiosMasivosPage() {
                   onClick={(e) => {
                     e.preventDefault();
                   }}
-                  className="size-8 rounded-lg border border-border"
                 />
               </PaginationItem>
             </PaginationContent>

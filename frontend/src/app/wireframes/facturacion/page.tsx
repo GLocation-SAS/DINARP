@@ -195,10 +195,10 @@ export default function WireframeListadoFacturacionPage() {
                 <DropdownMenuTrigger asChild>
                   <Button
                     variant="outline"
-                    className="h-11 px-3 flex items-center justify-between bg-surface border-border/80 rounded-xl text-left w-full text-xs font-semibold"
+                    className="h-11 px-3.5 flex items-center justify-between bg-surface border-border/80 rounded-xl text-xs w-full"
                   >
-                    <span className="truncate">{filterEstado}</span>
-                    <ChevronDown className="size-3.5 text-muted-foreground shrink-0" />
+                    <span className="truncate text-left flex-1">{filterEstado}</span>
+                    <ChevronDown className="size-3.5 text-muted-foreground shrink-0 ml-2" />
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="start" className="w-48">
@@ -214,191 +214,189 @@ export default function WireframeListadoFacturacionPage() {
               </DropdownMenu>
             </div>
 
-            {/* Fecha Desde */}
-            <div className="space-y-0.5">
-              <span className="text-[10px] font-medium text-muted-foreground block pl-1">Fecha desde</span>
-              <InputGroup
-                size="default"
-                rightIcon={<CalendarIcon className="size-3.5 text-muted-foreground" />}
-                className="bg-surface h-11 rounded-xl border-border/80"
-              >
-                <InputGroupInput
-                  placeholder="dd/mm/aaaa"
-                  value={fechaDesde}
-                  onChange={(e) => setFechaDesde(e.target.value)}
-                  className="text-xs font-mono"
-                />
-              </InputGroup>
-            </div>
+      {/* Fecha Desde */}
+      <div className="space-y-0.5">
+        <span className="text-[10px] font-medium text-muted-foreground block pl-1">Fecha desde</span>
+        <InputGroup
+          size="default"
+          rightIcon={<CalendarIcon className="size-3.5 text-muted-foreground" />}
+          className="bg-surface h-11 rounded-xl border-border/80"
+        >
+          <InputGroupInput
+            placeholder="dd/mm/aaaa"
+            value={fechaDesde}
+            onChange={(e) => setFechaDesde(e.target.value)}
+            className="text-xs font-mono"
+          />
+        </InputGroup>
+      </div>
 
-            {/* Fecha Hasta */}
-            <div className="space-y-0.5">
-              <span className="text-[10px] font-medium text-muted-foreground block pl-1">Fecha hasta</span>
-              <InputGroup
-                size="default"
-                rightIcon={<CalendarIcon className="size-3.5 text-muted-foreground" />}
-                className="bg-surface h-11 rounded-xl border-border/80"
-              >
-                <InputGroupInput
-                  placeholder="dd/mm/aaaa"
-                  value={fechaHasta}
-                  onChange={(e) => setFechaHasta(e.target.value)}
-                  className="text-xs font-mono"
-                />
-              </InputGroup>
-            </div>
+      {/* Fecha Hasta */}
+      <div className="space-y-0.5">
+        <span className="text-[10px] font-medium text-muted-foreground block pl-1">Fecha hasta</span>
+        <InputGroup
+          size="default"
+          rightIcon={<CalendarIcon className="size-3.5 text-muted-foreground" />}
+          className="bg-surface h-11 rounded-xl border-border/80"
+        >
+          <InputGroupInput
+            placeholder="dd/mm/aaaa"
+            value={fechaHasta}
+            onChange={(e) => setFechaHasta(e.target.value)}
+            className="text-xs font-mono"
+          />
+        </InputGroup>
+      </div>
 
-            {/* Botón Buscar */}
-            <Button
-              type="button"
-              variant="primary"
-              className="h-11 px-6 rounded-xl text-xs font-semibold shadow-xs justify-center"
-            >
-              Buscar
-            </Button>
-          </div>
-        </div>
+      {/* Botón Buscar */}
+      <Button
+        type="button"
+        variant="primary"
+        className="h-11 px-6 rounded-xl text-xs font-semibold shadow-xs justify-center"
+      >
+        Buscar
+      </Button>
+    </div>
+        </div >
 
         {/* ── 3. Tabla de Facturas ── */}
-        <div className="overflow-x-auto rounded-2xl border border-border bg-surface shadow-xs">
-          <Table className="w-full border-spacing-0">
-            <TableHeader>
-              <TableRow className="border-b border-border/80 bg-muted/30 hover:bg-muted/30">
-                <TableHead className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider py-3.5 px-4 text-left">
-                  N° DE FACTURA
-                </TableHead>
-                <TableHead className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider py-3.5 px-4 text-left">
-                  PROYECTO / SOLICITUD
-                </TableHead>
-                <TableHead className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider py-3.5 px-4 text-left">
-                  ENTIDAD
-                </TableHead>
-                <TableHead className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider py-3.5 px-4 text-left">
-                  SERVICIO
-                </TableHead>
-                <TableHead className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider py-3.5 px-4 text-left">
-                  FECHA DE EMISIÓN
-                </TableHead>
-                <TableHead className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider py-3.5 px-4 text-left">
-                  VALOR (USD)
-                </TableHead>
-                <TableHead className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider py-3.5 px-4 text-left">
-                  ESTADO
-                </TableHead>
-                <TableHead className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider py-3.5 px-4 text-center">
-                  ACCIONES
-                </TableHead>
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead>
+                N° DE FACTURA
+              </TableHead>
+              <TableHead>
+                PROYECTO / SOLICITUD
+              </TableHead>
+              <TableHead>
+                ENTIDAD
+              </TableHead>
+              <TableHead>
+                SERVICIO
+              </TableHead>
+              <TableHead>
+                FECHA DE EMISIÓN
+              </TableHead>
+              <TableHead>
+                VALOR (USD)
+              </TableHead>
+              <TableHead>
+                ESTADO
+              </TableHead>
+              <TableHead className="text-right">
+                ACCIONES
+              </TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {filteredData.length === 0 ? (
+              <TableRow>
+                <TableCell colSpan={8} className="text-center py-10 text-muted-foreground text-sm">
+                  No se encontraron facturas con los filtros aplicados.
+                </TableCell>
               </TableRow>
-            </TableHeader>
-            <TableBody>
-              {filteredData.length === 0 ? (
-                <TableRow>
-                  <TableCell colSpan={8} className="text-center py-10 text-muted-foreground text-sm">
-                    No se encontraron facturas con los filtros aplicados.
-                  </TableCell>
-                </TableRow>
-              ) : (
-                filteredData.map((row) => {
-                  const badgeProps = getBadgeVariant(row.estado);
-                  return (
-                    <TableRow
-                      key={row.numero}
-                      className="border-b border-border/40 hover:bg-muted/20 transition-colors cursor-pointer"
-                      onClick={() => router.push(row.href)}
-                    >
-                      {/* N° de factura */}
-                      <TableCell className="py-4 px-4 text-xs font-mono font-bold text-foreground whitespace-nowrap">
-                        {row.numero}
-                      </TableCell>
+            ) : (
+              filteredData.map((row) => {
+                const badgeProps = getBadgeVariant(row.estado);
+                return (
+                  <TableRow
+                    key={row.numero}
+                    className="cursor-pointer"
+                    onClick={() => router.push(row.href)}
+                  >
+                    {/* N° de factura */}
+                    <TableCell className="font-mono font-bold text-foreground">
+                      {row.numero}
+                    </TableCell>
 
-                      {/* Proyecto / Solicitud */}
-                      <TableCell className="py-4 px-4 text-xs font-semibold text-foreground max-w-[180px]">
-                        {row.proyecto}
-                      </TableCell>
+                    {/* Proyecto / Solicitud */}
+                    <TableCell className="font-semibold text-foreground">
+                      {row.proyecto}
+                    </TableCell>
 
-                      {/* Entidad */}
-                      <TableCell className="py-4 px-4 text-xs text-muted-foreground whitespace-nowrap">
-                        {row.entidad}
-                      </TableCell>
+                    {/* Entidad */}
+                    <TableCell className="text-muted-foreground font-medium">
+                      {row.entidad}
+                    </TableCell>
 
-                      {/* Servicio */}
-                      <TableCell className="py-4 px-4 text-xs text-muted-foreground whitespace-nowrap">
-                        {row.servicio}
-                      </TableCell>
+                    {/* Servicio */}
+                    <TableCell className="text-muted-foreground font-medium">
+                      {row.servicio}
+                    </TableCell>
 
-                      {/* Fecha de emisión */}
-                      <TableCell className="py-4 px-4 text-xs text-muted-foreground whitespace-nowrap font-mono">
-                        {row.fechaEmision}
-                      </TableCell>
+                    {/* Fecha de emisión */}
+                    <TableCell className="text-muted-foreground font-mono">
+                      {row.fechaEmision}
+                    </TableCell>
 
-                      {/* Valor (USD) */}
-                      <TableCell className="py-4 px-4 text-xs font-mono font-bold text-foreground whitespace-nowrap">
-                        {row.valor.toLocaleString("es-EC", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
-                      </TableCell>
+                    {/* Valor (USD) */}
+                    <TableCell className="font-mono font-bold text-foreground">
+                      {row.valor.toLocaleString("es-EC", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                    </TableCell>
 
-                      {/* Estado */}
-                      <TableCell className="py-4 px-4 whitespace-nowrap">
-                        <Badge
-                          tone={badgeProps.tone}
-                          appearance={badgeProps.appearance}
-                          size="sm"
-                          className="font-medium text-xs"
-                        >
-                          {row.estado}
-                        </Badge>
-                      </TableCell>
+                    {/* Estado */}
+                    <TableCell>
+                      <Badge
+                        tone={badgeProps.tone}
+                        appearance={badgeProps.appearance}
+                        size="sm"
+                        className="font-medium text-xs"
+                      >
+                        {row.estado}
+                      </Badge>
+                    </TableCell>
 
-                      {/* Acciones */}
-                      <TableCell className="py-4 px-4 text-right whitespace-nowrap" onClick={(e) => e.stopPropagation()}>
-                        <div className="flex items-center justify-end gap-1">
-                          <Tooltip>
-                            <TooltipTrigger asChild>
-                              <Button
-                                type="button"
-                                variant="ghost"
-                                size="icon-sm"
-                                onClick={() => router.push(row.href)}
-                                className="size-8 text-muted-foreground hover:text-foreground hover:bg-muted/50 cursor-pointer"
-                                aria-label="Ver detalle"
-                              >
-                                <Eye className="size-4" />
-                              </Button>
-                            </TooltipTrigger>
-                            <TooltipContent>Ver detalle</TooltipContent>
-                          </Tooltip>
+                    {/* Acciones */}
+                    <TableCell className="text-right" onClick={(e) => e.stopPropagation()}>
+                      <div className="flex items-center justify-end gap-1">
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <Button
+                              type="button"
+                              variant="ghost"
+                              size="icon-sm"
+                              onClick={() => router.push(row.href)}
+                              className="size-8 text-muted-foreground hover:text-foreground hover:bg-muted/50 cursor-pointer"
+                              aria-label="Ver detalle"
+                            >
+                              <Eye className="size-4" />
+                            </Button>
+                          </TooltipTrigger>
+                          <TooltipContent>Ver detalle</TooltipContent>
+                        </Tooltip>
 
-                          <Tooltip>
-                            <TooltipTrigger asChild>
-                              <Button
-                                type="button"
-                                variant="ghost"
-                                size="icon-sm"
-                                className="size-8 text-muted-foreground hover:text-foreground hover:bg-muted/50 cursor-pointer"
-                                aria-label="Descargar PDF"
-                              >
-                                <Download className="size-4" />
-                              </Button>
-                            </TooltipTrigger>
-                            <TooltipContent>Descargar PDF</TooltipContent>
-                          </Tooltip>
-                        </div>
-                      </TableCell>
-                    </TableRow>
-                  );
-                })
-              )}
-            </TableBody>
-          </Table>
-        </div>
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <Button
+                              type="button"
+                              variant="ghost"
+                              size="icon-sm"
+                              className="size-8 text-muted-foreground hover:text-foreground hover:bg-muted/50 cursor-pointer"
+                              aria-label="Descargar PDF"
+                            >
+                              <Download className="size-4" />
+                            </Button>
+                          </TooltipTrigger>
+                          <TooltipContent>Descargar PDF</TooltipContent>
+                        </Tooltip>
+                      </div>
+                    </TableCell>
+                  </TableRow>
+                );
+              })
+            )}
+          </TableBody>
+        </Table>
 
         {/* ── 4. Paginación ── */}
-        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-2">
-          <p className="text-xs text-muted-foreground">
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-4">
+          <p className="text-xs text-muted-foreground font-medium">
             Mostrando 1 a {filteredData.length} de 32 facturas
           </p>
 
           <Pagination className="mx-0 w-auto justify-end">
-            <PaginationContent className="gap-1">
+            <PaginationContent className="gap-1.5">
               <PaginationItem>
                 <PaginationPrevious
                   href="#"
@@ -406,26 +404,25 @@ export default function WireframeListadoFacturacionPage() {
                     e.preventDefault();
                     if (currentPage > 1) setCurrentPage((p) => p - 1);
                   }}
-                  className="size-8 rounded-lg border border-border"
                 />
               </PaginationItem>
               <PaginationItem>
-                <PaginationLink href="#" isActive className="size-8 rounded-lg text-xs">
+                <PaginationLink href="#" isActive className="size-9">
                   1
                 </PaginationLink>
               </PaginationItem>
               <PaginationItem>
-                <PaginationLink href="#" className="size-8 rounded-lg text-xs">
+                <PaginationLink href="#" className="size-9">
                   2
                 </PaginationLink>
               </PaginationItem>
               <PaginationItem>
-                <PaginationLink href="#" className="size-8 rounded-lg text-xs">
+                <PaginationLink href="#" className="size-9">
                   3
                 </PaginationLink>
               </PaginationItem>
               <PaginationItem>
-                <PaginationLink href="#" className="size-8 rounded-lg text-xs">
+                <PaginationLink href="#" className="size-9">
                   4
                 </PaginationLink>
               </PaginationItem>
@@ -435,14 +432,13 @@ export default function WireframeListadoFacturacionPage() {
                   onClick={(e) => {
                     e.preventDefault();
                   }}
-                  className="size-8 rounded-lg border border-border"
                 />
               </PaginationItem>
             </PaginationContent>
           </Pagination>
         </div>
-      </main>
-    </WireframeDashboardLayout>
+      </main >
+    </WireframeDashboardLayout >
   );
 }
 
