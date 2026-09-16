@@ -55,25 +55,16 @@ import {
   PaginationNext,
 } from "@/components/ui/pagination";
 import { WireframeDashboardLayout } from "../components/wireframe-dashboard-layout";
+import { UsuarioModal, type UsuarioData } from "./components/usuario-modal";
 
-interface UsuarioItem {
-  id: string;
-  iniciales: string;
-  nombre: string;
-  correo: string;
-  institucion: string;
-  rol: "Administrador" | "Analista" | "Consultor" | "Revisor";
-  estado: "Activo" | "Inactivo";
-  ultimoAcceso: string;
-}
-
-const USUARIOS_DATA: UsuarioItem[] = [
+const INITIAL_USUARIOS_DATA: UsuarioData[] = [
   {
     id: "USR-001",
     iniciales: "MC",
     nombre: "María Cuenca",
     correo: "maria.cuenca@registrocivil.gob.ec",
     institucion: "Registro Civil",
+    cargo: "Administrador de Interoperabilidad",
     rol: "Administrador",
     estado: "Activo",
     ultimoAcceso: "02/09/2026 10:24",
@@ -84,6 +75,7 @@ const USUARIOS_DATA: UsuarioItem[] = [
     nombre: "Juan Pérez",
     correo: "juan.perez@sri.gob.ec",
     institucion: "SRI",
+    cargo: "Analista Tributario",
     rol: "Analista",
     estado: "Activo",
     ultimoAcceso: "01/09/2026 16:11",
@@ -94,6 +86,7 @@ const USUARIOS_DATA: UsuarioItem[] = [
     nombre: "Luis Álvarez",
     correo: "luis.alvarez@educacion.gob.ec",
     institucion: "Ministerio de Educación",
+    cargo: "Consultor Técnico",
     rol: "Consultor",
     estado: "Inactivo",
     ultimoAcceso: "28/08/2026 09:03",
@@ -104,6 +97,7 @@ const USUARIOS_DATA: UsuarioItem[] = [
     nombre: "Sofía Castro",
     correo: "sofia.castro@dinarp.gob.ec",
     institucion: "DINARP",
+    cargo: "Supervisora de Calidad",
     rol: "Administrador",
     estado: "Activo",
     ultimoAcceso: "03/09/2026 08:45",
@@ -114,6 +108,7 @@ const USUARIOS_DATA: UsuarioItem[] = [
     nombre: "Diego Ruiz",
     correo: "diego.ruiz@salud.gob.ec",
     institucion: "Ministerio de Salud",
+    cargo: "Analista de Datos",
     rol: "Analista",
     estado: "Activo",
     ultimoAcceso: "02/09/2026 14:20",
@@ -123,13 +118,41 @@ const USUARIOS_DATA: UsuarioItem[] = [
 export default function WireframeListadoUsuariosPage() {
   const router = useRouter();
 
+  const [usuariosData, setUsuariosData] = useState<UsuarioData[]>(INITIAL_USUARIOS_DATA);
   const [searchQuery, setSearchQuery] = useState("");
   const [filterRol, setFilterRol] = useState("Todos");
   const [filterEstado, setFilterEstado] = useState("Todos");
   const [currentPage, setCurrentPage] = useState(1);
 
+  // Modal State
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedUser, setSelectedUser] = useState<UsuarioData | null>(null);
+
+  const handleOpenCreateModal = () => {
+    setSelectedUser(null);
+    setIsModalOpen(true);
+  };
+
+  const handleOpenEditModal = (user: UsuarioData, e?: React.MouseEvent) => {
+    e?.stopPropagation();
+    setSelectedUser(user);
+    setIsModalOpen(true);
+  };
+
+  const handleSaveUser = (userData: UsuarioData) => {
+    setUsuariosData((prev) => {
+      const existsIndex = prev.findIndex((u) => u.id === userData.id);
+      if (existsIndex >= 0) {
+        const updated = [...prev];
+        updated[existsIndex] = userData;
+        return updated;
+      }
+      return [userData, ...prev];
+    });
+  };
+
   const filteredData = useMemo(() => {
-    return USUARIOS_DATA.filter((item) => {
+    return usuariosData.filter((item) => {
       const matchesSearch =
         searchQuery === "" ||
         item.nombre.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -142,7 +165,7 @@ export default function WireframeListadoUsuariosPage() {
 
       return matchesSearch && matchesRol && matchesEstado;
     });
-  }, [searchQuery, filterRol, filterEstado]);
+  }, [usuariosData, searchQuery, filterRol, filterEstado]);
 
   return (
     <WireframeDashboardLayout activeMenu="usuarios">
@@ -164,7 +187,7 @@ export default function WireframeListadoUsuariosPage() {
           <Button
             type="button"
             variant="primary"
-            onClick={() => router.push("/wireframes/usuarios/nuevo")}
+            onClick={handleOpenCreateModal}
             className="h-11 px-5 rounded-xl text-xs font-semibold gap-2 shadow-xs shrink-0"
           >
             <Plus className="size-4" />
@@ -311,7 +334,7 @@ export default function WireframeListadoUsuariosPage() {
                             type="button"
                             variant="ghost"
                             size="icon-sm"
-                            onClick={() => router.push(`/wireframes/usuarios/${row.id}/editar`)}
+                            onClick={(e) => handleOpenEditModal(row, e)}
                             className="size-8 text-muted-foreground hover:text-foreground hover:bg-muted/50"
                             aria-label="Editar usuario"
                           >
@@ -343,7 +366,7 @@ export default function WireframeListadoUsuariosPage() {
                             <Eye className="size-3.5 mr-2" />
                             <span>Ver detalle</span>
                           </DropdownMenuItem>
-                          <DropdownMenuItem onClick={() => router.push(`/wireframes/usuarios/${row.id}/editar`)}>
+                          <DropdownMenuItem onClick={(e) => handleOpenEditModal(row, e)}>
                             <Pencil className="size-3.5 mr-2" />
                             <span>Editar</span>
                           </DropdownMenuItem>
@@ -362,61 +385,70 @@ export default function WireframeListadoUsuariosPage() {
           </TableBody>
         </Table>
 
-        {/* ── 4. Paginación ── */}
-        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-4">
-          <p className="text-xs text-muted-foreground font-medium">
-            Mostrando 1 a {filteredData.length} de 42 usuarios
+        {/* ── 4. Paginación Estandarizada Circular ── */}
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-2">
+          <p className="text-xs text-muted-foreground font-medium order-2 sm:order-1">
+            Mostrando <span className="font-bold text-foreground">{filteredData.length}</span> de <span className="font-bold text-foreground">{usuariosData.length}</span> usuarios
           </p>
 
-          <Pagination className="mx-0 w-auto justify-end">
-            <PaginationContent className="gap-1.5">
-              <PaginationItem>
-                <PaginationPrevious
-                  href="#"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    if (currentPage > 1) setCurrentPage((p) => p - 1);
-                  }}
-                />
-              </PaginationItem>
-              <PaginationItem>
-                <PaginationLink href="#" isActive className="size-9">
-                  1
-                </PaginationLink>
-              </PaginationItem>
-              <PaginationItem>
-                <PaginationLink href="#" className="size-9">
-                  2
-                </PaginationLink>
-              </PaginationItem>
-              <PaginationItem>
-                <PaginationLink href="#" className="size-9">
-                  3
-                </PaginationLink>
-              </PaginationItem>
-              <PaginationItem>
-                <PaginationLink href="#" className="size-9">
-                  4
-                </PaginationLink>
-              </PaginationItem>
-              <PaginationItem>
-                <PaginationLink href="#" className="size-9">
-                  5
-                </PaginationLink>
-              </PaginationItem>
-              <PaginationItem>
-                <PaginationNext
-                  href="#"
-                  onClick={(e) => {
-                    e.preventDefault();
-                  }}
-                />
-              </PaginationItem>
-            </PaginationContent>
-          </Pagination>
+          <div className="order-1 sm:order-2">
+            <Pagination>
+              <PaginationContent>
+                <PaginationItem>
+                  <PaginationPrevious
+                    href="#"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      setCurrentPage((p) => Math.max(1, p - 1));
+                    }}
+                  />
+                </PaginationItem>
+                <PaginationItem>
+                  <PaginationLink
+                    href="#"
+                    isActive={currentPage === 1}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      setCurrentPage(1);
+                    }}
+                  >
+                    1
+                  </PaginationLink>
+                </PaginationItem>
+                <PaginationItem>
+                  <PaginationLink
+                    href="#"
+                    isActive={currentPage === 2}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      setCurrentPage(2);
+                    }}
+                  >
+                    2
+                  </PaginationLink>
+                </PaginationItem>
+                <PaginationItem>
+                  <PaginationNext
+                    href="#"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      setCurrentPage((p) => Math.min(2, p + 1));
+                    }}
+                  />
+                </PaginationItem>
+              </PaginationContent>
+            </Pagination>
+          </div>
         </div>
       </main>
+
+      {/* ── Modal de Crear / Editar Usuario ── */}
+      <UsuarioModal
+        open={isModalOpen}
+        onOpenChange={setIsModalOpen}
+        initialData={selectedUser}
+        onSave={handleSaveUser}
+      />
     </WireframeDashboardLayout>
   );
 }
-

@@ -42,6 +42,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { DetailList } from "@/components/ui/detail-list";
 import { WireframeDashboardLayout } from "../../components/wireframe-dashboard-layout";
+import { UsuarioModal, type UsuarioData } from "../components/usuario-modal";
 
 interface UsuarioDetailClientProps {
   id: string;
@@ -50,6 +51,28 @@ interface UsuarioDetailClientProps {
 export function UsuarioDetailClient({ id }: UsuarioDetailClientProps) {
   const router = useRouter();
   const [activeTab, setActiveTab] = useState("informacion");
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+
+  // Editable user data state
+  const [userData, setUserData] = useState<UsuarioData>({
+    id,
+    iniciales: "MC",
+    nombre: "María Cuenca Serrano",
+    correo: "maria.cuenca@registrocivil.gob.ec",
+    institucion: "Registro Civil",
+    cargo: "Analista de Interoperabilidad",
+    rol: "Administrador",
+    estado: "Activo",
+    ultimoAcceso: "02/09/2026 10:24",
+  });
+
+  const handleSaveUser = (updated: UsuarioData) => {
+    setUserData(updated);
+  };
+
+  const nameParts = userData.nombre.split(" ");
+  const firstName = nameParts[0] || "";
+  const lastName = nameParts.slice(1).join(" ") || "";
 
   return (
     <WireframeDashboardLayout activeMenu="usuarios">
@@ -81,25 +104,30 @@ export function UsuarioDetailClient({ id }: UsuarioDetailClientProps) {
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6">
             <div className="flex items-center gap-4 sm:gap-5">
               {/* Big Avatar Circle */}
-              <div className="size-16 sm:size-20 rounded-full bg-muted-foreground/15 text-foreground font-extrabold text-xl sm:text-2xl flex items-center justify-center shrink-0 border border-border">
-                MC
+              <div className="size-16 sm:size-20 rounded-full bg-muted text-foreground font-extrabold text-xl sm:text-2xl flex items-center justify-center shrink-0 border border-border">
+                {userData.iniciales || "MC"}
               </div>
 
               {/* User Info */}
               <div className="space-y-1">
                 <div className="flex flex-wrap items-center gap-2.5">
                   <h1 className="font-heading font-extrabold text-xl sm:text-2xl text-foreground">
-                    María Cuenca Serrano
+                    {userData.nombre}
                   </h1>
-                  <Badge tone="success" appearance="soft" size="sm" className="font-semibold text-xs">
-                    Activo
+                  <Badge
+                    tone={userData.estado === "Activo" ? "success" : "danger"}
+                    appearance="soft"
+                    size="sm"
+                    className="font-semibold text-xs"
+                  >
+                    {userData.estado}
                   </Badge>
                 </div>
                 <p className="text-xs sm:text-sm text-muted-foreground font-mono">
-                  maria.cuenca@registrocivil.gob.ec
+                  {userData.correo}
                 </p>
                 <p className="text-xs text-muted-foreground font-medium">
-                  Administradora · Registro Civil
+                  {userData.rol} · {userData.institucion}
                 </p>
               </div>
             </div>
@@ -109,7 +137,7 @@ export function UsuarioDetailClient({ id }: UsuarioDetailClientProps) {
               <Button
                 type="button"
                 variant="outline"
-                onClick={() => router.push(`/wireframes/usuarios/${id}/editar`)}
+                onClick={() => setIsEditModalOpen(true)}
                 className="h-10 px-4 rounded-xl text-xs font-semibold gap-1.5 border-border"
               >
                 <Pencil className="size-3.5" />
@@ -128,6 +156,10 @@ export function UsuarioDetailClient({ id }: UsuarioDetailClientProps) {
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end" className="w-48">
+                  <DropdownMenuItem onClick={() => setIsEditModalOpen(true)}>
+                    <Pencil className="size-3.5 mr-2 text-muted-foreground" />
+                    <span>Editar usuario</span>
+                  </DropdownMenuItem>
                   <DropdownMenuItem>
                     <Key className="size-3.5 mr-2 text-muted-foreground" />
                     <span>Reenviar contraseña</span>
@@ -173,15 +205,15 @@ export function UsuarioDetailClient({ id }: UsuarioDetailClientProps) {
                 items={[
                   {
                     label: "Nombres",
-                    value: "María",
+                    value: firstName || "María",
                   },
                   {
                     label: "Apellidos",
-                    value: "Cuenca Serrano",
+                    value: lastName || "Cuenca Serrano",
                   },
                   {
                     label: "Correo electrónico",
-                    value: <span className="font-mono text-xs">maria.cuenca@registrocivil.gob.ec</span>,
+                    value: <span className="font-mono text-xs">{userData.correo}</span>,
                   },
                   {
                     label: "Teléfono",
@@ -189,17 +221,22 @@ export function UsuarioDetailClient({ id }: UsuarioDetailClientProps) {
                   },
                   {
                     label: "Institución",
-                    value: "Registro Civil",
+                    value: userData.institucion,
                   },
                   {
                     label: "Cargo",
-                    value: "Analista de Interoperabilidad",
+                    value: userData.cargo || "Analista de Interoperabilidad",
                   },
                   {
                     label: "Estado",
                     value: (
-                      <Badge tone="success" appearance="soft" size="sm" className="font-semibold text-xs">
-                        Activo
+                      <Badge
+                        tone={userData.estado === "Activo" ? "success" : "danger"}
+                        appearance="soft"
+                        size="sm"
+                        className="font-semibold text-xs"
+                      >
+                        {userData.estado}
                       </Badge>
                     ),
                   },
@@ -209,7 +246,7 @@ export function UsuarioDetailClient({ id }: UsuarioDetailClientProps) {
                   },
                   {
                     label: "Último acceso",
-                    value: "02/09/2026 10:24",
+                    value: userData.ultimoAcceso || "02/09/2026 10:24",
                   },
                 ]}
               />
@@ -225,10 +262,10 @@ export function UsuarioDetailClient({ id }: UsuarioDetailClientProps) {
               <div className="p-4 rounded-xl border border-border bg-muted/20 space-y-2">
                 <div className="flex items-center gap-2">
                   <ShieldCheck className="size-4 text-primary" />
-                  <span className="text-xs font-bold text-foreground">Administrador de Entidad</span>
+                  <span className="text-xs font-bold text-foreground">{userData.rol} de Entidad</span>
                 </div>
                 <p className="text-xs text-muted-foreground">
-                  Permiso para radicar solicitudes de interoperabilidad, autorizar consultas de datos sobre bases custodiadas y gestionar credenciales de acceso para la institución Registro Civil.
+                  Permiso para radicar solicitudes de interoperabilidad, autorizar consultas de datos sobre bases custodiadas y gestionar credenciales de acceso para la institución {userData.institucion}.
                 </p>
               </div>
             </Card>
@@ -260,7 +297,14 @@ export function UsuarioDetailClient({ id }: UsuarioDetailClientProps) {
           </TabsContent>
         </Tabs>
       </main>
+
+      {/* ── Modal de Edición de Usuario ── */}
+      <UsuarioModal
+        open={isEditModalOpen}
+        onOpenChange={setIsEditModalOpen}
+        initialData={userData}
+        onSave={handleSaveUser}
+      />
     </WireframeDashboardLayout>
   );
 }
-
