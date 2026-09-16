@@ -352,40 +352,52 @@ export default function WireframeDetalleSeguimientoPage() {
 
           {/* ── Tab Content: Comentarios ── */}
           <TabsContent value="comentarios" className="space-y-6">
-            <Card className="rounded-2xl border-border bg-surface p-6 shadow-xs space-y-4">
-              <div className="space-y-3">
+            <Card className="rounded-2xl border-border bg-surface flex flex-col overflow-hidden shadow-xs">
+              
+              <div className="flex-1 p-6 space-y-6 bg-background/30">
                 {comentariosList.map((c) => (
-                  <div key={c.id} className="p-3.5 rounded-xl border border-border bg-background/50 space-y-1 text-xs">
-                    <div className="flex items-center justify-between">
-                      <span className="font-bold text-foreground">{c.autor}</span>
-                      <span className="text-[10px] text-muted-foreground">{c.fecha}</span>
+                  <div key={c.id} className="flex gap-4">
+                    <div className="size-10 rounded-full bg-primary/10 border border-primary/20 flex items-center justify-center shrink-0">
+                      <span className="text-primary font-bold text-xs">{c.autor.charAt(0)}</span>
                     </div>
-                    <p className="text-muted-foreground leading-relaxed">{c.texto}</p>
+                    <div className="flex-1 space-y-1.5">
+                      <div className="flex items-center gap-2">
+                        <span className="font-bold text-foreground text-sm">{c.autor}</span>
+                        <span className="text-[11px] text-muted-foreground">{c.fecha}</span>
+                      </div>
+                      <div className="p-4 rounded-2xl rounded-tl-none border border-border bg-surface shadow-sm inline-block max-w-[90%]">
+                        <p className="text-sm text-foreground leading-relaxed">{c.texto}</p>
+                      </div>
+                    </div>
                   </div>
                 ))}
               </div>
 
-              <form onSubmit={handleAddComentario} className="space-y-3 pt-2">
-                <textarea
-                  rows={3}
-                  placeholder="Escribe un comentario o nota de seguimiento..."
-                  value={comentarioTexto}
-                  onChange={(e) => setComentarioTexto(e.target.value)}
-                  className="w-full rounded-xl border border-border bg-surface p-3 text-xs sm:text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-foreground/20"
-                />
-                <div className="flex justify-end">
-                  <Button
-                    type="submit"
-                    variant="primary"
-                    size="sm"
-                    disabled={!comentarioTexto.trim()}
-                    className="h-9 px-4 text-xs font-semibold gap-1.5 shadow-xs"
-                  >
-                    <Send className="size-3.5" />
-                    <span>Enviar comentario</span>
-                  </Button>
-                </div>
-              </form>
+              <div className="p-4 sm:p-6 border-t border-border bg-surface">
+                <form onSubmit={handleAddComentario} className="flex flex-col gap-3">
+                  <div className="relative">
+                    <textarea
+                      rows={3}
+                      placeholder="Escribe un comentario o nota de seguimiento..."
+                      value={comentarioTexto}
+                      onChange={(e) => setComentarioTexto(e.target.value)}
+                      className="w-full resize-none rounded-2xl border border-border bg-background p-4 pr-12 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-foreground/20"
+                    />
+                    <div className="absolute right-3 bottom-3">
+                      <Button
+                        type="submit"
+                        variant="primary"
+                        size="icon-sm"
+                        disabled={!comentarioTexto.trim()}
+                        className="rounded-full shadow-xs"
+                      >
+                        <Send className="size-4" />
+                      </Button>
+                    </div>
+                  </div>
+                </form>
+              </div>
+
             </Card>
           </TabsContent>
         </Tabs>
