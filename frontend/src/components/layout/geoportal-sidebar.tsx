@@ -164,7 +164,8 @@ export function GeoportalSidebar({
 
   const handleLogout = async () => {
     await logout();
-    router.push("/login");
+    const isWireframe = typeof window !== "undefined" && window.location.pathname.startsWith("/wireframes");
+    router.push(isWireframe ? "/wireframes/login" : "/login");
   };
 
   const isActive = (href: string) => {

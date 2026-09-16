@@ -93,7 +93,8 @@ export function IntranetSidebar({ activeItem = "home" }: IntranetSidebarProps) {
 
   const handleLogout = async () => {
     await logout();
-    router.push("/login");
+    const isWireframe = typeof window !== "undefined" && window.location.pathname.startsWith("/wireframes");
+    router.push(isWireframe ? "/wireframes/login" : "/login");
   };
 
   // Local theme state (same pattern as uikit-sidebar)

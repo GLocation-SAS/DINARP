@@ -270,8 +270,19 @@ interface UIKitSidebarProps {
   onNavigate: (sectionId: string) => void;
 }
 
+import { useRouter } from "next/navigation";
+import { useAuth } from "@/hooks/useAuth";
+
 export function UIKitSidebar({ activeSection, onNavigate }: UIKitSidebarProps) {
   const { setOpenMobile } = useSidebar();
+  const router = useRouter();
+  const { logout } = useAuth();
+
+  const handleLogout = async () => {
+    await logout();
+    const isWireframe = typeof window !== "undefined" && window.location.pathname.startsWith("/wireframes");
+    router.push(isWireframe ? "/wireframes/login" : "/login");
+  };
 
   // Local theme state
   const [theme, setTheme] = React.useState<Theme>("light");
@@ -494,6 +505,7 @@ export function UIKitSidebar({ activeSection, onNavigate }: UIKitSidebarProps) {
             <Button
               aria-label="Cerrar sesión"
               variant="ghost"
+              onClick={handleLogout}
               className="flex size-8 shrink-0 items-center justify-center rounded-lg text-muted-foreground hover:text-danger hover:bg-danger/10 hover:border-transparent transition-colors duration-200 border-0 p-0"
             >
               <LogOut className="h-4 w-4" />
