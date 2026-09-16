@@ -230,7 +230,7 @@ export function RolEditClient({ id }: RolEditClientProps) {
 
   return (
     <WireframeDashboardLayout activeMenu="roles">
-      <main className="relative p-4 sm:p-8 lg:p-10 max-w-6xl w-full mx-auto space-y-6 sm:space-y-8">
+      <main className="relative p-4 sm:p-6 lg:p-8 w-full space-y-6 sm:space-y-8">
         {/* Background subtle effect */}
         <div className="absolute top-0 right-0 w-96 h-96 bg-radial from-muted/20 to-transparent pointer-events-none -z-10 blur-3xl opacity-60" />
 

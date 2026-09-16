@@ -90,7 +90,7 @@ export default function WireframeDashboardPage() {
 
   return (
     <WireframeDashboardLayout activeMenu="inicio">
-      <main className="relative p-4 sm:p-8 lg:p-10 max-w-7xl w-full mx-auto space-y-8 sm:space-y-10">
+      <main className="relative p-4 sm:p-6 lg:p-8 w-full space-y-8 sm:space-y-10">
         {/* Background subtle waves */}
         <div className="absolute top-0 right-0 w-96 h-96 bg-radial from-muted/20 to-transparent pointer-events-none -z-10 blur-3xl opacity-60" />
 

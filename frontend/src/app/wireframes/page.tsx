@@ -20,7 +20,7 @@ import {
 
 export default function WireframesPage() {
   return (
-    <main className="layout-container py-12 flex flex-col gap-8">
+    <main className="w-full px-4 sm:px-8 lg:px-12 py-10 flex flex-col gap-8">
       {/* Header Section */}
       <header className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 border-b border-border pb-6">
         <div className="flex flex-col gap-2">
