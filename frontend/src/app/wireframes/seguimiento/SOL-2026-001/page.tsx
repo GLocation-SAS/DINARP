@@ -200,7 +200,7 @@ export default function WireframeDetalleSeguimientoPage() {
           <TabsContent value="trazabilidad" className="space-y-6">
             <Card className="rounded-2xl border-border bg-surface p-6 sm:p-8 shadow-xs">
               <div className="relative pl-24 sm:pl-32 space-y-10 before:absolute before:left-24 sm:before:left-32 before:top-4 before:bottom-4 before:w-[2px] before:bg-border before:-translate-x-1/2">
-                
+
                 {/* Evento 1: Solicitud enviada */}
                 <div className="relative">
                   {/* Fecha y Hora Izquierda */}
@@ -438,3 +438,4 @@ export default function WireframeDetalleSeguimientoPage() {
     </WireframeDashboardLayout>
   );
 }
+
