@@ -135,7 +135,7 @@ export default function WireframeDetalleSeguimientoPage() {
             type="button"
             variant="outline"
             onClick={() => router.push("/wireframes/seguimiento")}
-            className="h-10 px-4 rounded-xl text-xs font-semibold gap-2 border-border shrink-0"
+            className="h-10 px-4 rounded-full text-xs font-semibold gap-2 border-border shrink-0"
           >
             <ArrowLeft className="size-4" />
             <span>Volver al listado</span>
@@ -181,17 +181,17 @@ export default function WireframeDetalleSeguimientoPage() {
 
         {/* ── 4. Tabs de Contenido ── */}
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-          <TabsList className="bg-muted/40 p-1 rounded-xl border border-border h-11 w-full sm:w-auto inline-flex">
-            <TabsTrigger value="trazabilidad" className="rounded-lg text-xs font-semibold px-4">
+          <TabsList className="bg-muted/40 p-1 rounded-full border border-border h-11 w-full sm:w-auto inline-flex">
+            <TabsTrigger value="trazabilidad" className="rounded-full text-xs font-semibold px-4">
               Trazabilidad
             </TabsTrigger>
-            <TabsTrigger value="informacion" className="rounded-lg text-xs font-semibold px-4">
+            <TabsTrigger value="informacion" className="rounded-full text-xs font-semibold px-4">
               Información general
             </TabsTrigger>
-            <TabsTrigger value="documentos" className="rounded-lg text-xs font-semibold px-4">
+            <TabsTrigger value="documentos" className="rounded-full text-xs font-semibold px-4">
               Documentos
             </TabsTrigger>
-            <TabsTrigger value="comentarios" className="rounded-lg text-xs font-semibold px-4">
+            <TabsTrigger value="comentarios" className="rounded-full text-xs font-semibold px-4">
               Comentarios
             </TabsTrigger>
           </TabsList>
@@ -375,25 +375,24 @@ export default function WireframeDetalleSeguimientoPage() {
 
               <div className="p-4 sm:p-6 border-t border-border bg-surface">
                 <form onSubmit={handleAddComentario} className="flex flex-col gap-3">
-                  <div className="relative">
-                    <textarea
-                      rows={3}
-                      placeholder="Escribe un comentario o nota de seguimiento..."
-                      value={comentarioTexto}
-                      onChange={(e) => setComentarioTexto(e.target.value)}
-                      className="w-full resize-none rounded-2xl border border-border bg-background p-4 pr-12 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-foreground/20"
-                    />
-                    <div className="absolute right-3 bottom-3">
-                      <Button
-                        type="submit"
-                        variant="primary"
-                        size="icon-sm"
-                        disabled={!comentarioTexto.trim()}
-                        className="rounded-full shadow-xs"
-                      >
-                        <Send className="size-4" />
-                      </Button>
-                    </div>
+                  <textarea
+                    rows={3}
+                    placeholder="Escribe un comentario o nota de seguimiento..."
+                    value={comentarioTexto}
+                    onChange={(e) => setComentarioTexto(e.target.value)}
+                    className="w-full resize-none rounded-2xl border border-border bg-background p-4 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-foreground/20"
+                  />
+                  <div className="flex justify-end">
+                    <Button
+                      type="submit"
+                      variant="primary"
+                      size="sm"
+                      disabled={!comentarioTexto.trim()}
+                      className="rounded-full shadow-xs px-5 h-10 gap-2"
+                    >
+                      <Send className="size-4" />
+                      <span>Enviar comentario</span>
+                    </Button>
                   </div>
                 </form>
               </div>
