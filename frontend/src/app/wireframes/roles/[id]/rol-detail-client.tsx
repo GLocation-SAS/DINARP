@@ -215,7 +215,7 @@ export function RolDetailClient({ id }: RolDetailClientProps) {
                   <DropdownMenuSeparator />
                   {rolData.estado === "Activo" ? (
                     <DropdownMenuItem
-                      className="text-warning focus:text-warning"
+                      className="text-foreground focus:text-foreground"
                       onClick={() => setIsWarningDialogOpen(true)}
                     >
                       <Lock className="size-3.5 mr-2" />
@@ -223,7 +223,7 @@ export function RolDetailClient({ id }: RolDetailClientProps) {
                     </DropdownMenuItem>
                   ) : (
                     <DropdownMenuItem
-                      className="text-success focus:text-success"
+                      className="text-foreground focus:text-foreground"
                       onClick={() => setIsWarningDialogOpen(true)}
                     >
                       <Unlock className="size-3.5 mr-2" />
@@ -317,7 +317,7 @@ export function RolDetailClient({ id }: RolDetailClientProps) {
                       {u.cargo}
                     </TableCell>
                     <TableCell>
-                      <Badge tone="success" appearance="soft" size="sm">
+                      <Badge tone="neutral" appearance="soft" size="sm">
                         {u.estado}
                       </Badge>
                     </TableCell>

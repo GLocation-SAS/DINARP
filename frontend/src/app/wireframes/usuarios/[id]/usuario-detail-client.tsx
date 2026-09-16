@@ -196,7 +196,7 @@ export function UsuarioDetailClient({ id }: UsuarioDetailClientProps) {
                   <DropdownMenuSeparator />
                   {userData.estado === "Activo" ? (
                     <DropdownMenuItem
-                      className="text-warning focus:text-warning"
+                      className="text-foreground focus:text-foreground"
                       onClick={() => setIsDeactivateOpen(true)}
                     >
                       <Lock className="size-3.5 mr-2" />
@@ -204,7 +204,7 @@ export function UsuarioDetailClient({ id }: UsuarioDetailClientProps) {
                     </DropdownMenuItem>
                   ) : (
                     <DropdownMenuItem
-                      className="text-success focus:text-success"
+                      className="text-foreground focus:text-foreground"
                       onClick={() => setIsDeactivateOpen(true)}
                     >
                       <Unlock className="size-3.5 mr-2" />

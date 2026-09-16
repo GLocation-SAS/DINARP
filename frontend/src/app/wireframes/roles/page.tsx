@@ -425,7 +425,7 @@ export default function WireframeListadoRolesPage() {
                           <DropdownMenuSeparator />
                           {row.estado === "Activo" ? (
                             <DropdownMenuItem
-                              className="text-warning focus:text-warning"
+                              className="text-foreground focus:text-foreground"
                               onClick={(e) => handleOpenWarning(row, "toggle", e)}
                             >
                               <Lock className="size-3.5 mr-2" />
@@ -433,7 +433,7 @@ export default function WireframeListadoRolesPage() {
                             </DropdownMenuItem>
                           ) : (
                             <DropdownMenuItem
-                              className="text-success focus:text-success"
+                              className="text-foreground focus:text-foreground"
                               onClick={(e) => handleOpenWarning(row, "toggle", e)}
                             >
                               <Unlock className="size-3.5 mr-2" />

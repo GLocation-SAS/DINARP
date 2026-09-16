@@ -117,7 +117,7 @@ export default function WireframeDetalleFacturaPage() {
               {/* Estado */}
               <div>
                 <span className="text-muted-foreground block text-[11px] mb-0.5">Estado</span>
-                <Badge tone="success" appearance="soft" size="sm" className="font-semibold text-xs">
+                <Badge tone="neutral" appearance="soft" size="sm" className="font-semibold text-xs">
                   Emitida
                 </Badge>
               </div>
@@ -302,7 +302,7 @@ export default function WireframeDetalleFacturaPage() {
                     15/09/2026 10:32
                   </TableCell>
                   <TableCell className="py-3 px-4 whitespace-nowrap">
-                    <Badge tone="success" appearance="soft" size="sm" className="text-xs">
+                    <Badge tone="neutral" appearance="soft" size="sm" className="text-xs">
                       Emitida
                     </Badge>
                   </TableCell>
@@ -319,7 +319,7 @@ export default function WireframeDetalleFacturaPage() {
                     14/09/2026 15:21
                   </TableCell>
                   <TableCell className="py-3 px-4 whitespace-nowrap">
-                    <Badge tone="warning" appearance="soft" size="sm" className="text-xs">
+                    <Badge tone="neutral" appearance="soft" size="sm" className="text-xs">
                       En proceso
                     </Badge>
                   </TableCell>

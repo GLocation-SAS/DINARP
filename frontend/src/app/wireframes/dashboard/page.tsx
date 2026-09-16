@@ -140,20 +140,20 @@ export default function WireframeDashboardPage() {
           <Link href="/wireframes/aprobaciones" className="group block">
             <Card
               variant="featured"
-              className="h-full bg-warning/10 hover:bg-warning/15 border border-warning/20 transition-colors"
+              className="h-full bg-foreground/10 hover:bg-foreground/15 border border-border transition-colors"
               innerClassName="p-5 items-start text-left gap-1"
             >
               <span className="font-heading font-extrabold text-3xl sm:text-4xl text-foreground tracking-tight block">
                 4
               </span>
-              <span className="text-xs font-semibold text-warning block">
+              <span className="text-xs font-semibold text-foreground block">
                 Pendientes de aprobación
               </span>
               <span className="text-[11px] text-muted-foreground font-normal">
                 En espera de dictamen
               </span>
               <CardDecorativeIcon>
-                <Clock className="size-28 text-warning" />
+                <Clock className="size-28 text-foreground" />
               </CardDecorativeIcon>
             </Card>
           </Link>
@@ -162,20 +162,20 @@ export default function WireframeDashboardPage() {
           <Link href="/wireframes/solicitudes" className="group block">
             <Card
               variant="featured"
-              className="h-full bg-success/10 hover:bg-success/15 border border-success/20 transition-colors"
+              className="h-full bg-foreground/10 hover:bg-foreground/15 border border-border transition-colors"
               innerClassName="p-5 items-start text-left gap-1"
             >
               <span className="font-heading font-extrabold text-3xl sm:text-4xl text-foreground tracking-tight block">
                 8
               </span>
-              <span className="text-xs font-semibold text-success block">
+              <span className="text-xs font-semibold text-foreground block">
                 Aprobadas este mes
               </span>
               <span className="text-[11px] text-muted-foreground font-normal">
                 Interoperabilidad lista
               </span>
               <CardDecorativeIcon>
-                <CheckCircle2 className="size-28 text-success" />
+                <CheckCircle2 className="size-28 text-foreground" />
               </CardDecorativeIcon>
             </Card>
           </Link>
@@ -184,20 +184,20 @@ export default function WireframeDashboardPage() {
           <Link href="/wireframes/solicitudes" className="group block">
             <Card
               variant="featured"
-              className="h-full bg-danger/10 hover:bg-danger/15 border border-danger/20 transition-colors"
+              className="h-full bg-foreground/10 hover:bg-foreground/15 border border-border transition-colors"
               innerClassName="p-5 items-start text-left gap-1"
             >
               <span className="font-heading font-extrabold text-3xl sm:text-4xl text-foreground tracking-tight block">
                 2
               </span>
-              <span className="text-xs font-semibold text-danger block">
+              <span className="text-xs font-semibold text-foreground block">
                 Requieren atención
               </span>
               <span className="text-[11px] text-muted-foreground font-normal">
                 Observadas o rechazadas
               </span>
               <CardDecorativeIcon>
-                <XCircle className="size-28 text-danger" />
+                <XCircle className="size-28 text-foreground" />
               </CardDecorativeIcon>
             </Card>
           </Link>

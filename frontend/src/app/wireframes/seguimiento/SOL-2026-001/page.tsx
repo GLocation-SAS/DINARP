@@ -121,8 +121,8 @@ export default function WireframeDetalleSeguimientoPage() {
               <h1 className="font-heading font-extrabold text-2xl sm:text-3xl text-foreground tracking-tight font-mono">
                 SOL-2026-001
               </h1>
-              <Badge tone="info" appearance="soft" size="md" className="font-semibold text-xs gap-1.5">
-                <span className="size-2 rounded-full bg-info" />
+              <Badge tone="neutral" appearance="soft" size="md" className="font-semibold text-xs gap-1.5">
+                <span className="size-2 rounded-full bg-foreground" />
                 En revisión
               </Badge>
             </div>

@@ -430,7 +430,7 @@ export default function WireframeListadoUsuariosPage() {
                           <DropdownMenuSeparator />
                           {row.estado === "Activo" ? (
                             <DropdownMenuItem
-                              className="text-warning focus:text-warning"
+                              className="text-foreground focus:text-foreground"
                               onClick={(e) => handleOpenDeactivateModal(row, e)}
                             >
                               <Lock className="size-3.5 mr-2" />
@@ -438,7 +438,7 @@ export default function WireframeListadoUsuariosPage() {
                             </DropdownMenuItem>
                           ) : (
                             <DropdownMenuItem
-                              className="text-success focus:text-success"
+                              className="text-foreground focus:text-foreground"
                               onClick={(e) => handleOpenDeactivateModal(row, e)}
                             >
                               <Unlock className="size-3.5 mr-2" />
@@ -528,16 +528,19 @@ export default function WireframeListadoUsuariosPage() {
         onSave={handleSaveUser}
       />
 
-      {/* ── Dialog Warning: Desactivar / Reactivar Usuario ── */}
+      {/* ── Dialog: Desactivar / Reactivar Usuario ── */}
       <Dialog open={isDeactivateOpen} onOpenChange={setIsDeactivateOpen}>
-        <DialogContent variant="warning" size="default">
-          <DialogHeader>
-            <DialogTitle>
+        <DialogContent className="max-w-md rounded-2xl p-6 bg-surface border-border shadow-xl text-left" showCloseButton={true}>
+          <div className="size-12 rounded-xl bg-muted/60 border border-border/50 flex items-center justify-center text-foreground mb-2">
+            <AlertTriangle className="size-6 stroke-[2]" />
+          </div>
+          <DialogHeader className="text-left space-y-1.5">
+            <DialogTitle className="text-lg font-bold text-foreground">
               {userToDeactivate?.estado === "Activo"
                 ? "¿Desactivar usuario?"
                 : "¿Reactivar usuario?"}
             </DialogTitle>
-            <DialogDescription>
+            <DialogDescription className="text-xs text-muted-foreground leading-relaxed">
               {userToDeactivate?.estado === "Activo" ? (
                 <>
                   Estás a punto de suspender el acceso de{" "}
@@ -558,11 +561,20 @@ export default function WireframeListadoUsuariosPage() {
             </DialogDescription>
           </DialogHeader>
 
-          <DialogFooter showCloseButton={true} stacked={true}>
+          <DialogFooter className="mt-4 flex items-center justify-end gap-2">
             <Button
               type="button"
-              variant={userToDeactivate?.estado === "Activo" ? "warning" : "success"}
+              variant="outline"
+              onClick={() => setIsDeactivateOpen(false)}
+              className="h-9 px-4 rounded-xl text-xs font-semibold"
+            >
+              Cancelar
+            </Button>
+            <Button
+              type="button"
+              variant={userToDeactivate?.estado === "Activo" ? "primary" : "primary"}
               onClick={handleConfirmDeactivate}
+              className="h-9 px-4 rounded-xl text-xs font-semibold"
             >
               {userToDeactivate?.estado === "Activo"
                 ? "Desactivar usuario"

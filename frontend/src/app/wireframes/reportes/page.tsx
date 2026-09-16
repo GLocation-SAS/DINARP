@@ -431,7 +431,7 @@ export default function WireframeReportesPage() {
               Total de transacciones
             </span>
             <span className="text-[11px] font-medium text-foreground flex items-center gap-0.5 mt-1">
-              <span className="text-success font-semibold">↑ +12%</span>
+              <span className="text-foreground font-semibold">↑ +12%</span>
               <span className="text-muted-foreground font-normal">vs. mes anterior</span>
             </span>
             <CardDecorativeIcon>
@@ -442,13 +442,13 @@ export default function WireframeReportesPage() {
           {/* Card 2: Exitosas */}
           <Card
             variant="featured"
-            className="bg-success/10 hover:bg-success/15 border border-success/20 transition-colors"
+            className="bg-foreground/10 hover:bg-foreground/15 border border-border transition-colors"
             innerClassName="p-5 items-start text-left gap-1"
           >
             <span className="font-mono font-extrabold text-2xl sm:text-3xl text-foreground tracking-tight block">
               118.920
             </span>
-            <span className="text-xs font-semibold text-success block">
+            <span className="text-xs font-semibold text-foreground block">
               Transacciones exitosas
             </span>
             <span className="text-[11px] font-medium text-foreground flex items-center gap-0.5 mt-1">
@@ -456,20 +456,20 @@ export default function WireframeReportesPage() {
               <span className="text-muted-foreground font-normal">del total</span>
             </span>
             <CardDecorativeIcon>
-              <CheckCircle2 className="size-28 text-success" />
+              <CheckCircle2 className="size-28 text-foreground" />
             </CardDecorativeIcon>
           </Card>
 
           {/* Card 3: Con Error */}
           <Card
             variant="featured"
-            className="bg-danger/10 hover:bg-danger/15 border border-danger/20 transition-colors"
+            className="bg-foreground/10 hover:bg-foreground/15 border border-border transition-colors"
             innerClassName="p-5 items-start text-left gap-1"
           >
             <span className="font-mono font-extrabold text-2xl sm:text-3xl text-foreground tracking-tight block">
               6.510
             </span>
-            <span className="text-xs font-semibold text-danger block">
+            <span className="text-xs font-semibold text-foreground block">
               Transacciones con error
             </span>
             <span className="text-[11px] font-medium text-foreground flex items-center gap-0.5 mt-1">
@@ -477,28 +477,28 @@ export default function WireframeReportesPage() {
               <span className="text-muted-foreground font-normal">del total</span>
             </span>
             <CardDecorativeIcon>
-              <AlertTriangle className="size-28 text-danger" />
+              <AlertTriangle className="size-28 text-foreground" />
             </CardDecorativeIcon>
           </Card>
 
           {/* Card 4: Disponibilidad */}
           <Card
             variant="featured"
-            className="bg-info/10 hover:bg-info/15 border border-info/20 transition-colors"
+            className="bg-foreground/10 hover:bg-foreground/15 border border-border transition-colors"
             innerClassName="p-5 items-start text-left gap-1"
           >
             <span className="font-mono font-extrabold text-2xl sm:text-3xl text-foreground tracking-tight block">
               99,8%
             </span>
-            <span className="text-xs font-semibold text-info block">
+            <span className="text-xs font-semibold text-foreground block">
               Disponibilidad de servicios
             </span>
             <span className="text-[11px] font-medium text-foreground flex items-center gap-0.5 mt-1">
-              <span className="text-success font-semibold">↑ +0,2%</span>
+              <span className="text-foreground font-semibold">↑ +0,2%</span>
               <span className="text-muted-foreground font-normal">vs. mes anterior</span>
             </span>
             <CardDecorativeIcon>
-              <Clock className="size-28 text-info" />
+              <Clock className="size-28 text-foreground" />
             </CardDecorativeIcon>
           </Card>
         </div>

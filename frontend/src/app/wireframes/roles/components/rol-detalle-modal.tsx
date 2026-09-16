@@ -184,7 +184,7 @@ export function RolDetalleModal({
                         {u.cargo}
                       </TableCell>
                       <TableCell>
-                        <Badge tone="success" appearance="soft" size="sm" className="text-[10px]">
+                        <Badge tone="neutral" appearance="soft" size="sm" className="text-[10px]">
                           {u.estado}
                         </Badge>
                       </TableCell>

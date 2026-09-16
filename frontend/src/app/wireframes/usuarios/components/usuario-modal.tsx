@@ -146,7 +146,7 @@ export function UsuarioModal({
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div className="grid gap-1.5 text-left">
               <Label htmlFor="usuario-nombres" className="text-xs font-semibold text-foreground">
-                Nombres <span className="text-danger">*</span>
+                Nombres <span className="text-foreground">*</span>
               </Label>
               <InputGroup>
                 <InputGroupText>
@@ -183,7 +183,7 @@ export function UsuarioModal({
           {/* Correo Electrónico Institucional */}
           <div className="grid gap-1.5 text-left">
             <Label htmlFor="usuario-correo" className="text-xs font-semibold text-foreground">
-              Correo institucional <span className="text-danger">*</span>
+              Correo institucional <span className="text-foreground">*</span>
             </Label>
             <InputGroup>
               <InputGroupText>
@@ -284,7 +284,7 @@ export function UsuarioModal({
                   >
                     <div className="flex items-center gap-2 truncate">
                       <span
-                        className={`size-2 rounded-full shrink-0 ${estado === "Activo" ? "bg-success" : "bg-danger"
+                        className={`size-2 rounded-full shrink-0 ${estado === "Activo" ? "bg-foreground" : "bg-foreground"
                           }`}
                       />
                       <span className="truncate text-foreground text-sm font-medium">{estado}</span>

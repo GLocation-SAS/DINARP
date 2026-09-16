@@ -438,7 +438,7 @@ export default function WireframeTarifarioCotizacionPage() {
                         {row.tarifa.toFixed(2).replace(".", ",")}
                       </TableCell>
                       <TableCell className="py-4 px-6 whitespace-nowrap">
-                        <Badge tone="success" appearance="soft" size="sm" className="font-semibold text-xs">
+                        <Badge tone="neutral" appearance="soft" size="sm" className="font-semibold text-xs">
                           {row.estado}
                         </Badge>
                       </TableCell>
@@ -683,7 +683,7 @@ export default function WireframeTarifarioCotizacionPage() {
                                       variant="ghost"
                                       size="icon-sm"
                                       onClick={() => handleRemoveCalculado(item.id)}
-                                      className="size-7 text-muted-foreground hover:text-danger hover:bg-danger/10"
+                                      className="size-7 text-muted-foreground hover:text-foreground hover:bg-foreground/10"
                                       aria-label="Eliminar servicio"
                                     >
                                       <Trash2 className="size-3.5" />

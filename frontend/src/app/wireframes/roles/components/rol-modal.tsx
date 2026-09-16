@@ -302,7 +302,7 @@ export function RolModal({
               <DialogTitle className="text-left font-heading font-extrabold text-xl sm:text-2xl text-foreground">
                 {isEditing ? "Editar Rol" : "Crear Nuevo Rol"}
               </DialogTitle>
-              <Badge appearance="soft" tone="primary" size="sm" className="shrink-0 font-medium text-xs">
+              <Badge appearance="soft" tone="neutral" size="sm" className="shrink-0 font-medium text-xs">
                 {totalSelectedCount} permisos activos
               </Badge>
             </div>
@@ -333,7 +333,7 @@ export function RolModal({
               {/* Nombre del Rol */}
               <div className="grid gap-1.5 text-left">
                 <Label htmlFor="rol-nombre" className="text-xs font-semibold text-foreground">
-                  Nombre del rol <span className="text-danger">*</span>
+                  Nombre del rol <span className="text-foreground">*</span>
                 </Label>
                 <InputGroup>
                   <InputGroupText>
@@ -363,7 +363,7 @@ export function RolModal({
                     >
                       <div className="flex items-center gap-2 truncate">
                         <span
-                          className={`size-2 rounded-full shrink-0 ${estado === "Activo" ? "bg-success" : "bg-danger"
+                          className={`size-2 rounded-full shrink-0 ${estado === "Activo" ? "bg-foreground" : "bg-foreground"
                             }`}
                         />
                         <span className="truncate text-foreground text-sm font-medium">{estado}</span>

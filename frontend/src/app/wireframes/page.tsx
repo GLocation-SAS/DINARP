@@ -28,7 +28,7 @@ export default function WireframesPage() {
             <Badge tone="neutral" appearance="soft" size="sm">
               Entorno Neutral
             </Badge>
-            <Badge tone="success" appearance="soft" size="sm">
+            <Badge tone="neutral" appearance="soft" size="sm">
               <CheckCircle2 className="size-3 mr-1" />
               Ruta Activa
             </Badge>
@@ -116,7 +116,7 @@ export default function WireframesPage() {
             className="group flex flex-col p-5 rounded-2xl border border-border bg-surface hover:border-foreground/30 hover:shadow-sm transition-all"
           >
             <div className="flex items-center justify-between mb-2">
-              <Badge tone="success" appearance="soft" size="sm">Paso 2</Badge>
+              <Badge tone="neutral" appearance="soft" size="sm">Paso 2</Badge>
               <ArrowRight className="size-4 text-muted-foreground group-hover:translate-x-1 transition-transform" />
             </div>
             <h3 className="font-heading font-bold text-base text-foreground">Dashboard Principal</h3>
@@ -128,7 +128,7 @@ export default function WireframesPage() {
             className="group flex flex-col p-5 rounded-2xl border border-border bg-surface hover:border-foreground/30 hover:shadow-sm transition-all"
           >
             <div className="flex items-center justify-between mb-2">
-              <Badge tone="primary" appearance="soft" size="sm">Paso 3</Badge>
+              <Badge tone="neutral" appearance="soft" size="sm">Paso 3</Badge>
               <ArrowRight className="size-4 text-muted-foreground group-hover:translate-x-1 transition-transform" />
             </div>
             <h3 className="font-heading font-bold text-base text-foreground">Gestión de Solicitudes</h3>
@@ -140,7 +140,7 @@ export default function WireframesPage() {
             className="group flex flex-col p-5 rounded-2xl border border-border bg-surface hover:border-foreground/30 hover:shadow-sm transition-all"
           >
             <div className="flex items-center justify-between mb-2">
-              <Badge tone="primary" appearance="soft" size="sm">Paso 3.1</Badge>
+              <Badge tone="neutral" appearance="soft" size="sm">Paso 3.1</Badge>
               <ArrowRight className="size-4 text-muted-foreground group-hover:translate-x-1 transition-transform" />
             </div>
             <h3 className="font-heading font-bold text-base text-foreground">Detalle de Solicitud</h3>
@@ -152,7 +152,7 @@ export default function WireframesPage() {
             className="group flex flex-col p-5 rounded-2xl border border-border bg-surface hover:border-foreground/30 hover:shadow-sm transition-all"
           >
             <div className="flex items-center justify-between mb-2">
-              <Badge tone="primary" appearance="soft" size="sm">Paso 3.2</Badge>
+              <Badge tone="neutral" appearance="soft" size="sm">Paso 3.2</Badge>
               <ArrowRight className="size-4 text-muted-foreground group-hover:translate-x-1 transition-transform" />
             </div>
             <h3 className="font-heading font-bold text-base text-foreground">Seguimiento de Solicitud</h3>
@@ -164,7 +164,7 @@ export default function WireframesPage() {
             className="group flex flex-col p-5 rounded-2xl border border-border bg-surface hover:border-foreground/30 hover:shadow-sm transition-all"
           >
             <div className="flex items-center justify-between mb-2">
-              <Badge tone="primary" appearance="soft" size="sm">Paso 4</Badge>
+              <Badge tone="neutral" appearance="soft" size="sm">Paso 4</Badge>
               <ArrowRight className="size-4 text-muted-foreground group-hover:translate-x-1 transition-transform" />
             </div>
             <h3 className="font-heading font-bold text-base text-foreground">Aprobaciones y Permisos</h3>
@@ -176,7 +176,7 @@ export default function WireframesPage() {
             className="group flex flex-col p-5 rounded-2xl border border-border bg-surface hover:border-foreground/30 hover:shadow-sm transition-all"
           >
             <div className="flex items-center justify-between mb-2">
-              <Badge tone="primary" appearance="soft" size="sm">Paso 4.1</Badge>
+              <Badge tone="neutral" appearance="soft" size="sm">Paso 4.1</Badge>
               <ArrowRight className="size-4 text-muted-foreground group-hover:translate-x-1 transition-transform" />
             </div>
             <h3 className="font-heading font-bold text-base text-foreground">Revisión de Solicitud (SOL-024)</h3>
@@ -188,7 +188,7 @@ export default function WireframesPage() {
             className="group flex flex-col p-5 rounded-2xl border border-border bg-surface hover:border-foreground/30 hover:shadow-sm transition-all"
           >
             <div className="flex items-center justify-between mb-2">
-              <Badge tone="primary" appearance="soft" size="sm">Paso 4.2</Badge>
+              <Badge tone="neutral" appearance="soft" size="sm">Paso 4.2</Badge>
               <ArrowRight className="size-4 text-muted-foreground group-hover:translate-x-1 transition-transform" />
             </div>
             <h3 className="font-heading font-bold text-base text-foreground">Seguimiento y Permiso</h3>
@@ -200,7 +200,7 @@ export default function WireframesPage() {
             className="group flex flex-col p-5 rounded-2xl border border-border bg-surface hover:border-foreground/30 hover:shadow-sm transition-all"
           >
             <div className="flex items-center justify-between mb-2">
-              <Badge tone="primary" appearance="soft" size="sm">Paso 5</Badge>
+              <Badge tone="neutral" appearance="soft" size="sm">Paso 5</Badge>
               <ArrowRight className="size-4 text-muted-foreground group-hover:translate-x-1 transition-transform" />
             </div>
             <h3 className="font-heading font-bold text-base text-foreground">Catálogo de Fuentes y Datos</h3>
@@ -212,7 +212,7 @@ export default function WireframesPage() {
             className="group flex flex-col p-5 rounded-2xl border border-border bg-surface hover:border-foreground/30 hover:shadow-sm transition-all"
           >
             <div className="flex items-center justify-between mb-2">
-              <Badge tone="primary" appearance="soft" size="sm">Paso 5.1</Badge>
+              <Badge tone="neutral" appearance="soft" size="sm">Paso 5.1</Badge>
               <ArrowRight className="size-4 text-muted-foreground group-hover:translate-x-1 transition-transform" />
             </div>
             <h3 className="font-heading font-bold text-base text-foreground">Detalle de Fuente (Registro Civil)</h3>
@@ -224,7 +224,7 @@ export default function WireframesPage() {
             className="group flex flex-col p-5 rounded-2xl border border-border bg-surface hover:border-foreground/30 hover:shadow-sm transition-all"
           >
             <div className="flex items-center justify-between mb-2">
-              <Badge tone="primary" appearance="soft" size="sm">Paso 5.2</Badge>
+              <Badge tone="neutral" appearance="soft" size="sm">Paso 5.2</Badge>
               <ArrowRight className="size-4 text-muted-foreground group-hover:translate-x-1 transition-transform" />
             </div>
             <h3 className="font-heading font-bold text-base text-foreground">Detalle de Servicio y Datos</h3>
@@ -236,7 +236,7 @@ export default function WireframesPage() {
             className="group flex flex-col p-5 rounded-2xl border border-border bg-surface hover:border-foreground/30 hover:shadow-sm transition-all"
           >
             <div className="flex items-center justify-between mb-2">
-              <Badge tone="primary" appearance="soft" size="sm">Paso 3.3</Badge>
+              <Badge tone="neutral" appearance="soft" size="sm">Paso 3.3</Badge>
               <ArrowRight className="size-4 text-muted-foreground group-hover:translate-x-1 transition-transform" />
             </div>
             <h3 className="font-heading font-bold text-base text-foreground">Nueva Solicitud</h3>
@@ -248,7 +248,7 @@ export default function WireframesPage() {
             className="group flex flex-col p-5 rounded-2xl border border-border bg-surface hover:border-foreground/30 hover:shadow-sm transition-all"
           >
             <div className="flex items-center justify-between mb-2">
-              <Badge tone="primary" appearance="soft" size="sm">Paso 6</Badge>
+              <Badge tone="neutral" appearance="soft" size="sm">Paso 6</Badge>
               <ArrowRight className="size-4 text-muted-foreground group-hover:translate-x-1 transition-transform" />
             </div>
             <h3 className="font-heading font-bold text-base text-foreground">Interoperabilidad / Servicios</h3>
@@ -260,7 +260,7 @@ export default function WireframesPage() {
             className="group flex flex-col p-5 rounded-2xl border border-border bg-surface hover:border-foreground/30 hover:shadow-sm transition-all"
           >
             <div className="flex items-center justify-between mb-2">
-              <Badge tone="primary" appearance="soft" size="sm">Paso 6.1</Badge>
+              <Badge tone="neutral" appearance="soft" size="sm">Paso 6.1</Badge>
               <ArrowRight className="size-4 text-muted-foreground group-hover:translate-x-1 transition-transform" />
             </div>
             <h3 className="font-heading font-bold text-base text-foreground">Detalle del Servicio</h3>
@@ -272,7 +272,7 @@ export default function WireframesPage() {
             className="group flex flex-col p-5 rounded-2xl border border-border bg-surface hover:border-foreground/30 hover:shadow-sm transition-all"
           >
             <div className="flex items-center justify-between mb-2">
-              <Badge tone="primary" appearance="soft" size="sm">Paso 6.2</Badge>
+              <Badge tone="neutral" appearance="soft" size="sm">Paso 6.2</Badge>
               <ArrowRight className="size-4 text-muted-foreground group-hover:translate-x-1 transition-transform" />
             </div>
             <h3 className="font-heading font-bold text-base text-foreground">Historial / Trazabilidad</h3>
@@ -284,7 +284,7 @@ export default function WireframesPage() {
             className="group flex flex-col p-5 rounded-2xl border border-border bg-surface hover:border-foreground/30 hover:shadow-sm transition-all"
           >
             <div className="flex items-center justify-between mb-2">
-              <Badge tone="primary" appearance="soft" size="sm">Paso 6.3</Badge>
+              <Badge tone="neutral" appearance="soft" size="sm">Paso 6.3</Badge>
               <ArrowRight className="size-4 text-muted-foreground group-hover:translate-x-1 transition-transform" />
             </div>
             <h3 className="font-heading font-bold text-base text-foreground">Configuración del Servicio</h3>
@@ -296,7 +296,7 @@ export default function WireframesPage() {
             className="group flex flex-col p-5 rounded-2xl border border-border bg-surface hover:border-foreground/30 hover:shadow-sm transition-all"
           >
             <div className="flex items-center justify-between mb-2">
-              <Badge tone="primary" appearance="soft" size="sm">Paso 7</Badge>
+              <Badge tone="neutral" appearance="soft" size="sm">Paso 7</Badge>
               <ArrowRight className="size-4 text-muted-foreground group-hover:translate-x-1 transition-transform" />
             </div>
             <h3 className="font-heading font-bold text-base text-foreground">Intercambios Masivos / Excepcionalidades</h3>
@@ -308,7 +308,7 @@ export default function WireframesPage() {
             className="group flex flex-col p-5 rounded-2xl border border-border bg-surface hover:border-foreground/30 hover:shadow-sm transition-all"
           >
             <div className="flex items-center justify-between mb-2">
-              <Badge tone="primary" appearance="soft" size="sm">Paso 7.1</Badge>
+              <Badge tone="neutral" appearance="soft" size="sm">Paso 7.1</Badge>
               <ArrowRight className="size-4 text-muted-foreground group-hover:translate-x-1 transition-transform" />
             </div>
             <h3 className="font-heading font-bold text-base text-foreground">Nueva Solicitud Masiva (Stepper)</h3>
@@ -320,7 +320,7 @@ export default function WireframesPage() {
             className="group flex flex-col p-5 rounded-2xl border border-border bg-surface hover:border-foreground/30 hover:shadow-sm transition-all"
           >
             <div className="flex items-center justify-between mb-2">
-              <Badge tone="primary" appearance="soft" size="sm">Paso 7.2</Badge>
+              <Badge tone="neutral" appearance="soft" size="sm">Paso 7.2</Badge>
               <ArrowRight className="size-4 text-muted-foreground group-hover:translate-x-1 transition-transform" />
             </div>
             <h3 className="font-heading font-bold text-base text-foreground">Detalle de Intercambio (BATCH-001)</h3>
@@ -332,7 +332,7 @@ export default function WireframesPage() {
             className="group flex flex-col p-5 rounded-2xl border border-border bg-surface hover:border-foreground/30 hover:shadow-sm transition-all"
           >
             <div className="flex items-center justify-between mb-2">
-              <Badge tone="primary" appearance="soft" size="sm">Paso 8</Badge>
+              <Badge tone="neutral" appearance="soft" size="sm">Paso 8</Badge>
               <ArrowRight className="size-4 text-muted-foreground group-hover:translate-x-1 transition-transform" />
             </div>
             <h3 className="font-heading font-bold text-base text-foreground">Seguimiento y Trazabilidad</h3>
@@ -344,7 +344,7 @@ export default function WireframesPage() {
             className="group flex flex-col p-5 rounded-2xl border border-border bg-surface hover:border-foreground/30 hover:shadow-sm transition-all"
           >
             <div className="flex items-center justify-between mb-2">
-              <Badge tone="primary" appearance="soft" size="sm">Paso 8.1</Badge>
+              <Badge tone="neutral" appearance="soft" size="sm">Paso 8.1</Badge>
               <ArrowRight className="size-4 text-muted-foreground group-hover:translate-x-1 transition-transform" />
             </div>
             <h3 className="font-heading font-bold text-base text-foreground">Detalle de Trazabilidad (SOL-2026-001)</h3>
@@ -356,7 +356,7 @@ export default function WireframesPage() {
             className="group flex flex-col p-5 rounded-2xl border border-border bg-surface hover:border-foreground/30 hover:shadow-sm transition-all"
           >
             <div className="flex items-center justify-between mb-2">
-              <Badge tone="primary" appearance="soft" size="sm">Paso 9</Badge>
+              <Badge tone="neutral" appearance="soft" size="sm">Paso 9</Badge>
               <ArrowRight className="size-4 text-muted-foreground group-hover:translate-x-1 transition-transform" />
             </div>
             <h3 className="font-heading font-bold text-base text-foreground">Tarifario y Cotización</h3>
@@ -368,7 +368,7 @@ export default function WireframesPage() {
             className="group flex flex-col p-5 rounded-2xl border border-border bg-surface hover:border-foreground/30 hover:shadow-sm transition-all"
           >
             <div className="flex items-center justify-between mb-2">
-              <Badge tone="primary" appearance="soft" size="sm">Paso 10</Badge>
+              <Badge tone="neutral" appearance="soft" size="sm">Paso 10</Badge>
               <ArrowRight className="size-4 text-muted-foreground group-hover:translate-x-1 transition-transform" />
             </div>
             <h3 className="font-heading font-bold text-base text-foreground">Módulo de Usuarios</h3>
@@ -380,7 +380,7 @@ export default function WireframesPage() {
             className="group flex flex-col p-5 rounded-2xl border border-border bg-surface hover:border-foreground/30 hover:shadow-sm transition-all"
           >
             <div className="flex items-center justify-between mb-2">
-              <Badge tone="primary" appearance="soft" size="sm">Paso 10.1</Badge>
+              <Badge tone="neutral" appearance="soft" size="sm">Paso 10.1</Badge>
               <ArrowRight className="size-4 text-muted-foreground group-hover:translate-x-1 transition-transform" />
             </div>
             <h3 className="font-heading font-bold text-base text-foreground">Crear Usuario</h3>
@@ -392,7 +392,7 @@ export default function WireframesPage() {
             className="group flex flex-col p-5 rounded-2xl border border-border bg-surface hover:border-foreground/30 hover:shadow-sm transition-all"
           >
             <div className="flex items-center justify-between mb-2">
-              <Badge tone="primary" appearance="soft" size="sm">Paso 10.2</Badge>
+              <Badge tone="neutral" appearance="soft" size="sm">Paso 10.2</Badge>
               <ArrowRight className="size-4 text-muted-foreground group-hover:translate-x-1 transition-transform" />
             </div>
             <h3 className="font-heading font-bold text-base text-foreground">Detalle de Usuario (USR-001)</h3>
@@ -404,7 +404,7 @@ export default function WireframesPage() {
             className="group flex flex-col p-5 rounded-2xl border border-border bg-surface hover:border-foreground/30 hover:shadow-sm transition-all"
           >
             <div className="flex items-center justify-between mb-2">
-              <Badge tone="primary" appearance="soft" size="sm">Paso 10.3</Badge>
+              <Badge tone="neutral" appearance="soft" size="sm">Paso 10.3</Badge>
               <ArrowRight className="size-4 text-muted-foreground group-hover:translate-x-1 transition-transform" />
             </div>
             <h3 className="font-heading font-bold text-base text-foreground">Editar Usuario (USR-001)</h3>
@@ -416,7 +416,7 @@ export default function WireframesPage() {
             className="group flex flex-col p-5 rounded-2xl border border-border bg-surface hover:border-foreground/30 hover:shadow-sm transition-all"
           >
             <div className="flex items-center justify-between mb-2">
-              <Badge tone="primary" appearance="soft" size="sm">Paso 11</Badge>
+              <Badge tone="neutral" appearance="soft" size="sm">Paso 11</Badge>
               <ArrowRight className="size-4 text-muted-foreground group-hover:translate-x-1 transition-transform" />
             </div>
             <h3 className="font-heading font-bold text-base text-foreground">Facturación</h3>
@@ -428,7 +428,7 @@ export default function WireframesPage() {
             className="group flex flex-col p-5 rounded-2xl border border-border bg-surface hover:border-foreground/30 hover:shadow-sm transition-all"
           >
             <div className="flex items-center justify-between mb-2">
-              <Badge tone="primary" appearance="soft" size="sm">Paso 11.1</Badge>
+              <Badge tone="neutral" appearance="soft" size="sm">Paso 11.1</Badge>
               <ArrowRight className="size-4 text-muted-foreground group-hover:translate-x-1 transition-transform" />
             </div>
             <h3 className="font-heading font-bold text-base text-foreground">Detalle de Factura (F-2026-00125)</h3>
@@ -440,7 +440,7 @@ export default function WireframesPage() {
             className="group flex flex-col p-5 rounded-2xl border border-border bg-surface hover:border-foreground/30 hover:shadow-sm transition-all"
           >
             <div className="flex items-center justify-between mb-2">
-              <Badge tone="primary" appearance="soft" size="sm">Paso 12</Badge>
+              <Badge tone="neutral" appearance="soft" size="sm">Paso 12</Badge>
               <ArrowRight className="size-4 text-muted-foreground group-hover:translate-x-1 transition-transform" />
             </div>
             <h3 className="font-heading font-bold text-base text-foreground">Listado de Roles</h3>
@@ -452,7 +452,7 @@ export default function WireframesPage() {
             className="group flex flex-col p-5 rounded-2xl border border-border bg-surface hover:border-foreground/30 hover:shadow-sm transition-all"
           >
             <div className="flex items-center justify-between mb-2">
-              <Badge tone="primary" appearance="soft" size="sm">Paso 12.1</Badge>
+              <Badge tone="neutral" appearance="soft" size="sm">Paso 12.1</Badge>
               <ArrowRight className="size-4 text-muted-foreground group-hover:translate-x-1 transition-transform" />
             </div>
             <h3 className="font-heading font-bold text-base text-foreground">Crear Rol (Formulario + Matriz)</h3>
@@ -464,7 +464,7 @@ export default function WireframesPage() {
             className="group flex flex-col p-5 rounded-2xl border border-border bg-surface hover:border-foreground/30 hover:shadow-sm transition-all"
           >
             <div className="flex items-center justify-between mb-2">
-              <Badge tone="primary" appearance="soft" size="sm">Paso 12.2</Badge>
+              <Badge tone="neutral" appearance="soft" size="sm">Paso 12.2</Badge>
               <ArrowRight className="size-4 text-muted-foreground group-hover:translate-x-1 transition-transform" />
             </div>
             <h3 className="font-heading font-bold text-base text-foreground">Detalle de Rol (ROL-002)</h3>
@@ -476,7 +476,7 @@ export default function WireframesPage() {
             className="group flex flex-col p-5 rounded-2xl border border-border bg-surface hover:border-foreground/30 hover:shadow-sm transition-all"
           >
             <div className="flex items-center justify-between mb-2">
-              <Badge tone="primary" appearance="soft" size="sm">Paso 12.3</Badge>
+              <Badge tone="neutral" appearance="soft" size="sm">Paso 12.3</Badge>
               <ArrowRight className="size-4 text-muted-foreground group-hover:translate-x-1 transition-transform" />
             </div>
             <h3 className="font-heading font-bold text-base text-foreground">Editar Rol (ROL-002)</h3>
@@ -488,7 +488,7 @@ export default function WireframesPage() {
             className="group flex flex-col p-5 rounded-2xl border border-border bg-surface hover:border-foreground/30 hover:shadow-sm transition-all"
           >
             <div className="flex items-center justify-between mb-2">
-              <Badge tone="primary" appearance="soft" size="sm">Paso 13</Badge>
+              <Badge tone="neutral" appearance="soft" size="sm">Paso 13</Badge>
               <ArrowRight className="size-4 text-muted-foreground group-hover:translate-x-1 transition-transform" />
             </div>
             <h3 className="font-heading font-bold text-base text-foreground">Reportes e Indicadores</h3>
@@ -524,7 +524,7 @@ export default function WireframesPage() {
             className="group flex flex-col p-5 rounded-2xl border border-border bg-surface hover:border-foreground/30 hover:shadow-sm transition-all"
           >
             <div className="flex items-center justify-between mb-2">
-              <Badge tone="warning" appearance="soft" size="sm">Sistema</Badge>
+              <Badge tone="neutral" appearance="soft" size="sm">Sistema</Badge>
               <ArrowRight className="size-4 text-muted-foreground group-hover:translate-x-1 transition-transform" />
             </div>
             <h3 className="font-heading font-bold text-base text-foreground">En Construcción</h3>
@@ -536,7 +536,7 @@ export default function WireframesPage() {
             className="group flex flex-col p-5 rounded-2xl border border-border bg-surface hover:border-foreground/30 hover:shadow-sm transition-all"
           >
             <div className="flex items-center justify-between mb-2">
-              <Badge tone="danger" appearance="soft" size="sm">Sistema</Badge>
+              <Badge tone="neutral" appearance="soft" size="sm">Sistema</Badge>
               <ArrowRight className="size-4 text-muted-foreground group-hover:translate-x-1 transition-transform" />
             </div>
             <h3 className="font-heading font-bold text-base text-foreground">Error 404 No Encontrado</h3>

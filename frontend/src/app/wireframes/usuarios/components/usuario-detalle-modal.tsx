@@ -176,19 +176,19 @@ export function UsuarioDetalleModal({
 
               <div className="grid grid-cols-2 gap-2 text-xs">
                 <div className="p-3 rounded-lg bg-muted/30 border border-border/60 flex items-center gap-2">
-                  <CheckCircle2 className="size-3.5 text-success" />
+                  <CheckCircle2 className="size-3.5 text-foreground" />
                   <span>Consulta de identidad</span>
                 </div>
                 <div className="p-3 rounded-lg bg-muted/30 border border-border/60 flex items-center gap-2">
-                  <CheckCircle2 className="size-3.5 text-success" />
+                  <CheckCircle2 className="size-3.5 text-foreground" />
                   <span>Creación de solicitudes</span>
                 </div>
                 <div className="p-3 rounded-lg bg-muted/30 border border-border/60 flex items-center gap-2">
-                  <CheckCircle2 className="size-3.5 text-success" />
+                  <CheckCircle2 className="size-3.5 text-foreground" />
                   <span>Descarga de reportes</span>
                 </div>
                 <div className="p-3 rounded-lg bg-muted/30 border border-border/60 flex items-center gap-2">
-                  <CheckCircle2 className="size-3.5 text-success" />
+                  <CheckCircle2 className="size-3.5 text-foreground" />
                   <span>Revisión de bitácora</span>
                 </div>
               </div>

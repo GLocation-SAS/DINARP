@@ -160,8 +160,8 @@ export default function WireframeRevisionSolicitudPage() {
             <h1 className="font-heading font-extrabold text-2xl sm:text-3xl text-foreground tracking-tight">
               SOL-024 · Validación ciudadana
             </h1>
-            <Badge tone="warning" appearance="soft" size="md" className="font-semibold text-xs gap-1.5">
-              <span className="size-2 rounded-full bg-warning" />
+            <Badge tone="neutral" appearance="soft" size="md" className="font-semibold text-xs gap-1.5">
+              <span className="size-2 rounded-full bg-foreground" />
               Pendiente de revisión
             </Badge>
           </div>
@@ -547,7 +547,7 @@ export default function WireframeRevisionSolicitudPage() {
             <div className="space-y-1.5 text-left my-2">
               <div className="flex items-center justify-between">
                 <Label htmlFor="modal-motivo-rechazo" className="text-xs font-semibold text-foreground">
-                  Motivo / observación <span className="text-danger">*</span>
+                  Motivo / observación <span className="text-foreground">*</span>
                 </Label>
                 <span className="text-[10px] text-muted-foreground">{modalMotivoRechazo.length}/500</span>
               </div>
@@ -564,7 +564,7 @@ export default function WireframeRevisionSolicitudPage() {
                 className="w-full rounded-xl border border-border bg-surface p-3 text-xs sm:text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-foreground/20"
               />
               {rechazoError && (
-                <p className="text-xs text-danger font-medium">
+                <p className="text-xs text-foreground font-medium">
                   El motivo de rechazo es obligatorio.
                 </p>
               )}

@@ -308,60 +308,60 @@ export default function WireframeSolicitudesPage() {
           {/* 2. En revisión */}
           <Card
             variant="featured"
-            className="bg-warning/10 hover:bg-warning/15 border border-warning/20 transition-colors"
+            className="bg-foreground/10 hover:bg-foreground/15 border border-border transition-colors"
             innerClassName="p-5 items-start text-left gap-1"
           >
             <span className="font-heading font-extrabold text-3xl sm:text-4xl text-foreground tracking-tight block">
               5
             </span>
-            <span className="text-xs font-semibold text-warning block">
+            <span className="text-xs font-semibold text-foreground block">
               En revisión
             </span>
             <span className="text-[11px] text-muted-foreground font-normal">
               Pendientes de dictamen
             </span>
             <CardDecorativeIcon>
-              <Clock className="size-28 text-warning" />
+              <Clock className="size-28 text-foreground" />
             </CardDecorativeIcon>
           </Card>
 
           {/* 3. Aprobadas */}
           <Card
             variant="featured"
-            className="bg-success/10 hover:bg-success/15 border border-success/20 transition-colors"
+            className="bg-foreground/10 hover:bg-foreground/15 border border-border transition-colors"
             innerClassName="p-5 items-start text-left gap-1"
           >
             <span className="font-heading font-extrabold text-3xl sm:text-4xl text-foreground tracking-tight block">
               12
             </span>
-            <span className="text-xs font-semibold text-success block">
+            <span className="text-xs font-semibold text-foreground block">
               Aprobadas
             </span>
             <span className="text-[11px] text-muted-foreground font-normal">
               Listas para interoperar
             </span>
             <CardDecorativeIcon>
-              <CheckCircle2 className="size-28 text-success" />
+              <CheckCircle2 className="size-28 text-foreground" />
             </CardDecorativeIcon>
           </Card>
 
           {/* 4. Observadas */}
           <Card
             variant="featured"
-            className="bg-danger/10 hover:bg-danger/15 border border-danger/20 transition-colors"
+            className="bg-foreground/10 hover:bg-foreground/15 border border-border transition-colors"
             innerClassName="p-5 items-start text-left gap-1"
           >
             <span className="font-heading font-extrabold text-3xl sm:text-4xl text-foreground tracking-tight block">
               3
             </span>
-            <span className="text-xs font-semibold text-danger block">
+            <span className="text-xs font-semibold text-foreground block">
               Observadas
             </span>
             <span className="text-[11px] text-muted-foreground font-normal">
               Requieren subsanación
             </span>
             <CardDecorativeIcon>
-              <XCircle className="size-28 text-danger" />
+              <XCircle className="size-28 text-foreground" />
             </CardDecorativeIcon>
           </Card>
         </div>
@@ -434,9 +434,9 @@ export default function WireframeSolicitudesPage() {
                     <span className="inline-flex items-center gap-1.5 text-xs font-semibold text-foreground">
                       <span className={cn(
                         "size-1.5 rounded-full shrink-0",
-                        item.estado === "Aprobada" && "bg-success",
-                        item.estado === "En revisión" && "bg-warning",
-                        item.estado === "Observada" && "bg-danger",
+                        item.estado === "Aprobada" && "bg-foreground",
+                        item.estado === "En revisión" && "bg-foreground",
+                        item.estado === "Observada" && "bg-foreground",
                         item.estado === "Borrador" && "bg-muted-foreground"
                       )} />
                       {item.estado}

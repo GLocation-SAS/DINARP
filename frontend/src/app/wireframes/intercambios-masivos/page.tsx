@@ -433,9 +433,9 @@ export default function WireframeIntercambiosMasivosPage() {
                     <span className="inline-flex items-center gap-1.5 text-xs font-semibold text-foreground">
                       <span className={cn(
                         "size-1.5 rounded-full shrink-0",
-                        (b.estado === "Aprobado" || b.estado === "Finalizado") && "bg-success",
-                        b.estado === "En revisión" && "bg-warning",
-                        b.estado === "Rechazado" && "bg-danger"
+                        (b.estado === "Aprobado" || b.estado === "Finalizado") && "bg-foreground",
+                        b.estado === "En revisión" && "bg-foreground",
+                        b.estado === "Rechazado" && "bg-foreground"
                       )} />
                       {b.estado}
                     </span>
@@ -497,7 +497,7 @@ export default function WireframeIntercambiosMasivosPage() {
                               <DropdownMenuItem onClick={(e) => handleToggleBatchState(b, e)}>
                                 {b.estado === "En ejecución" ? (
                                   <>
-                                    <PauseCircle className="size-3.5 mr-2 text-warning" />
+                                    <PauseCircle className="size-3.5 mr-2 text-foreground" />
                                     <span>Pausar ejecución</span>
                                   </>
                                 ) : (

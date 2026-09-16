@@ -486,7 +486,7 @@ export default function WireframeServiciosHabilitadosPage() {
                             <DropdownMenuItem onClick={(e) => handleToggleEstadoServicio(s, e)}>
                               {s.estado === "Activo" ? (
                                 <>
-                                  <PauseCircle className="size-3.5 mr-2 text-warning" />
+                                  <PauseCircle className="size-3.5 mr-2 text-foreground" />
                                   <span>Suspender servicio</span>
                                 </>
                               ) : (

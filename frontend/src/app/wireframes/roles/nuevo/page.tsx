@@ -408,7 +408,7 @@ export default function WireframeCrearRolPage() {
         ) : (
           /* ── 5. Confirmación de Creación ── */
           <Card className="rounded-2xl border-border bg-surface p-10 sm:p-14 text-center max-w-lg mx-auto shadow-sm space-y-6">
-            <div className="size-20 rounded-full bg-success/15 text-success flex items-center justify-center mx-auto">
+            <div className="size-20 rounded-full bg-foreground/15 text-foreground flex items-center justify-center mx-auto">
               <CheckCircle2 className="size-10" />
             </div>
 

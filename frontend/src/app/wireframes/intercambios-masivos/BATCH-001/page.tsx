@@ -116,8 +116,8 @@ export default function WireframeDetalleBatchPage() {
               <h1 className="font-heading font-extrabold text-2xl sm:text-3xl text-foreground tracking-tight">
                 BATCH-001 · Cruce poblacional para subsidios de vivienda
               </h1>
-              <Badge tone="warning" appearance="soft" size="md" className="font-semibold text-xs gap-1.5">
-                <span className="size-2 rounded-full bg-warning" />
+              <Badge tone="neutral" appearance="soft" size="md" className="font-semibold text-xs gap-1.5">
+                <span className="size-2 rounded-full bg-foreground" />
                 En revisión
               </Badge>
             </div>
@@ -189,7 +189,7 @@ export default function WireframeDetalleBatchPage() {
                 {
                   label: "Estado",
                   value: (
-                    <Badge tone="warning" appearance="soft" size="sm" className="font-semibold text-xs">
+                    <Badge tone="neutral" appearance="soft" size="sm" className="font-semibold text-xs">
                       En revisión
                     </Badge>
                   ),
@@ -312,7 +312,7 @@ export default function WireframeDetalleBatchPage() {
                 <div className="space-y-0.5">
                   <div className="flex items-center gap-2">
                     <span className="text-xs font-bold text-foreground">16/09/26 11:30 · En revisión</span>
-                    <Badge tone="warning" appearance="soft" size="sm" className="text-[10px]">En progreso</Badge>
+                    <Badge tone="neutral" appearance="soft" size="sm" className="text-[10px]">En progreso</Badge>
                   </div>
                   <p className="text-[11px] text-muted-foreground">Asignación al equipo técnico y legal de la DINARP.</p>
                 </div>

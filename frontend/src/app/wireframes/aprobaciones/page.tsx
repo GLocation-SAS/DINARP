@@ -406,9 +406,9 @@ export default function WireframeBandejaAprobacionesPage() {
                         <span className="inline-flex items-center gap-1.5 text-xs font-semibold text-foreground">
                           <span className={cn(
                             "size-1.5 rounded-full shrink-0",
-                            row.estado === "Aprobada" && "bg-success",
-                            (row.estado === "En revisión" || row.estado === "Pendiente") && "bg-warning",
-                            row.estado === "Rechazada" && "bg-danger"
+                            row.estado === "Aprobada" && "bg-foreground",
+                            (row.estado === "En revisión" || row.estado === "Pendiente") && "bg-foreground",
+                            row.estado === "Rechazada" && "bg-foreground"
                           )} />
                           {row.estado}
                         </span>
