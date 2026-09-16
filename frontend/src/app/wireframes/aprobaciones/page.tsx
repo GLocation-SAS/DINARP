@@ -40,6 +40,11 @@ import {
   TableCell,
 } from "@/components/ui/table";
 import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+import {
   Tabs,
   TabsList,
   TabsTrigger,
@@ -469,15 +474,23 @@ export default function WireframeBandejaAprobacionesPage() {
 
                         {/* Acción */}
                         <TableCell className="py-4 px-4 text-right whitespace-nowrap" onClick={(e) => e.stopPropagation()}>
-                          <Button
-                            type="button"
-                            variant={row.accionLabel === "Revisar" ? "primary" : "outline"}
-                            size="sm"
-                            onClick={() => handleRowAction(row.codigo)}
-                            className="h-8 px-3.5 rounded-lg text-xs font-semibold shadow-xs cursor-pointer"
-                          >
-                            <span>{row.accionLabel}</span>
-                          </Button>
+                          <div className="inline-flex items-center justify-end">
+                            <Tooltip>
+                              <TooltipTrigger asChild>
+                                <Button
+                                  type="button"
+                                  variant="ghost"
+                                  size="icon-sm"
+                                  aria-label={row.accionLabel}
+                                  onClick={() => handleRowAction(row.codigo)}
+                                  className="size-8 text-muted-foreground hover:text-foreground hover:bg-muted/50 cursor-pointer"
+                                >
+                                  {row.accionLabel === "Revisar" ? <Eye className="size-4" /> : <ArrowRight className="size-4" />}
+                                </Button>
+                              </TooltipTrigger>
+                              <TooltipContent>{row.accionLabel}</TooltipContent>
+                            </Tooltip>
+                          </div>
                         </TableCell>
                       </TableRow>
                     ))

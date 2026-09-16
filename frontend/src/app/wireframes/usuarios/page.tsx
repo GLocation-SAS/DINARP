@@ -46,6 +46,11 @@ import {
   TableCell,
 } from "@/components/ui/table";
 import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+import {
   Pagination,
   PaginationContent,
   PaginationItem,
@@ -310,28 +315,39 @@ export default function WireframeListadoUsuariosPage() {
                     {/* Acciones */}
                     <TableCell className="py-4 px-6 text-right whitespace-nowrap" onClick={(e) => e.stopPropagation()}>
                       <div className="flex items-center justify-end gap-1">
-                        <Button
-                          type="button"
-                          variant="ghost"
-                          size="icon-sm"
-                          onClick={() => router.push(`/wireframes/usuarios/${row.id}/editar`)}
-                          className="size-8 text-muted-foreground hover:text-foreground"
-                          title="Editar usuario"
-                        >
-                          <Pencil className="size-3.5" />
-                        </Button>
-
-                        <DropdownMenu>
-                          <DropdownMenuTrigger asChild>
+                        <Tooltip>
+                          <TooltipTrigger asChild>
                             <Button
                               type="button"
                               variant="ghost"
                               size="icon-sm"
-                              className="size-8 text-muted-foreground hover:text-foreground"
+                              onClick={() => router.push(`/wireframes/usuarios/${row.id}/editar`)}
+                              className="size-8 text-muted-foreground hover:text-foreground hover:bg-muted/50"
+                              aria-label="Editar usuario"
                             >
-                              <MoreVertical className="size-3.5" />
+                              <Pencil className="size-3.5" />
                             </Button>
-                          </DropdownMenuTrigger>
+                          </TooltipTrigger>
+                          <TooltipContent>Editar usuario</TooltipContent>
+                        </Tooltip>
+
+                        <DropdownMenu>
+                          <Tooltip>
+                            <TooltipTrigger asChild>
+                              <DropdownMenuTrigger asChild>
+                                <Button
+                                  type="button"
+                                  variant="ghost"
+                                  size="icon-sm"
+                                  className="size-8 text-muted-foreground hover:text-foreground hover:bg-muted/50"
+                                  aria-label="Más opciones"
+                                >
+                                  <MoreVertical className="size-3.5" />
+                                </Button>
+                              </DropdownMenuTrigger>
+                            </TooltipTrigger>
+                            <TooltipContent>Más opciones</TooltipContent>
+                          </Tooltip>
                           <DropdownMenuContent align="end" className="w-40">
                             <DropdownMenuItem onClick={() => router.push(`/wireframes/usuarios/${row.id}`)}>
                               <Eye className="size-3.5 mr-2" />

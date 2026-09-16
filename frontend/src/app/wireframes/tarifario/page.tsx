@@ -55,6 +55,11 @@ import {
   TableCell,
 } from "@/components/ui/table";
 import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+import {
   Pagination,
   PaginationContent,
   PaginationItem,
@@ -671,15 +676,21 @@ export default function WireframeTarifarioCotizacionPage() {
                                 {item.subtotal.toFixed(2).replace(".", ",")}
                               </TableCell>
                               <TableCell className="py-3.5 px-4 text-center">
-                                <Button
-                                  type="button"
-                                  variant="ghost"
-                                  size="icon-sm"
-                                  onClick={() => handleRemoveCalculado(item.id)}
-                                  className="text-muted-foreground hover:text-destructive size-7"
-                                >
-                                  <Trash2 className="size-3.5" />
-                                </Button>
+                                <Tooltip>
+                                  <TooltipTrigger asChild>
+                                    <Button
+                                      type="button"
+                                      variant="ghost"
+                                      size="icon-sm"
+                                      onClick={() => handleRemoveCalculado(item.id)}
+                                      className="size-7 text-muted-foreground hover:text-danger hover:bg-danger/10"
+                                      aria-label="Eliminar servicio"
+                                    >
+                                      <Trash2 className="size-3.5" />
+                                    </Button>
+                                  </TooltipTrigger>
+                                  <TooltipContent>Eliminar servicio</TooltipContent>
+                                </Tooltip>
                               </TableCell>
                             </TableRow>
                           ))

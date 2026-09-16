@@ -42,6 +42,11 @@ import {
   TableCell,
 } from "@/components/ui/table";
 import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+import {
   Breadcrumb,
   BreadcrumbList,
   BreadcrumbItem,
@@ -416,16 +421,23 @@ export default function WireframeIntercambiosMasivosPage() {
 
                     {/* Acciones */}
                     <TableCell className="py-4 px-4 text-right whitespace-nowrap" onClick={(e) => e.stopPropagation()}>
-                      <Button
-                        type="button"
-                        variant="outline"
-                        size="sm"
-                        onClick={() => router.push(b.href)}
-                        className="h-8 px-3 rounded-lg text-xs font-semibold gap-1.5 border-border"
-                      >
-                        <Eye className="size-3.5" />
-                        <span>Ver detalle</span>
-                      </Button>
+                      <div className="inline-flex items-center justify-end">
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <Button
+                              type="button"
+                              variant="ghost"
+                              size="icon-sm"
+                              onClick={() => router.push(b.href)}
+                              className="size-8 text-muted-foreground hover:text-foreground hover:bg-muted/50 cursor-pointer"
+                              aria-label="Ver detalle"
+                            >
+                              <Eye className="size-4" />
+                            </Button>
+                          </TooltipTrigger>
+                          <TooltipContent>Ver detalle</TooltipContent>
+                        </Tooltip>
+                      </div>
                     </TableCell>
                   </TableRow>
                 ))

@@ -53,6 +53,11 @@ import {
   TableCell,
 } from "@/components/ui/table";
 import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+import {
   Dialog,
   DialogContent,
   DialogHeader,
@@ -784,13 +789,23 @@ export default function WireframeReportesPage() {
                       {tx.tiempoMs}
                     </TableCell>
                     <TableCell className="py-3.5 px-4 text-right whitespace-nowrap">
-                      <button
-                        type="button"
-                        onClick={() => setSelectedTx(tx)}
-                        className="text-xs font-semibold text-primary hover:underline cursor-pointer"
-                      >
-                        Ver detalle
-                      </button>
+                      <div className="inline-flex items-center justify-end">
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <Button
+                              type="button"
+                              variant="ghost"
+                              size="icon-sm"
+                              onClick={() => setSelectedTx(tx)}
+                              className="size-8 text-muted-foreground hover:text-foreground hover:bg-muted/50 cursor-pointer"
+                              aria-label="Ver detalle"
+                            >
+                              <Eye className="size-4" />
+                            </Button>
+                          </TooltipTrigger>
+                          <TooltipContent>Ver detalle</TooltipContent>
+                        </Tooltip>
+                      </div>
                     </TableCell>
                   </TableRow>
                 ))}

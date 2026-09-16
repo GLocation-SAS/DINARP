@@ -20,6 +20,8 @@ import {
   Lock,
   Download,
   BookOpen,
+  Plus,
+  Check,
 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -43,6 +45,11 @@ import {
   TableRow,
   TableCell,
 } from "@/components/ui/table";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Alert } from "@/components/ui/alert";
 import {
@@ -418,15 +425,23 @@ export default function WireframeDatosIdentidadPage() {
 
                         {/* Acciones */}
                         <TableCell className="py-4 px-4 text-right whitespace-nowrap" onClick={(e) => e.stopPropagation()}>
-                          <Button
-                            type="button"
-                            variant={isSelected ? "primary" : "outline"}
-                            size="sm"
-                            onClick={() => toggleCampo(c.id)}
-                            className="h-8 px-3 rounded-lg text-xs font-semibold"
-                          >
-                            {isSelected ? "Seleccionado" : "Agregar"}
-                          </Button>
+                          <div className="inline-flex items-center justify-end">
+                            <Tooltip>
+                              <TooltipTrigger asChild>
+                                <Button
+                                  type="button"
+                                  variant={isSelected ? "primary" : "ghost"}
+                                  size="icon-sm"
+                                  onClick={() => toggleCampo(c.id)}
+                                  className="size-8 rounded-lg cursor-pointer"
+                                  aria-label={isSelected ? "Quitar campo" : "Agregar campo"}
+                                >
+                                  {isSelected ? <Check className="size-4" /> : <Plus className="size-4" />}
+                                </Button>
+                              </TooltipTrigger>
+                              <TooltipContent>{isSelected ? "Quitar campo" : "Agregar campo"}</TooltipContent>
+                            </Tooltip>
+                          </div>
                         </TableCell>
                       </TableRow>
                     );

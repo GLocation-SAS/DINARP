@@ -43,6 +43,11 @@ import {
   TableCell,
 } from "@/components/ui/table";
 import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+import {
   Pagination,
   PaginationContent,
   PaginationItem,
@@ -349,29 +354,39 @@ export default function WireframeListadoFacturacionPage() {
                       </TableCell>
 
                       {/* Acciones */}
-                      <TableCell className="py-4 px-4 text-center whitespace-nowrap" onClick={(e) => e.stopPropagation()}>
-                        <DropdownMenu>
-                          <DropdownMenuTrigger asChild>
-                            <Button
-                              type="button"
-                              variant="ghost"
-                              size="icon-sm"
-                              className="size-8 rounded-lg text-muted-foreground hover:text-foreground"
-                            >
-                              <MoreHorizontal className="size-4" />
-                            </Button>
-                          </DropdownMenuTrigger>
-                          <DropdownMenuContent align="end" className="w-44">
-                            <DropdownMenuItem onClick={() => router.push(row.href)}>
-                              <Eye className="size-3.5 mr-2" />
-                              <span>Ver detalle</span>
-                            </DropdownMenuItem>
-                            <DropdownMenuItem>
-                              <Download className="size-3.5 mr-2" />
-                              <span>Descargar PDF</span>
-                            </DropdownMenuItem>
-                          </DropdownMenuContent>
-                        </DropdownMenu>
+                      <TableCell className="py-4 px-4 text-right whitespace-nowrap" onClick={(e) => e.stopPropagation()}>
+                        <div className="flex items-center justify-end gap-1">
+                          <Tooltip>
+                            <TooltipTrigger asChild>
+                              <Button
+                                type="button"
+                                variant="ghost"
+                                size="icon-sm"
+                                onClick={() => router.push(row.href)}
+                                className="size-8 text-muted-foreground hover:text-foreground hover:bg-muted/50 cursor-pointer"
+                                aria-label="Ver detalle"
+                              >
+                                <Eye className="size-4" />
+                              </Button>
+                            </TooltipTrigger>
+                            <TooltipContent>Ver detalle</TooltipContent>
+                          </Tooltip>
+
+                          <Tooltip>
+                            <TooltipTrigger asChild>
+                              <Button
+                                type="button"
+                                variant="ghost"
+                                size="icon-sm"
+                                className="size-8 text-muted-foreground hover:text-foreground hover:bg-muted/50 cursor-pointer"
+                                aria-label="Descargar PDF"
+                              >
+                                <Download className="size-4" />
+                              </Button>
+                            </TooltipTrigger>
+                            <TooltipContent>Descargar PDF</TooltipContent>
+                          </Tooltip>
+                        </div>
                       </TableCell>
                     </TableRow>
                   );

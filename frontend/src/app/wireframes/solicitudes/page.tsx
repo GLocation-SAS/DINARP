@@ -45,6 +45,11 @@ import {
   TableCell,
 } from "@/components/ui/table";
 import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+import {
   Breadcrumb,
   BreadcrumbList,
   BreadcrumbItem,
@@ -480,40 +485,54 @@ export default function WireframeSolicitudesPage() {
                       {item.ultimaActualizacion}
                     </TableCell>
 
-                    {/* Acciones con Button UI */}
+                    {/* Acciones con Tooltip UI */}
                     <TableCell className="py-4 px-4 text-right whitespace-nowrap">
-                      <div className="inline-flex items-center gap-1">
-                        <Button
-                          type="button"
-                          variant="ghost"
-                          size="icon-sm"
-                          title="Ver detalles"
-                          aria-label="Ver detalles"
-                          onClick={() => router.push("/wireframes/solicitudes/detalle")}
-                          className="text-muted-foreground hover:text-foreground hover:bg-muted/50 cursor-pointer"
-                        >
-                          <Eye className="size-4" />
-                        </Button>
-                        <Button
-                          type="button"
-                          variant="ghost"
-                          size="icon-sm"
-                          title="Editar solicitud"
-                          aria-label="Editar solicitud"
-                          className="text-muted-foreground hover:text-foreground hover:bg-muted/50"
-                        >
-                          <Pencil className="size-4" />
-                        </Button>
-                        <Button
-                          type="button"
-                          variant="ghost"
-                          size="icon-sm"
-                          title="Más opciones"
-                          aria-label="Más opciones"
-                          className="text-muted-foreground hover:text-foreground hover:bg-muted/50"
-                        >
-                          <MoreVertical className="size-4" />
-                        </Button>
+                      <div className="inline-flex items-center justify-end gap-1">
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <Button
+                              type="button"
+                              variant="ghost"
+                              size="icon-sm"
+                              aria-label="Ver detalles"
+                              onClick={() => router.push("/wireframes/solicitudes/detalle")}
+                              className="size-8 text-muted-foreground hover:text-foreground hover:bg-muted/50 cursor-pointer"
+                            >
+                              <Eye className="size-4" />
+                            </Button>
+                          </TooltipTrigger>
+                          <TooltipContent>Ver detalles</TooltipContent>
+                        </Tooltip>
+
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <Button
+                              type="button"
+                              variant="ghost"
+                              size="icon-sm"
+                              aria-label="Editar solicitud"
+                              className="size-8 text-muted-foreground hover:text-foreground hover:bg-muted/50"
+                            >
+                              <Pencil className="size-4" />
+                            </Button>
+                          </TooltipTrigger>
+                          <TooltipContent>Editar solicitud</TooltipContent>
+                        </Tooltip>
+
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <Button
+                              type="button"
+                              variant="ghost"
+                              size="icon-sm"
+                              aria-label="Más opciones"
+                              className="size-8 text-muted-foreground hover:text-foreground hover:bg-muted/50"
+                            >
+                              <MoreVertical className="size-4" />
+                            </Button>
+                          </TooltipTrigger>
+                          <TooltipContent>Más opciones</TooltipContent>
+                        </Tooltip>
                       </div>
                     </TableCell>
                   </TableRow>
