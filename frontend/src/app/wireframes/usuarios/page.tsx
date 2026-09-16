@@ -528,19 +528,16 @@ export default function WireframeListadoUsuariosPage() {
         onSave={handleSaveUser}
       />
 
-      {/* ── Dialog: Desactivar / Reactivar Usuario ── */}
+      {/* ── Dialog Warning: Desactivar / Reactivar Usuario ── */}
       <Dialog open={isDeactivateOpen} onOpenChange={setIsDeactivateOpen}>
-        <DialogContent className="max-w-md rounded-2xl p-6 bg-surface border-border shadow-xl text-left" showCloseButton={true}>
-          <div className="size-12 rounded-xl bg-muted/60 border border-border/50 flex items-center justify-center text-foreground mb-2">
-            <AlertTriangle className="size-6 stroke-[2]" />
-          </div>
-          <DialogHeader className="text-left space-y-1.5">
-            <DialogTitle className="text-lg font-bold text-foreground">
+        <DialogContent variant="warning" size="default">
+          <DialogHeader>
+            <DialogTitle>
               {userToDeactivate?.estado === "Activo"
                 ? "¿Desactivar usuario?"
                 : "¿Reactivar usuario?"}
             </DialogTitle>
-            <DialogDescription className="text-xs text-muted-foreground leading-relaxed">
+            <DialogDescription>
               {userToDeactivate?.estado === "Activo" ? (
                 <>
                   Estás a punto de suspender el acceso de{" "}
@@ -561,20 +558,11 @@ export default function WireframeListadoUsuariosPage() {
             </DialogDescription>
           </DialogHeader>
 
-          <DialogFooter className="mt-4 flex items-center justify-end gap-2">
+          <DialogFooter showCloseButton={true} stacked={true}>
             <Button
               type="button"
-              variant="outline"
-              onClick={() => setIsDeactivateOpen(false)}
-              className="h-9 px-4 rounded-xl text-xs font-semibold"
-            >
-              Cancelar
-            </Button>
-            <Button
-              type="button"
-              variant={userToDeactivate?.estado === "Activo" ? "primary" : "primary"}
+              variant={userToDeactivate?.estado === "Activo" ? "warning" : "success"}
               onClick={handleConfirmDeactivate}
-              className="h-9 px-4 rounded-xl text-xs font-semibold"
             >
               {userToDeactivate?.estado === "Activo"
                 ? "Desactivar usuario"

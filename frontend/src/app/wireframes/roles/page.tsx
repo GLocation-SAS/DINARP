@@ -530,21 +530,18 @@ export default function WireframeListadoRolesPage() {
         onSave={handleSaveRol}
       />
 
-      {/* ── Dialog: Desactivar / Eliminar Rol ── */}
+      {/* ── Dialog Warning: Desactivar / Eliminar Rol ── */}
       <Dialog open={isWarningDialogOpen} onOpenChange={setIsWarningDialogOpen}>
-        <DialogContent className="max-w-md rounded-2xl p-6 bg-surface border-border shadow-xl text-left" showCloseButton={true}>
-          <div className="size-12 rounded-xl bg-muted/60 border border-border/50 flex items-center justify-center text-foreground mb-2">
-            <AlertTriangle className="size-6 stroke-[2]" />
-          </div>
-          <DialogHeader className="text-left space-y-1.5">
-            <DialogTitle className="text-lg font-bold text-foreground">
+        <DialogContent variant="warning" size="default">
+          <DialogHeader>
+            <DialogTitle>
               {warningAction === "delete"
                 ? "¿Eliminar rol?"
                 : targetRol?.estado === "Activo"
                 ? "¿Desactivar rol?"
                 : "¿Reactivar rol?"}
             </DialogTitle>
-            <DialogDescription className="text-xs text-muted-foreground leading-relaxed">
+            <DialogDescription>
               {warningAction === "delete" ? (
                 <>
                   Estás a punto de eliminar permanentemente el rol{" "}
@@ -573,20 +570,11 @@ export default function WireframeListadoRolesPage() {
             </DialogDescription>
           </DialogHeader>
 
-          <DialogFooter className="mt-4 flex items-center justify-end gap-2">
+          <DialogFooter showCloseButton={true} stacked={true}>
             <Button
               type="button"
-              variant="outline"
-              onClick={() => setIsWarningDialogOpen(false)}
-              className="h-9 px-4 rounded-xl text-xs font-semibold"
-            >
-              Cancelar
-            </Button>
-            <Button
-              type="button"
-              variant={warningAction === "delete" ? "danger" : "primary"}
+              variant={warningAction === "delete" ? "danger" : targetRol?.estado === "Activo" ? "warning" : "success"}
               onClick={handleConfirmWarning}
-              className="h-9 px-4 rounded-xl text-xs font-semibold"
             >
               {warningAction === "delete"
                 ? "Eliminar rol"

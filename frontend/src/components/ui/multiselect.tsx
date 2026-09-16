@@ -141,9 +141,9 @@ export function Multiselect({
                       {selectedOptions.map((opt) => (
                         <Badge
                           key={opt.value}
-                          tone="primary"
+                          tone="neutral"
                           appearance="soft"
-                          className="px-3 py-0.5 font-semibold h-7 rounded-full gap-1 shrink-0 bg-primary/10 text-primary dark:bg-primary/20 dark:text-primary-300 border border-primary/25"
+                          className="px-3 py-0.5 font-semibold h-7 rounded-full gap-1 shrink-0"
                         >
                           {opt.label}
                           <div
@@ -173,9 +173,9 @@ export function Multiselect({
                 <Tooltip>
                   <TooltipTrigger asChild>
                     <Badge
-                      tone="primary"
+                      tone="neutral"
                       appearance="soft"
-                      className="px-3 py-0.5 font-semibold h-7 rounded-full shrink-0 bg-primary/10 text-primary dark:bg-primary/20 dark:text-primary-300 border border-primary/25"
+                      className="px-3 py-0.5 font-semibold h-7 rounded-full shrink-0"
                     >
                       {selectedOptions[0]?.label} +{selected.length - 1} seleccionadas
                     </Badge>

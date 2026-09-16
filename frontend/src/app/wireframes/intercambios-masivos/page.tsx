@@ -14,7 +14,6 @@ import {
   Calendar,
   Filter,
   Download,
-  MoreHorizontal,
   PauseCircle,
   PlayCircle,
   FileSpreadsheet,
@@ -465,52 +464,45 @@ export default function WireframeIntercambiosMasivosPage() {
                         <TooltipContent>Ver detalle</TooltipContent>
                       </Tooltip>
 
-                      <DropdownMenu>
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <Button
+                            type="button"
+                            variant="ghost"
+                            size="icon-sm"
+                            onClick={(e) => handleDownloadBatch(b.codigo, e)}
+                            className="size-8 text-muted-foreground hover:text-foreground hover:bg-muted/50 cursor-pointer"
+                            aria-label="Descargar reporte"
+                          >
+                            <Download className="size-4" />
+                          </Button>
+                        </TooltipTrigger>
+                        <TooltipContent>Descargar reporte</TooltipContent>
+                      </Tooltip>
+
+                      {(b.estado === "En ejecución" || b.estado === "Suspendido") && (
                         <Tooltip>
                           <TooltipTrigger asChild>
-                            <DropdownMenuTrigger asChild>
-                              <Button
-                                type="button"
-                                variant="ghost"
-                                size="icon-sm"
-                                className="size-8 text-muted-foreground hover:text-foreground hover:bg-muted/50 cursor-pointer"
-                                aria-label="Más opciones"
-                              >
-                                <MoreHorizontal className="size-4" />
-                              </Button>
-                            </DropdownMenuTrigger>
+                            <Button
+                              type="button"
+                              variant="ghost"
+                              size="icon-sm"
+                              onClick={(e) => handleToggleBatchState(b, e)}
+                              className="size-8 text-muted-foreground hover:text-foreground hover:bg-muted/50 cursor-pointer"
+                              aria-label={b.estado === "En ejecución" ? "Pausar ejecución" : "Reanudar ejecución"}
+                            >
+                              {b.estado === "En ejecución" ? (
+                                <PauseCircle className="size-4" />
+                              ) : (
+                                <PlayCircle className="size-4" />
+                              )}
+                            </Button>
                           </TooltipTrigger>
-                          <TooltipContent>Más opciones</TooltipContent>
+                          <TooltipContent>
+                            {b.estado === "En ejecución" ? "Pausar ejecución" : "Reanudar ejecución"}
+                          </TooltipContent>
                         </Tooltip>
-                        <DropdownMenuContent align="end" className="w-52">
-                          <DropdownMenuItem onClick={() => router.push(b.href)}>
-                            <Eye className="size-3.5 mr-2" />
-                            <span>Ver bitácora de lote</span>
-                          </DropdownMenuItem>
-                          <DropdownMenuItem onClick={(e) => handleDownloadBatch(b.codigo, e)}>
-                            <Download className="size-3.5 mr-2" />
-                            <span>Descargar reporte</span>
-                          </DropdownMenuItem>
-                          {(b.estado === "En ejecución" || b.estado === "Suspendido") && (
-                            <>
-                              <DropdownMenuSeparator />
-                              <DropdownMenuItem onClick={(e) => handleToggleBatchState(b, e)}>
-                                {b.estado === "En ejecución" ? (
-                                  <>
-                                    <PauseCircle className="size-3.5 mr-2 text-foreground" />
-                                    <span>Pausar ejecución</span>
-                                  </>
-                                ) : (
-                                  <>
-                                    <PlayCircle className="size-3.5 mr-2 text-foreground" />
-                                    <span>Reanudar ejecución</span>
-                                  </>
-                                )}
-                              </DropdownMenuItem>
-                            </>
-                          )}
-                        </DropdownMenuContent>
-                      </DropdownMenu>
+                      )}
                     </div>
                   </TableCell>
                 </TableRow>

@@ -14,7 +14,6 @@ import {
   ArrowLeftRight,
   Server,
   Filter,
-  MoreHorizontal,
   PauseCircle,
   PlayCircle,
   History,
@@ -456,48 +455,43 @@ export default function WireframeServiciosHabilitadosPage() {
                           <TooltipContent>Ver detalle</TooltipContent>
                         </Tooltip>
 
-                        <DropdownMenu>
-                          <Tooltip>
-                            <TooltipTrigger asChild>
-                              <DropdownMenuTrigger asChild>
-                                <Button
-                                  type="button"
-                                  variant="ghost"
-                                  size="icon-sm"
-                                  className="size-8 text-muted-foreground hover:text-foreground hover:bg-muted/50 cursor-pointer"
-                                  aria-label="Más opciones"
-                                >
-                                  <MoreHorizontal className="size-4" />
-                                </Button>
-                              </DropdownMenuTrigger>
-                            </TooltipTrigger>
-                            <TooltipContent>Más opciones</TooltipContent>
-                          </Tooltip>
-                          <DropdownMenuContent align="end" className="w-48">
-                            <DropdownMenuItem onClick={() => router.push(s.href)}>
-                              <Eye className="size-3.5 mr-2" />
-                              <span>Ver información</span>
-                            </DropdownMenuItem>
-                            <DropdownMenuItem onClick={() => router.push(`${s.href}/historial`)}>
-                              <History className="size-3.5 mr-2" />
-                              <span>Ver historial de consumo</span>
-                            </DropdownMenuItem>
-                            <DropdownMenuSeparator />
-                            <DropdownMenuItem onClick={(e) => handleToggleEstadoServicio(s, e)}>
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <Button
+                              type="button"
+                              variant="ghost"
+                              size="icon-sm"
+                              onClick={() => router.push(`${s.href}/historial`)}
+                              className="size-8 text-muted-foreground hover:text-foreground hover:bg-muted/50 cursor-pointer"
+                              aria-label="Ver historial de consumo"
+                            >
+                              <History className="size-4" />
+                            </Button>
+                          </TooltipTrigger>
+                          <TooltipContent>Ver historial de consumo</TooltipContent>
+                        </Tooltip>
+
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <Button
+                              type="button"
+                              variant="ghost"
+                              size="icon-sm"
+                              onClick={(e) => handleToggleEstadoServicio(s, e)}
+                              className="size-8 text-muted-foreground hover:text-foreground hover:bg-muted/50 cursor-pointer"
+                              aria-label={s.estado === "Activo" ? "Suspender servicio" : "Reactivar servicio"}
+                            >
                               {s.estado === "Activo" ? (
-                                <>
-                                  <PauseCircle className="size-3.5 mr-2 text-foreground" />
-                                  <span>Suspender servicio</span>
-                                </>
+                                <PauseCircle className="size-4" />
                               ) : (
-                                <>
-                                  <PlayCircle className="size-3.5 mr-2 text-foreground" />
-                                  <span>Reactivar servicio</span>
-                                </>
+                                <PlayCircle className="size-4" />
                               )}
-                            </DropdownMenuItem>
-                          </DropdownMenuContent>
-                        </DropdownMenu>
+                            </Button>
+                          </TooltipTrigger>
+                          <TooltipContent>
+                            {s.estado === "Activo" ? "Suspender servicio" : "Reactivar servicio"}
+                          </TooltipContent>
+                        </Tooltip>
                       </div>
                     </TableCell>
                   </TableRow>

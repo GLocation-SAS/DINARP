@@ -73,7 +73,7 @@ export function UsuarioDetalleModal({
                     {usuario.nombre}
                   </DialogTitle>
                   <Badge
-                    tone={usuario.estado === "Activo" ? "success" : "danger"}
+                    tone="neutral"
                     appearance="soft"
                     size="sm"
                     className="font-semibold text-xs"
@@ -142,7 +142,7 @@ export function UsuarioDetalleModal({
                     label: "Estado",
                     value: (
                       <Badge
-                        tone={usuario.estado === "Activo" ? "success" : "danger"}
+                        tone="neutral"
                         appearance="soft"
                         size="sm"
                         className="font-semibold text-xs"

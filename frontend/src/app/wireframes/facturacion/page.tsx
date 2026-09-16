@@ -8,7 +8,7 @@ import {
   Calendar as CalendarIcon,
   Eye,
   Download,
-  MoreHorizontal,
+  Ban,
   FileText,
   RotateCcw,
 } from "lucide-react";
@@ -171,9 +171,9 @@ export default function WireframeListadoFacturacionPage() {
   const getBadgeVariant = (estado: FacturaItem["estado"]) => {
     switch (estado) {
       case "Emitida":
-        return { tone: "success" as const, appearance: "soft" as const };
+        return { tone: "neutral" as const, appearance: "soft" as const };
       case "Pendiente":
-        return { tone: "warning" as const, appearance: "soft" as const };
+        return { tone: "neutral" as const, appearance: "outline" as const };
       case "Anulada":
       default:
         return { tone: "neutral" as const, appearance: "soft" as const };
@@ -237,39 +237,39 @@ export default function WireframeListadoFacturacionPage() {
               </DropdownMenu>
             </div>
 
-      {/* Fecha Desde */}
-      <div className="space-y-0.5">
-        <span className="text-[10px] font-medium text-muted-foreground block pl-1">Fecha desde</span>
-        <InputGroup
-          size="default"
-          rightIcon={<CalendarIcon className="size-3.5 text-muted-foreground" />}
-          className="bg-surface h-11 rounded-xl border-border/80"
-        >
-          <InputGroupInput
-            placeholder="dd/mm/aaaa"
-            value={fechaDesde}
-            onChange={(e) => setFechaDesde(e.target.value)}
-            className="text-xs font-mono"
-          />
-        </InputGroup>
-      </div>
+            {/* Fecha Desde */}
+            <div className="space-y-0.5">
+              <span className="text-[10px] font-medium text-muted-foreground block pl-1">Fecha desde</span>
+              <InputGroup
+                size="default"
+                rightIcon={<CalendarIcon className="size-3.5 text-muted-foreground" />}
+                className="bg-surface h-11 rounded-xl border-border/80"
+              >
+                <InputGroupInput
+                  placeholder="dd/mm/aaaa"
+                  value={fechaDesde}
+                  onChange={(e) => setFechaDesde(e.target.value)}
+                  className="text-xs font-mono"
+                />
+              </InputGroup>
+            </div>
 
-      {/* Fecha Hasta */}
-      <div className="space-y-0.5">
-        <span className="text-[10px] font-medium text-muted-foreground block pl-1">Fecha hasta</span>
-        <InputGroup
-          size="default"
-          rightIcon={<CalendarIcon className="size-3.5 text-muted-foreground" />}
-          className="bg-surface h-11 rounded-xl border-border/80"
-        >
-          <InputGroupInput
-            placeholder="dd/mm/aaaa"
-            value={fechaHasta}
-            onChange={(e) => setFechaHasta(e.target.value)}
-            className="text-xs font-mono"
-          />
-        </InputGroup>
-      </div>
+            {/* Fecha Hasta */}
+            <div className="space-y-0.5">
+              <span className="text-[10px] font-medium text-muted-foreground block pl-1">Fecha hasta</span>
+              <InputGroup
+                size="default"
+                rightIcon={<CalendarIcon className="size-3.5 text-muted-foreground" />}
+                className="bg-surface h-11 rounded-xl border-border/80"
+              >
+                <InputGroupInput
+                  placeholder="dd/mm/aaaa"
+                  value={fechaHasta}
+                  onChange={(e) => setFechaHasta(e.target.value)}
+                  className="text-xs font-mono"
+                />
+              </InputGroup>
+            </div>
 
             {/* Botones Buscar y Limpiar */}
             <div className="flex items-center gap-2">
@@ -423,45 +423,23 @@ export default function WireframeListadoFacturacionPage() {
                           <TooltipContent>Descargar PDF</TooltipContent>
                         </Tooltip>
 
-                        <DropdownMenu>
+                        {row.estado !== "Anulada" && (
                           <Tooltip>
                             <TooltipTrigger asChild>
-                              <DropdownMenuTrigger asChild>
-                                <Button
-                                  type="button"
-                                  variant="ghost"
-                                  size="icon-sm"
-                                  className="size-8 text-muted-foreground hover:text-foreground hover:bg-muted/50 cursor-pointer"
-                                  aria-label="Más opciones"
-                                >
-                                  <MoreHorizontal className="size-4" />
-                                </Button>
-                              </DropdownMenuTrigger>
+                              <Button
+                                type="button"
+                                variant="ghost"
+                                size="icon-sm"
+                                onClick={(e) => handleAnularFactura(row.numero, e)}
+                                className="size-8 text-muted-foreground hover:text-foreground hover:bg-muted/50 cursor-pointer"
+                                aria-label="Anular factura"
+                              >
+                                <Ban className="size-4" />
+                              </Button>
                             </TooltipTrigger>
-                            <TooltipContent>Más opciones</TooltipContent>
+                            <TooltipContent>Anular factura</TooltipContent>
                           </Tooltip>
-                          <DropdownMenuContent align="end" className="w-48">
-                            <DropdownMenuItem onClick={() => router.push(row.href)}>
-                              <FileText className="size-3.5 mr-2" />
-                              <span>Ver desglose completo</span>
-                            </DropdownMenuItem>
-                            <DropdownMenuItem onClick={(e) => handleDownloadPDF(row.numero, e)}>
-                              <Download className="size-3.5 mr-2" />
-                              <span>Exportar PDF firmado</span>
-                            </DropdownMenuItem>
-                            {row.estado !== "Anulada" && (
-                              <>
-                                <DropdownMenuSeparator />
-                                <DropdownMenuItem
-                                  className="text-destructive focus:text-destructive"
-                                  onClick={(e) => handleAnularFactura(row.numero, e)}
-                                >
-                                  <span>Anular factura</span>
-                                </DropdownMenuItem>
-                              </>
-                            )}
-                          </DropdownMenuContent>
-                        </DropdownMenu>
+                        )}
                       </div>
                     </TableCell>
                   </TableRow>

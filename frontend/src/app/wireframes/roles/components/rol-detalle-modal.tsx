@@ -95,7 +95,7 @@ export function RolDetalleModal({
                     {rol.nombre}
                   </DialogTitle>
                   <Badge
-                    tone={rol.estado === "Activo" ? "success" : "danger"}
+                    tone="neutral"
                     appearance="soft"
                     size="sm"
                     className="font-semibold text-xs"

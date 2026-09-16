@@ -13,9 +13,10 @@ import {
   ChevronDown,
   Eye,
   Pencil,
-  MoreVertical,
+  Download,
   ArrowDown,
 } from "lucide-react";
+import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -496,13 +497,17 @@ export default function WireframeSolicitudesPage() {
                             type="button"
                             variant="ghost"
                             size="icon-sm"
-                            aria-label="Más opciones"
+                            aria-label="Descargar solicitud"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              toast.success(`Descargando solicitud ${item.codigo}...`);
+                            }}
                             className="size-8 text-muted-foreground hover:text-foreground hover:bg-muted/50"
                           >
-                            <MoreVertical className="size-4" />
+                            <Download className="size-4" />
                           </Button>
                         </TooltipTrigger>
-                        <TooltipContent>Más opciones</TooltipContent>
+                        <TooltipContent>Descargar solicitud</TooltipContent>
                       </Tooltip>
                     </div>
                   </TableCell>

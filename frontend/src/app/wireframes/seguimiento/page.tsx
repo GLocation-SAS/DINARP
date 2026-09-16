@@ -142,13 +142,13 @@ export default function WireframeListadoSeguimientoPage() {
   const getBadgeVariant = (estado: SeguimientoRow["estado"]) => {
     switch (estado) {
       case "En revisión":
-        return { tone: "info" as const, appearance: "soft" as const };
+        return { tone: "neutral" as const, appearance: "soft" as const };
       case "Aprobada":
-        return { tone: "success" as const, appearance: "soft" as const };
+        return { tone: "neutral" as const, appearance: "solid" as const };
       case "En implementación":
-        return { tone: "primary" as const, appearance: "soft" as const };
+        return { tone: "neutral" as const, appearance: "soft" as const };
       case "Requiere ajustes":
-        return { tone: "warning" as const, appearance: "soft" as const };
+        return { tone: "neutral" as const, appearance: "outline" as const };
       case "Borrador":
       default:
         return { tone: "neutral" as const, appearance: "soft" as const };

@@ -454,11 +454,7 @@ export default function WireframeNuevaSolicitudBatchPage() {
 
         {/* Modal de Éxito al Enviar Solicitud */}
         <Dialog open={isSuccessModalOpen} onOpenChange={setIsSuccessModalOpen}>
-          <DialogContent className="max-w-[440px] rounded-3xl p-6 sm:p-8 bg-surface border-border shadow-2xl text-center">
-            <div className="size-14 rounded-2xl bg-muted/60 border border-border/50 flex items-center justify-center text-foreground mb-3 mx-auto">
-              <CheckCircle2 className="size-7 stroke-[2]" />
-            </div>
-
+          <DialogContent variant="success" className="max-w-[440px] rounded-3xl p-6 sm:p-8 bg-background border-border shadow-2xl">
             <DialogHeader className="text-center space-y-2">
               <DialogTitle className="font-heading font-bold text-xl sm:text-2xl text-foreground">
                 Solicitud Registrada

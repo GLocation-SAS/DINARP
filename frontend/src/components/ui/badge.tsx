@@ -75,14 +75,14 @@ const badgeVariants = cva(
       { tone: "info", appearance: "ghost", className: "text-info dark:text-info-400 hover:bg-info/10 dark:hover:bg-info-400/10 font-extrabold" },
 
       // Neutral
-      { tone: "neutral", appearance: ["solid", "filled"], className: "bg-muted-foreground !text-foreground border-transparent shadow-xs" },
+      { tone: "neutral", appearance: ["solid", "filled"], className: "bg-foreground !text-background border-transparent shadow-xs" },
       { tone: "neutral", appearance: "soft", className: "bg-muted text-foreground border-transparent font-extrabold" },
       { tone: "neutral", appearance: "outline", className: "text-muted-foreground border-border font-extrabold" },
       { tone: "neutral", appearance: "ghost", className: "text-muted-foreground hover:bg-muted font-extrabold" },
     ],
     defaultVariants: {
-      tone: "primary",
-      appearance: "solid",
+      tone: "neutral",
+      appearance: "soft",
       size: "md",
     },
   }
@@ -257,7 +257,7 @@ const opacityClasses: Record<string, Record<BadgeOpacity, string>> = {
 
 export interface BadgeProps
   extends React.ComponentProps<"span">,
-    Omit<VariantProps<typeof badgeVariants>, "tone" | "appearance" | "size"> {
+  Omit<VariantProps<typeof badgeVariants>, "tone" | "appearance" | "size"> {
   tone?: BadgeTone
   variant?: BadgeTone // Backward compatibility alias
   appearance?: BadgeAppearance
