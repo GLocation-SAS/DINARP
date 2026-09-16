@@ -115,7 +115,7 @@ export function WireframeDashboardLayout({
   ];
 
   return (
-    <div className="min-h-screen flex bg-background text-foreground font-sans antialiased">
+    <div className="h-screen w-full flex overflow-hidden bg-background text-foreground font-sans antialiased">
       {/* ══════════════════════════════════════════════════
           SIDEBAR IZQUIERDO (Desktop & Mobile Drawer)
          ══════════════════════════════════════════════════ */}
@@ -129,7 +129,7 @@ export function WireframeDashboardLayout({
 
       <aside
         className={cn(
-          "fixed inset-y-0 left-0 z-50 flex flex-col w-64 bg-surface border-r border-border transition-transform duration-300 lg:static lg:translate-x-0 shrink-0",
+          "fixed inset-y-0 left-0 z-50 flex flex-col w-64 h-full bg-surface border-r border-border transition-transform duration-300 lg:static lg:translate-x-0 shrink-0",
           mobileMenuOpen ? "translate-x-0 shadow-2xl" : "-translate-x-full lg:translate-x-0"
         )}
       >
@@ -155,7 +155,7 @@ export function WireframeDashboardLayout({
           </Button>
         </div>
 
-        {/* Sidebar Navigation */}
+        {/* Sidebar Navigation (Scrollable list if long) */}
         <div className="flex-1 overflow-y-auto px-4 py-4 space-y-6">
           {navSections.map((section, idx) => (
             <div key={idx} className="space-y-1">
@@ -225,9 +225,9 @@ export function WireframeDashboardLayout({
       {/* ══════════════════════════════════════════════════
           CONTENIDO PRINCIPAL & HEADER SUPERIOR
          ══════════════════════════════════════════════════ */}
-      <div className="flex-1 flex flex-col min-w-0 overflow-x-hidden">
+      <div className="flex-1 flex flex-col min-w-0 h-full overflow-hidden">
         {/* Top Header */}
-        <header className="h-16 px-4 sm:px-8 flex items-center justify-between border-b border-border/40 bg-surface/50 backdrop-blur-xs shrink-0">
+        <header className="h-16 px-4 sm:px-8 flex items-center justify-between border-b border-border/40 bg-surface/80 backdrop-blur-md shrink-0 z-10">
           {/* Mobile Burger & Mobile Logo */}
           <div className="flex items-center gap-3">
             <Button
@@ -259,8 +259,8 @@ export function WireframeDashboardLayout({
           </div>
         </header>
 
-        {/* Dynamic Page Content Slot */}
-        <div className="flex-1">
+        {/* Dynamic Page Content Slot (Independent scroll) */}
+        <div className="flex-1 overflow-y-auto overflow-x-hidden">
           {children}
         </div>
       </div>
