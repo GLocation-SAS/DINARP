@@ -13,15 +13,15 @@ export default function NotFound() {
       <div className="absolute bottom-0 right-0 w-[600px] h-[600px] bg-info/10 rounded-full blur-[120px] translate-x-1/3 translate-y-1/3 pointer-events-none" />
 
       <div className="relative z-10 max-w-2xl w-full flex flex-col items-center">
-        
+
         <h1 className="text-[140px] sm:text-[200px] md:text-[250px] font-bold text-foreground leading-none tracking-tighter mb-4">
           404
         </h1>
-        
+
         <h2 className="text-3xl sm:text-4xl md:text-[42px] font-bold text-foreground tracking-tight mb-6">
           ¡Ups! Página no encontrada.
         </h2>
-        
+
         <p className="text-base sm:text-lg text-muted-foreground/80 max-w-md mx-auto mb-10 leading-relaxed">
           Lo sentimos, la página que buscas no existe, ha sido movida o no está disponible en este momento.
         </p>
@@ -36,7 +36,7 @@ export default function NotFound() {
             Regresar
           </Button>
         </div>
-        
+
       </div>
     </div>
   );

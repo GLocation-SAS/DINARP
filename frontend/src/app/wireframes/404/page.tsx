@@ -47,3 +47,4 @@ export default function Wireframe404Page() {
     </WireframeDashboardLayout>
   );
 }
+

@@ -279,10 +279,25 @@ export function UIKitSidebar({ activeSection, onNavigate }: UIKitSidebarProps) {
   React.useEffect(() => {
     setMounted(true);
     const stored = getStoredTheme();
-    const active = document.documentElement.getAttribute("data-theme") as Theme | null;
-    const initialTheme = stored ?? active ?? "light";
+    const isDark =
+      document.documentElement.classList.contains("dark") ||
+      document.documentElement.getAttribute("data-theme") === "dark";
+    const initialTheme: Theme = stored ?? (isDark ? "dark" : "light");
     setTheme(initialTheme);
     applyTheme(initialTheme);
+
+    const observer = new MutationObserver(() => {
+      const isNowDark =
+        document.documentElement.classList.contains("dark") ||
+        document.documentElement.getAttribute("data-theme") === "dark";
+      setTheme(isNowDark ? "dark" : "light");
+    });
+    observer.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ["class", "data-theme"],
+    });
+
+    return () => observer.disconnect();
   }, []);
 
   const handleTheme = (next: Theme) => {

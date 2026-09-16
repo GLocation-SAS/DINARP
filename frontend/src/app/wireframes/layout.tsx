@@ -11,10 +11,7 @@ interface WireframesLayoutProps {
 
 export default function WireframesLayout({ children }: WireframesLayoutProps) {
   return (
-    <div
-      data-theme="wireframe"
-      className="min-h-screen bg-background text-foreground font-sans antialiased"
-    >
+    <div className="min-h-screen bg-background text-foreground font-sans antialiased">
       {children}
     </div>
   );

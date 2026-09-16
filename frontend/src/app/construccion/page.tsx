@@ -13,15 +13,15 @@ export default function Construccion() {
       <div className="absolute bottom-0 right-0 w-[600px] h-[600px] bg-info/10 rounded-full blur-[120px] translate-x-1/3 translate-y-1/3 pointer-events-none" />
 
       <div className="relative z-10 max-w-2xl w-full flex flex-col items-center">
-        
+
         <div className="text-foreground mb-4">
-            <Wrench className="size-[140px] sm:size-[200px] md:size-[250px]" strokeWidth={1.5} />
+          <Wrench className="size-[140px] sm:size-[200px] md:size-[250px]" strokeWidth={1.5} />
         </div>
-        
+
         <h2 className="text-3xl sm:text-4xl md:text-[42px] font-bold text-foreground tracking-tight mb-6">
           Página en construcción
         </h2>
-        
+
         <p className="text-base sm:text-lg text-muted-foreground/80 max-w-md mx-auto mb-10 leading-relaxed">
           Estamos preparando nuevas funcionalidades para la plataforma DINARP.
           <br /><br />
@@ -38,7 +38,7 @@ export default function Construccion() {
             Regresar
           </Button>
         </div>
-        
+
       </div>
     </div>
   );

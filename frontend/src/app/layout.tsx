@@ -5,7 +5,6 @@ import "./globals.css";
 import { cn } from "@/lib/utils";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { Toaster } from "@/components/ui/sonner";
-import { DeveloperGuideWidget } from "@/components/shared/developer-guide-widget";
 
 import { NextIntlClientProvider } from "next-intl";
 import messages from "../../messages/es.json";
@@ -110,7 +109,6 @@ export default async function RootLayout({
           <TooltipProvider>
             {children}
             <Toaster />
-            <DeveloperGuideWidget />
           </TooltipProvider>
         </NextIntlClientProvider>
       </body>

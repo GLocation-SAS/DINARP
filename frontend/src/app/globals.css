@@ -1075,6 +1075,62 @@
   --risk-critical: var(--primitive-neutral-950);
 }
 
+[data-theme="dark"] [data-theme="wireframe"],
+.dark [data-theme="wireframe"],
+[data-theme="wireframe"][data-theme="dark"],
+[data-theme="wireframe"].dark {
+  --background: var(--primitive-neutral-950);
+  --foreground: var(--primitive-neutral-50);
+
+  /* Surfaces */
+  --surface: var(--primitive-neutral-900);
+  --surface-foreground: var(--primitive-neutral-100);
+  --surface-raised: var(--primitive-neutral-800);
+  --surface-subtle: var(--primitive-neutral-900);
+
+  --card: var(--surface);
+  --card-foreground: var(--surface-foreground);
+
+  --popover: var(--primitive-neutral-900);
+  --popover-foreground: var(--primitive-neutral-50);
+
+  /* Main Actions */
+  --primary: var(--primitive-neutral-100);
+  --primary-foreground: var(--primitive-neutral-950);
+
+  --secondary: var(--primitive-neutral-300);
+  --secondary-foreground: var(--primitive-neutral-950);
+
+  /* Supporting States */
+  --muted: var(--primitive-neutral-800);
+  --muted-foreground: var(--primitive-neutral-400);
+
+  --accent: var(--primitive-neutral-800);
+  --accent-foreground: var(--primitive-neutral-100);
+
+  /* Feedback */
+  --success: var(--primitive-neutral-300);
+  --success-foreground: var(--primitive-neutral-950);
+
+  --info: var(--primitive-neutral-400);
+  --info-foreground: var(--primitive-neutral-950);
+
+  --warning: var(--primitive-neutral-400);
+  --warning-foreground: var(--primitive-neutral-950);
+
+  --danger: var(--primitive-neutral-400);
+  --danger-foreground: var(--primitive-neutral-950);
+
+  --destructive: var(--primitive-neutral-400);
+  --destructive-foreground: var(--primitive-neutral-950);
+
+  /* Borders and Focus */
+  --border: var(--primitive-neutral-800);
+  --border-strong: var(--primitive-neutral-700);
+  --input: var(--primitive-neutral-800);
+  --ring: var(--primitive-neutral-400);
+}
+
 /*
   ============================================================
   5. ESTILOS BASE GLOBALES
