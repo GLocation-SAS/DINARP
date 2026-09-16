@@ -2065,4 +2065,63 @@ input:-webkit-autofill:active {
 .animate-gradient-border-flow {
   background-size: 300% 300%;
   animation: gradient-border-flow 3s ease infinite;
+}/* WIREFRAME MODE OVERRIDES */
+[data-theme="wireframe"] {
+  --primitive-primary-50: #F8F9FA;
+  --primitive-primary-100: #F1F3F5;
+  --primitive-primary-200: #E9ECEF;
+  --primitive-primary-300: #DEE2E6;
+  --primitive-primary-400: #CED4DA;
+  --primitive-primary-500: #495057;
+  --primitive-primary-600: #343A40;
+  --primitive-primary-700: #212529;
+  --primitive-primary-800: #18181B;
+  --primitive-primary-900: #121416;
+
+  --primitive-secondary-50: #F8F9FA;
+  --primitive-secondary-100: #F1F3F5;
+  --primitive-secondary-200: #E9ECEF;
+  --primitive-secondary-300: #DEE2E6;
+  --primitive-secondary-400: #CED4DA;
+  --primitive-secondary-500: #495057;
+  --primitive-secondary-600: #343A40;
+  --primitive-secondary-700: #212529;
+  --primitive-secondary-800: #18181B;
+  --primitive-secondary-900: #121416;
+
+  --primary: var(--primitive-neutral-900);
+  --primary-foreground: var(--primitive-neutral-50);
+  --secondary: var(--primitive-neutral-800);
+  --secondary-foreground: var(--primitive-neutral-50);
+
+  --accent: var(--primitive-neutral-200);
+  --accent-foreground: var(--primitive-neutral-900);
+  
+  --ring: var(--primitive-neutral-900);
+  
+  --sidebar-primary: var(--primitive-neutral-900);
+  --sidebar-accent: var(--primitive-neutral-100);
+  --sidebar-accent-foreground: var(--primitive-neutral-900);
+  --sidebar-ring: var(--primitive-neutral-900);
+}
+
+.dark [data-theme="wireframe"] {
+  --primary: var(--primitive-neutral-50);
+  --primary-foreground: var(--primitive-neutral-950);
+  --secondary: var(--primitive-neutral-200);
+  --secondary-foreground: var(--primitive-neutral-900);
+
+  --accent: var(--primitive-neutral-800);
+  --accent-foreground: var(--primitive-neutral-50);
+
+  --ring: var(--primitive-neutral-400);
+
+  --chart-2: var(--primitive-neutral-300);
+  --chart-3: var(--primitive-neutral-400);
+
+  --sidebar-primary: var(--primitive-neutral-50);
+  --sidebar-primary-foreground: var(--primitive-neutral-950);
+  --sidebar-accent: var(--primitive-neutral-800);
+  --sidebar-accent-foreground: var(--primitive-neutral-50);
+  --sidebar-ring: var(--primitive-neutral-400);
 }
