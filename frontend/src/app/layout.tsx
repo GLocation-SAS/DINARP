@@ -85,6 +85,13 @@ export default async function RootLayout({
                   const systemTheme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
                   const theme = storedTheme || systemTheme;
                   document.documentElement.setAttribute("data-theme", theme);
+                  if (theme === "dark") {
+                    document.documentElement.classList.add("dark");
+                    document.documentElement.classList.remove("light");
+                  } else {
+                    document.documentElement.classList.add("light");
+                    document.documentElement.classList.remove("dark");
+                  }
                   if (!document.cookie.includes("glocation-theme=")) {
                     document.cookie = "glocation-theme=" + theme + "; path=/; max-age=31536000; SameSite=Lax";
                   }

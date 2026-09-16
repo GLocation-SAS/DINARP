@@ -858,7 +858,8 @@
 
 }
 
-[data-theme="dark"] {
+[data-theme="dark"],
+.dark {
   /*
     ============================================================
     4. TOKENS SEMÃNTICOS â€” MODO OSCURO

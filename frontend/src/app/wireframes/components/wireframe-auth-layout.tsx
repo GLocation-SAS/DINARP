@@ -10,6 +10,7 @@ import {
 } from "lucide-react";
 import { getAssetPath } from "@/lib/utils";
 import { GeoportalHeader } from "@/components/layout/geoportal-header";
+import { ThemeToggle } from "@/components/theme-toggle";
 
 interface WireframeAuthLayoutProps {
   children: React.ReactNode;
@@ -17,14 +18,19 @@ interface WireframeAuthLayoutProps {
 
 export function WireframeAuthLayout({ children }: WireframeAuthLayoutProps) {
   return (
-    <div className="min-h-screen flex flex-col bg-background text-foreground">
+    <div className="min-h-screen flex flex-col bg-background text-foreground relative">
       {/* ── Header institucional existente ── */}
-      <GeoportalHeader
-        variant="user-actions"
-        hideUserActions
-        isStatic
-        className="w-full max-w-none border-b border-border bg-surface/90"
-      />
+      <div className="relative">
+        <GeoportalHeader
+          variant="user-actions"
+          hideUserActions
+          isStatic
+          className="w-full max-w-none border-b border-border bg-surface/90"
+        />
+        <div className="absolute right-4 top-1/2 -translate-y-1/2 z-30 flex items-center">
+          <ThemeToggle />
+        </div>
+      </div>
 
       {/* ── Contenido Principal (Dos Columnas) ── */}
       <main className="flex-1 flex items-center justify-center py-8 sm:py-12 px-4 sm:px-6 lg:px-12">

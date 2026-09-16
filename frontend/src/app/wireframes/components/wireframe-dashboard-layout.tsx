@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import {
   Home,
@@ -28,6 +28,8 @@ import { cn, getAssetPath } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { UserMenu } from "@/components/shared/user-menu";
 import { NotificationsMenu } from "@/components/shared/notifications-menu";
+import { ThemeToggle } from "@/components/theme-toggle";
+import { applyTheme, getStoredTheme, type Theme } from "@/lib/theme";
 
 interface WireframeDashboardLayoutProps {
   activeMenu?: string;
@@ -40,6 +42,37 @@ export function WireframeDashboardLayout({
 }: WireframeDashboardLayoutProps) {
   const [themeMode, setThemeMode] = useState<"claro" | "oscuro">("claro");
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
+  useEffect(() => {
+    const stored = getStoredTheme();
+    if (stored) {
+      setThemeMode(stored === "dark" ? "oscuro" : "claro");
+      applyTheme(stored);
+    } else {
+      const isDark =
+        document.documentElement.classList.contains("dark") ||
+        document.documentElement.getAttribute("data-theme") === "dark";
+      setThemeMode(isDark ? "oscuro" : "claro");
+    }
+
+    const observer = new MutationObserver(() => {
+      const isDark =
+        document.documentElement.classList.contains("dark") ||
+        document.documentElement.getAttribute("data-theme") === "dark";
+      setThemeMode(isDark ? "oscuro" : "claro");
+    });
+    observer.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ["class", "data-theme"],
+    });
+
+    return () => observer.disconnect();
+  }, []);
+
+  const handleThemeChange = (mode: "claro" | "oscuro") => {
+    setThemeMode(mode);
+    applyTheme(mode === "oscuro" ? "dark" : "light");
+  };
 
   const navSections = [
     {
@@ -162,10 +195,10 @@ export function WireframeDashboardLayout({
               type="button"
               variant={themeMode === "claro" ? "neutral" : "ghost"}
               size="sm"
-              onClick={() => setThemeMode("claro")}
+              onClick={() => handleThemeChange("claro")}
               className={cn(
                 "flex-1 h-8 rounded-xl text-xs font-medium gap-1.5",
-                themeMode === "claro" && "bg-surface shadow-xs text-foreground"
+                themeMode === "claro" && "bg-surface shadow-xs text-foreground font-semibold"
               )}
             >
               <Sun className="size-3.5" />
@@ -176,10 +209,10 @@ export function WireframeDashboardLayout({
               type="button"
               variant={themeMode === "oscuro" ? "neutral" : "ghost"}
               size="sm"
-              onClick={() => setThemeMode("oscuro")}
+              onClick={() => handleThemeChange("oscuro")}
               className={cn(
                 "flex-1 h-8 rounded-xl text-xs font-medium gap-1.5",
-                themeMode === "oscuro" && "bg-surface shadow-xs text-foreground"
+                themeMode === "oscuro" && "bg-surface shadow-xs text-foreground font-semibold"
               )}
             >
               <Moon className="size-3.5" />
@@ -218,8 +251,9 @@ export function WireframeDashboardLayout({
 
           <div className="hidden lg:block" />
 
-          {/* User Profile & Notifications from shared components */}
-          <div className="flex items-center gap-3 sm:gap-4 ml-auto">
+          {/* User Profile, Notifications & Theme Toggle */}
+          <div className="flex items-center gap-2 sm:gap-3 ml-auto">
+            <ThemeToggle />
             <NotificationsMenu />
             <UserMenu />
           </div>
