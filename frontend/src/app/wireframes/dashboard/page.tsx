@@ -23,6 +23,7 @@ import {
   CardTitle,
   CardDescription,
   CardContent,
+  CardDecorativeIcon,
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { WireframeDashboardLayout } from "../components/wireframe-dashboard-layout";
@@ -110,94 +111,94 @@ export default function WireframeDashboardPage() {
         </div>
 
         {/* ══════════════════════════════════════════════════
-            CARDS RESUMEN DE ESTADO (4 Métricas con Card UI)
+            CARDS RESUMEN DE ESTADO (4 Métricas con Featured Cards)
            ══════════════════════════════════════════════════ */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5">
           {/* 1. Solicitudes activas */}
-          <Link href="/wireframes/solicitudes" className="group">
+          <Link href="/wireframes/solicitudes" className="group block">
             <Card
-              size="sm"
-              disableHover
-              className="h-full border-border bg-surface shadow-xs transition-transform hover:-translate-y-0.5"
-              innerClassName="flex-row items-center justify-start text-left gap-4 p-5"
+              variant="featured"
+              className="h-full bg-primary/10 hover:bg-primary/15 border border-primary/20 transition-colors"
+              innerClassName="p-5 items-start text-left gap-1"
             >
-              <div className="size-12 rounded-xl bg-muted/60 border border-border/40 flex items-center justify-center text-foreground shrink-0 group-hover:scale-105 transition-transform">
-                <FileText className="size-6 stroke-[1.75]" />
-              </div>
-              <div className="flex flex-col">
-                <span className="font-heading font-bold text-2xl text-foreground leading-tight">
-                  12
-                </span>
-                <span className="text-xs text-muted-foreground font-medium">
-                  Solicitudes activas
-                </span>
-              </div>
+              <span className="font-heading font-extrabold text-3xl sm:text-4xl text-foreground tracking-tight block">
+                12
+              </span>
+              <span className="text-xs font-semibold text-primary block">
+                Solicitudes activas
+              </span>
+              <span className="text-[11px] text-muted-foreground font-normal">
+                En curso en la plataforma
+              </span>
+              <CardDecorativeIcon>
+                <FileText className="size-28 text-primary" />
+              </CardDecorativeIcon>
             </Card>
           </Link>
 
           {/* 2. Pendientes por aprobación */}
-          <Link href="/wireframes/aprobaciones" className="group">
+          <Link href="/wireframes/aprobaciones" className="group block">
             <Card
-              size="sm"
-              disableHover
-              className="h-full border-border bg-surface shadow-xs transition-transform hover:-translate-y-0.5"
-              innerClassName="flex-row items-center justify-start text-left gap-4 p-5"
+              variant="featured"
+              className="h-full bg-warning/10 hover:bg-warning/15 border border-warning/20 transition-colors"
+              innerClassName="p-5 items-start text-left gap-1"
             >
-              <div className="size-12 rounded-xl bg-muted/60 border border-border/40 flex items-center justify-center text-foreground shrink-0 group-hover:scale-105 transition-transform">
-                <Clock className="size-6 stroke-[1.75]" />
-              </div>
-              <div className="flex flex-col">
-                <span className="font-heading font-bold text-2xl text-foreground leading-tight">
-                  4
-                </span>
-                <span className="text-xs text-muted-foreground font-medium">
-                  Pendientes por aprobación
-                </span>
-              </div>
+              <span className="font-heading font-extrabold text-3xl sm:text-4xl text-foreground tracking-tight block">
+                4
+              </span>
+              <span className="text-xs font-semibold text-warning block">
+                Pendientes de aprobación
+              </span>
+              <span className="text-[11px] text-muted-foreground font-normal">
+                En espera de dictamen
+              </span>
+              <CardDecorativeIcon>
+                <Clock className="size-28 text-warning" />
+              </CardDecorativeIcon>
             </Card>
           </Link>
 
           {/* 3. Aprobadas este mes */}
-          <Link href="/wireframes/solicitudes" className="group">
+          <Link href="/wireframes/solicitudes" className="group block">
             <Card
-              size="sm"
-              disableHover
-              className="h-full border-border bg-surface shadow-xs transition-transform hover:-translate-y-0.5"
-              innerClassName="flex-row items-center justify-start text-left gap-4 p-5"
+              variant="featured"
+              className="h-full bg-success/10 hover:bg-success/15 border border-success/20 transition-colors"
+              innerClassName="p-5 items-start text-left gap-1"
             >
-              <div className="size-12 rounded-xl bg-muted/60 border border-border/40 flex items-center justify-center text-foreground shrink-0 group-hover:scale-105 transition-transform">
-                <CheckCircle2 className="size-6 stroke-[1.75]" />
-              </div>
-              <div className="flex flex-col">
-                <span className="font-heading font-bold text-2xl text-foreground leading-tight">
-                  8
-                </span>
-                <span className="text-xs text-muted-foreground font-medium">
-                  Aprobadas este mes
-                </span>
-              </div>
+              <span className="font-heading font-extrabold text-3xl sm:text-4xl text-foreground tracking-tight block">
+                8
+              </span>
+              <span className="text-xs font-semibold text-success block">
+                Aprobadas este mes
+              </span>
+              <span className="text-[11px] text-muted-foreground font-normal">
+                Interoperabilidad lista
+              </span>
+              <CardDecorativeIcon>
+                <CheckCircle2 className="size-28 text-success" />
+              </CardDecorativeIcon>
             </Card>
           </Link>
 
           {/* 4. Requieren atención */}
-          <Link href="/wireframes/solicitudes" className="group">
+          <Link href="/wireframes/solicitudes" className="group block">
             <Card
-              size="sm"
-              disableHover
-              className="h-full border-border bg-surface shadow-xs transition-transform hover:-translate-y-0.5"
-              innerClassName="flex-row items-center justify-start text-left gap-4 p-5"
+              variant="featured"
+              className="h-full bg-danger/10 hover:bg-danger/15 border border-danger/20 transition-colors"
+              innerClassName="p-5 items-start text-left gap-1"
             >
-              <div className="size-12 rounded-xl bg-muted/60 border border-border/40 flex items-center justify-center text-foreground shrink-0 group-hover:scale-105 transition-transform">
-                <XCircle className="size-6 stroke-[1.75]" />
-              </div>
-              <div className="flex flex-col">
-                <span className="font-heading font-bold text-2xl text-foreground leading-tight">
-                  2
-                </span>
-                <span className="text-xs text-muted-foreground font-medium">
-                  Requieren atención
-                </span>
-              </div>
+              <span className="font-heading font-extrabold text-3xl sm:text-4xl text-foreground tracking-tight block">
+                2
+              </span>
+              <span className="text-xs font-semibold text-danger block">
+                Requieren atención
+              </span>
+              <span className="text-[11px] text-muted-foreground font-normal">
+                Observadas o rechazadas
+              </span>
+              <CardDecorativeIcon>
+                <XCircle className="size-28 text-danger" />
+              </CardDecorativeIcon>
             </Card>
           </Link>
         </div>

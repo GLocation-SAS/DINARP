@@ -733,91 +733,89 @@ export default function WireframeReportesPage() {
             </div>
           </div>
 
-          <div className="overflow-x-auto rounded-2xl border border-border bg-surface shadow-xs">
-            <Table className="w-full border-spacing-0">
-              <TableHeader>
-                <TableRow className="border-b border-border/80 bg-muted/30 hover:bg-muted/30">
-                  <TableHead className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider py-3.5 px-4 text-left">
-                    FECHA Y HORA
-                  </TableHead>
-                  <TableHead className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider py-3.5 px-4 text-left">
-                    FUENTE
-                  </TableHead>
-                  <TableHead className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider py-3.5 px-4 text-left">
-                    CONSUMIDOR
-                  </TableHead>
-                  <TableHead className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider py-3.5 px-4 text-left">
-                    SERVICIO / DATOS
-                  </TableHead>
-                  <TableHead className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider py-3.5 px-4 text-left">
-                    TIPO
-                  </TableHead>
-                  <TableHead className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider py-3.5 px-4 text-left">
-                    ESTADO
-                  </TableHead>
-                  <TableHead className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider py-3.5 px-4 text-left">
-                    TIEMPO (MS)
-                  </TableHead>
-                  <TableHead className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider py-3.5 px-4 text-right">
-                    ACCIONES
-                  </TableHead>
+          <Table>
+            <TableHeader>
+              <TableRow className="hover:bg-transparent border-b-0">
+                <TableHead className="font-bold">
+                  FECHA Y HORA
+                </TableHead>
+                <TableHead className="font-bold">
+                  FUENTE
+                </TableHead>
+                <TableHead className="font-bold">
+                  CONSUMIDOR
+                </TableHead>
+                <TableHead className="font-bold">
+                  SERVICIO / DATOS
+                </TableHead>
+                <TableHead className="font-bold">
+                  TIPO
+                </TableHead>
+                <TableHead className="font-bold">
+                  ESTADO
+                </TableHead>
+                <TableHead className="font-bold">
+                  TIEMPO (MS)
+                </TableHead>
+                <TableHead className="text-right font-bold">
+                  ACCIONES
+                </TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {TRANSACCIONES_MOCK.map((tx) => (
+                <TableRow key={tx.id}>
+                  <TableCell className="text-xs font-mono text-muted-foreground whitespace-nowrap">
+                    {tx.fechaHora}
+                  </TableCell>
+                  <TableCell className="text-xs font-semibold text-foreground whitespace-nowrap">
+                    {tx.fuente}
+                  </TableCell>
+                  <TableCell className="text-xs text-muted-foreground whitespace-nowrap">
+                    {tx.consumidor}
+                  </TableCell>
+                  <TableCell className="text-xs text-foreground font-medium whitespace-nowrap">
+                    {tx.servicio}
+                  </TableCell>
+                  <TableCell className="text-xs text-muted-foreground whitespace-nowrap">
+                    {tx.tipo}
+                  </TableCell>
+                  <TableCell className="whitespace-nowrap">
+                    <Badge
+                      tone={tx.estado === "Exitosa" ? "success" : "danger"}
+                      appearance="soft"
+                      size="sm"
+                      className="font-medium text-xs"
+                    >
+                      {tx.estado}
+                    </Badge>
+                  </TableCell>
+                  <TableCell className="text-xs font-mono text-muted-foreground whitespace-nowrap">
+                    {tx.tiempoMs}
+                  </TableCell>
+                  <TableCell className="text-right whitespace-nowrap">
+                    <div className="inline-flex items-center justify-end">
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <Button
+                            type="button"
+                            variant="ghost"
+                            size="icon-sm"
+                            onClick={() => setSelectedTx(tx)}
+                            className="size-8 text-muted-foreground hover:text-foreground hover:bg-muted/50 cursor-pointer"
+                            aria-label="Ver detalle"
+                          >
+                            <Eye className="size-4" />
+                          </Button>
+                        </TooltipTrigger>
+                        <TooltipContent>Ver detalle</TooltipContent>
+                      </Tooltip>
+                    </div>
+                  </TableCell>
                 </TableRow>
-              </TableHeader>
-              <TableBody>
-                {TRANSACCIONES_MOCK.map((tx) => (
-                  <TableRow key={tx.id} className="border-b border-border/40 hover:bg-muted/20 transition-colors">
-                    <TableCell className="py-3.5 px-4 text-xs font-mono text-muted-foreground whitespace-nowrap">
-                      {tx.fechaHora}
-                    </TableCell>
-                    <TableCell className="py-3.5 px-4 text-xs font-semibold text-foreground whitespace-nowrap">
-                      {tx.fuente}
-                    </TableCell>
-                    <TableCell className="py-3.5 px-4 text-xs text-muted-foreground whitespace-nowrap">
-                      {tx.consumidor}
-                    </TableCell>
-                    <TableCell className="py-3.5 px-4 text-xs text-foreground font-medium whitespace-nowrap">
-                      {tx.servicio}
-                    </TableCell>
-                    <TableCell className="py-3.5 px-4 text-xs text-muted-foreground whitespace-nowrap">
-                      {tx.tipo}
-                    </TableCell>
-                    <TableCell className="py-3.5 px-4 whitespace-nowrap">
-                      <Badge
-                        tone={tx.estado === "Exitosa" ? "success" : "danger"}
-                        appearance="soft"
-                        size="sm"
-                        className="font-medium text-xs"
-                      >
-                        {tx.estado}
-                      </Badge>
-                    </TableCell>
-                    <TableCell className="py-3.5 px-4 text-xs font-mono text-muted-foreground whitespace-nowrap">
-                      {tx.tiempoMs}
-                    </TableCell>
-                    <TableCell className="py-3.5 px-4 text-right whitespace-nowrap">
-                      <div className="inline-flex items-center justify-end">
-                        <Tooltip>
-                          <TooltipTrigger asChild>
-                            <Button
-                              type="button"
-                              variant="ghost"
-                              size="icon-sm"
-                              onClick={() => setSelectedTx(tx)}
-                              className="size-8 text-muted-foreground hover:text-foreground hover:bg-muted/50 cursor-pointer"
-                              aria-label="Ver detalle"
-                            >
-                              <Eye className="size-4" />
-                            </Button>
-                          </TooltipTrigger>
-                          <TooltipContent>Ver detalle</TooltipContent>
-                        </Tooltip>
-                      </div>
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </div>
+              ))}
+            </TableBody>
+          </Table>
         </div>
 
         {/* ── Modal Detalle de Transacción ── */}

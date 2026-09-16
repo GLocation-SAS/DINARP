@@ -21,6 +21,7 @@ import { Badge } from "@/components/ui/badge";
 import {
   Card,
   CardContent,
+  CardDecorativeIcon,
 } from "@/components/ui/card";
 import { Search } from "@/components/ui/search";
 import {
@@ -281,226 +282,235 @@ export default function WireframeSolicitudesPage() {
           </div>
         </div>
 
-        {/* ── Cards Resumen de Solicitudes con Card UI ── */}
+        {/* ── Cards Resumen de Solicitudes con Featured Cards alineadas a la izquierda ── */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           {/* 1. Borradores */}
-          <Card className="border-border bg-surface shadow-xs">
-            <CardContent className="p-5 flex items-center gap-4">
-              <div className="size-12 rounded-xl bg-muted/60 flex items-center justify-center text-foreground shrink-0">
-                <FileText className="size-6 stroke-[1.75]" />
-              </div>
-              <div className="flex flex-col">
-                <span className="font-heading font-bold text-2xl text-foreground leading-tight">
-                  4
-                </span>
-                <span className="text-xs text-muted-foreground font-medium">
-                  Borradores
-                </span>
-              </div>
-            </CardContent>
+          <Card
+            variant="featured"
+            className="bg-primary/10 hover:bg-primary/15 border border-primary/20 transition-colors"
+            innerClassName="p-5 items-start text-left gap-1"
+          >
+            <span className="font-heading font-extrabold text-3xl sm:text-4xl text-foreground tracking-tight block">
+              4
+            </span>
+            <span className="text-xs font-semibold text-primary block">
+              Borradores
+            </span>
+            <span className="text-[11px] text-muted-foreground font-normal">
+              Solicitudes en edición
+            </span>
+            <CardDecorativeIcon>
+              <FileText className="size-28 text-primary" />
+            </CardDecorativeIcon>
           </Card>
 
           {/* 2. En revisión */}
-          <Card className="border-border bg-surface shadow-xs">
-            <CardContent className="p-5 flex items-center gap-4">
-              <div className="size-12 rounded-xl bg-muted/60 flex items-center justify-center text-foreground shrink-0">
-                <Clock className="size-6 stroke-[1.75]" />
-              </div>
-              <div className="flex flex-col">
-                <span className="font-heading font-bold text-2xl text-foreground leading-tight">
-                  5
-                </span>
-                <span className="text-xs text-muted-foreground font-medium">
-                  En revisión
-                </span>
-              </div>
-            </CardContent>
+          <Card
+            variant="featured"
+            className="bg-warning/10 hover:bg-warning/15 border border-warning/20 transition-colors"
+            innerClassName="p-5 items-start text-left gap-1"
+          >
+            <span className="font-heading font-extrabold text-3xl sm:text-4xl text-foreground tracking-tight block">
+              5
+            </span>
+            <span className="text-xs font-semibold text-warning block">
+              En revisión
+            </span>
+            <span className="text-[11px] text-muted-foreground font-normal">
+              Pendientes de dictamen
+            </span>
+            <CardDecorativeIcon>
+              <Clock className="size-28 text-warning" />
+            </CardDecorativeIcon>
           </Card>
 
           {/* 3. Aprobadas */}
-          <Card className="border-border bg-surface shadow-xs">
-            <CardContent className="p-5 flex items-center gap-4">
-              <div className="size-12 rounded-xl bg-muted/60 flex items-center justify-center text-foreground shrink-0">
-                <CheckCircle2 className="size-6 stroke-[1.75]" />
-              </div>
-              <div className="flex flex-col">
-                <span className="font-heading font-bold text-2xl text-foreground leading-tight">
-                  12
-                </span>
-                <span className="text-xs text-muted-foreground font-medium">
-                  Aprobadas
-                </span>
-              </div>
-            </CardContent>
+          <Card
+            variant="featured"
+            className="bg-success/10 hover:bg-success/15 border border-success/20 transition-colors"
+            innerClassName="p-5 items-start text-left gap-1"
+          >
+            <span className="font-heading font-extrabold text-3xl sm:text-4xl text-foreground tracking-tight block">
+              12
+            </span>
+            <span className="text-xs font-semibold text-success block">
+              Aprobadas
+            </span>
+            <span className="text-[11px] text-muted-foreground font-normal">
+              Listas para interoperar
+            </span>
+            <CardDecorativeIcon>
+              <CheckCircle2 className="size-28 text-success" />
+            </CardDecorativeIcon>
           </Card>
 
           {/* 4. Observadas */}
-          <Card className="border-border bg-surface shadow-xs">
-            <CardContent className="p-5 flex items-center gap-4">
-              <div className="size-12 rounded-xl bg-muted/60 flex items-center justify-center text-foreground shrink-0">
-                <XCircle className="size-6 stroke-[1.75]" />
-              </div>
-              <div className="flex flex-col">
-                <span className="font-heading font-bold text-2xl text-foreground leading-tight">
-                  3
-                </span>
-                <span className="text-xs text-muted-foreground font-medium">
-                  Observadas
-                </span>
-              </div>
-            </CardContent>
+          <Card
+            variant="featured"
+            className="bg-danger/10 hover:bg-danger/15 border border-danger/20 transition-colors"
+            innerClassName="p-5 items-start text-left gap-1"
+          >
+            <span className="font-heading font-extrabold text-3xl sm:text-4xl text-foreground tracking-tight block">
+              3
+            </span>
+            <span className="text-xs font-semibold text-danger block">
+              Observadas
+            </span>
+            <span className="text-[11px] text-muted-foreground font-normal">
+              Requieren subsanación
+            </span>
+            <CardDecorativeIcon>
+              <XCircle className="size-28 text-danger" />
+            </CardDecorativeIcon>
           </Card>
         </div>
 
         {/* ── Tabla de Solicitudes con Table UI Component ── */}
-        <div className="overflow-x-auto rounded-2xl border border-border bg-surface shadow-xs">
-          <Table className="w-full border-spacing-0">
-            <TableHeader>
-              <TableRow className="border-b border-border/80 bg-muted/30 hover:bg-muted/30">
-                <TableHead className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider py-3.5 px-4 text-left">
-                  CÓDIGO
-                </TableHead>
-                <TableHead className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider py-3.5 px-4 text-left">
-                  SOLICITUD
-                </TableHead>
-                <TableHead className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider py-3.5 px-4 text-left">
-                  INSTITUCIÓN SOLICITANTE
-                </TableHead>
-                <TableHead className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider py-3.5 px-4 text-left">
-                  INSTITUCIÓN FUENTE
-                </TableHead>
-                <TableHead className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider py-3.5 px-4 text-left">
-                  ESTADO
-                </TableHead>
-                <TableHead className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider py-3.5 px-4 text-left">
-                  PRIORIDAD
-                </TableHead>
-                <TableHead className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider py-3.5 px-4 text-left">
-                  <span className="inline-flex items-center gap-1">
-                    ÚLTIMA ACTUALIZACIÓN
-                    <ArrowDown className="size-3" />
-                  </span>
-                </TableHead>
-                <TableHead className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider py-3.5 px-4 text-right">
-                  ACCIONES
-                </TableHead>
+        <Table>
+          <TableHeader>
+            <TableRow className="hover:bg-transparent border-b-0">
+              <TableHead className="font-bold">
+                CÓDIGO
+              </TableHead>
+              <TableHead className="font-bold">
+                SOLICITUD
+              </TableHead>
+              <TableHead className="font-bold">
+                INSTITUCIÓN SOLICITANTE
+              </TableHead>
+              <TableHead className="font-bold">
+                INSTITUCIÓN FUENTE
+              </TableHead>
+              <TableHead className="font-bold">
+                ESTADO
+              </TableHead>
+              <TableHead className="font-bold">
+                PRIORIDAD
+              </TableHead>
+              <TableHead className="font-bold">
+                <span className="inline-flex items-center gap-1">
+                  ÚLTIMA ACTUALIZACIÓN
+                  <ArrowDown className="size-3" />
+                </span>
+              </TableHead>
+              <TableHead className="text-right font-bold">
+                ACCIONES
+              </TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {filteredSolicitudes.length === 0 ? (
+              <TableRow>
+                <TableCell colSpan={8} className="text-center py-10 text-muted-foreground text-sm">
+                  No se encontraron solicitudes con los filtros aplicados.
+                </TableCell>
               </TableRow>
-            </TableHeader>
-            <TableBody>
-              {filteredSolicitudes.length === 0 ? (
-                <TableRow>
-                  <TableCell colSpan={8} className="text-center py-10 text-muted-foreground text-sm">
-                    No se encontraron solicitudes con los filtros aplicados.
+            ) : (
+              filteredSolicitudes.map((item) => (
+                <TableRow
+                  key={item.codigo}
+                >
+                  {/* Código */}
+                  <TableCell className="text-xs font-mono font-medium text-foreground whitespace-nowrap">
+                    {item.codigo}
+                  </TableCell>
+
+                  {/* Solicitud */}
+                  <TableCell className="text-xs font-semibold text-foreground max-w-[220px]">
+                    {item.solicitud}
+                  </TableCell>
+
+                  {/* Institución Solicitante */}
+                  <TableCell className="text-xs text-muted-foreground">
+                    {item.institucionSolicitante}
+                  </TableCell>
+
+                  {/* Institución Fuente */}
+                  <TableCell className="text-xs text-muted-foreground whitespace-nowrap">
+                    {item.institucionFuente}
+                  </TableCell>
+
+                  {/* Estado con Badge UI */}
+                  <TableCell className="whitespace-nowrap">
+                    <Badge
+                      tone="neutral"
+                      appearance="soft"
+                      size="sm"
+                      className="font-medium gap-1.5 capitalize text-xs"
+                    >
+                      <span className="size-1.5 rounded-full bg-foreground" />
+                      {item.estado}
+                    </Badge>
+                  </TableCell>
+
+                  {/* Prioridad con Badge UI */}
+                  <TableCell className="whitespace-nowrap">
+                    <span className="inline-flex items-center gap-1.5 text-xs text-muted-foreground font-medium">
+                      <span className="size-1.5 rounded-full bg-muted-foreground" />
+                      {item.prioridad}
+                    </span>
+                  </TableCell>
+
+                  {/* Última Actualización */}
+                  <TableCell className="text-xs text-muted-foreground whitespace-nowrap">
+                    {item.ultimaActualizacion}
+                  </TableCell>
+
+                  {/* Acciones con Tooltip UI */}
+                  <TableCell className="text-right whitespace-nowrap">
+                    <div className="inline-flex items-center justify-end gap-1">
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <Button
+                            type="button"
+                            variant="ghost"
+                            size="icon-sm"
+                            aria-label="Ver detalles"
+                            onClick={() => router.push("/wireframes/solicitudes/detalle")}
+                            className="size-8 text-muted-foreground hover:text-foreground hover:bg-muted/50 cursor-pointer"
+                          >
+                            <Eye className="size-4" />
+                          </Button>
+                        </TooltipTrigger>
+                        <TooltipContent>Ver detalles</TooltipContent>
+                      </Tooltip>
+
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <Button
+                            type="button"
+                            variant="ghost"
+                            size="icon-sm"
+                            aria-label="Editar solicitud"
+                            className="size-8 text-muted-foreground hover:text-foreground hover:bg-muted/50"
+                          >
+                            <Pencil className="size-4" />
+                          </Button>
+                        </TooltipTrigger>
+                        <TooltipContent>Editar solicitud</TooltipContent>
+                      </Tooltip>
+
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <Button
+                            type="button"
+                            variant="ghost"
+                            size="icon-sm"
+                            aria-label="Más opciones"
+                            className="size-8 text-muted-foreground hover:text-foreground hover:bg-muted/50"
+                          >
+                            <MoreVertical className="size-4" />
+                          </Button>
+                        </TooltipTrigger>
+                        <TooltipContent>Más opciones</TooltipContent>
+                      </Tooltip>
+                    </div>
                   </TableCell>
                 </TableRow>
-              ) : (
-                filteredSolicitudes.map((item) => (
-                  <TableRow
-                    key={item.codigo}
-                    className="border-b border-border/40 hover:bg-muted/20 transition-colors"
-                  >
-                    {/* Código */}
-                    <TableCell className="py-4 px-4 text-xs font-mono font-medium text-foreground whitespace-nowrap">
-                      {item.codigo}
-                    </TableCell>
-
-                    {/* Solicitud */}
-                    <TableCell className="py-4 px-4 text-xs font-semibold text-foreground max-w-[220px]">
-                      {item.solicitud}
-                    </TableCell>
-
-                    {/* Institución Solicitante */}
-                    <TableCell className="py-4 px-4 text-xs text-muted-foreground">
-                      {item.institucionSolicitante}
-                    </TableCell>
-
-                    {/* Institución Fuente */}
-                    <TableCell className="py-4 px-4 text-xs text-muted-foreground whitespace-nowrap">
-                      {item.institucionFuente}
-                    </TableCell>
-
-                    {/* Estado con Badge UI */}
-                    <TableCell className="py-4 px-4 whitespace-nowrap">
-                      <Badge
-                        tone="neutral"
-                        appearance="soft"
-                        size="sm"
-                        className="font-medium gap-1.5 capitalize text-xs"
-                      >
-                        <span className="size-1.5 rounded-full bg-foreground" />
-                        {item.estado}
-                      </Badge>
-                    </TableCell>
-
-                    {/* Prioridad con Badge UI */}
-                    <TableCell className="py-4 px-4 whitespace-nowrap">
-                      <span className="inline-flex items-center gap-1.5 text-xs text-muted-foreground font-medium">
-                        <span className="size-1.5 rounded-full bg-muted-foreground" />
-                        {item.prioridad}
-                      </span>
-                    </TableCell>
-
-                    {/* Última Actualización */}
-                    <TableCell className="py-4 px-4 text-xs text-muted-foreground whitespace-nowrap">
-                      {item.ultimaActualizacion}
-                    </TableCell>
-
-                    {/* Acciones con Tooltip UI */}
-                    <TableCell className="py-4 px-4 text-right whitespace-nowrap">
-                      <div className="inline-flex items-center justify-end gap-1">
-                        <Tooltip>
-                          <TooltipTrigger asChild>
-                            <Button
-                              type="button"
-                              variant="ghost"
-                              size="icon-sm"
-                              aria-label="Ver detalles"
-                              onClick={() => router.push("/wireframes/solicitudes/detalle")}
-                              className="size-8 text-muted-foreground hover:text-foreground hover:bg-muted/50 cursor-pointer"
-                            >
-                              <Eye className="size-4" />
-                            </Button>
-                          </TooltipTrigger>
-                          <TooltipContent>Ver detalles</TooltipContent>
-                        </Tooltip>
-
-                        <Tooltip>
-                          <TooltipTrigger asChild>
-                            <Button
-                              type="button"
-                              variant="ghost"
-                              size="icon-sm"
-                              aria-label="Editar solicitud"
-                              className="size-8 text-muted-foreground hover:text-foreground hover:bg-muted/50"
-                            >
-                              <Pencil className="size-4" />
-                            </Button>
-                          </TooltipTrigger>
-                          <TooltipContent>Editar solicitud</TooltipContent>
-                        </Tooltip>
-
-                        <Tooltip>
-                          <TooltipTrigger asChild>
-                            <Button
-                              type="button"
-                              variant="ghost"
-                              size="icon-sm"
-                              aria-label="Más opciones"
-                              className="size-8 text-muted-foreground hover:text-foreground hover:bg-muted/50"
-                            >
-                              <MoreVertical className="size-4" />
-                            </Button>
-                          </TooltipTrigger>
-                          <TooltipContent>Más opciones</TooltipContent>
-                        </Tooltip>
-                      </div>
-                    </TableCell>
-                  </TableRow>
-                ))
-              )}
-            </TableBody>
-          </Table>
-        </div>
+              ))
+            )}
+          </TableBody>
+        </Table>
 
         {/* ── Footer: Resultados & Paginación con Pagination UI Component ── */}
         <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-2">
