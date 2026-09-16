@@ -210,7 +210,7 @@ export default function WireframeSolicitudesPage() {
               <DropdownMenuTrigger asChild>
                 <Button
                   variant="outline"
-                  className="h-11 px-3.5 flex items-center justify-between gap-2 bg-surface border-border/80 rounded-xl text-xs min-w-[130px]"
+                  className="h-11 px-3.5 flex items-center justify-between gap-2 bg-surface border-border/80 text-xs min-w-[130px]"
                 >
                   <span className="text-muted-foreground font-normal">Estado:</span>
                   <span className="font-semibold text-foreground truncate">{selectedEstado}</span>
@@ -235,7 +235,7 @@ export default function WireframeSolicitudesPage() {
               <DropdownMenuTrigger asChild>
                 <Button
                   variant="outline"
-                  className="h-11 px-3.5 flex items-center justify-between gap-2 bg-surface border-border/80 rounded-xl text-xs min-w-[130px]"
+                  className="h-11 px-3.5 flex items-center justify-between gap-2 bg-surface border-border/80 text-xs min-w-[130px]"
                 >
                   <span className="text-muted-foreground font-normal">Tipo:</span>
                   <span className="font-semibold text-foreground truncate">{selectedTipo}</span>
@@ -259,7 +259,7 @@ export default function WireframeSolicitudesPage() {
               <DropdownMenuTrigger asChild>
                 <Button
                   variant="outline"
-                  className="h-11 px-3.5 flex items-center justify-between gap-2 bg-surface border-border/80 rounded-xl text-xs min-w-[150px]"
+                  className="h-11 px-3.5 flex items-center justify-between gap-2 bg-surface border-border/80 text-xs min-w-[150px]"
                 >
                   <span className="text-muted-foreground font-normal">Fuente:</span>
                   <span className="font-semibold text-foreground truncate">{selectedFuente}</span>

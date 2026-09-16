@@ -67,6 +67,7 @@ import {
 } from "@/components/ui/pagination";
 import { WireframeDashboardLayout } from "../components/wireframe-dashboard-layout";
 import { UsuarioModal, type UsuarioData } from "./components/usuario-modal";
+import { UsuarioDetalleModal } from "./components/usuario-detalle-modal";
 
 const INITIAL_USUARIOS_DATA: UsuarioData[] = [
   {
@@ -135,6 +136,10 @@ export default function WireframeListadoUsuariosPage() {
   const [filterEstado, setFilterEstado] = useState("Todos");
   const [currentPage, setCurrentPage] = useState(1);
 
+  // Modal Ver Detalle
+  const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
+  const [detailUser, setDetailUser] = useState<UsuarioData | null>(null);
+
   // Modal Crear / Editar
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedUser, setSelectedUser] = useState<UsuarioData | null>(null);
@@ -142,6 +147,12 @@ export default function WireframeListadoUsuariosPage() {
   // Dialog Warning Desactivar
   const [isDeactivateOpen, setIsDeactivateOpen] = useState(false);
   const [userToDeactivate, setUserToDeactivate] = useState<UsuarioData | null>(null);
+
+  const handleOpenDetailModal = (user: UsuarioData, e?: React.MouseEvent) => {
+    e?.stopPropagation();
+    setDetailUser(user);
+    setIsDetailModalOpen(true);
+  };
 
   const handleOpenCreateModal = () => {
     setSelectedUser(null);
@@ -191,6 +202,10 @@ export default function WireframeListadoUsuariosPage() {
       }
       return [userData, ...prev];
     });
+
+    if (detailUser && detailUser.id === userData.id) {
+      setDetailUser(userData);
+    }
   };
 
   const filteredData = useMemo(() => {
@@ -230,7 +245,7 @@ export default function WireframeListadoUsuariosPage() {
             type="button"
             variant="primary"
             onClick={handleOpenCreateModal}
-            className="h-11 px-5 rounded-xl text-xs font-semibold gap-2 shadow-xs shrink-0"
+            className="h-11 px-5 text-xs font-semibold gap-2 shadow-xs shrink-0"
           >
             <Plus className="size-4" />
             <span>Nuevo usuario</span>
@@ -254,7 +269,7 @@ export default function WireframeListadoUsuariosPage() {
             <DropdownMenuTrigger asChild>
               <Button
                 variant="outline"
-                className="h-11 px-4 rounded-xl text-xs font-semibold gap-2 border-border/80 bg-surface w-full sm:w-auto"
+                className="h-11 px-4 text-xs font-semibold gap-2 border-border/80 bg-surface w-full sm:w-auto"
               >
                 <Filter className="size-3.5 text-muted-foreground" />
                 <span>Filtros</span>
@@ -321,7 +336,7 @@ export default function WireframeListadoUsuariosPage() {
                 <TableRow
                   key={row.id}
                   className="cursor-pointer"
-                  onClick={() => router.push(`/wireframes/usuarios/${row.id}`)}
+                  onClick={() => handleOpenDetailModal(row)}
                 >
                   {/* Nombre con Avatar de Iniciales */}
                   <TableCell>
@@ -404,7 +419,7 @@ export default function WireframeListadoUsuariosPage() {
                           <TooltipContent>Más opciones</TooltipContent>
                         </Tooltip>
                         <DropdownMenuContent align="end" className="w-44">
-                          <DropdownMenuItem onClick={() => router.push(`/wireframes/usuarios/${row.id}`)}>
+                          <DropdownMenuItem onClick={(e) => handleOpenDetailModal(row, e)}>
                             <Eye className="size-3.5 mr-2 text-muted-foreground" />
                             <span>Ver detalle</span>
                           </DropdownMenuItem>
@@ -496,6 +511,14 @@ export default function WireframeListadoUsuariosPage() {
           </div>
         </div>
       </main>
+
+      {/* ── Modal de Ver Detalle de Usuario ── */}
+      <UsuarioDetalleModal
+        open={isDetailModalOpen}
+        onOpenChange={setIsDetailModalOpen}
+        usuario={detailUser}
+        onEdit={(u) => handleOpenEditModal(u)}
+      />
 
       {/* ── Modal de Crear / Editar Usuario ── */}
       <UsuarioModal

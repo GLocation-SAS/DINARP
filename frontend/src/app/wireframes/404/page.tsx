@@ -29,13 +29,13 @@ export default function Wireframe404Page() {
 
           <div className="flex flex-col sm:flex-row items-center justify-center gap-3 w-full sm:w-auto">
             <Link href="/wireframes/dashboard">
-              <Button variant="primary" className="rounded-xl px-6 h-11 text-xs font-semibold">
+              <Button variant="primary" className="px-6 h-11 text-xs font-semibold">
                 Volver al Dashboard <ArrowRight className="ml-2 size-4" />
               </Button>
             </Link>
             <Button
               variant="outline"
-              className="rounded-xl px-6 h-11 text-xs font-semibold"
+              className="px-6 h-11 text-xs font-semibold"
               onClick={() => window.history.back()}
             >
               <ArrowLeft className="mr-2 size-4" />

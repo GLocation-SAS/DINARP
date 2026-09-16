@@ -221,7 +221,7 @@ export default function WireframeCatalogoFuentesPage() {
             <DropdownMenuTrigger asChild>
               <Button
                 variant="outline"
-                className="h-11 px-4 py-1.5 flex flex-col items-start justify-center bg-surface border-border/80 rounded-xl min-w-[170px] text-left shrink-0"
+                className="h-11 px-4 py-1.5 flex flex-col items-start justify-center bg-surface border-border/80 min-w-[170px] text-left shrink-0"
               >
                 <span className="text-[10px] font-medium text-muted-foreground leading-none">Categoría</span>
                 <div className="w-full flex items-center justify-between gap-1 mt-0.5">

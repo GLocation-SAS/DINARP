@@ -374,7 +374,7 @@ export default function WireframeTarifarioCotizacionPage() {
                   <DropdownMenuTrigger asChild>
                     <Button
                       variant="outline"
-                      className="h-10 px-3 flex items-center justify-between bg-surface border-border rounded-xl text-left w-full sm:w-44 text-xs font-medium"
+                      className="h-10 px-3 flex items-center justify-between bg-surface border-border text-left w-full sm:w-44 text-xs font-medium"
                     >
                       <span className="truncate">{filterEstadoTarifario}</span>
                       <ChevronDown className="size-3.5 text-muted-foreground shrink-0" />
@@ -509,7 +509,7 @@ export default function WireframeTarifarioCotizacionPage() {
                       <DropdownMenuTrigger asChild>
                         <Button
                           variant="outline"
-                          className="h-10 px-3 flex items-center justify-between bg-surface border-border rounded-xl text-left w-full text-xs"
+                          className="h-10 px-3 flex items-center justify-between bg-surface border-border text-left w-full text-xs"
                         >
                           <span className="truncate">{selectedProyecto}</span>
                           <ChevronDown className="size-3.5 text-muted-foreground shrink-0" />
@@ -538,7 +538,7 @@ export default function WireframeTarifarioCotizacionPage() {
                       <DropdownMenuTrigger asChild>
                         <Button
                           variant="outline"
-                          className="h-10 px-3 flex items-center justify-between bg-surface border-border rounded-xl text-left w-full text-xs"
+                          className="h-10 px-3 flex items-center justify-between bg-surface border-border text-left w-full text-xs"
                         >
                           <span className="truncate">{selectedFuente}</span>
                           <ChevronDown className="size-3.5 text-muted-foreground shrink-0" />
@@ -570,7 +570,7 @@ export default function WireframeTarifarioCotizacionPage() {
                       <DropdownMenuTrigger asChild>
                         <Button
                           variant="outline"
-                          className="h-10 px-3 flex items-center justify-between bg-surface border-border rounded-xl text-left w-full text-xs"
+                          className="h-10 px-3 flex items-center justify-between bg-surface border-border text-left w-full text-xs"
                         >
                           <span className="truncate">{selectedServicio}</span>
                           <ChevronDown className="size-3.5 text-muted-foreground shrink-0" />
@@ -607,7 +607,7 @@ export default function WireframeTarifarioCotizacionPage() {
                     type="button"
                     variant="neutral"
                     onClick={handleAddServicioCalculado}
-                    className="h-10 px-4 rounded-xl text-xs font-semibold gap-1.5 shadow-xs w-full justify-center"
+                    className="h-10 px-4 text-xs font-semibold gap-1.5 shadow-xs w-full justify-center"
                   >
                     <Plus className="size-4" />
                     <span>Agregar</span>
@@ -720,7 +720,7 @@ export default function WireframeTarifarioCotizacionPage() {
                   variant="outline"
                   onClick={handleLimpiarCalculadora}
                   disabled={itemsCalculados.length === 0}
-                  className="h-10 px-4 rounded-xl text-xs font-semibold gap-1.5 border-border"
+                  className="h-10 px-4 text-xs font-semibold gap-1.5 border-border"
                 >
                   <RotateCcw className="size-3.5" />
                   <span>Limpiar</span>
@@ -731,7 +731,7 @@ export default function WireframeTarifarioCotizacionPage() {
                   variant="primary"
                   onClick={handleGenerarCotizacion}
                   disabled={itemsCalculados.length === 0}
-                  className="h-10 px-6 rounded-xl text-xs font-semibold gap-2 shadow-xs"
+                  className="h-10 px-6 text-xs font-semibold gap-2 shadow-xs"
                 >
                   <FileText className="size-4" />
                   <span>Generar cotización</span>

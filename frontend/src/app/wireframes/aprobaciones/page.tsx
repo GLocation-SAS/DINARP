@@ -248,7 +248,7 @@ export default function WireframeBandejaAprobacionesPage() {
                 <DropdownMenuTrigger asChild>
                   <Button
                     variant="outline"
-                    className="h-11 px-3.5 flex items-center justify-between gap-2 bg-surface border-border/80 rounded-xl text-xs min-w-[130px]"
+                    className="h-11 px-3.5 flex items-center justify-between gap-2 bg-surface border-border/80 text-xs min-w-[130px]"
                   >
                     <span className="text-muted-foreground font-normal">Estado:</span>
                     <span className="font-semibold text-foreground truncate">{filterEstado}</span>
@@ -273,7 +273,7 @@ export default function WireframeBandejaAprobacionesPage() {
                 <DropdownMenuTrigger asChild>
                   <Button
                     variant="outline"
-                    className="h-11 px-3.5 flex items-center justify-between gap-2 bg-surface border-border/80 rounded-xl text-xs min-w-[140px]"
+                    className="h-11 px-3.5 flex items-center justify-between gap-2 bg-surface border-border/80 text-xs min-w-[140px]"
                   >
                     <span className="text-muted-foreground font-normal">Entidad:</span>
                     <span className="font-semibold text-foreground truncate">{filterEntidad}</span>
@@ -299,7 +299,7 @@ export default function WireframeBandejaAprobacionesPage() {
                 <DropdownMenuTrigger asChild>
                   <Button
                     variant="outline"
-                    className="h-11 px-3.5 flex items-center justify-between gap-2 bg-surface border-border/80 rounded-xl text-xs min-w-[140px]"
+                    className="h-11 px-3.5 flex items-center justify-between gap-2 bg-surface border-border/80 text-xs min-w-[140px]"
                   >
                     <span className="text-muted-foreground font-normal">Fuente:</span>
                     <span className="font-semibold text-foreground truncate">{filterFuente}</span>
@@ -325,7 +325,7 @@ export default function WireframeBandejaAprobacionesPage() {
                 <Button
                   variant="ghost"
                   onClick={resetFilters}
-                  className="h-11 px-3 text-xs text-muted-foreground hover:text-foreground rounded-xl flex items-center gap-1.5 shrink-0"
+                  className="h-11 px-3 text-xs text-muted-foreground hover:text-foreground flex items-center gap-1.5 shrink-0"
                 >
                   <RotateCcw className="size-3.5" />
                   <span>Limpiar</span>

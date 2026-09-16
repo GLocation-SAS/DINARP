@@ -297,7 +297,7 @@ export function RolEditClient({ id }: RolEditClientProps) {
                     <DropdownMenuTrigger asChild>
                       <Button
                         variant="outline"
-                        className="h-10 px-3 flex items-center justify-between bg-surface border-border rounded-xl text-left w-full text-xs font-medium"
+                        className="h-10 px-3 flex items-center justify-between bg-surface border-border text-left w-full text-xs font-medium"
                       >
                         <span className="text-foreground truncate">{estado}</span>
                         <ChevronDown className="size-3.5 text-muted-foreground shrink-0" />
@@ -415,7 +415,7 @@ export function RolEditClient({ id }: RolEditClientProps) {
             <Button
               type="submit"
               variant="primary"
-              className="h-10 px-6 rounded-xl text-xs font-semibold shadow-xs"
+              className="h-10 px-6 text-xs font-semibold shadow-xs"
             >
               Guardar cambios
             </Button>

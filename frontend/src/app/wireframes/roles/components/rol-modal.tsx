@@ -538,7 +538,7 @@ export function RolModal({
                 type="submit"
                 form="rol-form"
                 variant="primary"
-                className="rounded-xl"
+                className=""
               >
                 {isEditing ? "Guardar cambios" : "Crear rol"}
               </Button>

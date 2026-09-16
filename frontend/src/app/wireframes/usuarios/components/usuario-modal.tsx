@@ -332,7 +332,7 @@ export function UsuarioModal({
             <Button
               type="submit"
               variant="primary"
-              className="rounded-xl"
+              className=""
             >
               {isEditing ? "Guardar cambios" : "Crear usuario"}
             </Button>

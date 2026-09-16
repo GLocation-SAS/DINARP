@@ -520,7 +520,7 @@ export default function WireframeRevisionSolicitudPage() {
                 type="button"
                 variant="primary"
                 onClick={handleConfirmAprobar}
-                className="w-full h-11 rounded-xl text-xs font-semibold"
+                className="w-full h-11 text-xs font-semibold"
               >
                 Aprobar
               </Button>
@@ -583,7 +583,7 @@ export default function WireframeRevisionSolicitudPage() {
                 type="button"
                 variant="danger"
                 onClick={handleConfirmRechazar}
-                className="w-full h-11 rounded-xl text-xs font-semibold"
+                className="w-full h-11 text-xs font-semibold"
               >
                 Rechazar solicitud
               </Button>
@@ -633,7 +633,7 @@ export default function WireframeRevisionSolicitudPage() {
                 variant="primary"
                 onClick={handleConfirmCorreccion}
                 disabled={!modalMotivoCorreccion.trim()}
-                className="w-full h-11 rounded-xl text-xs font-semibold"
+                className="w-full h-11 text-xs font-semibold"
               >
                 Enviar observaciones
               </Button>

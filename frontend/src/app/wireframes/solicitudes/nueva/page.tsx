@@ -363,7 +363,7 @@ function NuevaSolicitudContent() {
                       type="button"
                       variant="primary"
                       onClick={handleNextStep}
-                      className="h-10 px-5 rounded-xl text-xs font-semibold gap-2 shadow-xs cursor-pointer"
+                      className="h-10 px-5 text-xs font-semibold gap-2 shadow-xs cursor-pointer"
                     >
                       <span>Siguiente paso</span>
                       <ArrowRight className="size-4" />
@@ -471,7 +471,7 @@ function NuevaSolicitudContent() {
                       type="button"
                       variant="outline"
                       onClick={handlePrevStep}
-                      className="h-10 px-4 rounded-xl text-xs font-semibold gap-2"
+                      className="h-10 px-4 text-xs font-semibold gap-2"
                     >
                       <ArrowLeft className="size-4" />
                       <span>Anterior</span>
@@ -481,7 +481,7 @@ function NuevaSolicitudContent() {
                       type="button"
                       variant="primary"
                       onClick={handleNextStep}
-                      className="h-10 px-5 rounded-xl text-xs font-semibold gap-2 shadow-xs cursor-pointer"
+                      className="h-10 px-5 text-xs font-semibold gap-2 shadow-xs cursor-pointer"
                     >
                       <span>Siguiente paso</span>
                       <ArrowRight className="size-4" />
@@ -613,7 +613,7 @@ function NuevaSolicitudContent() {
                       type="button"
                       variant="outline"
                       onClick={handlePrevStep}
-                      className="h-10 px-4 rounded-xl text-xs font-semibold gap-2"
+                      className="h-10 px-4 text-xs font-semibold gap-2"
                     >
                       <ArrowLeft className="size-4" />
                       <span>Anterior</span>
@@ -623,7 +623,7 @@ function NuevaSolicitudContent() {
                       type="submit"
                       variant="primary"
                       disabled={!terminosAceptados}
-                      className="h-10 px-6 rounded-xl text-xs font-semibold gap-2 shadow-xs cursor-pointer"
+                      className="h-10 px-6 text-xs font-semibold gap-2 shadow-xs cursor-pointer"
                     >
                       <Send className="size-4" />
                       <span>Enviar solicitud</span>

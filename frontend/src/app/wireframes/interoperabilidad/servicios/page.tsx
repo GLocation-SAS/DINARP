@@ -232,7 +232,7 @@ export default function WireframeServiciosHabilitadosPage() {
           <Button
             type="button"
             variant="outline"
-            className="h-10 px-4 rounded-xl text-xs font-semibold gap-2 border-border shrink-0 shadow-xs"
+            className="h-10 px-4 text-xs font-semibold gap-2 border-border shrink-0 shadow-xs"
           >
             <Download className="size-4" />
             <span>Exportar</span>
@@ -263,7 +263,7 @@ export default function WireframeServiciosHabilitadosPage() {
               <DropdownMenuTrigger asChild>
                 <Button
                   variant="outline"
-                  className="h-11 px-3 py-1.5 flex flex-col items-start justify-center bg-surface border-border/80 rounded-xl text-left w-full"
+                  className="h-11 px-3 py-1.5 flex flex-col items-start justify-center bg-surface border-border/80 text-left w-full"
                 >
                   <span className="text-[10px] font-medium text-muted-foreground leading-none">Fuente</span>
                   <div className="w-full flex items-center justify-between gap-1 mt-0.5">
@@ -291,7 +291,7 @@ export default function WireframeServiciosHabilitadosPage() {
               <DropdownMenuTrigger asChild>
                 <Button
                   variant="outline"
-                  className="h-11 px-3 py-1.5 flex flex-col items-start justify-center bg-surface border-border/80 rounded-xl text-left w-full"
+                  className="h-11 px-3 py-1.5 flex flex-col items-start justify-center bg-surface border-border/80 text-left w-full"
                 >
                   <span className="text-[10px] font-medium text-muted-foreground leading-none">Consumidor</span>
                   <div className="w-full flex items-center justify-between gap-1 mt-0.5">
@@ -321,7 +321,7 @@ export default function WireframeServiciosHabilitadosPage() {
                 <DropdownMenuTrigger asChild>
                   <Button
                     variant="outline"
-                    className="h-11 px-3 py-1.5 flex flex-col items-start justify-center bg-surface border-border/80 rounded-xl text-left flex-1"
+                    className="h-11 px-3 py-1.5 flex flex-col items-start justify-center bg-surface border-border/80 text-left flex-1"
                   >
                     <span className="text-[10px] font-medium text-muted-foreground leading-none">Estado</span>
                     <div className="w-full flex items-center justify-between gap-1 mt-0.5">
@@ -347,7 +347,7 @@ export default function WireframeServiciosHabilitadosPage() {
                 type="button"
                 variant="outline"
                 onClick={resetFilters}
-                className="h-11 px-3.5 rounded-xl text-xs font-semibold gap-1.5 border-border shrink-0"
+                className="h-11 px-3.5 text-xs font-semibold gap-1.5 border-border shrink-0"
                 title="Limpiar filtros"
               >
                 <RotateCcw className="size-3.5" />

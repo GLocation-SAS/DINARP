@@ -202,7 +202,7 @@ export function RolDetailClient({ id }: RolDetailClientProps) {
                     type="button"
                     variant="ghost"
                     size="icon-sm"
-                    className="size-10 rounded-xl text-muted-foreground hover:text-foreground"
+                    className="size-10 text-muted-foreground hover:text-foreground"
                   >
                     <MoreVertical className="size-4" />
                   </Button>

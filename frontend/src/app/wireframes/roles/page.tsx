@@ -68,6 +68,7 @@ import {
 } from "@/components/ui/dialog";
 import { WireframeDashboardLayout } from "../components/wireframe-dashboard-layout";
 import { RolModal, type RolData } from "./components/rol-modal";
+import { RolDetalleModal } from "./components/rol-detalle-modal";
 
 const INITIAL_ROLES_DATA: RolData[] = [
   {
@@ -125,6 +126,10 @@ export default function WireframeListadoRolesPage() {
   const [filterEstado, setFilterEstado] = useState("Todos");
   const [currentPage, setCurrentPage] = useState(1);
 
+  // Modal Ver Detalle Rol
+  const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
+  const [detailRol, setDetailRol] = useState<RolData | null>(null);
+
   // Modal de Crear / Editar Rol
   const [isRolModalOpen, setIsRolModalOpen] = useState(false);
   const [editingRol, setEditingRol] = useState<RolData | null>(null);
@@ -133,6 +138,12 @@ export default function WireframeListadoRolesPage() {
   const [targetRol, setTargetRol] = useState<RolData | null>(null);
   const [isWarningDialogOpen, setIsWarningDialogOpen] = useState(false);
   const [warningAction, setWarningAction] = useState<"toggle" | "delete">("toggle");
+
+  const handleOpenDetailModal = (rol: RolData, e?: React.MouseEvent) => {
+    e?.stopPropagation();
+    setDetailRol(rol);
+    setIsDetailModalOpen(true);
+  };
 
   const handleOpenCreate = () => {
     setEditingRol(null);
@@ -184,6 +195,10 @@ export default function WireframeListadoRolesPage() {
       }
       return [data, ...prev];
     });
+
+    if (detailRol && detailRol.id === data.id) {
+      setDetailRol(data);
+    }
   };
 
   const handleDuplicate = (rol: RolData, e?: React.MouseEvent) => {
@@ -233,7 +248,7 @@ export default function WireframeListadoRolesPage() {
             type="button"
             variant="primary"
             onClick={handleOpenCreate}
-            className="h-11 px-5 rounded-xl text-xs font-semibold gap-2 shadow-xs shrink-0"
+            className="h-11 px-5 text-xs font-semibold gap-2 shadow-xs shrink-0"
           >
             <Plus className="size-4" />
             <span>Nuevo rol</span>
@@ -257,7 +272,7 @@ export default function WireframeListadoRolesPage() {
             <DropdownMenuTrigger asChild>
               <Button
                 variant="outline"
-                className="h-11 px-4 rounded-xl text-xs font-semibold gap-2 border-border/80 bg-surface w-full sm:w-auto"
+                className="h-11 px-4 text-xs font-semibold gap-2 border-border/80 bg-surface w-full sm:w-auto"
               >
                 <Filter className="size-3.5 text-muted-foreground" />
                 <span>Filtros</span>
@@ -314,7 +329,7 @@ export default function WireframeListadoRolesPage() {
                 <TableRow
                   key={row.id}
                   className="cursor-pointer"
-                  onClick={() => router.push(`/wireframes/roles/${row.id}`)}
+                  onClick={() => handleOpenDetailModal(row)}
                 >
                   {/* Nombre con Avatar de Iniciales */}
                   <TableCell>
@@ -395,7 +410,7 @@ export default function WireframeListadoRolesPage() {
                           <TooltipContent>Más opciones</TooltipContent>
                         </Tooltip>
                         <DropdownMenuContent align="end" className="w-44">
-                          <DropdownMenuItem onClick={() => router.push(`/wireframes/roles/${row.id}`)}>
+                          <DropdownMenuItem onClick={(e) => handleOpenDetailModal(row, e)}>
                             <Eye className="size-3.5 mr-2 text-muted-foreground" />
                             <span>Ver detalle</span>
                           </DropdownMenuItem>
@@ -498,6 +513,14 @@ export default function WireframeListadoRolesPage() {
           </div>
         </div>
       </main>
+
+      {/* ── Modal Ver Detalle Rol ── */}
+      <RolDetalleModal
+        open={isDetailModalOpen}
+        onOpenChange={setIsDetailModalOpen}
+        rol={detailRol}
+        onEdit={(r) => handleOpenEdit(r)}
+      />
 
       {/* ── Modal de Crear / Editar Rol ── */}
       <RolModal

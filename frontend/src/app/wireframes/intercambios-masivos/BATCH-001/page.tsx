@@ -142,7 +142,7 @@ export default function WireframeDetalleBatchPage() {
                 <Button
                   type="button"
                   variant="primary"
-                  className="h-10 px-4 rounded-xl text-xs font-semibold gap-1.5 shadow-xs"
+                  className="h-10 px-4 text-xs font-semibold gap-1.5 shadow-xs"
                 >
                   <span>Acciones</span>
                   <ChevronDown className="size-4" />
@@ -421,7 +421,7 @@ export default function WireframeDetalleBatchPage() {
                   variant="primary"
                   size="sm"
                   disabled={!observacionTexto.trim()}
-                  className="h-9 px-4 rounded-xl text-xs font-semibold gap-1.5 shadow-xs"
+                  className="h-9 px-4 text-xs font-semibold gap-1.5 shadow-xs"
                 >
                   <Send className="size-3.5" />
                   <span>Enviar</span>

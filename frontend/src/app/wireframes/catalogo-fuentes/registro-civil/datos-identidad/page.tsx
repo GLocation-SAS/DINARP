@@ -267,7 +267,7 @@ export default function WireframeDatosIdentidadPage() {
               type="button"
               variant="primary"
               onClick={handleSeleccionarParaSolicitud}
-              className="h-10 px-5 rounded-xl text-xs font-semibold gap-2 shadow-xs"
+              className="h-10 px-5 text-xs font-semibold gap-2 shadow-xs"
             >
               <CheckCircle2 className="size-4" />
               <span>Seleccionar para mi solicitud ({selectedCampos.length})</span>
@@ -462,7 +462,7 @@ export default function WireframeDatosIdentidadPage() {
                 type="button"
                 variant="primary"
                 onClick={handleSeleccionarParaSolicitud}
-                className="w-full sm:w-auto h-10 px-5 rounded-xl text-xs font-semibold gap-2 shadow-xs"
+                className="w-full sm:w-auto h-10 px-5 text-xs font-semibold gap-2 shadow-xs"
               >
                 <span>Continuar a nueva solicitud</span>
                 <ArrowRight className="size-4" />

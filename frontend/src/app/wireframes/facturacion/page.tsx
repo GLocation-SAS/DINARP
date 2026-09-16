@@ -218,7 +218,7 @@ export default function WireframeListadoFacturacionPage() {
                 <DropdownMenuTrigger asChild>
                   <Button
                     variant="outline"
-                    className="h-11 px-3.5 flex items-center justify-between bg-surface border-border/80 rounded-xl text-xs w-full"
+                    className="h-11 px-3.5 flex items-center justify-between bg-surface border-border/80 text-xs w-full"
                   >
                     <span className="truncate text-left flex-1">{filterEstado}</span>
                     <ChevronDown className="size-3.5 text-muted-foreground shrink-0 ml-2" />
@@ -288,7 +288,7 @@ export default function WireframeListadoFacturacionPage() {
                   type="button"
                   variant="outline"
                   onClick={handleResetFilters}
-                  className="h-11 px-3 rounded-xl text-xs font-medium text-muted-foreground hover:text-foreground"
+                  className="h-11 px-3 text-xs font-medium text-muted-foreground hover:text-foreground"
                   title="Restablecer filtros"
                 >
                   <RotateCcw className="size-3.5 mr-1" />

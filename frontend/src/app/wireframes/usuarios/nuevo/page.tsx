@@ -203,7 +203,7 @@ export default function WireframeCrearUsuarioPage() {
                         <DropdownMenuTrigger asChild>
                           <Button
                             variant="outline"
-                            className="h-10 px-3 flex items-center justify-between bg-surface border-border rounded-xl text-left w-full text-xs font-normal"
+                            className="h-10 px-3 flex items-center justify-between bg-surface border-border text-left w-full text-xs font-normal"
                           >
                             <span className={institucion === "Selecciona una institución" ? "text-muted-foreground truncate" : "text-foreground truncate"}>
                               {institucion}
@@ -258,7 +258,7 @@ export default function WireframeCrearUsuarioPage() {
                         <DropdownMenuTrigger asChild>
                           <Button
                             variant="outline"
-                            className="h-10 px-3 flex items-center justify-between bg-surface border-border rounded-xl text-left w-full text-xs font-normal"
+                            className="h-10 px-3 flex items-center justify-between bg-surface border-border text-left w-full text-xs font-normal"
                           >
                             <span className={rol === "Selecciona un rol" ? "text-muted-foreground truncate" : "text-foreground truncate"}>
                               {rol}
@@ -286,7 +286,7 @@ export default function WireframeCrearUsuarioPage() {
                         <DropdownMenuTrigger asChild>
                           <Button
                             variant="outline"
-                            className="h-10 px-3 flex items-center justify-between bg-surface border-border rounded-xl text-left w-full text-xs font-normal"
+                            className="h-10 px-3 flex items-center justify-between bg-surface border-border text-left w-full text-xs font-normal"
                           >
                             <span className="text-foreground truncate">{estado}</span>
                             <ChevronDown className="size-3.5 text-muted-foreground shrink-0" />
@@ -332,7 +332,7 @@ export default function WireframeCrearUsuarioPage() {
                   <Button
                     type="submit"
                     variant="primary"
-                    className="h-10 px-6 rounded-xl text-xs font-semibold shadow-xs"
+                    className="h-10 px-6 text-xs font-semibold shadow-xs"
                   >
                     Guardar usuario
                   </Button>
@@ -362,7 +362,7 @@ export default function WireframeCrearUsuarioPage() {
                 type="button"
                 variant="primary"
                 onClick={handleResetForm}
-                className="w-full sm:w-auto h-11 px-6 rounded-xl text-xs font-semibold"
+                className="w-full sm:w-auto h-11 px-6 text-xs font-semibold"
               >
                 Crear otro usuario
               </Button>

@@ -243,7 +243,7 @@ export default function WireframeReportesPage() {
                   <DropdownMenuTrigger asChild>
                     <Button
                       variant="outline"
-                      className="h-10 px-3.5 flex items-center justify-between bg-surface border-border/80 rounded-xl text-left w-full text-xs font-medium"
+                      className="h-10 px-3.5 flex items-center justify-between bg-surface border-border/80 text-left w-full text-xs font-medium"
                     >
                       <span className="truncate text-left flex-1">{institucion}</span>
                       <ChevronDown className="size-3.5 text-muted-foreground shrink-0 ml-2" />
@@ -270,7 +270,7 @@ export default function WireframeReportesPage() {
                   <DropdownMenuTrigger asChild>
                     <Button
                       variant="outline"
-                      className="h-10 px-3.5 flex items-center justify-between bg-surface border-border/80 rounded-xl text-left w-full text-xs font-medium"
+                      className="h-10 px-3.5 flex items-center justify-between bg-surface border-border/80 text-left w-full text-xs font-medium"
                     >
                       <span className="truncate text-left flex-1">{tipoInstitucion}</span>
                       <ChevronDown className="size-3.5 text-muted-foreground shrink-0 ml-2" />
@@ -296,7 +296,7 @@ export default function WireframeReportesPage() {
                   <DropdownMenuTrigger asChild>
                     <Button
                       variant="outline"
-                      className="h-10 px-3.5 flex items-center justify-between bg-surface border-border/80 rounded-xl text-left w-full text-xs font-medium"
+                      className="h-10 px-3.5 flex items-center justify-between bg-surface border-border/80 text-left w-full text-xs font-medium"
                     >
                       <span className="truncate text-left flex-1">{fuente}</span>
                       <ChevronDown className="size-3.5 text-muted-foreground shrink-0 ml-2" />
@@ -323,7 +323,7 @@ export default function WireframeReportesPage() {
                   <DropdownMenuTrigger asChild>
                     <Button
                       variant="outline"
-                      className="h-10 px-3.5 flex items-center justify-between bg-surface border-border/80 rounded-xl text-left w-full text-xs font-medium"
+                      className="h-10 px-3.5 flex items-center justify-between bg-surface border-border/80 text-left w-full text-xs font-medium"
                     >
                       <span className="truncate text-left flex-1">{consumidor}</span>
                       <ChevronDown className="size-3.5 text-muted-foreground shrink-0 ml-2" />
@@ -350,7 +350,7 @@ export default function WireframeReportesPage() {
                   <DropdownMenuTrigger asChild>
                     <Button
                       variant="outline"
-                      className="h-10 px-3.5 flex items-center justify-between bg-surface border-border/80 rounded-xl text-left w-full text-xs font-medium"
+                      className="h-10 px-3.5 flex items-center justify-between bg-surface border-border/80 text-left w-full text-xs font-medium"
                     >
                       <span className="truncate text-left flex-1">{tipoIntercambio}</span>
                       <ChevronDown className="size-3.5 text-muted-foreground shrink-0 ml-2" />
@@ -376,7 +376,7 @@ export default function WireframeReportesPage() {
                   <DropdownMenuTrigger asChild>
                     <Button
                       variant="outline"
-                      className="h-10 px-3.5 flex items-center justify-between bg-surface border-border/80 rounded-xl text-left w-full text-xs font-medium"
+                      className="h-10 px-3.5 flex items-center justify-between bg-surface border-border/80 text-left w-full text-xs font-medium"
                     >
                       <span className="truncate text-left flex-1">{estado}</span>
                       <ChevronDown className="size-3.5 text-muted-foreground shrink-0 ml-2" />
@@ -398,7 +398,7 @@ export default function WireframeReportesPage() {
                   type="button"
                   variant="outline"
                   onClick={handleResetFilters}
-                  className="h-10 flex-1 rounded-xl text-xs font-semibold border-border/80 bg-surface justify-center hover:bg-muted/30"
+                  className="h-10 flex-1 text-xs font-semibold border-border/80 bg-surface justify-center hover:bg-muted/30"
                 >
                   <RotateCcw className="size-3.5 mr-1 text-muted-foreground" />
                   Limpiar
@@ -406,7 +406,7 @@ export default function WireframeReportesPage() {
                 <Button
                   type="button"
                   variant="primary"
-                  className="h-10 flex-1 rounded-xl text-xs font-semibold shadow-xs justify-center"
+                  className="h-10 flex-1 text-xs font-semibold shadow-xs justify-center"
                 >
                   <Search className="size-3.5 mr-1" />
                   Consultar

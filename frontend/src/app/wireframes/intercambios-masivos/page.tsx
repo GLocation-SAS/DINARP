@@ -265,7 +265,7 @@ export default function WireframeIntercambiosMasivosPage() {
               <DropdownMenuTrigger asChild>
                 <Button
                   variant="outline"
-                  className="h-11 px-3 py-1.5 flex flex-col items-start justify-center bg-surface border-border/80 rounded-xl text-left w-full"
+                  className="h-11 px-3 py-1.5 flex flex-col items-start justify-center bg-surface border-border/80 text-left w-full"
                 >
                   <span className="text-[10px] font-medium text-muted-foreground leading-none">Fuente</span>
                   <div className="w-full flex items-center justify-between gap-1 mt-0.5">
@@ -293,7 +293,7 @@ export default function WireframeIntercambiosMasivosPage() {
               <DropdownMenuTrigger asChild>
                 <Button
                   variant="outline"
-                  className="h-11 px-3 py-1.5 flex flex-col items-start justify-center bg-surface border-border/80 rounded-xl text-left w-full"
+                  className="h-11 px-3 py-1.5 flex flex-col items-start justify-center bg-surface border-border/80 text-left w-full"
                 >
                   <span className="text-[10px] font-medium text-muted-foreground leading-none">Consumidor</span>
                   <div className="w-full flex items-center justify-between gap-1 mt-0.5">
@@ -321,7 +321,7 @@ export default function WireframeIntercambiosMasivosPage() {
               <DropdownMenuTrigger asChild>
                 <Button
                   variant="outline"
-                  className="h-11 px-3 py-1.5 flex flex-col items-start justify-center bg-surface border-border/80 rounded-xl text-left w-full"
+                  className="h-11 px-3 py-1.5 flex flex-col items-start justify-center bg-surface border-border/80 text-left w-full"
                 >
                   <span className="text-[10px] font-medium text-muted-foreground leading-none">Estado</span>
                   <div className="w-full flex items-center justify-between gap-1 mt-0.5">
@@ -349,7 +349,7 @@ export default function WireframeIntercambiosMasivosPage() {
                 type="button"
                 variant="outline"
                 onClick={resetFilters}
-                className="h-11 px-3.5 rounded-xl text-xs font-semibold gap-1.5 border-border w-full justify-center"
+                className="h-11 px-3.5 text-xs font-semibold gap-1.5 border-border w-full justify-center"
                 title="Limpiar filtros"
               >
                 <RotateCcw className="size-3.5" />

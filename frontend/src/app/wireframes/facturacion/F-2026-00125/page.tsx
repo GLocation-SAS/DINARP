@@ -86,7 +86,7 @@ export default function WireframeDetalleFacturaPage() {
             variant="outline"
             onClick={handleDownloadPdf}
             disabled={isDownloading}
-            className="h-10 px-4 rounded-xl text-xs font-semibold gap-2 border-border/80 bg-surface shrink-0"
+            className="h-10 px-4 text-xs font-semibold gap-2 border-border/80 bg-surface shrink-0"
           >
             <Download className="size-3.5" />
             <span>{isDownloading ? "Generando PDF..." : "Descargar factura (PDF)"}</span>

@@ -434,7 +434,7 @@ export default function WireframeNuevaSolicitudBatchPage() {
               variant="outline"
               onClick={handleBack}
               disabled={activeStep === 0}
-              className="h-10 px-4 rounded-xl text-xs font-semibold gap-1.5"
+              className="h-10 px-4 text-xs font-semibold gap-1.5"
             >
               <ArrowLeft className="size-4" />
               <span>Anterior</span>
@@ -444,7 +444,7 @@ export default function WireframeNuevaSolicitudBatchPage() {
               type="button"
               variant="primary"
               onClick={handleNext}
-              className="h-10 px-6 rounded-xl text-xs font-semibold gap-2 shadow-xs"
+              className="h-10 px-6 text-xs font-semibold gap-2 shadow-xs"
             >
               <span>{activeStep === STEPS_CONFIG.length - 1 ? "Enviar solicitud" : "Siguiente"}</span>
               {activeStep < STEPS_CONFIG.length - 1 && <ArrowRight className="size-4" />}

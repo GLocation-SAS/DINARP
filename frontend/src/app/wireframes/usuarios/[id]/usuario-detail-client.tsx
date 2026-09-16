@@ -175,7 +175,7 @@ export function UsuarioDetailClient({ id }: UsuarioDetailClientProps) {
                     type="button"
                     variant="outline"
                     size="icon"
-                    className="size-10 rounded-xl border-border text-muted-foreground hover:text-foreground"
+                    className="size-10 border-border text-muted-foreground hover:text-foreground"
                   >
                     <MoreVertical className="size-4" />
                   </Button>

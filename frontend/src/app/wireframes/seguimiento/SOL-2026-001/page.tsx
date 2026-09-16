@@ -424,7 +424,7 @@ export default function WireframeDetalleSeguimientoPage() {
                     variant="primary"
                     size="sm"
                     disabled={!comentarioTexto.trim()}
-                    className="h-9 px-4 rounded-xl text-xs font-semibold gap-1.5 shadow-xs"
+                    className="h-9 px-4 text-xs font-semibold gap-1.5 shadow-xs"
                   >
                     <Send className="size-3.5" />
                     <span>Enviar comentario</span>

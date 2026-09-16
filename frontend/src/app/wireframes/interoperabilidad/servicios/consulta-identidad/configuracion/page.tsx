@@ -204,7 +204,7 @@ export default function WireframeConfiguracionServicioPage() {
                     <DropdownMenuTrigger asChild>
                       <Button
                         variant="outline"
-                        className="h-10 px-3 flex items-center justify-between bg-surface border-border rounded-xl text-left w-full text-xs font-medium"
+                        className="h-10 px-3 flex items-center justify-between bg-surface border-border text-left w-full text-xs font-medium"
                       >
                         <div className="flex items-center gap-2">
                           <span className="size-2 rounded-full bg-foreground" />
@@ -371,7 +371,7 @@ export default function WireframeConfiguracionServicioPage() {
               <Button
                 type="submit"
                 variant="primary"
-                className="h-10 px-6 rounded-xl text-xs font-semibold gap-2 shadow-xs"
+                className="h-10 px-6 text-xs font-semibold gap-2 shadow-xs"
               >
                 <Save className="size-4" />
                 <span>Guardar cambios</span>
