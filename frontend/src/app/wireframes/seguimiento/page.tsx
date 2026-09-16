@@ -15,6 +15,7 @@ import {
 
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { Search as SearchBar } from "@/components/ui/search";
 import {
   Card,
   CardContent,

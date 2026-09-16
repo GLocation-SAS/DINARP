@@ -21,6 +21,7 @@ import {
 
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { Search as SearchBar } from "@/components/ui/search";
 import {
   Card,
   CardContent,
@@ -241,41 +242,50 @@ export default function WireframeIntercambiosMasivosPage() {
         </div>
 
         {/* ── 3. Buscador y Filtros ── */}
-        <div className="space-y-3">
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-3 items-end">
-            {/* Buscador */}
-            <div className="lg:col-span-2 min-w-[200px]">
-              <InputGroup
-                size="default"
-                leftIcon={<Search className="size-4 text-muted-foreground" />}
-                className="bg-surface h-11 rounded-xl border-border/80"
-              >
-                <InputGroupInput
-                  placeholder="Buscar intercambios masivos..."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className="text-xs sm:text-sm"
-                />
-              </InputGroup>
-            </div>
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-3">
+          {/* Buscador */}
+          <div className="w-full sm:max-w-md">
+            <SearchBar
+              placeholder="Buscar por código, solicitud, consumidor o fuente..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              onClear={() => setSearchQuery("")}
+              className="bg-surface rounded-xl border-border/80"
+            />
+          </div>
 
-            {/* Filtro Fuente */}
+          <div className="flex items-center gap-2 w-full sm:w-auto justify-end">
+            {/* Botón Filtros Desplegable */}
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button
                   variant="outline"
-                  className="h-11 px-3 py-1.5 flex flex-col items-start justify-center bg-surface border-border/80 text-left w-full"
+                  className="h-11 px-4 text-xs font-semibold gap-2 border-border/80 bg-surface w-full sm:w-auto cursor-pointer"
                 >
-                  <span className="text-[10px] font-medium text-muted-foreground leading-none">Fuente</span>
-                  <div className="w-full flex items-center justify-between gap-1 mt-0.5">
-                    <span className="text-xs font-semibold text-foreground truncate">{filterFuente}</span>
-                    <ChevronDown className="size-3.5 text-muted-foreground shrink-0" />
-                  </div>
+                  <Filter className="size-3.5 text-muted-foreground" />
+                  <span>Filtros</span>
+                  {(filterEstado !== "Todos" || filterFuente !== "Todas" || filterConsumidor !== "Todos") && (
+                    <span className="size-2 rounded-full bg-foreground" />
+                  )}
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="start" className="w-48">
-                <DropdownMenuLabel className="text-xs">Institución fuente</DropdownMenuLabel>
+              <DropdownMenuContent align="end" className="w-56">
+                <DropdownMenuLabel className="text-xs font-bold text-foreground">
+                  Filtrar por Estado
+                </DropdownMenuLabel>
                 <DropdownMenuSeparator />
+                <DropdownMenuRadioGroup value={filterEstado} onValueChange={setFilterEstado}>
+                  <DropdownMenuRadioItem value="Todos">Todos los estados</DropdownMenuRadioItem>
+                  <DropdownMenuRadioItem value="En revisión">En revisión</DropdownMenuRadioItem>
+                  <DropdownMenuRadioItem value="Aprobado">Aprobado</DropdownMenuRadioItem>
+                  <DropdownMenuRadioItem value="Finalizado">Finalizado</DropdownMenuRadioItem>
+                  <DropdownMenuRadioItem value="Rechazado">Rechazado</DropdownMenuRadioItem>
+                </DropdownMenuRadioGroup>
+
+                <DropdownMenuSeparator />
+                <DropdownMenuLabel className="text-xs font-bold text-foreground">
+                  Institución Fuente
+                </DropdownMenuLabel>
                 <DropdownMenuRadioGroup value={filterFuente} onValueChange={setFilterFuente}>
                   <DropdownMenuRadioItem value="Todas">Todas las fuentes</DropdownMenuRadioItem>
                   <DropdownMenuRadioItem value="Registro Civil">Registro Civil</DropdownMenuRadioItem>
@@ -284,28 +294,13 @@ export default function WireframeIntercambiosMasivosPage() {
                   <DropdownMenuRadioItem value="ANT">ANT</DropdownMenuRadioItem>
                   <DropdownMenuRadioItem value="IESS">IESS</DropdownMenuRadioItem>
                 </DropdownMenuRadioGroup>
-              </DropdownMenuContent>
-            </DropdownMenu>
 
-            {/* Filtro Consumidor */}
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button
-                  variant="outline"
-                  className="h-11 px-3 py-1.5 flex flex-col items-start justify-center bg-surface border-border/80 text-left w-full"
-                >
-                  <span className="text-[10px] font-medium text-muted-foreground leading-none">Consumidor</span>
-                  <div className="w-full flex items-center justify-between gap-1 mt-0.5">
-                    <span className="text-xs font-semibold text-foreground truncate">{filterConsumidor}</span>
-                    <ChevronDown className="size-3.5 text-muted-foreground shrink-0" />
-                  </div>
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="start" className="w-52">
-                <DropdownMenuLabel className="text-xs">Entidad consumidora</DropdownMenuLabel>
                 <DropdownMenuSeparator />
+                <DropdownMenuLabel className="text-xs font-bold text-foreground">
+                  Entidad Consumidora
+                </DropdownMenuLabel>
                 <DropdownMenuRadioGroup value={filterConsumidor} onValueChange={setFilterConsumidor}>
-                  <DropdownMenuRadioItem value="Todos">Todos</DropdownMenuRadioItem>
+                  <DropdownMenuRadioItem value="Todos">Todos los consumidores</DropdownMenuRadioItem>
                   <DropdownMenuRadioItem value="MIDUVI">MIDUVI</DropdownMenuRadioItem>
                   <DropdownMenuRadioItem value="INEC">INEC</DropdownMenuRadioItem>
                   <DropdownMenuRadioItem value="MIES">MIES</DropdownMenuRadioItem>
@@ -315,46 +310,18 @@ export default function WireframeIntercambiosMasivosPage() {
               </DropdownMenuContent>
             </DropdownMenu>
 
-            {/* Filtro Estado */}
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button
-                  variant="outline"
-                  className="h-11 px-3 py-1.5 flex flex-col items-start justify-center bg-surface border-border/80 text-left w-full"
-                >
-                  <span className="text-[10px] font-medium text-muted-foreground leading-none">Estado</span>
-                  <div className="w-full flex items-center justify-between gap-1 mt-0.5">
-                    <span className="text-xs font-semibold text-foreground truncate">{filterEstado}</span>
-                    <ChevronDown className="size-3.5 text-muted-foreground shrink-0" />
-                  </div>
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="start" className="w-40">
-                <DropdownMenuLabel className="text-xs">Estado</DropdownMenuLabel>
-                <DropdownMenuSeparator />
-                <DropdownMenuRadioGroup value={filterEstado} onValueChange={setFilterEstado}>
-                  <DropdownMenuRadioItem value="Todos">Todos</DropdownMenuRadioItem>
-                  <DropdownMenuRadioItem value="En revisión">En revisión</DropdownMenuRadioItem>
-                  <DropdownMenuRadioItem value="Aprobado">Aprobado</DropdownMenuRadioItem>
-                  <DropdownMenuRadioItem value="Finalizado">Finalizado</DropdownMenuRadioItem>
-                  <DropdownMenuRadioItem value="Rechazado">Rechazado</DropdownMenuRadioItem>
-                </DropdownMenuRadioGroup>
-              </DropdownMenuContent>
-            </DropdownMenu>
-
-            {/* Acciones de filtro */}
-            <div className="flex items-center gap-2 w-full">
+            {(searchQuery || filterEstado !== "Todos" || filterFuente !== "Todas" || filterConsumidor !== "Todos") && (
               <Button
                 type="button"
                 variant="outline"
                 onClick={resetFilters}
-                className="h-11 px-3.5 text-xs font-semibold gap-1.5 border-border w-full justify-center"
-                title="Limpiar filtros"
+                className="h-11 px-3 text-xs font-medium text-muted-foreground hover:text-foreground cursor-pointer"
+                title="Restablecer filtros"
               >
-                <RotateCcw className="size-3.5" />
+                <RotateCcw className="size-3.5 mr-1" />
                 <span>Limpiar</span>
               </Button>
-            </div>
+            )}
           </div>
         </div>
 

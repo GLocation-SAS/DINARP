@@ -15,6 +15,8 @@ import {
   Pencil,
   Download,
   ArrowDown,
+  Filter,
+  RotateCcw,
 } from "lucide-react";
 import { toast } from "sonner";
 
@@ -204,74 +206,51 @@ export default function WireframeSolicitudesPage() {
             />
           </div>
 
-          {/* Selectores de Filtro con DropdownMenu */}
-          <div className="flex flex-wrap sm:flex-nowrap items-center gap-2 shrink-0">
-            {/* Filtro Estado */}
+          {/* Botón Filtros Desplegable */}
+          <div className="flex items-center gap-2 w-full sm:w-auto justify-end">
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button
                   variant="outline"
-                  className="h-11 px-3.5 flex items-center justify-between gap-2 bg-surface border-border/80 text-xs min-w-[130px]"
+                  className="h-11 px-4 text-xs font-semibold gap-2 border-border/80 bg-surface w-full sm:w-auto cursor-pointer"
                 >
-                  <span className="text-muted-foreground font-normal">Estado:</span>
-                  <span className="font-semibold text-foreground truncate">{selectedEstado}</span>
-                  <ChevronDown className="size-3.5 text-muted-foreground shrink-0 opacity-70" />
+                  <Filter className="size-3.5 text-muted-foreground" />
+                  <span>Filtros</span>
+                  {(selectedEstado !== "Todos" || selectedTipo !== "Todos" || selectedFuente !== "Todos") && (
+                    <span className="size-2 rounded-full bg-foreground" />
+                  )}
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-48 rounded-xl">
-                <DropdownMenuLabel className="text-xs">Filtrar por estado</DropdownMenuLabel>
+              <DropdownMenuContent align="end" className="w-56">
+                <DropdownMenuLabel className="text-xs font-bold text-foreground">
+                  Filtrar por Estado
+                </DropdownMenuLabel>
                 <DropdownMenuSeparator />
                 <DropdownMenuRadioGroup value={selectedEstado} onValueChange={setSelectedEstado}>
-                  <DropdownMenuRadioItem value="Todos">Todos</DropdownMenuRadioItem>
+                  <DropdownMenuRadioItem value="Todos">Todos los estados</DropdownMenuRadioItem>
                   <DropdownMenuRadioItem value="Borrador">Borrador</DropdownMenuRadioItem>
                   <DropdownMenuRadioItem value="En revisión">En revisión</DropdownMenuRadioItem>
                   <DropdownMenuRadioItem value="Aprobada">Aprobada</DropdownMenuRadioItem>
                   <DropdownMenuRadioItem value="Observada">Observada</DropdownMenuRadioItem>
                 </DropdownMenuRadioGroup>
-              </DropdownMenuContent>
-            </DropdownMenu>
 
-            {/* Filtro Tipo */}
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button
-                  variant="outline"
-                  className="h-11 px-3.5 flex items-center justify-between gap-2 bg-surface border-border/80 text-xs min-w-[130px]"
-                >
-                  <span className="text-muted-foreground font-normal">Tipo:</span>
-                  <span className="font-semibold text-foreground truncate">{selectedTipo}</span>
-                  <ChevronDown className="size-3.5 text-muted-foreground shrink-0 opacity-70" />
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-48 rounded-xl">
-                <DropdownMenuLabel className="text-xs">Filtrar por tipo</DropdownMenuLabel>
                 <DropdownMenuSeparator />
+                <DropdownMenuLabel className="text-xs font-bold text-foreground">
+                  Tipo de Solicitud
+                </DropdownMenuLabel>
                 <DropdownMenuRadioGroup value={selectedTipo} onValueChange={setSelectedTipo}>
-                  <DropdownMenuRadioItem value="Todos">Todos</DropdownMenuRadioItem>
+                  <DropdownMenuRadioItem value="Todos">Todos los tipos</DropdownMenuRadioItem>
                   <DropdownMenuRadioItem value="Validación">Validación</DropdownMenuRadioItem>
                   <DropdownMenuRadioItem value="Consulta">Consulta</DropdownMenuRadioItem>
                   <DropdownMenuRadioItem value="Verificación">Verificación</DropdownMenuRadioItem>
                 </DropdownMenuRadioGroup>
-              </DropdownMenuContent>
-            </DropdownMenu>
 
-            {/* Filtro Institución fuente */}
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button
-                  variant="outline"
-                  className="h-11 px-3.5 flex items-center justify-between gap-2 bg-surface border-border/80 text-xs min-w-[150px]"
-                >
-                  <span className="text-muted-foreground font-normal">Fuente:</span>
-                  <span className="font-semibold text-foreground truncate">{selectedFuente}</span>
-                  <ChevronDown className="size-3.5 text-muted-foreground shrink-0 opacity-70" />
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-52 rounded-xl">
-                <DropdownMenuLabel className="text-xs">Institución fuente</DropdownMenuLabel>
                 <DropdownMenuSeparator />
+                <DropdownMenuLabel className="text-xs font-bold text-foreground">
+                  Institución Fuente
+                </DropdownMenuLabel>
                 <DropdownMenuRadioGroup value={selectedFuente} onValueChange={setSelectedFuente}>
-                  <DropdownMenuRadioItem value="Todos">Todos</DropdownMenuRadioItem>
+                  <DropdownMenuRadioItem value="Todos">Todas las fuentes</DropdownMenuRadioItem>
                   <DropdownMenuRadioItem value="Registro Civil">Registro Civil</DropdownMenuRadioItem>
                   <DropdownMenuRadioItem value="Policía Nacional">Policía Nacional</DropdownMenuRadioItem>
                   <DropdownMenuRadioItem value="SRI">SRI</DropdownMenuRadioItem>
@@ -281,6 +260,24 @@ export default function WireframeSolicitudesPage() {
                 </DropdownMenuRadioGroup>
               </DropdownMenuContent>
             </DropdownMenu>
+
+            {(searchQuery || selectedEstado !== "Todos" || selectedTipo !== "Todos" || selectedFuente !== "Todos") && (
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => {
+                  setSearchQuery("");
+                  setSelectedEstado("Todos");
+                  setSelectedTipo("Todos");
+                  setSelectedFuente("Todos");
+                }}
+                className="h-11 px-3 text-xs font-medium text-muted-foreground hover:text-foreground cursor-pointer"
+                title="Restablecer filtros"
+              >
+                <RotateCcw className="size-3.5 mr-1" />
+                <span>Limpiar</span>
+              </Button>
+            )}
           </div>
         </div>
 

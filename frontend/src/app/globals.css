@@ -474,32 +474,32 @@
     PRIMARY â€” azul institucional profundo (Azul Gubernamental)
     Uso base: navegaciÃ³n, acciones principales, encabezados y foco.
   */
-  --primitive-primary-50: #F7F7F8;
-  --primitive-primary-100: #E9E7EC;
-  --primitive-primary-200: #CAC3D6;
-  --primitive-primary-300: #A798C4;
-  --primitive-primary-400: #7E63B5;
-  --primitive-primary-500: #4F318B;
-  --primitive-primary-600: #3A216E;
-  --primitive-primary-700: #2C1657;
-  --primitive-primary-800: #1F0E41;
-  --primitive-primary-900: #14082B;
+  --primitive-primary-50: #F8F9FA;
+  --primitive-primary-100: #F1F3F5;
+  --primitive-primary-200: #E9ECEF;
+  --primitive-primary-300: #DEE2E6;
+  --primitive-primary-400: #CED4DA;
+  --primitive-primary-500: #495057;
+  --primitive-primary-600: #343A40;
+  --primitive-primary-700: #212529;
+  --primitive-primary-800: #18181B;
+  --primitive-primary-900: #121416;
 
   /*
     SECONDARY â€” morado secundario (Morado Gubernamental)
     Uso base: acciones complementarias, informaciÃ³n cartogrÃ¡fica,
     iconos de apoyo y elementos secundarios.
   */
-  --primitive-secondary-50: #F6F6F8;
-  --primitive-secondary-100: #E6E6EE;
-  --primitive-secondary-200: #C2C2DA;
-  --primitive-secondary-300: #9696CA;
-  --primitive-secondary-400: #5F5FBE;
-  --primitive-secondary-500: #2D2D96;
-  --primitive-secondary-600: #1D1D76;
-  --primitive-secondary-700: #13135D;
-  --primitive-secondary-800: #0C0C44;
-  --primitive-secondary-900: #07072C;
+  --primitive-secondary-50: #F8F9FA;
+  --primitive-secondary-100: #F1F3F5;
+  --primitive-secondary-200: #E9ECEF;
+  --primitive-secondary-300: #DEE2E6;
+  --primitive-secondary-400: #CED4DA;
+  --primitive-secondary-500: #495057;
+  --primitive-secondary-600: #343A40;
+  --primitive-secondary-700: #212529;
+  --primitive-secondary-800: #18181B;
+  --primitive-secondary-900: #121416;
 
   /*
     SUCCESS â€” confirmaciÃ³n positiva
@@ -676,17 +676,17 @@
     Ejemplo:
     className="bg-primary text-primary-foreground"
   */
-  --primary: var(--primitive-primary-400);
+  --primary: var(--primitive-neutral-900);
   --primary-foreground: var(--primitive-neutral-50);
 
-  --secondary: var(--primitive-secondary-500);
+  --secondary: var(--primitive-neutral-800);
   --secondary-foreground: var(--primitive-neutral-50);
 
   /*
     ESTADOS DE APOYO
     ------------------------------------------------------------
-    muted: Ã¡reas de baja jerarquÃ­a, deshabilitadas o discretas.
-    accent: selecciÃ³n suave, hover o Ã©nfasis no destructivo.
+    muted: áreas de baja jerarquía, deshabilitadas o discretas.
+    accent: selección suave, hover o énfasis no destructivo.
 
     Ejemplo:
     className="text-muted-foreground"
@@ -694,17 +694,17 @@
   --muted: var(--primitive-neutral-100);
   --muted-foreground: var(--primitive-neutral-600);
 
-  --accent: var(--primitive-primary-100);
-  --accent-foreground: var(--primitive-primary-700);
+  --accent: var(--primitive-neutral-200);
+  --accent-foreground: var(--primitive-neutral-900);
 
   /*
-    RETROALIMENTACIÃ“N DEL SISTEMA
+    RETROALIMENTACIÓN DEL SISTEMA
     ------------------------------------------------------------
-    success: operaciÃ³n correcta.
+    success: operación correcta.
     info: mensaje explicativo.
     warning: advertencia preventiva.
     danger: error o alerta negativa.
-    destructive: acciÃ³n irreversible, como eliminar una capa.
+    destructive: acción irreversible, como eliminar una capa.
 
     Siempre combina fondo y foreground del mismo estado.
     Ejemplo: bg-warning text-warning-foreground
@@ -728,16 +728,16 @@
     BORDES, INPUTS Y FOCO
     ------------------------------------------------------------
     border: divisores y contornos normales.
-    border-strong: separaciÃ³n con mayor jerarquÃ­a.
+    border-strong: separación con mayor jerarquía.
     input: borde o fondo de controles de formulario.
-    ring: foco visible para navegaciÃ³n por teclado.
+    ring: foco visible para navegación por teclado.
 
-    No elimines el ring sin implementar otra seÃ±al accesible de foco.
+    No elimines el ring sin implementar otra señal accesible de foco.
   */
   --border: var(--primitive-neutral-200);
   --border-strong: var(--primitive-neutral-300);
   --input: var(--primitive-neutral-300);
-  --ring: var(--primitive-primary-500);
+  --ring: var(--primitive-neutral-900);
 
   /* Data Visualization */
   --chart-1: var(--primitive-data-1);
@@ -754,19 +754,19 @@
   --risk-critical: var(--primitive-danger-900);
 
   /*
-    SIDEBAR â€” MODO CLARO
+    SIDEBAR — MODO CLARO
     ------------------------------------------------------------
     Usa una superficie blanca semitransparente para integrarse con
     el mapa o el contenido sin perder legibilidad.
   */
   --sidebar: var(--primitive-white-a88);
   --sidebar-foreground: var(--primitive-neutral-800);
-  --sidebar-primary: var(--primitive-primary-600);
+  --sidebar-primary: var(--primitive-neutral-900);
   --sidebar-primary-foreground: var(--primitive-neutral-50);
-  --sidebar-accent: rgba(32, 41, 92, 0.08);
-  --sidebar-accent-foreground: var(--primitive-primary-600);
+  --sidebar-accent: var(--primitive-neutral-100);
+  --sidebar-accent-foreground: var(--primitive-neutral-900);
   --sidebar-border: var(--primitive-black-a08);
-  --sidebar-ring: var(--primitive-primary-500);
+  --sidebar-ring: var(--primitive-neutral-900);
 
   /*
     RADIO BASE DEL SISTEMA
@@ -883,16 +883,17 @@
   --popover-foreground: var(--primitive-neutral-50);
 
   /* Main Actions (Primary and Secondary inherit from UI BRAND TOKENS) */
-  --primary: var(--primitive-primary-400);
+  --primary: var(--primitive-neutral-50);
   --primary-foreground: var(--primitive-neutral-950);
-  --secondary-foreground: var(--primitive-neutral-50);
+  --secondary: var(--primitive-neutral-200);
+  --secondary-foreground: var(--primitive-neutral-900);
 
   /* Supporting States */
   --muted: var(--primitive-neutral-800);
   --muted-foreground: var(--primitive-neutral-400);
 
-  --accent: var(--primitive-primary-900);
-  --accent-foreground: var(--primitive-primary-200);
+  --accent: var(--primitive-neutral-800);
+  --accent-foreground: var(--primitive-neutral-50);
 
   /* Feedback */
   --success: var(--primitive-success-400);
@@ -914,12 +915,12 @@
   --border: var(--primitive-neutral-800);
   --border-strong: var(--primitive-neutral-700);
   --input: var(--primitive-neutral-800);
-  --ring: var(--primitive-primary-400);
+  --ring: var(--primitive-neutral-400);
 
   /* Data Visualization */
   --chart-1: var(--primitive-info-400);
-  --chart-2: var(--primitive-secondary-300);
-  --chart-3: var(--primitive-primary-300);
+  --chart-2: var(--primitive-neutral-300);
+  --chart-3: var(--primitive-neutral-400);
   --chart-4: var(--primitive-success-400);
   --chart-5: var(--primitive-warning-400);
   --chart-6: var(--primitive-danger-400);
@@ -931,19 +932,19 @@
   --risk-critical: var(--primitive-danger-300);
 
   /*
-    SIDEBAR â€” MODO OSCURO
+    SIDEBAR — MODO OSCURO
     ------------------------------------------------------------
     El fondo conserva transparencia moderada y los textos utilizan
     tonos claros para mantener contraste sobre mapas oscuros.
   */
   --sidebar: rgba(18, 20, 22, 0.88);
   --sidebar-foreground: var(--primitive-neutral-200);
-  --sidebar-primary: var(--primitive-primary-300);
-  --sidebar-primary-foreground: var(--primitive-neutral-50);
-  --sidebar-accent: rgba(87, 104, 153, 0.18);
-  --sidebar-accent-foreground: var(--primitive-primary-100);
+  --sidebar-primary: var(--primitive-neutral-50);
+  --sidebar-primary-foreground: var(--primitive-neutral-950);
+  --sidebar-accent: var(--primitive-neutral-800);
+  --sidebar-accent-foreground: var(--primitive-neutral-50);
   --sidebar-border: var(--primitive-white-a08);
-  --sidebar-ring: var(--primitive-primary-400);
+  --sidebar-ring: var(--primitive-neutral-400);
 
   /*
     SOMBRAS SEMÃNTICAS (MODO OSCURO)

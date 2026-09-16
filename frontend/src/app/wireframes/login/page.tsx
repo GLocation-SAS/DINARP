@@ -144,15 +144,15 @@ export default function WireframeLoginPage() {
           <ArrowRight className="size-4 shrink-0" />
         </Button>
 
-        {/* Botón Recuperar acceso */}
+        {/* Botón Iniciar sesión con Google */}
         <Button
           type="button"
           variant="outline"
           size="lg"
-          onClick={() => router.push("/wireframes/recuperar-acceso")}
+          onClick={() => console.log('Iniciar sesión con Google')}
           className="w-full font-semibold justify-center h-12 text-sm sm:text-base rounded-full border-border/80 text-foreground hover:bg-muted/30"
         >
-          Recuperar acceso
+          Iniciar sesión con Google
         </Button>
       </form>
     </WireframeAuthLayout>

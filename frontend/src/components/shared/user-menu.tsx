@@ -107,7 +107,10 @@ export function UserMenu() {
               <div className="h-px bg-border my-2 mx-1 sm:mx-2" />
 
               <MobileMenuItem icon={Bell} label="Actualizaciones" badge="Nuevo" onClick={() => navigateTo("/notifications-menu-preview")} />
-              <MobileMenuItem icon={LogOut} label="Cerrar sesión" isWarning onClick={() => navigateTo("/login")} />
+              <MobileMenuItem icon={LogOut} label="Cerrar sesión" isWarning onClick={() => {
+                const logoutPath = window.location.pathname.startsWith('/wireframes') ? '/wireframes/login' : '/login';
+                navigateTo(logoutPath);
+              }} />
             </div>
           </div>
         </SheetContent>
@@ -155,7 +158,10 @@ export function UserMenu() {
           <DropdownMenuSeparator className="my-1 bg-border/50" />
 
           <DesktopMenuItem icon={Bell} label="Actualizaciones" badge="Nuevo" onClick={() => navigateTo("/notifications-menu-preview")} />
-          <DesktopMenuItem icon={LogOut} label="Cerrar sesión" isWarning onClick={() => navigateTo("/login")} />
+          <DesktopMenuItem icon={LogOut} label="Cerrar sesión" isWarning onClick={() => {
+            const logoutPath = window.location.pathname.startsWith('/wireframes') ? '/wireframes/login' : '/login';
+            navigateTo(logoutPath);
+          }} />
         </div>
       </DropdownMenuContent>
     </DropdownMenu>

@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import {
   ChevronDown,
   Calendar as CalendarIcon,
+  Filter,
   Eye,
   Download,
   Ban,
@@ -197,9 +198,9 @@ export default function WireframeListadoFacturacionPage() {
         </div>
 
         {/* ── 2. Buscador y Filtros ── */}
-        <div className="space-y-3">
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-3">
           {/* Input de Búsqueda */}
-          <div className="w-full max-w-lg">
+          <div className="w-full sm:max-w-md">
             <Search
               placeholder="Buscar por número, proyecto, servicio o entidad..."
               value={searchQuery}
@@ -209,93 +210,47 @@ export default function WireframeListadoFacturacionPage() {
             />
           </div>
 
-          {/* Barra de Filtros */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3 items-end max-w-3xl">
-            {/* Estado */}
-            <div className="space-y-0.5">
-              <span className="text-[10px] font-medium text-muted-foreground block pl-1">Estado</span>
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button
-                    variant="outline"
-                    className="h-11 px-3.5 flex items-center justify-between bg-surface border-border/80 text-xs w-full"
-                  >
-                    <span className="truncate text-left flex-1">{filterEstado}</span>
-                    <ChevronDown className="size-3.5 text-muted-foreground shrink-0 ml-2" />
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="start" className="w-48">
-                  <DropdownMenuLabel className="text-xs">Estado de factura</DropdownMenuLabel>
-                  <DropdownMenuSeparator />
-                  <DropdownMenuRadioGroup value={filterEstado} onValueChange={setFilterEstado}>
-                    <DropdownMenuRadioItem value="Todos">Todos</DropdownMenuRadioItem>
-                    <DropdownMenuRadioItem value="Emitida">Emitida</DropdownMenuRadioItem>
-                    <DropdownMenuRadioItem value="Pendiente">Pendiente</DropdownMenuRadioItem>
-                    <DropdownMenuRadioItem value="Anulada">Anulada</DropdownMenuRadioItem>
-                  </DropdownMenuRadioGroup>
-                </DropdownMenuContent>
-              </DropdownMenu>
-            </div>
+          <div className="flex items-center gap-2 w-full sm:w-auto justify-end">
+            {/* Botón Filtros Desplegable */}
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button
+                  variant="outline"
+                  className="h-11 px-4 text-xs font-semibold gap-2 border-border/80 bg-surface w-full sm:w-auto cursor-pointer"
+                >
+                  <Filter className="size-3.5 text-muted-foreground" />
+                  <span>Filtros</span>
+                  {filterEstado !== "Todos" && (
+                    <span className="size-2 rounded-full bg-foreground" />
+                  )}
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-52">
+                <DropdownMenuLabel className="text-xs font-bold text-foreground">
+                  Filtrar por Estado
+                </DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                <DropdownMenuRadioGroup value={filterEstado} onValueChange={setFilterEstado}>
+                  <DropdownMenuRadioItem value="Todos">Todos los estados</DropdownMenuRadioItem>
+                  <DropdownMenuRadioItem value="Emitida">Emitida</DropdownMenuRadioItem>
+                  <DropdownMenuRadioItem value="Pendiente">Pendiente</DropdownMenuRadioItem>
+                  <DropdownMenuRadioItem value="Anulada">Anulada</DropdownMenuRadioItem>
+                </DropdownMenuRadioGroup>
+              </DropdownMenuContent>
+            </DropdownMenu>
 
-            {/* Fecha Desde */}
-            <div className="space-y-0.5">
-              <span className="text-[10px] font-medium text-muted-foreground block pl-1">Fecha desde</span>
-              <InputGroup
-                size="default"
-                rightIcon={<CalendarIcon className="size-3.5 text-muted-foreground" />}
-                className="bg-surface h-11 rounded-xl border-border/80"
-              >
-                <InputGroupInput
-                  placeholder="dd/mm/aaaa"
-                  value={fechaDesde}
-                  onChange={(e) => setFechaDesde(e.target.value)}
-                  className="text-xs font-mono"
-                />
-              </InputGroup>
-            </div>
-
-            {/* Fecha Hasta */}
-            <div className="space-y-0.5">
-              <span className="text-[10px] font-medium text-muted-foreground block pl-1">Fecha hasta</span>
-              <InputGroup
-                size="default"
-                rightIcon={<CalendarIcon className="size-3.5 text-muted-foreground" />}
-                className="bg-surface h-11 rounded-xl border-border/80"
-              >
-                <InputGroupInput
-                  placeholder="dd/mm/aaaa"
-                  value={fechaHasta}
-                  onChange={(e) => setFechaHasta(e.target.value)}
-                  className="text-xs font-mono"
-                />
-              </InputGroup>
-            </div>
-
-            {/* Botones Buscar y Limpiar */}
-            <div className="flex items-center gap-2">
+            {(searchQuery || filterEstado !== "Todos") && (
               <Button
                 type="button"
-                variant="primary"
-                onClick={() => {
-                  toast.success(`Búsqueda ejecutada: ${filteredData.length} resultados encontrados.`);
-                }}
-                className="h-11 px-6 rounded-xl text-xs font-semibold shadow-xs justify-center"
+                variant="outline"
+                onClick={handleResetFilters}
+                className="h-11 px-3 text-xs font-medium text-muted-foreground hover:text-foreground cursor-pointer"
+                title="Restablecer filtros"
               >
-                Buscar
+                <RotateCcw className="size-3.5 mr-1" />
+                <span>Limpiar</span>
               </Button>
-              {(searchQuery || filterEstado !== "Todos" || fechaDesde || fechaHasta) && (
-                <Button
-                  type="button"
-                  variant="outline"
-                  onClick={handleResetFilters}
-                  className="h-11 px-3 text-xs font-medium text-muted-foreground hover:text-foreground"
-                  title="Restablecer filtros"
-                >
-                  <RotateCcw className="size-3.5 mr-1" />
-                  <span>Limpiar</span>
-                </Button>
-              )}
-            </div>
+            )}
           </div>
         </div>
 

@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { WireframeThemeEffect } from "./wireframe-theme-effect";
 
 export const metadata: Metadata = {
   title: "Wireframes | DINARP",
@@ -15,8 +16,8 @@ export default function WireframesLayout({ children }: WireframesLayoutProps) {
       data-theme="wireframe"
       className="min-h-screen bg-background text-foreground font-sans antialiased"
     >
+      <WireframeThemeEffect />
       {children}
     </div>
   );
 }
-

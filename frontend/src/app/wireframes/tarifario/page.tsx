@@ -15,6 +15,7 @@ import {
   CheckCircle2,
   Eye,
   RefreshCw,
+  Filter,
 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -374,13 +375,20 @@ export default function WireframeTarifarioCotizacionPage() {
                   <DropdownMenuTrigger asChild>
                     <Button
                       variant="outline"
-                      className="h-10 px-3 flex items-center justify-between bg-surface border-border text-left w-full sm:w-44 text-xs font-medium"
+                      className="h-10 px-4 text-xs font-semibold gap-2 border-border bg-surface w-full sm:w-auto cursor-pointer"
                     >
-                      <span className="truncate">{filterEstadoTarifario}</span>
-                      <ChevronDown className="size-3.5 text-muted-foreground shrink-0" />
+                      <Filter className="size-3.5 text-muted-foreground" />
+                      <span>Filtros</span>
+                      {filterEstadoTarifario !== "Todos los estados" && (
+                        <span className="size-2 rounded-full bg-foreground" />
+                      )}
                     </Button>
                   </DropdownMenuTrigger>
-                  <DropdownMenuContent align="end" className="w-44">
+                  <DropdownMenuContent align="end" className="w-52">
+                    <DropdownMenuLabel className="text-xs font-bold text-foreground">
+                      Filtrar por Estado
+                    </DropdownMenuLabel>
+                    <DropdownMenuSeparator />
                     <DropdownMenuRadioGroup
                       value={filterEstadoTarifario}
                       onValueChange={setFilterEstadoTarifario}
@@ -794,7 +802,7 @@ export default function WireframeTarifarioCotizacionPage() {
                       </TableCell>
                       <TableCell className="py-4 px-6 whitespace-nowrap">
                         <Badge
-                          tone={cot.estado === "Aprobada" ? "success" : cot.estado === "En revisión" ? "warning" : "neutral"}
+                          tone="neutral"
                           appearance="soft"
                           size="sm"
                           className="text-xs font-medium"
