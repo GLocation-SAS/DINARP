@@ -538,57 +538,77 @@ export default function WireframeListadoRolesPage() {
 
       {/* ── Dialog Warning: Desactivar / Eliminar Rol ── */}
       <Dialog open={isWarningDialogOpen} onOpenChange={setIsWarningDialogOpen}>
-        <DialogContent variant="warning" size="default">
-          <DialogHeader>
-            <DialogTitle>
-              {warningAction === "delete"
-                ? "¿Eliminar rol?"
-                : targetRol?.estado === "Activo"
-                ? "¿Desactivar rol?"
-                : "¿Reactivar rol?"}
-            </DialogTitle>
-            <DialogDescription>
+        <DialogContent variant="standard" size="default" className="p-6 sm:p-8 bg-background border-border shadow-2xl rounded-3xl">
+          <div className="flex flex-col items-center text-center gap-3">
+            <div className="size-14 rounded-full bg-muted/60 border border-border flex items-center justify-center text-foreground mb-1">
               {warningAction === "delete" ? (
-                <>
-                  Estás a punto de eliminar permanentemente el rol{" "}
-                  <strong className="text-foreground font-semibold">
-                    {targetRol?.nombre}
-                  </strong>
-                  . Los {targetRol?.usuariosAsignados || 0} usuarios con este rol perderán sus facultades.
-                </>
+                <Trash2 className="size-6 text-foreground" />
               ) : targetRol?.estado === "Activo" ? (
-                <>
-                  Estás a punto de desactivar el rol{" "}
-                  <strong className="text-foreground font-semibold">
-                    {targetRol?.nombre}
-                  </strong>
-                  . Los usuarios vinculados no podrán ejecutar sus permisos asociados.
-                </>
+                <Lock className="size-6 text-foreground" />
               ) : (
-                <>
-                  ¿Deseas reactivar el rol{" "}
-                  <strong className="text-foreground font-semibold">
-                    {targetRol?.nombre}
-                  </strong>
-                  ?
-                </>
+                <Unlock className="size-6 text-foreground" />
               )}
-            </DialogDescription>
-          </DialogHeader>
+            </div>
+            <DialogHeader className="text-center space-y-1.5">
+              <DialogTitle className="text-xl font-heading font-bold text-foreground">
+                {warningAction === "delete"
+                  ? "¿Eliminar rol?"
+                  : targetRol?.estado === "Activo"
+                  ? "¿Desactivar rol?"
+                  : "¿Reactivar rol?"}
+              </DialogTitle>
+              <DialogDescription className="text-xs sm:text-sm text-muted-foreground leading-relaxed">
+                {warningAction === "delete" ? (
+                  <>
+                    Estás a punto de eliminar permanentemente el rol{" "}
+                    <strong className="text-foreground font-semibold">
+                      {targetRol?.nombre}
+                    </strong>
+                    . Los {targetRol?.usuariosAsignados || 0} usuarios con este rol perderán sus facultades.
+                  </>
+                ) : targetRol?.estado === "Activo" ? (
+                  <>
+                    Estás a punto de desactivar el rol{" "}
+                    <strong className="text-foreground font-semibold">
+                      {targetRol?.nombre}
+                    </strong>
+                    . Los usuarios vinculados no podrán ejecutar sus permisos asociados.
+                  </>
+                ) : (
+                  <>
+                    ¿Deseas reactivar el rol{" "}
+                    <strong className="text-foreground font-semibold">
+                      {targetRol?.nombre}
+                    </strong>
+                    ?
+                  </>
+                )}
+              </DialogDescription>
+            </DialogHeader>
 
-          <DialogFooter showCloseButton={true} stacked={true}>
-            <Button
-              type="button"
-              variant={warningAction === "delete" ? "danger" : targetRol?.estado === "Activo" ? "warning" : "success"}
-              onClick={handleConfirmWarning}
-            >
-              {warningAction === "delete"
-                ? "Eliminar rol"
-                : targetRol?.estado === "Activo"
-                ? "Desactivar rol"
-                : "Reactivar rol"}
-            </Button>
-          </DialogFooter>
+            <DialogFooter className="mt-4 flex flex-col sm:flex-row gap-2.5 w-full">
+              <Button
+                type="button"
+                variant="outline"
+                className="w-full sm:flex-1 h-11 text-xs font-semibold"
+                onClick={() => setIsWarningDialogOpen(false)}
+              >
+                Cancelar
+              </Button>
+              <Button
+                type="button"
+                variant="primary"
+                className="w-full sm:flex-1 h-11 text-xs font-semibold"
+                onClick={handleConfirmWarning}
+              >
+                {warningAction === "delete"
+                  ? "Eliminar rol"
+                  : targetRol?.estado === "Activo"
+                  ? "Desactivar rol"
+                  : "Reactivar rol"}
+              </Button>
+            </DialogFooter>
+          </div>
         </DialogContent>
       </Dialog>
     </WireframeDashboardLayout>

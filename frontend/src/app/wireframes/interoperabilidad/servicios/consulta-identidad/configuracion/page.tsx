@@ -380,9 +380,12 @@ export default function WireframeConfiguracionServicioPage() {
           </Card>
         </form>
 
-        {/* Modal Semántica de Éxito al Guardar */}
+        {/* Modal de Éxito al Guardar */}
         <Dialog open={isSavedModalOpen} onOpenChange={setIsSavedModalOpen}>
-          <DialogContent variant="success" className="max-w-[440px] rounded-3xl p-6 sm:p-8 bg-background border-border shadow-2xl">
+          <DialogContent variant="standard" className="max-w-[440px] rounded-3xl p-6 sm:p-8 bg-background border-border shadow-2xl text-center">
+            <div className="size-14 rounded-2xl bg-muted/60 border border-border flex items-center justify-center text-foreground mb-3 mx-auto">
+              <CheckCircle2 className="size-7 stroke-[2]" />
+            </div>
             <DialogHeader className="text-center space-y-2">
               <DialogTitle className="font-heading font-bold text-xl sm:text-2xl text-foreground">
                 Configuración Actualizada
@@ -400,7 +403,7 @@ export default function WireframeConfiguracionServicioPage() {
                   setIsSavedModalOpen(false);
                   router.push("/wireframes/interoperabilidad/servicios/consulta-identidad");
                 }}
-                className="w-full h-11 rounded-xl text-xs font-semibold"
+                className="w-full h-11 text-xs font-semibold"
               >
                 Volver al detalle del servicio
               </Button>

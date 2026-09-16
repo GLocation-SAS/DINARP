@@ -16,6 +16,7 @@ import {
   Building,
   Settings,
   Info,
+  CheckCircle2,
 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -424,7 +425,10 @@ export function RolEditClient({ id }: RolEditClientProps) {
 
         {/* Modal de confirmación de edición */}
         <Dialog open={showSuccessModal} onOpenChange={setShowSuccessModal}>
-          <DialogContent variant="success" className="max-w-[420px] rounded-3xl p-6 sm:p-8 bg-background border-border shadow-2xl">
+          <DialogContent variant="standard" className="max-w-[420px] rounded-3xl p-6 sm:p-8 bg-background border-border shadow-2xl text-center">
+            <div className="size-14 rounded-2xl bg-muted/60 border border-border flex items-center justify-center text-foreground mb-3 mx-auto">
+              <CheckCircle2 className="size-7 stroke-[2]" />
+            </div>
             <DialogHeader className="text-center space-y-2">
               <DialogTitle className="font-heading font-bold text-xl text-foreground">
                 Cambios guardados
@@ -438,7 +442,7 @@ export function RolEditClient({ id }: RolEditClientProps) {
                 type="button"
                 variant="primary"
                 onClick={() => router.push(`/wireframes/roles/${id}`)}
-                className="w-full h-10 rounded-xl text-xs font-semibold"
+                className="w-full h-11 text-xs font-semibold"
               >
                 Ver detalle del rol
               </Button>

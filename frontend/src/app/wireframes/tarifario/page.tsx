@@ -855,7 +855,10 @@ export default function WireframeTarifarioCotizacionPage() {
 
         {/* Modal de Éxito al Generar Cotización */}
         <Dialog open={isSuccessModalOpen} onOpenChange={setIsSuccessModalOpen}>
-          <DialogContent variant="success" className="max-w-[440px] rounded-3xl p-6 sm:p-8 bg-background border-border shadow-2xl">
+          <DialogContent variant="standard" className="max-w-[440px] rounded-3xl p-6 sm:p-8 bg-background border-border shadow-2xl text-center">
+            <div className="size-14 rounded-2xl bg-muted/60 border border-border flex items-center justify-center text-foreground mb-3 mx-auto">
+              <CheckCircle2 className="size-7 stroke-[2]" />
+            </div>
             <DialogHeader className="text-center space-y-2">
               <DialogTitle className="font-heading font-bold text-xl sm:text-2xl text-foreground">
                 Cotización Generada
@@ -873,7 +876,7 @@ export default function WireframeTarifarioCotizacionPage() {
                   setIsSuccessModalOpen(false);
                   setActiveTab("mis-cotizaciones");
                 }}
-                className="w-full h-11 rounded-xl text-xs font-semibold"
+                className="w-full h-11 text-xs font-semibold"
               >
                 Ir a Mis cotizaciones
               </Button>
@@ -886,14 +889,14 @@ export default function WireframeTarifarioCotizacionPage() {
           open={!!selectedCotizacionDetalle}
           onOpenChange={(open) => !open && setSelectedCotizacionDetalle(null)}
         >
-          <DialogContent className="max-w-md rounded-3xl p-6 sm:p-8 bg-background border-border shadow-2xl">
+          <DialogContent variant="standard" className="max-w-md rounded-3xl p-6 sm:p-8 bg-background border-border shadow-2xl">
             <DialogHeader className="space-y-1">
               <div className="flex items-center gap-2">
                 <span className="font-mono text-xs font-bold px-2 py-0.5 rounded bg-muted text-foreground">
                   {selectedCotizacionDetalle?.codigo}
                 </span>
                 <Badge
-                  tone={selectedCotizacionDetalle?.estado === "Aprobada" ? "success" : "neutral"}
+                  tone="neutral"
                   appearance="soft"
                   size="sm"
                 >

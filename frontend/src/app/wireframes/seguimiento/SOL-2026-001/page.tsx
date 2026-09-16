@@ -196,135 +196,90 @@ export default function WireframeDetalleSeguimientoPage() {
             </TabsTrigger>
           </TabsList>
 
-          {/* ── Tab Content: Trazabilidad (Timeline) ── */}
           <TabsContent value="trazabilidad" className="space-y-6">
             <Card className="rounded-2xl border-border bg-surface p-6 sm:p-8 shadow-xs">
               <div className="relative pl-24 sm:pl-32 space-y-10 before:absolute before:left-24 sm:before:left-32 before:top-4 before:bottom-4 before:w-[2px] before:bg-border before:-translate-x-1/2">
+                {[
+                  {
+                    date: "16 sep 2026",
+                    time: "10:32",
+                    icon: Send,
+                    iconBg: "bg-primary text-primary-foreground",
+                    title: "Solicitud enviada",
+                    responsable: "María López (Ministerio de Gobierno)",
+                    estado: "Borrador → En revisión",
+                    observacion: "Solicitud enviada para validación.",
+                  },
+                  {
+                    date: "16 sep 2026",
+                    time: "11:45",
+                    icon: FileText,
+                    iconBg: "bg-muted-foreground/30 text-foreground",
+                    title: "Solicitud revisada",
+                    responsable: "Carlos Núñez (DINARP)",
+                    estado: "En revisión → Requiere ajustes",
+                    observacion: "Se solicita ampliar la justificación del proyecto.",
+                  },
+                  {
+                    date: "15 sep 2026",
+                    time: "09:20",
+                    icon: PenLine,
+                    iconBg: "bg-primary text-primary-foreground",
+                    title: "Ajustes realizados",
+                    responsable: "María López (Ministerio de Gobierno)",
+                    estado: "Requiere ajustes → En revisión",
+                    observacion: "Se adjunta información complementaria.",
+                    attachment: { name: "Justificación_actualizada.pdf", size: "245 KB" },
+                  },
+                  {
+                    date: "10 sep 2026",
+                    time: "14:10",
+                    icon: Plus,
+                    iconBg: "bg-muted-foreground/30 text-foreground",
+                    title: "Solicitud creada",
+                    responsable: "María López (Ministerio de Gobierno)",
+                    estado: "- → Borrador",
+                    observacion: "Creación inicial de la solicitud.",
+                  },
+                ].map((event, index) => (
+                  <div key={index} className="relative">
+                    <div className="absolute -left-24 sm:-left-32 top-1 text-right w-20 sm:w-28 pr-4">
+                      <span className="text-xs font-bold text-foreground block leading-none">{event.date}</span>
+                      <span className="text-[11px] text-muted-foreground font-mono">{event.time}</span>
+                    </div>
 
-                {/* Evento 1: Solicitud enviada */}
-                <div className="relative">
-                  {/* Fecha y Hora Izquierda */}
-                  <div className="absolute -left-24 sm:-left-32 top-1 text-right w-20 sm:w-28 pr-4">
-                    <span className="text-xs font-bold text-foreground block leading-none">16 sep 2026</span>
-                    <span className="text-[11px] text-muted-foreground font-mono">10:32</span>
-                  </div>
+                    <div className={`absolute -left-4 top-0.5 size-8 rounded-full flex items-center justify-center shadow-xs ring-4 ring-background ${event.iconBg}`}>
+                      <event.icon className="size-4" />
+                    </div>
 
-                  {/* Nodo Icono */}
-                  <div className="absolute -left-4 sm:-left-4 top-0.5 size-8 rounded-full bg-primary text-primary-foreground flex items-center justify-center -translate-x-1/2 shadow-xs ring-4 ring-background">
-                    <Send className="size-4" />
-                  </div>
-
-                  {/* Detalle */}
-                  <div className="pl-6 space-y-1">
-                    <h3 className="text-sm font-bold text-foreground">Solicitud enviada</h3>
-                    <p className="text-xs text-muted-foreground">
-                      <strong className="text-foreground font-medium">Responsable:</strong> María López (Ministerio de Gobierno)
-                    </p>
-                    <p className="text-xs text-muted-foreground">
-                      <strong className="text-foreground font-medium">Estado:</strong> Borrador → En revisión
-                    </p>
-                    <p className="text-xs text-muted-foreground">
-                      <strong className="text-foreground font-medium">Observación:</strong> Solicitud enviada para validación.
-                    </p>
-                  </div>
-                </div>
-
-                {/* Evento 2: Solicitud revisada */}
-                <div className="relative">
-                  {/* Fecha y Hora Izquierda */}
-                  <div className="absolute -left-24 sm:-left-32 top-1 text-right w-20 sm:w-28 pr-4">
-                    <span className="text-xs font-bold text-foreground block leading-none">16 sep 2026</span>
-                    <span className="text-[11px] text-muted-foreground font-mono">11:45</span>
-                  </div>
-
-                  {/* Nodo Icono */}
-                  <div className="absolute -left-4 sm:-left-4 top-0.5 size-8 rounded-full bg-muted-foreground/30 text-foreground flex items-center justify-center -translate-x-1/2 shadow-xs ring-4 ring-background">
-                    <FileText className="size-4" />
-                  </div>
-
-                  {/* Detalle */}
-                  <div className="pl-6 space-y-1">
-                    <h3 className="text-sm font-bold text-foreground">Solicitud revisada</h3>
-                    <p className="text-xs text-muted-foreground">
-                      <strong className="text-foreground font-medium">Responsable:</strong> Carlos Núñez (DINARP)
-                    </p>
-                    <p className="text-xs text-muted-foreground">
-                      <strong className="text-foreground font-medium">Estado:</strong> En revisión → Requiere ajustes
-                    </p>
-                    <p className="text-xs text-muted-foreground">
-                      <strong className="text-foreground font-medium">Observación:</strong> Se solicita ampliar la justificación del proyecto.
-                    </p>
-                  </div>
-                </div>
-
-                {/* Evento 3: Ajustes realizados con adjunto */}
-                <div className="relative">
-                  {/* Fecha y Hora Izquierda */}
-                  <div className="absolute -left-24 sm:-left-32 top-1 text-right w-20 sm:w-28 pr-4">
-                    <span className="text-xs font-bold text-foreground block leading-none">15 sep 2026</span>
-                    <span className="text-[11px] text-muted-foreground font-mono">09:20</span>
-                  </div>
-
-                  {/* Nodo Icono */}
-                  <div className="absolute -left-4 sm:-left-4 top-0.5 size-8 rounded-full bg-primary text-primary-foreground flex items-center justify-center -translate-x-1/2 shadow-xs ring-4 ring-background">
-                    <PenLine className="size-4" />
-                  </div>
-
-                  {/* Detalle */}
-                  <div className="pl-6 space-y-2">
-                    <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-3">
-                      <div className="space-y-1">
-                        <h3 className="text-sm font-bold text-foreground">Ajustes realizados</h3>
-                        <p className="text-xs text-muted-foreground">
-                          <strong className="text-foreground font-medium">Responsable:</strong> María López (Ministerio de Gobierno)
-                        </p>
-                        <p className="text-xs text-muted-foreground">
-                          <strong className="text-foreground font-medium">Estado:</strong> Requiere ajustes → En revisión
-                        </p>
-                        <p className="text-xs text-muted-foreground">
-                          <strong className="text-foreground font-medium">Observación:</strong> Se adjunta información complementaria.
-                        </p>
-                      </div>
-
-                      {/* Attachment Pill Right */}
-                      <div className="flex items-center gap-2 p-2.5 px-3 rounded-xl border border-border bg-background hover:bg-muted/30 transition-colors shrink-0">
-                        <Paperclip className="size-3.5 text-muted-foreground" />
-                        <div className="flex flex-col">
-                          <span className="text-xs font-semibold text-foreground">Justificación_actualizada.pdf</span>
-                          <span className="text-[10px] text-muted-foreground">245 KB</span>
+                    <div className="pl-6 space-y-2">
+                      <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-3">
+                        <div className="space-y-1">
+                          <h3 className="text-sm font-bold text-foreground">{event.title}</h3>
+                          <p className="text-xs text-muted-foreground">
+                            <strong className="text-foreground font-medium">Responsable:</strong> {event.responsable}
+                          </p>
+                          <p className="text-xs text-muted-foreground">
+                            <strong className="text-foreground font-medium">Estado:</strong> {event.estado}
+                          </p>
+                          <p className="text-xs text-muted-foreground">
+                            <strong className="text-foreground font-medium">Observación:</strong> {event.observacion}
+                          </p>
                         </div>
+
+                        {event.attachment && (
+                          <div className="flex items-center gap-2 p-2.5 px-3 rounded-xl border border-border bg-background hover:bg-muted/30 transition-colors shrink-0">
+                            <Paperclip className="size-3.5 text-muted-foreground" />
+                            <div className="flex flex-col">
+                              <span className="text-xs font-semibold text-foreground">{event.attachment.name}</span>
+                              <span className="text-[10px] text-muted-foreground">{event.attachment.size}</span>
+                            </div>
+                          </div>
+                        )}
                       </div>
                     </div>
                   </div>
-                </div>
-
-                {/* Evento 4: Solicitud creada */}
-                <div className="relative">
-                  {/* Fecha y Hora Izquierda */}
-                  <div className="absolute -left-24 sm:-left-32 top-1 text-right w-20 sm:w-28 pr-4">
-                    <span className="text-xs font-bold text-foreground block leading-none">10 sep 2026</span>
-                    <span className="text-[11px] text-muted-foreground font-mono">14:10</span>
-                  </div>
-
-                  {/* Nodo Icono */}
-                  <div className="absolute -left-4 sm:-left-4 top-0.5 size-8 rounded-full bg-muted-foreground/30 text-foreground flex items-center justify-center -translate-x-1/2 shadow-xs ring-4 ring-background">
-                    <Plus className="size-4" />
-                  </div>
-
-                  {/* Detalle */}
-                  <div className="pl-6 space-y-1">
-                    <h3 className="text-sm font-bold text-foreground">Solicitud creada</h3>
-                    <p className="text-xs text-muted-foreground">
-                      <strong className="text-foreground font-medium">Responsable:</strong> María López (Ministerio de Gobierno)
-                    </p>
-                    <p className="text-xs text-muted-foreground">
-                      <strong className="text-foreground font-medium">Estado:</strong> - → Borrador
-                    </p>
-                    <p className="text-xs text-muted-foreground">
-                      <strong className="text-foreground font-medium">Observación:</strong> Creación inicial de la solicitud.
-                    </p>
-                  </div>
-                </div>
+                ))}
               </div>
             </Card>
           </TabsContent>

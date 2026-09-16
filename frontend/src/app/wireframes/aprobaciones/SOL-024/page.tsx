@@ -476,8 +476,14 @@ export default function WireframeRevisionSolicitudPage() {
         {/* ══════════════════════════════════════════════════
             10. MODAL SEMÁNTICA DE ÉXITO: APROBAR SOLICITUD
            ══════════════════════════════════════════════════ */}
+        {/* ══════════════════════════════════════════════════
+            10. MODAL: APROBAR SOLICITUD
+           ══════════════════════════════════════════════════ */}
         <Dialog open={isAprobarModalOpen} onOpenChange={setIsAprobarModalOpen}>
-          <DialogContent variant="success" className="max-w-[460px] rounded-3xl p-6 sm:p-8 bg-background border-border shadow-2xl">
+          <DialogContent variant="standard" className="max-w-[460px] rounded-3xl p-6 sm:p-8 bg-background border-border shadow-2xl">
+            <div className="size-14 rounded-2xl bg-muted/60 border border-border flex items-center justify-center text-foreground mb-3 mx-auto">
+              <CheckCircle2 className="size-7 stroke-[2]" />
+            </div>
             <DialogHeader className="text-center space-y-2">
               <DialogTitle className="font-heading font-bold text-xl sm:text-2xl text-foreground">
                 Aprobar solicitud
@@ -529,10 +535,13 @@ export default function WireframeRevisionSolicitudPage() {
         </Dialog>
 
         {/* ══════════════════════════════════════════════════
-            11. MODAL SEMÁNTICA DANGER: RECHAZAR SOLICITUD
+            11. MODAL: RECHAZAR SOLICITUD
            ══════════════════════════════════════════════════ */}
         <Dialog open={isRechazarModalOpen} onOpenChange={setIsRechazarModalOpen}>
-          <DialogContent variant="danger" className="max-w-[460px] rounded-3xl p-6 sm:p-8 bg-background border-border shadow-2xl">
+          <DialogContent variant="standard" className="max-w-[460px] rounded-3xl p-6 sm:p-8 bg-background border-border shadow-2xl">
+            <div className="size-14 rounded-2xl bg-muted/60 border border-border flex items-center justify-center text-foreground mb-3 mx-auto">
+              <XCircle className="size-7 stroke-[2]" />
+            </div>
             <DialogHeader className="text-center space-y-2">
               <DialogTitle className="font-heading font-bold text-xl sm:text-2xl text-foreground">
                 Rechazar solicitud
@@ -581,7 +590,7 @@ export default function WireframeRevisionSolicitudPage() {
               </Button>
               <Button
                 type="button"
-                variant="danger"
+                variant="primary"
                 onClick={handleConfirmRechazar}
                 className="w-full h-11 text-xs font-semibold"
               >
@@ -595,7 +604,10 @@ export default function WireframeRevisionSolicitudPage() {
             12. MODAL: SOLICITAR CORRECCIÓN
            ══════════════════════════════════════════════════ */}
         <Dialog open={isCorreccionModalOpen} onOpenChange={setIsCorreccionModalOpen}>
-          <DialogContent className="max-w-[460px] rounded-3xl p-6 sm:p-8 bg-background border-border shadow-2xl">
+          <DialogContent variant="standard" className="max-w-[460px] rounded-3xl p-6 sm:p-8 bg-background border-border shadow-2xl">
+            <div className="size-14 rounded-2xl bg-muted/60 border border-border flex items-center justify-center text-foreground mb-3 mx-auto">
+              <AlertTriangle className="size-7 stroke-[2]" />
+            </div>
             <DialogHeader className="text-center space-y-2">
               <DialogTitle className="font-heading font-bold text-xl sm:text-2xl text-foreground">
                 Solicitar corrección
@@ -607,7 +619,7 @@ export default function WireframeRevisionSolicitudPage() {
 
             <div className="space-y-1.5 text-left my-2">
               <Label htmlFor="modal-obs-correccion" className="text-xs font-semibold text-foreground">
-                Detalle de correcciones requeridas <span className="text-destructive">*</span>
+                Detalle de correcciones requeridas <span className="text-foreground">*</span>
               </Label>
               <textarea
                 id="modal-obs-correccion"

@@ -515,45 +515,63 @@ export default function WireframeListadoUsuariosPage() {
 
       {/* ── Dialog Warning: Desactivar / Reactivar Usuario ── */}
       <Dialog open={isDeactivateOpen} onOpenChange={setIsDeactivateOpen}>
-        <DialogContent variant="warning" size="default">
-          <DialogHeader>
-            <DialogTitle>
-              {userToDeactivate?.estado === "Activo"
-                ? "¿Desactivar usuario?"
-                : "¿Reactivar usuario?"}
-            </DialogTitle>
-            <DialogDescription>
+        <DialogContent variant="standard" size="default" className="p-6 sm:p-8 bg-background border-border shadow-2xl rounded-3xl">
+          <div className="flex flex-col items-center text-center gap-3">
+            <div className="size-14 rounded-full bg-muted/60 border border-border flex items-center justify-center text-foreground mb-1">
               {userToDeactivate?.estado === "Activo" ? (
-                <>
-                  Estás a punto de suspender el acceso de{" "}
-                  <strong className="text-foreground font-semibold">
-                    {userToDeactivate?.nombre}
-                  </strong>
-                  . El usuario no podrá iniciar sesión en la plataforma hasta que sea reactivado.
-                </>
+                <Lock className="size-6 text-foreground" />
               ) : (
-                <>
-                  ¿Deseas restaurar el acceso al sistema para{" "}
-                  <strong className="text-foreground font-semibold">
-                    {userToDeactivate?.nombre}
-                  </strong>
-                  ?
-                </>
+                <Unlock className="size-6 text-foreground" />
               )}
-            </DialogDescription>
-          </DialogHeader>
+            </div>
+            <DialogHeader className="text-center space-y-1.5">
+              <DialogTitle className="text-xl font-heading font-bold text-foreground">
+                {userToDeactivate?.estado === "Activo"
+                  ? "¿Desactivar usuario?"
+                  : "¿Reactivar usuario?"}
+              </DialogTitle>
+              <DialogDescription className="text-xs sm:text-sm text-muted-foreground leading-relaxed">
+                {userToDeactivate?.estado === "Activo" ? (
+                  <>
+                    Estás a punto de suspender el acceso de{" "}
+                    <strong className="text-foreground font-semibold">
+                      {userToDeactivate?.nombre}
+                    </strong>
+                    . El usuario no podrá iniciar sesión en la plataforma hasta que sea reactivado.
+                  </>
+                ) : (
+                  <>
+                    ¿Deseas restaurar el acceso al sistema para{" "}
+                    <strong className="text-foreground font-semibold">
+                      {userToDeactivate?.nombre}
+                    </strong>
+                    ?
+                  </>
+                )}
+              </DialogDescription>
+            </DialogHeader>
 
-          <DialogFooter showCloseButton={true} stacked={true}>
-            <Button
-              type="button"
-              variant={userToDeactivate?.estado === "Activo" ? "warning" : "success"}
-              onClick={handleConfirmDeactivate}
-            >
-              {userToDeactivate?.estado === "Activo"
-                ? "Desactivar usuario"
-                : "Reactivar usuario"}
-            </Button>
-          </DialogFooter>
+            <DialogFooter className="mt-4 flex flex-col sm:flex-row gap-2.5 w-full">
+              <Button
+                type="button"
+                variant="outline"
+                className="w-full sm:flex-1 h-11 text-xs font-semibold"
+                onClick={() => setIsDeactivateOpen(false)}
+              >
+                Cancelar
+              </Button>
+              <Button
+                type="button"
+                variant="primary"
+                className="w-full sm:flex-1 h-11 text-xs font-semibold"
+                onClick={handleConfirmDeactivate}
+              >
+                {userToDeactivate?.estado === "Activo"
+                  ? "Desactivar usuario"
+                  : "Reactivar usuario"}
+              </Button>
+            </DialogFooter>
+          </div>
         </DialogContent>
       </Dialog>
     </WireframeDashboardLayout>

@@ -820,7 +820,7 @@ export default function WireframeReportesPage() {
 
         {/* ── Modal Detalle de Transacción ── */}
         <Dialog open={!!selectedTx} onOpenChange={(open) => !open && setSelectedTx(null)}>
-          <DialogContent className="max-w-lg rounded-3xl p-6 sm:p-8 bg-background border-border shadow-2xl">
+          <DialogContent variant="standard" className="max-w-lg rounded-3xl p-6 sm:p-8 bg-background border-border shadow-2xl">
             <DialogHeader className="space-y-1">
               <div className="flex items-center gap-2">
                 <DialogTitle className="font-heading font-bold text-xl text-foreground">
@@ -828,7 +828,7 @@ export default function WireframeReportesPage() {
                 </DialogTitle>
                 {selectedTx && (
                   <Badge
-                    tone={selectedTx.estado === "Exitosa" ? "success" : "danger"}
+                    tone="neutral"
                     appearance="soft"
                     size="sm"
                   >
@@ -888,7 +888,7 @@ export default function WireframeReportesPage() {
                 type="button"
                 variant="primary"
                 onClick={() => setSelectedTx(null)}
-                className="w-full h-10 rounded-xl text-xs font-semibold"
+                className="w-full h-11 text-xs font-semibold"
               >
                 Cerrar
               </Button>
@@ -898,7 +898,10 @@ export default function WireframeReportesPage() {
 
         {/* ── Modal de Exportación Simulada ── */}
         <Dialog open={!!exportModalType} onOpenChange={(open) => !open && setExportModalType(null)}>
-          <DialogContent variant="success" className="max-w-[420px] rounded-3xl p-6 sm:p-8 bg-background border-border shadow-2xl">
+          <DialogContent variant="standard" className="max-w-[420px] rounded-3xl p-6 sm:p-8 bg-background border-border shadow-2xl text-center">
+            <div className="size-14 rounded-2xl bg-muted/60 border border-border flex items-center justify-center text-foreground mb-3 mx-auto">
+              <CheckCircle2 className="size-7 stroke-[2]" />
+            </div>
             <DialogHeader className="text-center space-y-2">
               <DialogTitle className="font-heading font-bold text-xl text-foreground">
                 Exportación generada
@@ -912,7 +915,7 @@ export default function WireframeReportesPage() {
                 type="button"
                 variant="primary"
                 onClick={() => setExportModalType(null)}
-                className="w-full h-10 rounded-xl text-xs font-semibold"
+                className="w-full h-11 text-xs font-semibold"
               >
                 Aceptar
               </Button>
