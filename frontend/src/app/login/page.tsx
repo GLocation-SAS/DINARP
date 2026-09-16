@@ -75,7 +75,7 @@ export default function DesignSystemLoginPage() {
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
-    router.push('/wireframes/dashboard');
+    router.push('/uikit');
   };
 
   return (
