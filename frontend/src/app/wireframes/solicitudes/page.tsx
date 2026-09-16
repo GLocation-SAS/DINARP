@@ -490,7 +490,8 @@ export default function WireframeSolicitudesPage() {
                             size="icon-sm"
                             title="Ver detalles"
                             aria-label="Ver detalles"
-                            className="text-muted-foreground hover:text-foreground hover:bg-muted/50"
+                            onClick={() => router.push("/wireframes/solicitudes/detalle")}
+                            className="text-muted-foreground hover:text-foreground hover:bg-muted/50 cursor-pointer"
                           >
                             <Eye className="size-4" />
                           </Button>
