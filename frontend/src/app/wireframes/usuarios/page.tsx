@@ -14,7 +14,10 @@ import {
   Eye,
   Trash2,
   Lock,
+  Unlock,
+  AlertTriangle,
 } from "lucide-react";
+import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -33,6 +36,14 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogFooter,
+} from "@/components/ui/dialog";
 import {
   Table,
   TableHeader,
@@ -124,9 +135,13 @@ export default function WireframeListadoUsuariosPage() {
   const [filterEstado, setFilterEstado] = useState("Todos");
   const [currentPage, setCurrentPage] = useState(1);
 
-  // Modal State
+  // Modal Crear / Editar
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedUser, setSelectedUser] = useState<UsuarioData | null>(null);
+
+  // Dialog Warning Desactivar
+  const [isDeactivateOpen, setIsDeactivateOpen] = useState(false);
+  const [userToDeactivate, setUserToDeactivate] = useState<UsuarioData | null>(null);
 
   const handleOpenCreateModal = () => {
     setSelectedUser(null);
@@ -137,6 +152,33 @@ export default function WireframeListadoUsuariosPage() {
     e?.stopPropagation();
     setSelectedUser(user);
     setIsModalOpen(true);
+  };
+
+  const handleOpenDeactivateModal = (user: UsuarioData, e?: React.MouseEvent) => {
+    e?.stopPropagation();
+    setUserToDeactivate(user);
+    setIsDeactivateOpen(true);
+  };
+
+  const handleConfirmDeactivate = () => {
+    if (!userToDeactivate) return;
+
+    const newStatus = userToDeactivate.estado === "Activo" ? "Inactivo" : "Activo";
+
+    setUsuariosData((prev) =>
+      prev.map((u) =>
+        u.id === userToDeactivate.id ? { ...u, estado: newStatus } : u
+      )
+    );
+
+    if (newStatus === "Inactivo") {
+      toast.warning(`Usuario ${userToDeactivate.nombre} desactivado.`);
+    } else {
+      toast.success(`Usuario ${userToDeactivate.nombre} reactivado correctamente.`);
+    }
+
+    setIsDeactivateOpen(false);
+    setUserToDeactivate(null);
   };
 
   const handleSaveUser = (userData: UsuarioData) => {
@@ -361,20 +403,33 @@ export default function WireframeListadoUsuariosPage() {
                           </TooltipTrigger>
                           <TooltipContent>Más opciones</TooltipContent>
                         </Tooltip>
-                        <DropdownMenuContent align="end" className="w-40">
+                        <DropdownMenuContent align="end" className="w-44">
                           <DropdownMenuItem onClick={() => router.push(`/wireframes/usuarios/${row.id}`)}>
-                            <Eye className="size-3.5 mr-2" />
+                            <Eye className="size-3.5 mr-2 text-muted-foreground" />
                             <span>Ver detalle</span>
                           </DropdownMenuItem>
                           <DropdownMenuItem onClick={(e) => handleOpenEditModal(row, e)}>
-                            <Pencil className="size-3.5 mr-2" />
+                            <Pencil className="size-3.5 mr-2 text-muted-foreground" />
                             <span>Editar</span>
                           </DropdownMenuItem>
                           <DropdownMenuSeparator />
-                          <DropdownMenuItem className="text-destructive focus:text-destructive">
-                            <Lock className="size-3.5 mr-2" />
-                            <span>Desactivar</span>
-                          </DropdownMenuItem>
+                          {row.estado === "Activo" ? (
+                            <DropdownMenuItem
+                              className="text-warning focus:text-warning"
+                              onClick={(e) => handleOpenDeactivateModal(row, e)}
+                            >
+                              <Lock className="size-3.5 mr-2" />
+                              <span>Desactivar</span>
+                            </DropdownMenuItem>
+                          ) : (
+                            <DropdownMenuItem
+                              className="text-success focus:text-success"
+                              onClick={(e) => handleOpenDeactivateModal(row, e)}
+                            >
+                              <Unlock className="size-3.5 mr-2" />
+                              <span>Reactivar</span>
+                            </DropdownMenuItem>
+                          )}
                         </DropdownMenuContent>
                       </DropdownMenu>
                     </div>
@@ -449,6 +504,50 @@ export default function WireframeListadoUsuariosPage() {
         initialData={selectedUser}
         onSave={handleSaveUser}
       />
+
+      {/* ── Dialog Warning: Desactivar / Reactivar Usuario ── */}
+      <Dialog open={isDeactivateOpen} onOpenChange={setIsDeactivateOpen}>
+        <DialogContent variant="warning" size="default">
+          <DialogHeader>
+            <DialogTitle>
+              {userToDeactivate?.estado === "Activo"
+                ? "¿Desactivar usuario?"
+                : "¿Reactivar usuario?"}
+            </DialogTitle>
+            <DialogDescription>
+              {userToDeactivate?.estado === "Activo" ? (
+                <>
+                  Estás a punto de suspender el acceso de{" "}
+                  <strong className="text-foreground font-semibold">
+                    {userToDeactivate?.nombre}
+                  </strong>
+                  . El usuario no podrá iniciar sesión en la plataforma hasta que sea reactivado.
+                </>
+              ) : (
+                <>
+                  ¿Deseas restaurar el acceso al sistema para{" "}
+                  <strong className="text-foreground font-semibold">
+                    {userToDeactivate?.nombre}
+                  </strong>
+                  ?
+                </>
+              )}
+            </DialogDescription>
+          </DialogHeader>
+
+          <DialogFooter showCloseButton={true} stacked={true}>
+            <Button
+              type="button"
+              variant={userToDeactivate?.estado === "Activo" ? "warning" : "success"}
+              onClick={handleConfirmDeactivate}
+            >
+              {userToDeactivate?.estado === "Activo"
+                ? "Desactivar usuario"
+                : "Reactivar usuario"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </WireframeDashboardLayout>
   );
 }

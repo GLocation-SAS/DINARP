@@ -284,9 +284,8 @@ export function UsuarioModal({
                   >
                     <div className="flex items-center gap-2 truncate">
                       <span
-                        className={`size-2 rounded-full shrink-0 ${
-                          estado === "Activo" ? "bg-success" : "bg-danger"
-                        }`}
+                        className={`size-2 rounded-full shrink-0 ${estado === "Activo" ? "bg-success" : "bg-danger"
+                          }`}
                       />
                       <span className="truncate text-foreground text-sm font-medium">{estado}</span>
                     </div>
@@ -343,3 +342,4 @@ export function UsuarioModal({
     </Dialog>
   );
 }
+

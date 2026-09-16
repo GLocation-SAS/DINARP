@@ -13,17 +13,17 @@ const checkboxVariants = cva(
     variants: {
       variant: {
         primary:
-          "data-[state=checked]:border-primary data-[state=checked]:bg-primary data-[state=checked]:text-white dark:data-[state=checked]:bg-primary dark:data-[state=checked]:text-white enabled:hover:border-primary enabled:hover:ring-4 enabled:hover:ring-primary/20",
+          "data-[state=checked]:border-primary data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground dark:data-[state=checked]:bg-primary dark:data-[state=checked]:text-primary-foreground enabled:hover:border-primary enabled:hover:ring-4 enabled:hover:ring-primary/20",
         secondary:
-          "data-[state=checked]:border-secondary data-[state=checked]:bg-secondary data-[state=checked]:text-white dark:data-[state=checked]:bg-secondary dark:data-[state=checked]:text-white enabled:hover:border-secondary enabled:hover:ring-4 enabled:hover:ring-secondary/20",
+          "data-[state=checked]:border-secondary data-[state=checked]:bg-secondary data-[state=checked]:text-secondary-foreground dark:data-[state=checked]:bg-secondary dark:data-[state=checked]:text-secondary-foreground enabled:hover:border-secondary enabled:hover:ring-4 enabled:hover:ring-secondary/20",
         error:
-          "data-[state=checked]:border-danger data-[state=checked]:bg-danger data-[state=checked]:text-white dark:data-[state=checked]:bg-danger dark:data-[state=checked]:text-white border-danger/50 enabled:hover:border-danger enabled:hover:ring-4 enabled:hover:ring-danger/20",
+          "data-[state=checked]:border-danger data-[state=checked]:bg-danger data-[state=checked]:text-danger-foreground dark:data-[state=checked]:bg-danger dark:data-[state=checked]:text-danger-foreground border-danger/50 enabled:hover:border-danger enabled:hover:ring-4 enabled:hover:ring-danger/20",
         success:
-          "data-[state=checked]:border-success data-[state=checked]:bg-success data-[state=checked]:text-white dark:data-[state=checked]:bg-success dark:data-[state=checked]:text-white border-success/50 enabled:hover:border-success enabled:hover:ring-4 enabled:hover:ring-success/20",
+          "data-[state=checked]:border-success data-[state=checked]:bg-success data-[state=checked]:text-success-foreground dark:data-[state=checked]:bg-success dark:data-[state=checked]:text-success-foreground border-success/50 enabled:hover:border-success enabled:hover:ring-4 enabled:hover:ring-success/20",
         warning:
-          "data-[state=checked]:border-warning data-[state=checked]:bg-warning data-[state=checked]:text-white dark:data-[state=checked]:bg-warning dark:data-[state=checked]:text-white border-warning/50 enabled:hover:border-warning enabled:hover:ring-4 enabled:hover:ring-warning/20",
+          "data-[state=checked]:border-warning data-[state=checked]:bg-warning data-[state=checked]:text-warning-foreground dark:data-[state=checked]:bg-warning dark:data-[state=checked]:text-warning-foreground border-warning/50 enabled:hover:border-warning enabled:hover:ring-4 enabled:hover:ring-warning/20",
         info:
-          "data-[state=checked]:border-info data-[state=checked]:bg-info data-[state=checked]:text-white dark:data-[state=checked]:bg-info dark:data-[state=checked]:text-white border-info/50 enabled:hover:border-info enabled:hover:ring-4 enabled:hover:ring-info/20",
+          "data-[state=checked]:border-info data-[state=checked]:bg-info data-[state=checked]:text-info-foreground dark:data-[state=checked]:bg-info dark:data-[state=checked]:text-info-foreground border-info/50 enabled:hover:border-info enabled:hover:ring-4 enabled:hover:ring-info/20",
       },
       size: {
         sm: "size-3.5",

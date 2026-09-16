@@ -493,7 +493,7 @@ export function MapContainer({
       {/* Floating Center Elements / Map Pins */}
       <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-0">
         <div className="relative pointer-events-auto">
-          <div className="size-10 rounded-full bg-primary text-white flex items-center justify-center shadow-lg shadow-primary/40 animate-bounce">
+          <div className="size-10 rounded-full bg-primary text-primary-foreground flex items-center justify-center shadow-lg shadow-primary/40 animate-bounce">
             <School className="size-5" />
           </div>
           <div className="size-32 rounded-full border-2 border-dashed border-primary/40 bg-primary/5 absolute -top-11 -left-11 pointer-events-none animate-pulse" />
