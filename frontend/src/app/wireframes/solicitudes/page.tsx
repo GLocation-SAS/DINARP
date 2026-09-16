@@ -9,7 +9,6 @@ import {
   CheckCircle2,
   XCircle,
   FilePlus2,
-  Search,
   ChevronDown,
   Eye,
   Pencil,
@@ -23,10 +22,7 @@ import {
   Card,
   CardContent,
 } from "@/components/ui/card";
-import {
-  InputGroup,
-  InputGroupInput,
-} from "@/components/ui/input-group";
+import { Search } from "@/components/ui/search";
 import {
   DropdownMenu,
   DropdownMenuTrigger,
@@ -49,14 +45,6 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import {
-  Breadcrumb,
-  BreadcrumbList,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbSeparator,
-  BreadcrumbPage,
-} from "@/components/ui/breadcrumb";
 import {
   Pagination,
   PaginationContent,
@@ -177,81 +165,57 @@ export default function WireframeSolicitudesPage() {
         {/* Background subtle effect */}
         <div className="absolute top-0 right-0 w-96 h-96 bg-radial from-muted/20 to-transparent pointer-events-none -z-10 blur-3xl opacity-60" />
 
-        {/* ── Breadcrumbs ── */}
-        <Breadcrumb>
-          <BreadcrumbList className="text-xs">
-            <BreadcrumbItem>
-              <BreadcrumbLink asChild>
-                <Link href="/wireframes/dashboard" className="text-muted-foreground hover:text-foreground">
-                  Inicio
-                </Link>
-              </BreadcrumbLink>
-            </BreadcrumbItem>
-            <BreadcrumbSeparator />
-            <BreadcrumbItem>
-              <BreadcrumbPage className="font-semibold text-foreground">
-                Solicitudes
-              </BreadcrumbPage>
-            </BreadcrumbItem>
-          </BreadcrumbList>
-        </Breadcrumb>
+        {/* ── 1. Header Title, Description & Action ── */}
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div className="space-y-1">
+            <h1 className="font-heading font-extrabold text-3xl sm:text-4xl tracking-tight text-foreground">
+              Solicitudes
+            </h1>
+            <p className="text-xs sm:text-sm text-muted-foreground max-w-3xl leading-relaxed font-normal">
+              Gestiona tus solicitudes de interoperabilidad, revisa su estado y crea nuevas solicitudes.
+            </p>
+          </div>
 
-        {/* ── Header Title & Description ── */}
-        <div className="space-y-1">
-          <h1 className="font-heading font-extrabold text-3xl sm:text-4xl tracking-tight text-foreground">
-            Solicitudes
-          </h1>
-          <p className="text-xs sm:text-sm text-muted-foreground max-w-3xl leading-relaxed font-normal">
-            Gestiona tus solicitudes de interoperabilidad, revisa su estado y crea nuevas solicitudes.
-          </p>
-        </div>
-
-        {/* ── Zona Superior: Botón Acción, Búsqueda & Selectores DropdownMenu ── */}
-        <div className="flex flex-col lg:flex-row items-stretch lg:items-center gap-3">
-          {/* Botón Nueva Solicitud */}
+          {/* Botón Nueva Solicitud (CTA alineado a la derecha) */}
           <Button
             type="button"
             variant="primary"
             onClick={() => router.push("/wireframes/solicitudes/nueva")}
-            className="h-11 px-5 rounded-xl font-semibold flex items-center gap-2 shrink-0 justify-center shadow-xs"
+            className="h-11 px-5 rounded-xl font-semibold flex items-center gap-2 shrink-0 self-start sm:self-auto shadow-xs"
           >
             <FilePlus2 className="size-4 stroke-[2]" />
             <span>Nueva solicitud</span>
           </Button>
+        </div>
 
-          {/* Input de Búsqueda */}
+        {/* ── 2. Zona Superior: Búsqueda UI Kit & Selectores DropdownMenu ── */}
+        <div className="flex flex-col lg:flex-row items-stretch lg:items-center gap-3">
+          {/* Input de Búsqueda UI Kit */}
           <div className="flex-1 min-w-[240px]">
-            <InputGroup
-              size="default"
-              leftIcon={<Search className="size-4 text-muted-foreground" />}
-              className="bg-surface h-11 rounded-xl border-border/80"
-            >
-              <InputGroupInput
-                placeholder="Buscar por nombre, código o institución..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="text-xs sm:text-sm"
-              />
-            </InputGroup>
+            <Search
+              placeholder="Buscar por nombre, código o institución..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              onClear={() => setSearchQuery("")}
+              className="bg-surface rounded-xl border-border/80"
+            />
           </div>
 
           {/* Selectores de Filtro con DropdownMenu */}
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 shrink-0">
+          <div className="flex flex-wrap sm:flex-nowrap items-center gap-2 shrink-0">
             {/* Filtro Estado */}
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button
                   variant="outline"
-                  className="h-11 px-3 py-1.5 flex flex-col items-start justify-center bg-surface border-border/80 rounded-xl min-w-[120px] text-left"
+                  className="h-11 px-3.5 flex items-center justify-between gap-2 bg-surface border-border/80 rounded-xl text-xs min-w-[130px]"
                 >
-                  <span className="text-[10px] font-medium text-muted-foreground leading-none">Estado</span>
-                  <div className="w-full flex items-center justify-between gap-1 mt-0.5">
-                    <span className="text-xs font-semibold text-foreground truncate">{selectedEstado}</span>
-                    <ChevronDown className="size-3.5 text-muted-foreground shrink-0" />
-                  </div>
+                  <span className="text-muted-foreground font-normal">Estado:</span>
+                  <span className="font-semibold text-foreground truncate">{selectedEstado}</span>
+                  <ChevronDown className="size-3.5 text-muted-foreground shrink-0 opacity-70" />
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-44">
+              <DropdownMenuContent align="end" className="w-48 rounded-xl">
                 <DropdownMenuLabel className="text-xs">Filtrar por estado</DropdownMenuLabel>
                 <DropdownMenuSeparator />
                 <DropdownMenuRadioGroup value={selectedEstado} onValueChange={setSelectedEstado}>
@@ -269,16 +233,14 @@ export default function WireframeSolicitudesPage() {
               <DropdownMenuTrigger asChild>
                 <Button
                   variant="outline"
-                  className="h-11 px-3 py-1.5 flex flex-col items-start justify-center bg-surface border-border/80 rounded-xl min-w-[120px] text-left"
+                  className="h-11 px-3.5 flex items-center justify-between gap-2 bg-surface border-border/80 rounded-xl text-xs min-w-[130px]"
                 >
-                  <span className="text-[10px] font-medium text-muted-foreground leading-none">Tipo</span>
-                  <div className="w-full flex items-center justify-between gap-1 mt-0.5">
-                    <span className="text-xs font-semibold text-foreground truncate">{selectedTipo}</span>
-                    <ChevronDown className="size-3.5 text-muted-foreground shrink-0" />
-                  </div>
+                  <span className="text-muted-foreground font-normal">Tipo:</span>
+                  <span className="font-semibold text-foreground truncate">{selectedTipo}</span>
+                  <ChevronDown className="size-3.5 text-muted-foreground shrink-0 opacity-70" />
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-44">
+              <DropdownMenuContent align="end" className="w-48 rounded-xl">
                 <DropdownMenuLabel className="text-xs">Filtrar por tipo</DropdownMenuLabel>
                 <DropdownMenuSeparator />
                 <DropdownMenuRadioGroup value={selectedTipo} onValueChange={setSelectedTipo}>
@@ -295,16 +257,14 @@ export default function WireframeSolicitudesPage() {
               <DropdownMenuTrigger asChild>
                 <Button
                   variant="outline"
-                  className="h-11 px-3 py-1.5 flex flex-col items-start justify-center bg-surface border-border/80 rounded-xl min-w-[140px] text-left"
+                  className="h-11 px-3.5 flex items-center justify-between gap-2 bg-surface border-border/80 rounded-xl text-xs min-w-[150px]"
                 >
-                  <span className="text-[10px] font-medium text-muted-foreground leading-none">Institución fuente</span>
-                  <div className="w-full flex items-center justify-between gap-1 mt-0.5">
-                    <span className="text-xs font-semibold text-foreground truncate">{selectedFuente}</span>
-                    <ChevronDown className="size-3.5 text-muted-foreground shrink-0" />
-                  </div>
+                  <span className="text-muted-foreground font-normal">Fuente:</span>
+                  <span className="font-semibold text-foreground truncate">{selectedFuente}</span>
+                  <ChevronDown className="size-3.5 text-muted-foreground shrink-0 opacity-70" />
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-48">
+              <DropdownMenuContent align="end" className="w-52 rounded-xl">
                 <DropdownMenuLabel className="text-xs">Institución fuente</DropdownMenuLabel>
                 <DropdownMenuSeparator />
                 <DropdownMenuRadioGroup value={selectedFuente} onValueChange={setSelectedFuente}>

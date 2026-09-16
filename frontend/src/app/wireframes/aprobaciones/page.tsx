@@ -4,7 +4,6 @@ import React, { useState, useMemo } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import {
-  Search,
   ChevronDown,
   RotateCcw,
   Eye,
@@ -19,9 +18,14 @@ import {
   CardContent,
 } from "@/components/ui/card";
 import {
-  InputGroup,
-  InputGroupInput,
-} from "@/components/ui/input-group";
+  Breadcrumb,
+  BreadcrumbList,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+} from "@/components/ui/breadcrumb";
+import { Search } from "@/components/ui/search";
 import {
   DropdownMenu,
   DropdownMenuTrigger,
@@ -50,14 +54,6 @@ import {
   TabsTrigger,
   TabsContent,
 } from "@/components/ui/tabs";
-import {
-  Breadcrumb,
-  BreadcrumbList,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbSeparator,
-  BreadcrumbPage,
-} from "@/components/ui/breadcrumb";
 import {
   Pagination,
   PaginationContent,
@@ -203,26 +199,7 @@ export default function WireframeBandejaAprobacionesPage() {
         {/* Background subtle effect */}
         <div className="absolute top-0 right-0 w-96 h-96 bg-radial from-muted/20 to-transparent pointer-events-none -z-10 blur-3xl opacity-60" />
 
-        {/* ── 1. Breadcrumbs ── */}
-        <Breadcrumb>
-          <BreadcrumbList className="text-xs">
-            <BreadcrumbItem>
-              <BreadcrumbLink asChild>
-                <Link href="/wireframes/dashboard" className="text-muted-foreground hover:text-foreground">
-                  Inicio
-                </Link>
-              </BreadcrumbLink>
-            </BreadcrumbItem>
-            <BreadcrumbSeparator />
-            <BreadcrumbItem>
-              <BreadcrumbPage className="font-semibold text-foreground">
-                Aprobaciones y permisos
-              </BreadcrumbPage>
-            </BreadcrumbItem>
-          </BreadcrumbList>
-        </Breadcrumb>
-
-        {/* ── 2. Header Title & Description ── */}
+        {/* ── 1. Header Title & Description ── */}
         <div className="space-y-1">
           <h1 className="font-heading font-extrabold text-3xl sm:text-4xl tracking-tight text-foreground">
             Aprobaciones y permisos
@@ -232,7 +209,7 @@ export default function WireframeBandejaAprobacionesPage() {
           </p>
         </div>
 
-        {/* ── 3. Tabs: Pendientes (12), En revisión (6), Resueltas (24) ── */}
+        {/* ── 2. Tabs: Pendientes (12), En revisión (6), Resueltas (24) ── */}
         <Tabs
           value={activeTab}
           onValueChange={(val) => setActiveTab(val as "pendientes" | "revision" | "resueltas")}
@@ -250,40 +227,34 @@ export default function WireframeBandejaAprobacionesPage() {
             </TabsTrigger>
           </TabsList>
 
-          {/* ── 4. Filtros de Búsqueda y Selectores ── */}
-          <div className="space-y-3">
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3 items-end">
-              {/* Buscador */}
-              <div className="lg:col-span-1 min-w-[200px]">
-                <InputGroup
-                  size="default"
-                  leftIcon={<Search className="size-4 text-muted-foreground" />}
-                  className="bg-surface h-11 rounded-xl border-border/80"
-                >
-                  <InputGroupInput
-                    placeholder="Buscar solicitudes..."
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    className="text-xs sm:text-sm"
-                  />
-                </InputGroup>
-              </div>
+          {/* ── 3. Filtros de Búsqueda y Selectores UI Kit ── */}
+          <div className="flex flex-col lg:flex-row items-stretch lg:items-center gap-3">
+            {/* Buscador UI Kit */}
+            <div className="flex-1 min-w-[220px]">
+              <Search
+                placeholder="Buscar solicitudes por código, nombre o entidad..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                onClear={() => setSearchQuery("")}
+                className="bg-surface rounded-xl border-border/80"
+              />
+            </div>
 
+            {/* Selectores Dropdown */}
+            <div className="flex flex-wrap sm:flex-nowrap items-center gap-2 shrink-0">
               {/* Filtro Estado */}
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button
                     variant="outline"
-                    className="h-11 px-3 py-1.5 flex flex-col items-start justify-center bg-surface border-border/80 rounded-xl text-left w-full"
+                    className="h-11 px-3.5 flex items-center justify-between gap-2 bg-surface border-border/80 rounded-xl text-xs min-w-[130px]"
                   >
-                    <span className="text-[10px] font-medium text-muted-foreground leading-none">Estado</span>
-                    <div className="w-full flex items-center justify-between gap-1 mt-0.5">
-                      <span className="text-xs font-semibold text-foreground truncate">{filterEstado}</span>
-                      <ChevronDown className="size-3.5 text-muted-foreground shrink-0" />
-                    </div>
+                    <span className="text-muted-foreground font-normal">Estado:</span>
+                    <span className="font-semibold text-foreground truncate">{filterEstado}</span>
+                    <ChevronDown className="size-3.5 text-muted-foreground shrink-0 opacity-70" />
                   </Button>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent align="start" className="w-44">
+                <DropdownMenuContent align="end" className="w-48 rounded-xl">
                   <DropdownMenuLabel className="text-xs">Estado</DropdownMenuLabel>
                   <DropdownMenuSeparator />
                   <DropdownMenuRadioGroup value={filterEstado} onValueChange={setFilterEstado}>
@@ -301,16 +272,14 @@ export default function WireframeBandejaAprobacionesPage() {
                 <DropdownMenuTrigger asChild>
                   <Button
                     variant="outline"
-                    className="h-11 px-3 py-1.5 flex flex-col items-start justify-center bg-surface border-border/80 rounded-xl text-left w-full"
+                    className="h-11 px-3.5 flex items-center justify-between gap-2 bg-surface border-border/80 rounded-xl text-xs min-w-[140px]"
                   >
-                    <span className="text-[10px] font-medium text-muted-foreground leading-none">Entidad</span>
-                    <div className="w-full flex items-center justify-between gap-1 mt-0.5">
-                      <span className="text-xs font-semibold text-foreground truncate">{filterEntidad}</span>
-                      <ChevronDown className="size-3.5 text-muted-foreground shrink-0" />
-                    </div>
+                    <span className="text-muted-foreground font-normal">Entidad:</span>
+                    <span className="font-semibold text-foreground truncate">{filterEntidad}</span>
+                    <ChevronDown className="size-3.5 text-muted-foreground shrink-0 opacity-70" />
                   </Button>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent align="start" className="w-48">
+                <DropdownMenuContent align="end" className="w-52 rounded-xl">
                   <DropdownMenuLabel className="text-xs">Entidad solicitante</DropdownMenuLabel>
                   <DropdownMenuSeparator />
                   <DropdownMenuRadioGroup value={filterEntidad} onValueChange={setFilterEntidad}>
@@ -329,65 +298,38 @@ export default function WireframeBandejaAprobacionesPage() {
                 <DropdownMenuTrigger asChild>
                   <Button
                     variant="outline"
-                    className="h-11 px-3 py-1.5 flex flex-col items-start justify-center bg-surface border-border/80 rounded-xl text-left w-full"
+                    className="h-11 px-3.5 flex items-center justify-between gap-2 bg-surface border-border/80 rounded-xl text-xs min-w-[140px]"
                   >
-                    <span className="text-[10px] font-medium text-muted-foreground leading-none">Fuente</span>
-                    <div className="w-full flex items-center justify-between gap-1 mt-0.5">
-                      <span className="text-xs font-semibold text-foreground truncate">{filterFuente}</span>
-                      <ChevronDown className="size-3.5 text-muted-foreground shrink-0" />
-                    </div>
+                    <span className="text-muted-foreground font-normal">Fuente:</span>
+                    <span className="font-semibold text-foreground truncate">{filterFuente}</span>
+                    <ChevronDown className="size-3.5 text-muted-foreground shrink-0 opacity-70" />
                   </Button>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent align="start" className="w-48">
-                  <DropdownMenuLabel className="text-xs">Institución fuente</DropdownMenuLabel>
+                <DropdownMenuContent align="end" className="w-52 rounded-xl">
+                  <DropdownMenuLabel className="text-xs">Fuente de datos</DropdownMenuLabel>
                   <DropdownMenuSeparator />
                   <DropdownMenuRadioGroup value={filterFuente} onValueChange={setFilterFuente}>
                     <DropdownMenuRadioItem value="Todas">Todas</DropdownMenuRadioItem>
                     <DropdownMenuRadioItem value="Registro Civil">Registro Civil</DropdownMenuRadioItem>
+                    <DropdownMenuRadioItem value="Policía Nacional">Policía Nacional</DropdownMenuRadioItem>
                     <DropdownMenuRadioItem value="SRI">SRI</DropdownMenuRadioItem>
-                    <DropdownMenuRadioItem value="DINARP">DINARP</DropdownMenuRadioItem>
                     <DropdownMenuRadioItem value="ANT">ANT</DropdownMenuRadioItem>
+                    <DropdownMenuRadioItem value="DINARP">DINARP</DropdownMenuRadioItem>
                   </DropdownMenuRadioGroup>
                 </DropdownMenuContent>
               </DropdownMenu>
 
-              {/* Filtro Fecha & Botón Limpiar */}
-              <div className="flex items-center gap-2 w-full">
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <Button
-                      variant="outline"
-                      className="h-11 px-3 py-1.5 flex flex-col items-start justify-center bg-surface border-border/80 rounded-xl text-left flex-1"
-                    >
-                      <span className="text-[10px] font-medium text-muted-foreground leading-none">Fecha</span>
-                      <div className="w-full flex items-center justify-between gap-1 mt-0.5">
-                        <span className="text-xs font-semibold text-foreground truncate">{filterFecha}</span>
-                        <ChevronDown className="size-3.5 text-muted-foreground shrink-0" />
-                      </div>
-                    </Button>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent align="start" className="w-40">
-                    <DropdownMenuLabel className="text-xs">Rango de fecha</DropdownMenuLabel>
-                    <DropdownMenuSeparator />
-                    <DropdownMenuRadioGroup value={filterFecha} onValueChange={setFilterFecha}>
-                      <DropdownMenuRadioItem value="Todas">Todas</DropdownMenuRadioItem>
-                      <DropdownMenuRadioItem value="Últimos 7 días">Últimos 7 días</DropdownMenuRadioItem>
-                      <DropdownMenuRadioItem value="Último mes">Último mes</DropdownMenuRadioItem>
-                    </DropdownMenuRadioGroup>
-                  </DropdownMenuContent>
-                </DropdownMenu>
-
+              {/* Botón Reset */}
+              {(filterEstado !== "Todos" || filterEntidad !== "Todas" || filterFuente !== "Todas" || searchQuery !== "") && (
                 <Button
-                  type="button"
-                  variant="outline"
+                  variant="ghost"
                   onClick={resetFilters}
-                  className="h-11 px-3.5 rounded-xl text-xs font-semibold gap-1.5 border-border shrink-0"
-                  title="Limpiar filtros"
+                  className="h-11 px-3 text-xs text-muted-foreground hover:text-foreground rounded-xl flex items-center gap-1.5 shrink-0"
                 >
                   <RotateCcw className="size-3.5" />
-                  <span className="hidden sm:inline">Limpiar filtros</span>
+                  <span>Limpiar</span>
                 </Button>
-              </div>
+              )}
             </div>
           </div>
 

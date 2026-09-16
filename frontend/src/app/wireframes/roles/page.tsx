@@ -4,7 +4,6 @@ import React, { useState, useMemo } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import {
-  Search,
   Plus,
   Filter,
   Eye,
@@ -23,10 +22,7 @@ import {
   Card,
   CardContent,
 } from "@/components/ui/card";
-import {
-  InputGroup,
-  InputGroupInput,
-} from "@/components/ui/input-group";
+import { Search } from "@/components/ui/search";
 import {
   DropdownMenu,
   DropdownMenuTrigger,
@@ -169,18 +165,13 @@ export default function WireframeListadoRolesPage() {
         {/* ── 2. Buscador y Filtros ── */}
         <div className="flex flex-col sm:flex-row items-center justify-between gap-3">
           <div className="w-full sm:max-w-md">
-            <InputGroup
-              size="default"
-              leftIcon={<Search className="size-4 text-muted-foreground" />}
-              className="bg-surface h-11 rounded-xl border-border/80"
-            >
-              <InputGroupInput
-                placeholder="Buscar por nombre o descripción..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="text-xs sm:text-sm"
-              />
-            </InputGroup>
+            <Search
+              placeholder="Buscar por nombre o descripción..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              onClear={() => setSearchQuery("")}
+              className="bg-surface rounded-xl border-border/80"
+            />
           </div>
 
           {/* Botón Filtros Desplegable */}

@@ -4,7 +4,6 @@ import React, { useState, useMemo } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import {
-  Search,
   ChevronDown,
   Calendar as CalendarIcon,
   Eye,
@@ -20,6 +19,7 @@ import {
   Card,
   CardContent,
 } from "@/components/ui/card";
+import { Search } from "@/components/ui/search";
 import {
   InputGroup,
   InputGroupInput,
@@ -177,18 +177,13 @@ export default function WireframeListadoFacturacionPage() {
         <div className="space-y-3">
           {/* Input de Búsqueda */}
           <div className="w-full max-w-lg">
-            <InputGroup
-              size="default"
-              leftIcon={<Search className="size-4 text-muted-foreground" />}
-              className="bg-surface h-11 rounded-xl border-border/80"
-            >
-              <InputGroupInput
-                placeholder="Buscar por número, proyecto, servicio o entidad..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="text-xs sm:text-sm"
-              />
-            </InputGroup>
+            <Search
+              placeholder="Buscar por número, proyecto, servicio o entidad..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              onClear={() => setSearchQuery("")}
+              className="bg-surface rounded-xl border-border/80"
+            />
           </div>
 
           {/* Barra de Filtros */}

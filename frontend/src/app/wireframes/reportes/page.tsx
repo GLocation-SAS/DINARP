@@ -21,6 +21,7 @@ import {
   Building,
   Server,
   Layers,
+  Filter,
 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -30,6 +31,7 @@ import {
   CardHeader,
   CardTitle,
   CardContent,
+  CardDecorativeIcon,
 } from "@/components/ui/card";
 import {
   InputGroup,
@@ -200,33 +202,43 @@ export default function WireframeReportesPage() {
         </div>
 
         {/* ── 2. Filtros de Búsqueda ── */}
-        <Card className="rounded-2xl border-border bg-surface p-5 sm:p-6 space-y-4 shadow-xs">
-          <h2 className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
-            Filtros de búsqueda
-          </h2>
+        <Card
+          className="rounded-2xl border-border bg-surface shadow-xs w-full"
+          innerClassName="items-start text-left p-5 sm:p-6 space-y-4 w-full"
+        >
+          <div className="flex items-center gap-2 text-foreground pb-1">
+            <Filter className="size-4 text-primary" />
+            <h2 className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
+              Filtros de búsqueda
+            </h2>
+          </div>
 
-          <div className="space-y-3">
-            {/* Fila 1 de Filtros (5 columnas) */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3">
+          <div className="w-full space-y-4">
+            {/* Grid de 4 Columnas */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 items-end">
               {/* Rango de fechas */}
-              <div className="space-y-1">
-                <span className="text-[11px] font-medium text-muted-foreground block">Rango de fechas</span>
+              <div className="space-y-1.5 text-left">
+                <span className="text-[11px] font-semibold text-muted-foreground block text-left">
+                  Rango de fechas
+                </span>
                 <InputGroup
                   size="default"
                   rightIcon={<Calendar className="size-3.5 text-muted-foreground" />}
-                  className="bg-surface h-10 rounded-xl border-border/80"
+                  className="bg-surface h-10 rounded-xl border-border/80 w-full"
                 >
                   <InputGroupInput
                     value={fechaRango}
                     onChange={(e) => setFechaRango(e.target.value)}
-                    className="text-xs font-mono font-medium"
+                    className="text-xs font-mono font-medium text-left"
                   />
                 </InputGroup>
               </div>
 
               {/* Institución */}
-              <div className="space-y-1">
-                <span className="text-[11px] font-medium text-muted-foreground block">Institución</span>
+              <div className="space-y-1.5 text-left">
+                <span className="text-[11px] font-semibold text-muted-foreground block text-left">
+                  Institución
+                </span>
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
                     <Button
@@ -250,8 +262,10 @@ export default function WireframeReportesPage() {
               </div>
 
               {/* Tipo de institución */}
-              <div className="space-y-1">
-                <span className="text-[11px] font-medium text-muted-foreground block">Tipo de institución</span>
+              <div className="space-y-1.5 text-left">
+                <span className="text-[11px] font-semibold text-muted-foreground block text-left">
+                  Tipo de institución
+                </span>
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
                     <Button
@@ -274,8 +288,10 @@ export default function WireframeReportesPage() {
               </div>
 
               {/* Fuente */}
-              <div className="space-y-1">
-                <span className="text-[11px] font-medium text-muted-foreground block">Fuente</span>
+              <div className="space-y-1.5 text-left">
+                <span className="text-[11px] font-semibold text-muted-foreground block text-left">
+                  Fuente
+                </span>
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
                     <Button
@@ -299,8 +315,10 @@ export default function WireframeReportesPage() {
               </div>
 
               {/* Consumidor */}
-              <div className="space-y-1">
-                <span className="text-[11px] font-medium text-muted-foreground block">Consumidor</span>
+              <div className="space-y-1.5 text-left">
+                <span className="text-[11px] font-semibold text-muted-foreground block text-left">
+                  Consumidor
+                </span>
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
                     <Button
@@ -322,13 +340,12 @@ export default function WireframeReportesPage() {
                   </DropdownMenuContent>
                 </DropdownMenu>
               </div>
-            </div>
 
-            {/* Fila 2 de Filtros y Acciones */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3 items-end">
               {/* Tipo de intercambio */}
-              <div className="space-y-1">
-                <span className="text-[11px] font-medium text-muted-foreground block">Tipo de intercambio</span>
+              <div className="space-y-1.5 text-left">
+                <span className="text-[11px] font-semibold text-muted-foreground block text-left">
+                  Tipo de intercambio
+                </span>
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
                     <Button
@@ -351,8 +368,10 @@ export default function WireframeReportesPage() {
               </div>
 
               {/* Estado */}
-              <div className="space-y-1">
-                <span className="text-[11px] font-medium text-muted-foreground block">Estado</span>
+              <div className="space-y-1.5 text-left">
+                <span className="text-[11px] font-semibold text-muted-foreground block text-left">
+                  Estado
+                </span>
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
                     <Button
@@ -373,127 +392,114 @@ export default function WireframeReportesPage() {
                 </DropdownMenu>
               </div>
 
-              {/* Spacer */}
-              <div className="hidden lg:block" />
-
-              {/* Botón Limpiar */}
-              <Button
-                type="button"
-                variant="outline"
-                onClick={handleResetFilters}
-                className="h-10 px-4 rounded-xl text-xs font-semibold border-border/80 bg-surface justify-center"
-              >
-                Limpiar
-              </Button>
-
-              {/* Botón Consultar */}
-              <Button
-                type="button"
-                variant="primary"
-                className="h-10 px-6 rounded-xl text-xs font-semibold shadow-xs justify-center"
-              >
-                Consultar
-              </Button>
+              {/* Botones de Acción */}
+              <div className="flex items-center gap-2 w-full pt-1">
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={handleResetFilters}
+                  className="h-10 flex-1 rounded-xl text-xs font-semibold border-border/80 bg-surface justify-center hover:bg-muted/30"
+                >
+                  <RotateCcw className="size-3.5 mr-1 text-muted-foreground" />
+                  Limpiar
+                </Button>
+                <Button
+                  type="button"
+                  variant="primary"
+                  className="h-10 flex-1 rounded-xl text-xs font-semibold shadow-xs justify-center"
+                >
+                  <Search className="size-3.5 mr-1" />
+                  Consultar
+                </Button>
+              </div>
             </div>
           </div>
         </Card>
 
-        {/* ── 3. Indicadores Resumen (4 Cards) ── */}
+        {/* ── 3. Indicadores Resumen (4 Cards Featured) ── */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           {/* Card 1: Total Transacciones */}
           <Card
-            size="sm"
-            disableHover
-            className="rounded-2xl border-border bg-surface shadow-xs"
-            innerClassName="flex-row items-center gap-4 p-5"
+            variant="featured"
+            className="bg-primary/10 hover:bg-primary/15 border border-primary/20 transition-colors"
+            innerClassName="p-5 items-start text-left gap-1"
           >
-            <div className="size-12 rounded-xl bg-muted/60 border border-border/40 text-foreground flex items-center justify-center shrink-0">
-              <ArrowLeftRight className="size-6 stroke-[1.75]" />
-            </div>
-            <div className="space-y-0.5">
-              <span className="font-mono font-extrabold text-2xl text-foreground tracking-tight block">
-                125.430
-              </span>
-              <span className="text-[11px] font-medium text-muted-foreground block">
-                Total de transacciones
-              </span>
-              <span className="text-[11px] font-medium text-foreground flex items-center gap-0.5">
-                <span>↑ +12%</span>
-                <span className="text-muted-foreground font-normal">vs. mes anterior</span>
-              </span>
-            </div>
+            <span className="font-mono font-extrabold text-2xl sm:text-3xl text-foreground tracking-tight block">
+              125.430
+            </span>
+            <span className="text-xs font-semibold text-primary block">
+              Total de transacciones
+            </span>
+            <span className="text-[11px] font-medium text-foreground flex items-center gap-0.5 mt-1">
+              <span className="text-success font-semibold">↑ +12%</span>
+              <span className="text-muted-foreground font-normal">vs. mes anterior</span>
+            </span>
+            <CardDecorativeIcon>
+              <ArrowLeftRight className="size-28 text-primary" />
+            </CardDecorativeIcon>
           </Card>
 
           {/* Card 2: Exitosas */}
           <Card
-            size="sm"
-            disableHover
-            className="rounded-2xl border-border bg-surface shadow-xs"
-            innerClassName="flex-row items-center gap-4 p-5"
+            variant="featured"
+            className="bg-success/10 hover:bg-success/15 border border-success/20 transition-colors"
+            innerClassName="p-5 items-start text-left gap-1"
           >
-            <div className="size-12 rounded-xl bg-muted/60 border border-border/40 text-foreground flex items-center justify-center shrink-0">
-              <CheckCircle2 className="size-6 stroke-[1.75]" />
-            </div>
-            <div className="space-y-0.5">
-              <span className="font-mono font-extrabold text-2xl text-foreground tracking-tight block">
-                118.920
-              </span>
-              <span className="text-[11px] font-medium text-muted-foreground block">
-                Transacciones exitosas
-              </span>
-              <span className="text-[11px] font-medium text-foreground flex items-center gap-0.5">
-                <span>95%</span>
-                <span className="text-muted-foreground font-normal">del total</span>
-              </span>
-            </div>
+            <span className="font-mono font-extrabold text-2xl sm:text-3xl text-foreground tracking-tight block">
+              118.920
+            </span>
+            <span className="text-xs font-semibold text-success block">
+              Transacciones exitosas
+            </span>
+            <span className="text-[11px] font-medium text-foreground flex items-center gap-0.5 mt-1">
+              <span className="font-semibold text-foreground">95%</span>
+              <span className="text-muted-foreground font-normal">del total</span>
+            </span>
+            <CardDecorativeIcon>
+              <CheckCircle2 className="size-28 text-success" />
+            </CardDecorativeIcon>
           </Card>
 
           {/* Card 3: Con Error */}
           <Card
-            size="sm"
-            disableHover
-            className="rounded-2xl border-border bg-surface shadow-xs"
-            innerClassName="flex-row items-center gap-4 p-5"
+            variant="featured"
+            className="bg-danger/10 hover:bg-danger/15 border border-danger/20 transition-colors"
+            innerClassName="p-5 items-start text-left gap-1"
           >
-            <div className="size-12 rounded-xl bg-muted/60 border border-border/40 text-foreground flex items-center justify-center shrink-0">
-              <AlertTriangle className="size-6 stroke-[1.75]" />
-            </div>
-            <div className="space-y-0.5">
-              <span className="font-mono font-extrabold text-2xl text-foreground tracking-tight block">
-                6.510
-              </span>
-              <span className="text-[11px] font-medium text-muted-foreground block">
-                Transacciones con error
-              </span>
-              <span className="text-[11px] font-medium text-foreground flex items-center gap-0.5">
-                <span>5%</span>
-                <span className="text-muted-foreground font-normal">del total</span>
-              </span>
-            </div>
+            <span className="font-mono font-extrabold text-2xl sm:text-3xl text-foreground tracking-tight block">
+              6.510
+            </span>
+            <span className="text-xs font-semibold text-danger block">
+              Transacciones con error
+            </span>
+            <span className="text-[11px] font-medium text-foreground flex items-center gap-0.5 mt-1">
+              <span className="font-semibold text-foreground">5%</span>
+              <span className="text-muted-foreground font-normal">del total</span>
+            </span>
+            <CardDecorativeIcon>
+              <AlertTriangle className="size-28 text-danger" />
+            </CardDecorativeIcon>
           </Card>
 
           {/* Card 4: Disponibilidad */}
           <Card
-            size="sm"
-            disableHover
-            className="rounded-2xl border-border bg-surface shadow-xs"
-            innerClassName="flex-row items-center gap-4 p-5"
+            variant="featured"
+            className="bg-info/10 hover:bg-info/15 border border-info/20 transition-colors"
+            innerClassName="p-5 items-start text-left gap-1"
           >
-            <div className="size-12 rounded-xl bg-muted/60 border border-border/40 text-foreground flex items-center justify-center shrink-0">
-              <Clock className="size-6 stroke-[1.75]" />
-            </div>
-            <div className="space-y-0.5">
-              <span className="font-mono font-extrabold text-2xl text-foreground tracking-tight block">
-                99,8%
-              </span>
-              <span className="text-[11px] font-medium text-muted-foreground block">
-                Disponibilidad de servicios
-              </span>
-              <span className="text-[11px] font-medium text-foreground flex items-center gap-0.5">
-                <span>↑ +0,2%</span>
-                <span className="text-muted-foreground font-normal">vs. mes anterior</span>
-              </span>
-            </div>
+            <span className="font-mono font-extrabold text-2xl sm:text-3xl text-foreground tracking-tight block">
+              99,8%
+            </span>
+            <span className="text-xs font-semibold text-info block">
+              Disponibilidad de servicios
+            </span>
+            <span className="text-[11px] font-medium text-foreground flex items-center gap-0.5 mt-1">
+              <span className="text-success font-semibold">↑ +0,2%</span>
+              <span className="text-muted-foreground font-normal">vs. mes anterior</span>
+            </span>
+            <CardDecorativeIcon>
+              <Clock className="size-28 text-info" />
+            </CardDecorativeIcon>
           </Card>
         </div>
 
@@ -707,9 +713,9 @@ export default function WireframeReportesPage() {
             <div className="flex items-center gap-2">
               <Button
                 type="button"
-                variant="outline"
+                variant="primary"
                 onClick={() => setExportModalType("PDF")}
-                className="h-9 px-3.5 rounded-xl text-xs font-semibold gap-1.5 border-border bg-surface"
+                className="h-9 px-3.5 rounded-xl text-xs font-semibold gap-1.5 shadow-xs"
               >
                 <Download className="size-3.5" />
                 <span>Exportar PDF</span>
@@ -717,9 +723,9 @@ export default function WireframeReportesPage() {
 
               <Button
                 type="button"
-                variant="outline"
+                variant="neutral"
                 onClick={() => setExportModalType("Excel")}
-                className="h-9 px-3.5 rounded-xl text-xs font-semibold gap-1.5 border-emerald-600/30 text-emerald-700 dark:text-emerald-400 hover:bg-emerald-50 dark:hover:bg-emerald-950/20 bg-surface"
+                className="h-9 px-3.5 rounded-xl text-xs font-semibold gap-1.5"
               >
                 <FileSpreadsheet className="size-3.5" />
                 <span>Exportar Excel</span>
