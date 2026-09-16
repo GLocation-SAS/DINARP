@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import {
   Home,
   FileText,
@@ -36,10 +37,110 @@ interface WireframeDashboardLayoutProps {
   children: React.ReactNode;
 }
 
+const navItems = [
+  {
+    id: "dashboard",
+    label: "Dashboard",
+    icon: Home,
+    href: "/wireframes/dashboard",
+    aliases: ["inicio", "dashboard"],
+    pathPrefix: "/wireframes/dashboard",
+  },
+  {
+    id: "solicitudes",
+    label: "Proyectos y solicitudes",
+    icon: FileText,
+    href: "/wireframes/solicitudes",
+    aliases: ["solicitudes", "proyectos"],
+    pathPrefix: "/wireframes/solicitudes",
+  },
+  {
+    id: "aprobaciones",
+    label: "Aprobaciones y permisos",
+    icon: CheckSquare,
+    href: "/wireframes/aprobaciones",
+    aliases: ["aprobaciones"],
+    pathPrefix: "/wireframes/aprobaciones",
+  },
+  {
+    id: "catalogo-fuentes",
+    label: "Catálogo de Fuentes",
+    icon: Database,
+    href: "/wireframes/catalogo-fuentes",
+    aliases: ["catalogo-fuentes", "catalogo", "fuentes"],
+    pathPrefix: "/wireframes/catalogo-fuentes",
+  },
+  {
+    id: "interoperabilidad",
+    label: "Interoperabilidad / Servicios",
+    icon: ArrowLeftRight,
+    href: "/wireframes/interoperabilidad/servicios",
+    aliases: ["interoperabilidad", "servicios"],
+    pathPrefix: "/wireframes/interoperabilidad",
+  },
+  {
+    id: "intercambios-masivos",
+    label: "Intercambios Masivos / Batch",
+    icon: Server,
+    href: "/wireframes/intercambios-masivos",
+    aliases: ["intercambios-masivos", "batch"],
+    pathPrefix: "/wireframes/intercambios-masivos",
+  },
+  {
+    id: "seguimiento",
+    label: "Seguimiento y Trazabilidad",
+    icon: Clock,
+    href: "/wireframes/seguimiento",
+    aliases: ["seguimiento"],
+    pathPrefix: "/wireframes/seguimiento",
+  },
+  {
+    id: "tarifario",
+    label: "Tarifario y Cotización",
+    icon: Receipt,
+    href: "/wireframes/tarifario",
+    aliases: ["tarifario", "cotizacion"],
+    pathPrefix: "/wireframes/tarifario",
+  },
+  {
+    id: "facturacion",
+    label: "Facturación",
+    icon: CreditCard,
+    href: "/wireframes/facturacion",
+    aliases: ["facturacion"],
+    pathPrefix: "/wireframes/facturacion",
+  },
+  {
+    id: "usuarios",
+    label: "Usuarios",
+    icon: Users,
+    href: "/wireframes/usuarios",
+    aliases: ["usuarios"],
+    pathPrefix: "/wireframes/usuarios",
+  },
+  {
+    id: "roles",
+    label: "Roles y Permisos",
+    icon: ShieldCheck,
+    href: "/wireframes/roles",
+    aliases: ["roles"],
+    pathPrefix: "/wireframes/roles",
+  },
+  {
+    id: "reportes",
+    label: "Reportes",
+    icon: BarChart2,
+    href: "/wireframes/reportes",
+    aliases: ["reportes"],
+    pathPrefix: "/wireframes/reportes",
+  },
+];
+
 export function WireframeDashboardLayout({
   activeMenu = "inicio",
   children,
 }: WireframeDashboardLayoutProps) {
+  const pathname = usePathname();
   const [themeMode, setThemeMode] = useState<"claro" | "oscuro">("claro");
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
@@ -74,45 +175,24 @@ export function WireframeDashboardLayout({
     applyTheme(mode === "oscuro" ? "dark" : "light");
   };
 
-  const navSections = [
-    {
-      items: [
-        { id: "inicio", label: "Inicio", icon: Home, href: "/wireframes/dashboard" },
-      ],
-    },
-    {
-      title: "SOLICITUDES",
-      items: [
-        { id: "solicitudes", label: "Solicitudes", icon: FileText, href: "/wireframes/solicitudes" },
-        { id: "aprobaciones", label: "Aprobaciones y permisos", icon: CheckSquare, href: "/wireframes/aprobaciones" },
-        { id: "proyectos", label: "Proyectos", icon: Folder, href: "/wireframes/construccion" },
-      ],
-    },
-    {
-      title: "INTEROPERABILIDAD",
-      items: [
-        { id: "servicios", label: "Servicios habilitados", icon: ArrowLeftRight, href: "/wireframes/interoperabilidad/servicios" },
-        { id: "batch", label: "Batch / Excepcionalidades", icon: Server, href: "/wireframes/intercambios-masivos" },
-        { id: "seguimiento", label: "Seguimiento", icon: Clock, href: "/wireframes/seguimiento" },
-      ],
-    },
-    {
-      title: "GESTIÓN",
-      items: [
-        { id: "cotizacion", label: "Cotización / Tarifario", icon: Receipt, href: "/wireframes/tarifario" },
-        { id: "facturacion", label: "Facturación", icon: CreditCard, href: "/wireframes/facturacion" },
-        { id: "reportes", label: "Reportes", icon: BarChart2, href: "/wireframes/reportes" },
-      ],
-    },
-    {
-      title: "ADMINISTRACIÓN",
-      items: [
-        { id: "usuarios", label: "Usuarios", icon: Users, href: "/wireframes/usuarios" },
-        { id: "roles", label: "Roles y permisos", icon: ShieldCheck, href: "/wireframes/roles" },
-        { id: "configuracion", label: "Configuración", icon: Settings, href: "/wireframes/construccion" },
-      ],
-    },
-  ];
+  const isItemActive = (item: (typeof navItems)[number]) => {
+    if (activeMenu) {
+      if (activeMenu === item.id) return true;
+      if (item.aliases?.includes(activeMenu)) return true;
+    }
+    if (pathname) {
+      if (item.href === "/wireframes/dashboard") {
+        return pathname === "/wireframes/dashboard" || pathname === "/wireframes";
+      }
+      if (item.pathPrefix && pathname.startsWith(item.pathPrefix)) {
+        return true;
+      }
+      if (pathname.startsWith(item.href)) {
+        return true;
+      }
+    }
+    return false;
+  };
 
   return (
     <div className="h-screen w-full flex overflow-hidden bg-background text-foreground font-sans antialiased">
@@ -156,36 +236,27 @@ export function WireframeDashboardLayout({
         </div>
 
         {/* Sidebar Navigation (Scrollable list if long) */}
-        <div className="flex-1 overflow-y-auto px-4 py-4 space-y-6">
-          {navSections.map((section, idx) => (
-            <div key={idx} className="space-y-1">
-              {section.title && (
-                <p className="px-3 text-[10px] font-bold tracking-wider text-muted-foreground/80 uppercase mb-2">
-                  {section.title}
-                </p>
-              )}
-              {section.items.map((item) => {
-                const Icon = item.icon;
-                const isActive = activeMenu === item.id;
-                return (
-                  <Link
-                    key={item.id}
-                    href={item.href}
-                    onClick={() => setMobileMenuOpen(false)}
-                    className={cn(
-                      "w-full flex items-center gap-3 px-3 py-2 rounded-xl text-xs font-medium transition-all text-left",
-                      isActive
-                        ? "bg-muted/80 text-foreground font-semibold shadow-xs"
-                        : "text-muted-foreground hover:text-foreground hover:bg-muted/40"
-                    )}
-                  >
-                    <Icon className={cn("size-4 shrink-0", isActive ? "text-foreground" : "text-muted-foreground")} />
-                    <span className="truncate">{item.label}</span>
-                  </Link>
-                );
-              })}
-            </div>
-          ))}
+        <div className="flex-1 overflow-y-auto px-4 py-4 space-y-1">
+          {navItems.map((item) => {
+            const Icon = item.icon;
+            const isActive = isItemActive(item);
+            return (
+              <Link
+                key={item.id}
+                href={item.href}
+                onClick={() => setMobileMenuOpen(false)}
+                className={cn(
+                  "w-full flex items-center gap-3 px-3 py-2 rounded-xl text-xs font-medium transition-all text-left",
+                  isActive
+                    ? "bg-muted/80 text-foreground font-semibold shadow-xs"
+                    : "text-muted-foreground hover:text-foreground hover:bg-muted/40"
+                )}
+              >
+                <Icon className={cn("size-4 shrink-0", isActive ? "text-foreground" : "text-muted-foreground")} />
+                <span className="truncate">{item.label}</span>
+              </Link>
+            );
+          })}
         </div>
 
         {/* Theme Toggle Footer */}

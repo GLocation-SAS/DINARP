@@ -13,6 +13,11 @@ import {
   Server,
   Calendar,
   Filter,
+  Download,
+  MoreHorizontal,
+  PauseCircle,
+  PlayCircle,
+  FileSpreadsheet,
 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -29,6 +34,7 @@ import {
   DropdownMenu,
   DropdownMenuTrigger,
   DropdownMenuContent,
+  DropdownMenuItem,
   DropdownMenuRadioGroup,
   DropdownMenuRadioItem,
   DropdownMenuLabel,
@@ -63,6 +69,7 @@ import {
   PaginationPrevious,
   PaginationNext,
 } from "@/components/ui/pagination";
+import { toast } from "sonner";
 import { WireframeDashboardLayout } from "../components/wireframe-dashboard-layout";
 
 interface BatchItem {
@@ -71,30 +78,30 @@ interface BatchItem {
   fuente: string;
   consumidor: string;
   tipoInformacion: string;
-  estado: "En revisión" | "Aprobado" | "Finalizado" | "Rechazado";
+  estado: "En ejecución" | "Finalizado" | "En revisión" | "Aprobado" | "Suspendido" | "Rechazado";
   fechaCreacion: string;
   href: string;
 }
 
-const BATCH_DATA: BatchItem[] = [
+const INITIAL_BATCH_DATA: BatchItem[] = [
   {
     codigo: "BATCH-001",
-    proyecto: "Cruce poblacional para subsidios de vivienda",
+    proyecto: "Cruce masivo de beneficiarios sociales 2026",
     fuente: "Registro Civil",
-    consumidor: "MIDUVI",
-    tipoInformacion: "Padrón ciudadano / Vínculos familiares",
-    estado: "En revisión",
-    fechaCreacion: "16/09/26",
+    consumidor: "MIES",
+    tipoInformacion: "Identificación, estado civil y defunciones",
+    estado: "En ejecución",
+    fechaCreacion: "15/09/26",
     href: "/wireframes/intercambios-masivos/BATCH-001",
   },
   {
     codigo: "BATCH-002",
-    proyecto: "Actualización de catastro predial nacional",
-    fuente: "DINARP",
-    consumidor: "INEC",
-    tipoInformacion: "Registro de la propiedad consolidado",
-    estado: "Aprobado",
-    fechaCreacion: "14/09/26",
+    proyecto: "Validación de títulos universitarios docentes",
+    fuente: "SENESCYT",
+    consumidor: "Ministerio de Educación",
+    tipoInformacion: "Títulos registrados de tercer y cuarto nivel",
+    estado: "Finalizado",
+    fechaCreacion: "12/09/26",
     href: "/wireframes/intercambios-masivos/BATCH-001",
   },
   {
@@ -132,6 +139,7 @@ const BATCH_DATA: BatchItem[] = [
 export default function WireframeIntercambiosMasivosPage() {
   const router = useRouter();
 
+  const [batchList, setBatchList] = useState<BatchItem[]>(INITIAL_BATCH_DATA);
   const [searchQuery, setSearchQuery] = useState("");
   const [filterFuente, setFilterFuente] = useState("Todas");
   const [filterConsumidor, setFilterConsumidor] = useState("Todos");
@@ -147,10 +155,29 @@ export default function WireframeIntercambiosMasivosPage() {
     setFilterEstado("Todos");
     setFechaDesde("");
     setFechaHasta("");
+    toast.info("Filtros restablecidos.");
+  };
+
+  const handleDownloadBatch = (codigo: string, e?: React.MouseEvent) => {
+    e?.stopPropagation();
+    toast.success(`Descargando reporte de ejecución para ${codigo}...`);
+  };
+
+  const handleToggleBatchState = (item: BatchItem, e?: React.MouseEvent) => {
+    e?.stopPropagation();
+    const newEstado = item.estado === "En ejecución" ? "Suspendido" : "En ejecución";
+    setBatchList((prev) =>
+      prev.map((b) => (b.codigo === item.codigo ? { ...b, estado: newEstado } : b))
+    );
+    if (newEstado === "Suspendido") {
+      toast.warning(`Proceso ${item.codigo} pausado.`);
+    } else {
+      toast.success(`Proceso ${item.codigo} reanudado.`);
+    }
   };
 
   const filteredData = useMemo(() => {
-    return BATCH_DATA.filter((item) => {
+    return batchList.filter((item) => {
       const matchesSearch =
         searchQuery === "" ||
         item.codigo.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -165,7 +192,7 @@ export default function WireframeIntercambiosMasivosPage() {
 
       return matchesSearch && matchesFuente && matchesConsumidor && matchesEstado;
     });
-  }, [searchQuery, filterFuente, filterConsumidor, filterEstado]);
+  }, [batchList, searchQuery, filterFuente, filterConsumidor, filterEstado]);
 
   return (
     <WireframeDashboardLayout activeMenu="batch">
@@ -421,7 +448,7 @@ export default function WireframeIntercambiosMasivosPage() {
 
                   {/* Acciones */}
                   <TableCell className="text-right" onClick={(e) => e.stopPropagation()}>
-                    <div className="inline-flex items-center justify-end">
+                    <div className="inline-flex items-center justify-end gap-1">
                       <Tooltip>
                         <TooltipTrigger asChild>
                           <Button
@@ -437,6 +464,53 @@ export default function WireframeIntercambiosMasivosPage() {
                         </TooltipTrigger>
                         <TooltipContent>Ver detalle</TooltipContent>
                       </Tooltip>
+
+                      <DropdownMenu>
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <DropdownMenuTrigger asChild>
+                              <Button
+                                type="button"
+                                variant="ghost"
+                                size="icon-sm"
+                                className="size-8 text-muted-foreground hover:text-foreground hover:bg-muted/50 cursor-pointer"
+                                aria-label="Más opciones"
+                              >
+                                <MoreHorizontal className="size-4" />
+                              </Button>
+                            </DropdownMenuTrigger>
+                          </TooltipTrigger>
+                          <TooltipContent>Más opciones</TooltipContent>
+                        </Tooltip>
+                        <DropdownMenuContent align="end" className="w-52">
+                          <DropdownMenuItem onClick={() => router.push(b.href)}>
+                            <Eye className="size-3.5 mr-2" />
+                            <span>Ver bitácora de lote</span>
+                          </DropdownMenuItem>
+                          <DropdownMenuItem onClick={(e) => handleDownloadBatch(b.codigo, e)}>
+                            <Download className="size-3.5 mr-2" />
+                            <span>Descargar reporte</span>
+                          </DropdownMenuItem>
+                          {(b.estado === "En ejecución" || b.estado === "Suspendido") && (
+                            <>
+                              <DropdownMenuSeparator />
+                              <DropdownMenuItem onClick={(e) => handleToggleBatchState(b, e)}>
+                                {b.estado === "En ejecución" ? (
+                                  <>
+                                    <PauseCircle className="size-3.5 mr-2 text-warning" />
+                                    <span>Pausar ejecución</span>
+                                  </>
+                                ) : (
+                                  <>
+                                    <PlayCircle className="size-3.5 mr-2 text-foreground" />
+                                    <span>Reanudar ejecución</span>
+                                  </>
+                                )}
+                              </DropdownMenuItem>
+                            </>
+                          )}
+                        </DropdownMenuContent>
+                      </DropdownMenu>
                     </div>
                   </TableCell>
                 </TableRow>
@@ -448,7 +522,7 @@ export default function WireframeIntercambiosMasivosPage() {
         {/* ── 5. Paginación ── */}
         <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-4">
           <p className="text-xs text-muted-foreground font-medium">
-            Mostrando 1 a {filteredData.length} de {BATCH_DATA.length} solicitudes de intercambio masivo
+            Mostrando 1 a {filteredData.length} de {batchList.length} solicitudes de intercambio masivo
           </p>
 
           <Pagination className="mx-0 w-auto justify-end">

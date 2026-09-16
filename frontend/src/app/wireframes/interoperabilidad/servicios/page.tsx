@@ -14,6 +14,10 @@ import {
   ArrowLeftRight,
   Server,
   Filter,
+  MoreHorizontal,
+  PauseCircle,
+  PlayCircle,
+  History,
 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -30,6 +34,7 @@ import {
   DropdownMenu,
   DropdownMenuTrigger,
   DropdownMenuContent,
+  DropdownMenuItem,
   DropdownMenuRadioGroup,
   DropdownMenuRadioItem,
   DropdownMenuLabel,
@@ -64,35 +69,36 @@ import {
   PaginationPrevious,
   PaginationNext,
 } from "@/components/ui/pagination";
+import { toast } from "sonner";
 import { WireframeDashboardLayout } from "../../components/wireframe-dashboard-layout";
 
-interface ServicioHabilitado {
+interface ServicioItem {
   id: string;
   servicio: string;
   fuente: string;
   consumidor: string;
-  estado: "Activo" | "Inactivo" | "Suspendido" | "En revisión";
+  estado: "Activo" | "Suspendido" | "En revisión";
   vigencia: string;
   ultimaActualizacion: string;
   href: string;
 }
 
-const SERVICIOS_DATA: ServicioHabilitado[] = [
+const INITIAL_SERVICIOS_DATA: ServicioItem[] = [
   {
     id: "consulta-identidad",
-    servicio: "Consulta de identidad",
+    servicio: "Consulta de datos de identidad",
     fuente: "Registro Civil",
-    consumidor: "Ministerio de Gobierno",
+    consumidor: "MIES",
     estado: "Activo",
     vigencia: "01/01/26 - 31/12/26",
     ultimaActualizacion: "15/09/26",
     href: "/wireframes/interoperabilidad/servicios/consulta-identidad",
   },
   {
-    id: "validacion-ruc",
-    servicio: "Validación de RUC",
+    id: "consulta-ruc",
+    servicio: "Consulta de RUC",
     fuente: "SRI",
-    consumidor: "Ministerio de Economía",
+    consumidor: "Registro Civil",
     estado: "Activo",
     vigencia: "15/02/26 - 15/02/27",
     ultimaActualizacion: "14/09/26",
@@ -143,6 +149,7 @@ const SERVICIOS_DATA: ServicioHabilitado[] = [
 export default function WireframeServiciosHabilitadosPage() {
   const router = useRouter();
 
+  const [serviciosList, setServiciosList] = useState<ServicioItem[]>(INITIAL_SERVICIOS_DATA);
   const [searchQuery, setSearchQuery] = useState("");
   const [filterFuente, setFilterFuente] = useState("Todas");
   const [filterConsumidor, setFilterConsumidor] = useState("Todos");
@@ -154,10 +161,24 @@ export default function WireframeServiciosHabilitadosPage() {
     setFilterFuente("Todas");
     setFilterConsumidor("Todos");
     setFilterEstado("Todos");
+    toast.info("Filtros restablecidos.");
+  };
+
+  const handleToggleEstadoServicio = (servicio: ServicioItem, e?: React.MouseEvent) => {
+    e?.stopPropagation();
+    const newEstado = servicio.estado === "Activo" ? "Suspendido" : "Activo";
+    setServiciosList((prev) =>
+      prev.map((s) => (s.id === servicio.id ? { ...s, estado: newEstado, ultimaActualizacion: "Hoy" } : s))
+    );
+    if (newEstado === "Suspendido") {
+      toast.warning(`Servicio "${servicio.servicio}" suspendido temporalmente.`);
+    } else {
+      toast.success(`Servicio "${servicio.servicio}" reactivado con éxito.`);
+    }
   };
 
   const filteredServicios = useMemo(() => {
-    return SERVICIOS_DATA.filter((item) => {
+    return serviciosList.filter((item) => {
       const matchesSearch =
         searchQuery === "" ||
         item.servicio.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -170,7 +191,7 @@ export default function WireframeServiciosHabilitadosPage() {
 
       return matchesSearch && matchesFuente && matchesConsumidor && matchesEstado;
     });
-  }, [searchQuery, filterFuente, filterConsumidor, filterEstado]);
+  }, [serviciosList, searchQuery, filterFuente, filterConsumidor, filterEstado]);
 
   return (
     <WireframeDashboardLayout activeMenu="servicios">
@@ -418,7 +439,7 @@ export default function WireframeServiciosHabilitadosPage() {
 
                     {/* Acciones */}
                     <TableCell className="py-4 px-4 text-right whitespace-nowrap" onClick={(e) => e.stopPropagation()}>
-                      <div className="inline-flex items-center justify-end">
+                      <div className="inline-flex items-center justify-end gap-1">
                         <Tooltip>
                           <TooltipTrigger asChild>
                             <Button
@@ -434,6 +455,49 @@ export default function WireframeServiciosHabilitadosPage() {
                           </TooltipTrigger>
                           <TooltipContent>Ver detalle</TooltipContent>
                         </Tooltip>
+
+                        <DropdownMenu>
+                          <Tooltip>
+                            <TooltipTrigger asChild>
+                              <DropdownMenuTrigger asChild>
+                                <Button
+                                  type="button"
+                                  variant="ghost"
+                                  size="icon-sm"
+                                  className="size-8 text-muted-foreground hover:text-foreground hover:bg-muted/50 cursor-pointer"
+                                  aria-label="Más opciones"
+                                >
+                                  <MoreHorizontal className="size-4" />
+                                </Button>
+                              </DropdownMenuTrigger>
+                            </TooltipTrigger>
+                            <TooltipContent>Más opciones</TooltipContent>
+                          </Tooltip>
+                          <DropdownMenuContent align="end" className="w-48">
+                            <DropdownMenuItem onClick={() => router.push(s.href)}>
+                              <Eye className="size-3.5 mr-2" />
+                              <span>Ver información</span>
+                            </DropdownMenuItem>
+                            <DropdownMenuItem onClick={() => router.push(`${s.href}/historial`)}>
+                              <History className="size-3.5 mr-2" />
+                              <span>Ver historial de consumo</span>
+                            </DropdownMenuItem>
+                            <DropdownMenuSeparator />
+                            <DropdownMenuItem onClick={(e) => handleToggleEstadoServicio(s, e)}>
+                              {s.estado === "Activo" ? (
+                                <>
+                                  <PauseCircle className="size-3.5 mr-2 text-warning" />
+                                  <span>Suspender servicio</span>
+                                </>
+                              ) : (
+                                <>
+                                  <PlayCircle className="size-3.5 mr-2 text-foreground" />
+                                  <span>Reactivar servicio</span>
+                                </>
+                              )}
+                            </DropdownMenuItem>
+                          </DropdownMenuContent>
+                        </DropdownMenu>
                       </div>
                     </TableCell>
                   </TableRow>
@@ -446,7 +510,7 @@ export default function WireframeServiciosHabilitadosPage() {
         {/* ── 5. Paginación ── */}
         <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-2">
           <p className="text-xs text-muted-foreground">
-            Mostrando 1 a {filteredServicios.length} de {SERVICIOS_DATA.length} servicios registrados
+            Mostrando 1 a {filteredServicios.length} de {INITIAL_SERVICIOS_DATA.length} servicios registrados
           </p>
 
           <Pagination className="mx-0 w-auto justify-end">

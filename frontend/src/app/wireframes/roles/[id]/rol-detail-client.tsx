@@ -18,7 +18,10 @@ import {
   Settings,
   CheckCircle2,
   UserCheck,
+  Lock,
+  Unlock,
 } from "lucide-react";
+import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -50,6 +53,14 @@ import {
   BreadcrumbPage,
 } from "@/components/ui/breadcrumb";
 import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogFooter,
+} from "@/components/ui/dialog";
+import {
   Table,
   TableHeader,
   TableBody,
@@ -58,22 +69,22 @@ import {
   TableCell,
 } from "@/components/ui/table";
 import { WireframeDashboardLayout } from "../../components/wireframe-dashboard-layout";
+import { RolModal, type RolData } from "../components/rol-modal";
 
 interface RolDetailClientProps {
   id: string;
 }
 
 const MODULE_PERMISSIONS_LIST = [
-  { module: "Dashboard", icon: LayoutDashboard, permissions: "Ver" },
-  { module: "Solicitudes", icon: FileText, permissions: "Ver, Crear, Editar, Aprobar" },
-  { module: "Servicios", icon: Server, permissions: "Ver, Crear, Editar" },
-  { module: "Monitoreo", icon: Activity, permissions: "Ver, Editar, Exportar" },
-  { module: "Reportes", icon: BarChart2, permissions: "Ver, Exportar" },
-  { module: "Administración", icon: SlidersHorizontal, permissions: "Ver, Configurar" },
-  { module: "Usuarios", icon: Users, permissions: "Ver, Crear, Editar" },
-  { module: "Roles", icon: Shield, permissions: "Ver, Crear" },
-  { module: "Instituciones", icon: Building, permissions: "Ver" },
-  { module: "Configuración", icon: Settings, permissions: "Ver, Configurar" },
+  { module: "Dashboard & KPIs", icon: LayoutDashboard, permissions: "Ver" },
+  { module: "Solicitudes de Interoperabilidad", icon: FileText, permissions: "Ver, Crear, Editar, Aprobar" },
+  { module: "Catálogo de Servicios & Fuentes", icon: Server, permissions: "Ver, Crear, Editar" },
+  { module: "Monitoreo & Trazabilidad", icon: Activity, permissions: "Ver, Exportar" },
+  { module: "Reportes & Analítica", icon: BarChart2, permissions: "Ver, Exportar" },
+  { module: "Usuarios & Accesos", icon: Users, permissions: "Ver, Crear, Editar" },
+  { module: "Roles & Permisos", icon: Shield, permissions: "Ver, Crear, Editar" },
+  { module: "Instituciones & Entidades", icon: Building, permissions: "Ver, Editar" },
+  { module: "Parámetros & Configuración", icon: SlidersHorizontal, permissions: "Ver, Configurar" },
 ];
 
 const ASSIGNED_USERS_MOCK = [
@@ -88,8 +99,38 @@ export function RolDetailClient({ id }: RolDetailClientProps) {
   const router = useRouter();
   const [activeTab, setActiveTab] = useState("permisos");
 
-  const rolName = id === "ROL-001" ? "Administrador general" : "Coordinador SINAP";
-  const rolInitials = id === "ROL-001" ? "AG" : "CS";
+  const [rolData, setRolData] = useState<RolData>({
+    id,
+    iniciales: id === "ROL-001" ? "AG" : "CS",
+    nombre: id === "ROL-001" ? "Administrador general" : "Coordinador SINAP",
+    descripcion:
+      id === "ROL-001"
+        ? "Acceso total a la plataforma y configuración institucional."
+        : "Coordina y supervisa los procesos del SINAP, gestiona solicitudes y da seguimiento a su ejecución.",
+    usuariosAsignados: id === "ROL-001" ? 12 : 8,
+    estado: "Activo",
+    fechaActualizacion: "02/09/2026 10:24",
+  });
+
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [isWarningDialogOpen, setIsWarningDialogOpen] = useState(false);
+
+  const handleSaveRol = (updated: RolData) => {
+    setRolData(updated);
+  };
+
+  const handleConfirmDeactivate = () => {
+    const newStatus = rolData.estado === "Activo" ? "Inactivo" : "Activo";
+    setRolData((prev) => ({ ...prev, estado: newStatus }));
+
+    if (newStatus === "Inactivo") {
+      toast.warning(`Rol "${rolData.nombre}" desactivado.`);
+    } else {
+      toast.success(`Rol "${rolData.nombre}" reactivado.`);
+    }
+
+    setIsWarningDialogOpen(false);
+  };
 
   return (
     <WireframeDashboardLayout activeMenu="roles">
@@ -120,21 +161,26 @@ export function RolDetailClient({ id }: RolDetailClientProps) {
         <Card className="rounded-2xl border-border bg-surface p-6 sm:p-7 shadow-xs">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div className="flex items-center gap-4">
-              <div className="size-14 sm:size-16 rounded-full bg-muted-foreground/15 text-foreground font-bold text-xl flex items-center justify-center shrink-0 border border-border">
-                {rolInitials}
+              <div className="size-14 sm:size-16 rounded-full bg-muted text-foreground font-bold text-xl flex items-center justify-center shrink-0 border border-border">
+                {rolData.iniciales || "RL"}
               </div>
 
               <div className="space-y-1">
                 <div className="flex items-center gap-2.5">
                   <h1 className="font-heading font-extrabold text-xl sm:text-2xl text-foreground">
-                    {rolName}
+                    {rolData.nombre}
                   </h1>
-                  <Badge tone="success" appearance="soft" size="sm" className="font-semibold text-xs">
-                    Activo
+                  <Badge
+                    tone={rolData.estado === "Activo" ? "success" : "danger"}
+                    appearance="soft"
+                    size="sm"
+                    className="font-semibold text-xs"
+                  >
+                    {rolData.estado}
                   </Badge>
                 </div>
                 <p className="text-xs sm:text-sm text-muted-foreground max-w-2xl leading-relaxed">
-                  Coordina y supervisa los procesos del SINAP, gestiona solicitudes y da seguimiento a su ejecución.
+                  {rolData.descripcion}
                 </p>
               </div>
             </div>
@@ -143,7 +189,7 @@ export function RolDetailClient({ id }: RolDetailClientProps) {
               <Button
                 type="button"
                 variant="outline"
-                onClick={() => router.push(`/wireframes/roles/${id}/editar`)}
+                onClick={() => setIsEditModalOpen(true)}
                 className="h-10 px-4 rounded-xl text-xs font-semibold gap-2 border-border bg-surface"
               >
                 <Pencil className="size-3.5" />
@@ -162,14 +208,28 @@ export function RolDetailClient({ id }: RolDetailClientProps) {
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end" className="w-44">
-                  <DropdownMenuItem onClick={() => router.push("/wireframes/usuarios")}>
+                  <DropdownMenuItem onClick={() => setActiveTab("usuarios")}>
                     <Users className="size-3.5 mr-2" />
-                    <span>Ver usuarios</span>
+                    <span>Ver usuarios ({rolData.usuariosAsignados || 0})</span>
                   </DropdownMenuItem>
                   <DropdownMenuSeparator />
-                  <DropdownMenuItem className="text-destructive focus:text-destructive">
-                    Desactivar rol
-                  </DropdownMenuItem>
+                  {rolData.estado === "Activo" ? (
+                    <DropdownMenuItem
+                      className="text-warning focus:text-warning"
+                      onClick={() => setIsWarningDialogOpen(true)}
+                    >
+                      <Lock className="size-3.5 mr-2" />
+                      <span>Desactivar rol</span>
+                    </DropdownMenuItem>
+                  ) : (
+                    <DropdownMenuItem
+                      className="text-success focus:text-success"
+                      onClick={() => setIsWarningDialogOpen(true)}
+                    >
+                      <Unlock className="size-3.5 mr-2" />
+                      <span>Reactivar rol</span>
+                    </DropdownMenuItem>
+                  )}
                 </DropdownMenuContent>
               </DropdownMenu>
             </div>
@@ -179,14 +239,11 @@ export function RolDetailClient({ id }: RolDetailClientProps) {
         {/* ── 3. Tabs Navigation ── */}
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full space-y-6">
           <TabsList className="bg-muted/40 p-1 rounded-xl h-auto border border-border/60">
-            <TabsTrigger value="informacion" className="rounded-lg text-xs font-semibold py-2 px-4">
-              Información
-            </TabsTrigger>
             <TabsTrigger value="permisos" className="rounded-lg text-xs font-semibold py-2 px-4">
-              Permisos
+              Permisos asignados
             </TabsTrigger>
             <TabsTrigger value="usuarios" className="rounded-lg text-xs font-semibold py-2 px-4">
-              Usuarios asignados
+              Usuarios asignados ({rolData.usuariosAsignados || 0})
             </TabsTrigger>
           </TabsList>
 
@@ -194,172 +251,131 @@ export function RolDetailClient({ id }: RolDetailClientProps) {
           <TabsContent value="permisos" className="space-y-6 m-0">
             <div className="space-y-0.5">
               <h2 className="text-sm font-bold text-foreground">
-                Permisos asignados
+                Permisos por módulo
               </h2>
               <p className="text-xs text-muted-foreground">
-                Lista de permisos que tiene este rol por cada módulo.
+                Facultades autorizadas para usuarios que posean el rol de {rolData.nombre}.
               </p>
             </div>
 
-            <div className="overflow-x-auto rounded-2xl border border-border bg-surface shadow-xs">
-              <Table className="w-full border-spacing-0">
-                <TableHeader>
-                  <TableRow className="border-b border-border/80 bg-muted/30 hover:bg-muted/30">
-                    <TableHead className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider py-3 px-4 text-left w-1/3">
-                      MÓDULO
-                    </TableHead>
-                    <TableHead className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider py-3 px-4 text-left">
-                      PERMISOS CONCEDIDOS
-                    </TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {MODULE_PERMISSIONS_LIST.map((item) => {
-                    const Icon = item.icon;
-                    return (
-                      <TableRow key={item.module} className="border-b border-border/40 hover:bg-muted/20">
-                        <TableCell className="py-3 px-4 whitespace-nowrap">
-                          <div className="flex items-center gap-2.5">
-                            <Icon className="size-4 text-muted-foreground shrink-0" />
-                            <span className="text-xs font-bold text-foreground">
-                              {item.module}
-                            </span>
-                          </div>
-                        </TableCell>
-                        <TableCell className="py-3 px-4 text-xs text-foreground font-medium">
-                          {item.permissions}
-                        </TableCell>
-                      </TableRow>
-                    );
-                  })}
-                </TableBody>
-              </Table>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+              {MODULE_PERMISSIONS_LIST.map((mod) => {
+                const Icon = mod.icon;
+                return (
+                  <div
+                    key={mod.module}
+                    className="p-4 rounded-xl border border-border/80 bg-surface flex items-start gap-3.5 shadow-2xs"
+                  >
+                    <div className="size-8 rounded-lg bg-muted text-foreground flex items-center justify-center shrink-0 mt-0.5">
+                      <Icon className="size-4 text-muted-foreground" />
+                    </div>
+                    <div className="space-y-1 min-w-0">
+                      <h3 className="text-xs font-bold text-foreground truncate">
+                        {mod.module}
+                      </h3>
+                      <p className="text-xs text-primary font-medium">
+                        {mod.permissions}
+                      </p>
+                    </div>
+                  </div>
+                );
+              })}
             </div>
-
-            {/* Bottom Card: Usuarios Asignados */}
-            <Card className="rounded-2xl border-border bg-surface p-5 sm:p-6 shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-              <div className="flex items-center gap-3">
-                <div className="size-10 rounded-xl bg-primary/10 text-primary flex items-center justify-center shrink-0">
-                  <Users className="size-5" />
-                </div>
-                <div className="space-y-0.5">
-                  <span className="text-xs font-bold text-foreground block">Usuarios asignados</span>
-                  <span className="text-xs text-muted-foreground">8 usuarios tienen este rol asignado.</span>
-                </div>
-              </div>
-
-              <Button
-                type="button"
-                variant="outline"
-                onClick={() => router.push("/wireframes/usuarios")}
-                className="h-9 px-4 rounded-xl text-xs font-semibold border-border shrink-0"
-              >
-                Ver usuarios
-              </Button>
-            </Card>
           </TabsContent>
 
-          {/* ── Tab: Información ── */}
-          <TabsContent value="informacion" className="space-y-6 m-0">
-            <Card className="rounded-2xl border-border bg-surface p-6 sm:p-7 space-y-6 shadow-xs">
-              <h2 className="text-sm font-bold text-foreground">
-                Datos del rol
-              </h2>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-xs">
-                <div>
-                  <span className="text-muted-foreground block text-[11px] mb-1">Identificador</span>
-                  <span className="font-mono font-bold text-foreground">{id}</span>
-                </div>
-                <div>
-                  <span className="text-muted-foreground block text-[11px] mb-1">Nombre completo</span>
-                  <span className="font-semibold text-foreground">{rolName}</span>
-                </div>
-                <div>
-                  <span className="text-muted-foreground block text-[11px] mb-1">Fecha de creación</span>
-                  <span className="text-foreground font-mono">10/01/2026 09:30</span>
-                </div>
-                <div>
-                  <span className="text-muted-foreground block text-[11px] mb-1">Última actualización</span>
-                  <span className="text-foreground font-mono">01/09/2026 16:11</span>
-                </div>
-                <div>
-                  <span className="text-muted-foreground block text-[11px] mb-1">Creado por</span>
-                  <span className="text-foreground">Administrador General</span>
-                </div>
-                <div>
-                  <span className="text-muted-foreground block text-[11px] mb-1">Alcance institucional</span>
-                  <span className="text-foreground">Nacional / SINAP</span>
-                </div>
-              </div>
-            </Card>
-          </TabsContent>
-
-          {/* ── Tab: Usuarios Asignados ── */}
+          {/* ── Tab: Usuarios ── */}
           <TabsContent value="usuarios" className="space-y-6 m-0">
-            <div className="flex items-center justify-between">
-              <div className="space-y-0.5">
-                <h2 className="text-sm font-bold text-foreground">
-                  Lista de usuarios con este rol
-                </h2>
-                <p className="text-xs text-muted-foreground">
-                  Total: 5 usuarios visibles de 8 registrados
-                </p>
-              </div>
-
-              <Button
-                type="button"
-                variant="primary"
-                onClick={() => router.push("/wireframes/usuarios/nuevo")}
-                className="h-9 px-3.5 rounded-xl text-xs font-semibold"
-              >
-                Asignar usuario
-              </Button>
+            <div className="space-y-0.5">
+              <h2 className="text-sm font-bold text-foreground">
+                Usuarios con este rol
+              </h2>
+              <p className="text-xs text-muted-foreground">
+                Listado de funcionarios que tienen actualmente asignado este rol.
+              </p>
             </div>
 
-            <div className="overflow-x-auto rounded-2xl border border-border bg-surface shadow-xs">
-              <Table className="w-full border-spacing-0">
-                <TableHeader>
-                  <TableRow className="border-b border-border/80 bg-muted/30 hover:bg-muted/30">
-                    <TableHead className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider py-3 px-4 text-left">
-                      NOMBRE
-                    </TableHead>
-                    <TableHead className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider py-3 px-4 text-left">
-                      CORREO ELECTRÓNICO
-                    </TableHead>
-                    <TableHead className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider py-3 px-4 text-left">
-                      CARGO
-                    </TableHead>
-                    <TableHead className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider py-3 px-4 text-left">
-                      ESTADO
-                    </TableHead>
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>NOMBRE</TableHead>
+                  <TableHead>CORREO ELECTRÓNICO</TableHead>
+                  <TableHead>CARGO</TableHead>
+                  <TableHead>ESTADO</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {ASSIGNED_USERS_MOCK.map((u, i) => (
+                  <TableRow key={i}>
+                    <TableCell className="font-bold text-foreground flex items-center gap-2">
+                      <UserCheck className="size-4 text-muted-foreground" />
+                      <span>{u.name}</span>
+                    </TableCell>
+                    <TableCell className="text-muted-foreground font-mono text-xs">
+                      {u.email}
+                    </TableCell>
+                    <TableCell className="text-muted-foreground">
+                      {u.cargo}
+                    </TableCell>
+                    <TableCell>
+                      <Badge tone="success" appearance="soft" size="sm">
+                        {u.estado}
+                      </Badge>
+                    </TableCell>
                   </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {ASSIGNED_USERS_MOCK.map((u) => (
-                    <TableRow key={u.email} className="border-b border-border/40 hover:bg-muted/20">
-                      <TableCell className="py-3 px-4 text-xs font-bold text-foreground whitespace-nowrap">
-                        {u.name}
-                      </TableCell>
-                      <TableCell className="py-3 px-4 text-xs text-muted-foreground whitespace-nowrap">
-                        {u.email}
-                      </TableCell>
-                      <TableCell className="py-3 px-4 text-xs text-muted-foreground whitespace-nowrap">
-                        {u.cargo}
-                      </TableCell>
-                      <TableCell className="py-3 px-4 whitespace-nowrap">
-                        <Badge tone="success" appearance="soft" size="sm" className="text-xs">
-                          {u.estado}
-                        </Badge>
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </div>
+                ))}
+              </TableBody>
+            </Table>
           </TabsContent>
         </Tabs>
       </main>
+
+      {/* ── Modal de Edición de Rol ── */}
+      <RolModal
+        open={isEditModalOpen}
+        onOpenChange={setIsEditModalOpen}
+        initialData={rolData}
+        onSave={handleSaveRol}
+      />
+
+      {/* ── Dialog Warning: Desactivar Rol ── */}
+      <Dialog open={isWarningDialogOpen} onOpenChange={setIsWarningDialogOpen}>
+        <DialogContent variant="warning" size="default">
+          <DialogHeader>
+            <DialogTitle>
+              {rolData.estado === "Activo" ? "¿Desactivar rol?" : "¿Reactivar rol?"}
+            </DialogTitle>
+            <DialogDescription>
+              {rolData.estado === "Activo" ? (
+                <>
+                  Estás a punto de desactivar el rol{" "}
+                  <strong className="text-foreground font-semibold">
+                    {rolData.nombre}
+                  </strong>
+                  . Los {rolData.usuariosAsignados || 0} usuarios asignados no podrán operar con sus permisos asociados.
+                </>
+              ) : (
+                <>
+                  ¿Deseas reactivar el rol{" "}
+                  <strong className="text-foreground font-semibold">
+                    {rolData.nombre}
+                  </strong>
+                  ?
+                </>
+              )}
+            </DialogDescription>
+          </DialogHeader>
+
+          <DialogFooter showCloseButton={true} stacked={true}>
+            <Button
+              type="button"
+              variant={rolData.estado === "Activo" ? "warning" : "success"}
+              onClick={handleConfirmDeactivate}
+            >
+              {rolData.estado === "Activo" ? "Desactivar rol" : "Reactivar rol"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </WireframeDashboardLayout>
   );
 }

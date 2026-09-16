@@ -14,6 +14,9 @@ import {
   Users,
   Trash2,
   Lock,
+  Unlock,
+  Copy,
+  AlertTriangle,
 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -64,23 +67,14 @@ import {
   DialogFooter,
 } from "@/components/ui/dialog";
 import { WireframeDashboardLayout } from "../components/wireframe-dashboard-layout";
+import { RolModal, type RolData } from "./components/rol-modal";
 
-interface RolItem {
-  id: string;
-  iniciales: string;
-  nombre: string;
-  descripcion: string;
-  usuariosAsignados: number;
-  estado: "Activo" | "Inactivo";
-  fechaActualizacion: string;
-}
-
-const INITIAL_ROLES_DATA: RolItem[] = [
+const INITIAL_ROLES_DATA: RolData[] = [
   {
     id: "ROL-001",
     iniciales: "AG",
     nombre: "Administrador general",
-    descripcion: "Acceso total a la plataforma",
+    descripcion: "Acceso total a la plataforma y configuración institucional.",
     usuariosAsignados: 12,
     estado: "Activo",
     fechaActualizacion: "02/09/2026 10:24",
@@ -89,7 +83,7 @@ const INITIAL_ROLES_DATA: RolItem[] = [
     id: "ROL-002",
     iniciales: "CS",
     nombre: "Coordinador SINAP",
-    descripcion: "Coordina procesos del SINAP",
+    descripcion: "Coordina procesos, validaciones y autorizaciones del SINAP.",
     usuariosAsignados: 8,
     estado: "Activo",
     fechaActualizacion: "01/09/2026 16:11",
@@ -98,7 +92,7 @@ const INITIAL_ROLES_DATA: RolItem[] = [
     id: "ROL-003",
     iniciales: "AN",
     nombre: "Analista",
-    descripcion: "Analiza y gestiona información",
+    descripcion: "Analiza, procesa y gestiona información técnica de interoperabilidad.",
     usuariosAsignados: 25,
     estado: "Activo",
     fechaActualizacion: "28/08/2026 09:03",
@@ -107,7 +101,7 @@ const INITIAL_ROLES_DATA: RolItem[] = [
     id: "ROL-004",
     iniciales: "RV",
     nombre: "Revisor",
-    descripcion: "Revisa y valida solicitudes",
+    descripcion: "Revisa y valida solicitudes de acceso e interoperabilidad.",
     usuariosAsignados: 6,
     estado: "Inactivo",
     fechaActualizacion: "20/08/2026 14:37",
@@ -116,7 +110,7 @@ const INITIAL_ROLES_DATA: RolItem[] = [
     id: "ROL-005",
     iniciales: "CO",
     nombre: "Consulta",
-    descripcion: "Solo acceso de consulta",
+    descripcion: "Acceso de solo lectura sobre catálogos y reportes sectoriales.",
     usuariosAsignados: 18,
     estado: "Activo",
     fechaActualizacion: "15/08/2026 11:21",
@@ -126,47 +120,83 @@ const INITIAL_ROLES_DATA: RolItem[] = [
 export default function WireframeListadoRolesPage() {
   const router = useRouter();
 
-  const [rolesList, setRolesList] = useState<RolItem[]>(INITIAL_ROLES_DATA);
+  const [rolesList, setRolesList] = useState<RolData[]>(INITIAL_ROLES_DATA);
   const [searchQuery, setSearchQuery] = useState("");
   const [filterEstado, setFilterEstado] = useState("Todos");
   const [currentPage, setCurrentPage] = useState(1);
 
-  // Dialog de confirmación (Desactivar / Eliminar)
-  const [selectedRol, setSelectedRol] = useState<RolItem | null>(null);
-  const [actionType, setActionType] = useState<"toggle" | "delete" | null>(null);
+  // Modal de Crear / Editar Rol
+  const [isRolModalOpen, setIsRolModalOpen] = useState(false);
+  const [editingRol, setEditingRol] = useState<RolData | null>(null);
 
-  const handleToggleEstado = (rol: RolItem, e?: React.MouseEvent) => {
-    e?.stopPropagation();
-    const newStatus = rol.estado === "Activo" ? "Inactivo" : "Activo";
-    setRolesList((prev) =>
-      prev.map((r) => (r.id === rol.id ? { ...r, estado: newStatus, fechaActualizacion: "Hoy, recién" } : r))
-    );
-    if (newStatus === "Inactivo") {
-      toast.warning(`Rol "${rol.nombre}" desactivado.`);
-    } else {
-      toast.success(`Rol "${rol.nombre}" activado.`);
-    }
+  // Dialog de advertencia (Desactivar / Reactivar / Eliminar)
+  const [targetRol, setTargetRol] = useState<RolData | null>(null);
+  const [isWarningDialogOpen, setIsWarningDialogOpen] = useState(false);
+  const [warningAction, setWarningAction] = useState<"toggle" | "delete">("toggle");
+
+  const handleOpenCreate = () => {
+    setEditingRol(null);
+    setIsRolModalOpen(true);
   };
 
-  const handleDuplicate = (rol: RolItem, e?: React.MouseEvent) => {
+  const handleOpenEdit = (rol: RolData, e?: React.MouseEvent) => {
     e?.stopPropagation();
-    const newRol: RolItem = {
+    setEditingRol(rol);
+    setIsRolModalOpen(true);
+  };
+
+  const handleOpenWarning = (rol: RolData, action: "toggle" | "delete", e?: React.MouseEvent) => {
+    e?.stopPropagation();
+    setTargetRol(rol);
+    setWarningAction(action);
+    setIsWarningDialogOpen(true);
+  };
+
+  const handleConfirmWarning = () => {
+    if (!targetRol) return;
+
+    if (warningAction === "delete") {
+      setRolesList((prev) => prev.filter((r) => r.id !== targetRol.id));
+      toast.success(`Rol "${targetRol.nombre}" eliminado correctamente.`);
+    } else {
+      const newStatus = targetRol.estado === "Activo" ? "Inactivo" : "Activo";
+      setRolesList((prev) =>
+        prev.map((r) => (r.id === targetRol.id ? { ...r, estado: newStatus, fechaActualizacion: "Ahora" } : r))
+      );
+      if (newStatus === "Inactivo") {
+        toast.warning(`Rol "${targetRol.nombre}" desactivado.`);
+      } else {
+        toast.success(`Rol "${targetRol.nombre}" reactivado.`);
+      }
+    }
+
+    setIsWarningDialogOpen(false);
+    setTargetRol(null);
+  };
+
+  const handleSaveRol = (data: RolData) => {
+    setRolesList((prev) => {
+      const idx = prev.findIndex((r) => r.id === data.id);
+      if (idx >= 0) {
+        const updated = [...prev];
+        updated[idx] = data;
+        return updated;
+      }
+      return [data, ...prev];
+    });
+  };
+
+  const handleDuplicate = (rol: RolData, e?: React.MouseEvent) => {
+    e?.stopPropagation();
+    const newRol: RolData = {
       ...rol,
       id: `ROL-00${rolesList.length + 1}`,
       nombre: `${rol.nombre} (Copia)`,
       usuariosAsignados: 0,
-      fechaActualizacion: "Hoy, recién",
+      fechaActualizacion: "Ahora",
     };
     setRolesList((prev) => [newRol, ...prev]);
     toast.success(`Rol duplicado como "${newRol.nombre}".`);
-  };
-
-  const handleDeleteConfirm = () => {
-    if (!selectedRol) return;
-    setRolesList((prev) => prev.filter((r) => r.id !== selectedRol.id));
-    toast.success(`Rol "${selectedRol.nombre}" eliminado correctamente.`);
-    setSelectedRol(null);
-    setActionType(null);
   };
 
   const filteredData = useMemo(() => {
@@ -202,7 +232,7 @@ export default function WireframeListadoRolesPage() {
           <Button
             type="button"
             variant="primary"
-            onClick={() => router.push("/wireframes/roles/nuevo")}
+            onClick={handleOpenCreate}
             className="h-11 px-5 rounded-xl text-xs font-semibold gap-2 shadow-xs shrink-0"
           >
             <Plus className="size-4" />
@@ -258,14 +288,14 @@ export default function WireframeListadoRolesPage() {
               <TableHead>
                 DESCRIPCIÓN
               </TableHead>
-              <TableHead className="text-center">
+              <TableHead>
                 USUARIOS ASIGNADOS
               </TableHead>
               <TableHead>
                 ESTADO
               </TableHead>
               <TableHead>
-                FECHA DE ACTUALIZACIÓN
+                ÚLTIMA ACTUALIZACIÓN
               </TableHead>
               <TableHead className="text-right">
                 ACCIONES
@@ -286,7 +316,7 @@ export default function WireframeListadoRolesPage() {
                   className="cursor-pointer"
                   onClick={() => router.push(`/wireframes/roles/${row.id}`)}
                 >
-                  {/* Nombre con Badge Iniciales */}
+                  {/* Nombre con Avatar de Iniciales */}
                   <TableCell>
                     <div className="flex items-center gap-3">
                       <div className="size-8 rounded-full bg-muted text-foreground font-bold text-xs flex items-center justify-center shrink-0">
@@ -299,28 +329,31 @@ export default function WireframeListadoRolesPage() {
                   </TableCell>
 
                   {/* Descripción */}
-                  <TableCell className="text-muted-foreground font-medium max-w-xs truncate">
+                  <TableCell className="text-muted-foreground max-w-xs truncate">
                     {row.descripcion}
                   </TableCell>
 
                   {/* Usuarios Asignados */}
-                  <TableCell className="text-center font-mono font-semibold text-foreground">
-                    {row.usuariosAsignados}
+                  <TableCell>
+                    <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-muted/60 text-foreground text-xs font-semibold">
+                      <Users className="size-3 text-muted-foreground" />
+                      <span>{row.usuariosAsignados}</span>
+                    </div>
                   </TableCell>
 
-                  {/* Estado */}
+                  {/* Estado Badge */}
                   <TableCell>
                     <Badge
                       tone={row.estado === "Activo" ? "success" : "danger"}
                       appearance="soft"
                       size="sm"
-                      className="font-medium text-xs"
+                      className="font-medium gap-1 text-xs"
                     >
                       {row.estado}
                     </Badge>
                   </TableCell>
 
-                  {/* Fecha de actualización */}
+                  {/* Última actualización */}
                   <TableCell className="text-muted-foreground font-mono">
                     {row.fechaActualizacion}
                   </TableCell>
@@ -334,23 +367,7 @@ export default function WireframeListadoRolesPage() {
                             type="button"
                             variant="ghost"
                             size="icon-sm"
-                            onClick={() => router.push(`/wireframes/roles/${row.id}`)}
-                            className="size-8 text-muted-foreground hover:text-foreground hover:bg-muted/50"
-                            aria-label="Ver detalle"
-                          >
-                            <Eye className="size-3.5" />
-                          </Button>
-                        </TooltipTrigger>
-                        <TooltipContent>Ver detalle</TooltipContent>
-                      </Tooltip>
-
-                      <Tooltip>
-                        <TooltipTrigger asChild>
-                          <Button
-                            type="button"
-                            variant="ghost"
-                            size="icon-sm"
-                            onClick={() => router.push(`/wireframes/roles/${row.id}/editar`)}
+                            onClick={(e) => handleOpenEdit(row, e)}
                             className="size-8 text-muted-foreground hover:text-foreground hover:bg-muted/50"
                             aria-label="Editar rol"
                           >
@@ -377,30 +394,43 @@ export default function WireframeListadoRolesPage() {
                           </TooltipTrigger>
                           <TooltipContent>Más opciones</TooltipContent>
                         </Tooltip>
-                        <DropdownMenuContent align="end" className="w-48">
-                          <DropdownMenuItem onClick={() => router.push(`/wireframes/usuarios`)}>
-                            <Users className="size-3.5 mr-2" />
-                            <span>Ver usuarios ({row.usuariosAsignados})</span>
+                        <DropdownMenuContent align="end" className="w-44">
+                          <DropdownMenuItem onClick={() => router.push(`/wireframes/roles/${row.id}`)}>
+                            <Eye className="size-3.5 mr-2 text-muted-foreground" />
+                            <span>Ver detalle</span>
                           </DropdownMenuItem>
-                          <DropdownMenuItem onClick={(e) => handleToggleEstado(row, e)}>
-                            <Lock className="size-3.5 mr-2" />
-                            <span>{row.estado === "Activo" ? "Desactivar rol" : "Activar rol"}</span>
+                          <DropdownMenuItem onClick={(e) => handleOpenEdit(row, e)}>
+                            <Pencil className="size-3.5 mr-2 text-muted-foreground" />
+                            <span>Editar</span>
                           </DropdownMenuItem>
                           <DropdownMenuItem onClick={(e) => handleDuplicate(row, e)}>
-                            <ShieldCheck className="size-3.5 mr-2" />
+                            <Copy className="size-3.5 mr-2 text-muted-foreground" />
                             <span>Duplicar rol</span>
                           </DropdownMenuItem>
                           <DropdownMenuSeparator />
+                          {row.estado === "Activo" ? (
+                            <DropdownMenuItem
+                              className="text-warning focus:text-warning"
+                              onClick={(e) => handleOpenWarning(row, "toggle", e)}
+                            >
+                              <Lock className="size-3.5 mr-2" />
+                              <span>Desactivar</span>
+                            </DropdownMenuItem>
+                          ) : (
+                            <DropdownMenuItem
+                              className="text-success focus:text-success"
+                              onClick={(e) => handleOpenWarning(row, "toggle", e)}
+                            >
+                              <Unlock className="size-3.5 mr-2" />
+                              <span>Reactivar</span>
+                            </DropdownMenuItem>
+                          )}
                           <DropdownMenuItem
                             className="text-destructive focus:text-destructive"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              setSelectedRol(row);
-                              setActionType("delete");
-                            }}
+                            onClick={(e) => handleOpenWarning(row, "delete", e)}
                           >
                             <Trash2 className="size-3.5 mr-2" />
-                            <span>Eliminar rol</span>
+                            <span>Eliminar</span>
                           </DropdownMenuItem>
                         </DropdownMenuContent>
                       </DropdownMenu>
@@ -412,84 +442,126 @@ export default function WireframeListadoRolesPage() {
           </TableBody>
         </Table>
 
-        {/* ── 4. Paginación ── */}
-        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-4">
-          <p className="text-xs text-muted-foreground font-medium">
-            Mostrando 1 a {filteredData.length} de {rolesList.length} roles
+        {/* ── 4. Paginación Estandarizada Circular ── */}
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-2">
+          <p className="text-xs text-muted-foreground font-medium order-2 sm:order-1">
+            Mostrando <span className="font-bold text-foreground">{filteredData.length}</span> de <span className="font-bold text-foreground">{rolesList.length}</span> roles
           </p>
 
-          <Pagination className="mx-0 w-auto justify-end">
-            <PaginationContent className="gap-1.5">
-              <PaginationItem>
-                <PaginationPrevious
-                  href="#"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    if (currentPage > 1) setCurrentPage((p) => p - 1);
-                  }}
-                />
-              </PaginationItem>
-              <PaginationItem>
-                <PaginationLink href="#" isActive className="size-9">
-                  1
-                </PaginationLink>
-              </PaginationItem>
-              <PaginationItem>
-                <PaginationLink href="#" className="size-9">
-                  2
-                </PaginationLink>
-              </PaginationItem>
-              <PaginationItem>
-                <PaginationLink href="#" className="size-9">
-                  3
-                </PaginationLink>
-              </PaginationItem>
-              <PaginationItem>
-                <PaginationNext
-                  href="#"
-                  onClick={(e) => {
-                    e.preventDefault();
-                  }}
-                />
-              </PaginationItem>
-            </PaginationContent>
-          </Pagination>
+          <div className="order-1 sm:order-2">
+            <Pagination>
+              <PaginationContent>
+                <PaginationItem>
+                  <PaginationPrevious
+                    href="#"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      setCurrentPage((p) => Math.max(1, p - 1));
+                    }}
+                  />
+                </PaginationItem>
+                <PaginationItem>
+                  <PaginationLink
+                    href="#"
+                    isActive={currentPage === 1}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      setCurrentPage(1);
+                    }}
+                  >
+                    1
+                  </PaginationLink>
+                </PaginationItem>
+                <PaginationItem>
+                  <PaginationLink
+                    href="#"
+                    isActive={currentPage === 2}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      setCurrentPage(2);
+                    }}
+                  >
+                    2
+                  </PaginationLink>
+                </PaginationItem>
+                <PaginationItem>
+                  <PaginationNext
+                    href="#"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      setCurrentPage((p) => Math.min(2, p + 1));
+                    }}
+                  />
+                </PaginationItem>
+              </PaginationContent>
+            </Pagination>
+          </div>
         </div>
-
-        {/* Modal de confirmación de eliminación */}
-        <Dialog open={actionType === "delete" && !!selectedRol} onOpenChange={(open) => !open && setActionType(null)}>
-          <DialogContent className="max-w-[420px] rounded-3xl p-6 bg-background border-border shadow-2xl">
-            <DialogHeader className="space-y-2">
-              <DialogTitle className="font-heading font-bold text-lg text-foreground">
-                ¿Eliminar rol "{selectedRol?.nombre}"?
-              </DialogTitle>
-              <DialogDescription className="text-xs text-muted-foreground leading-relaxed">
-                Esta acción revocará los permisos asignados a los {selectedRol?.usuariosAsignados} usuarios vinculados.
-              </DialogDescription>
-            </DialogHeader>
-            <DialogFooter className="flex items-center justify-end gap-2 pt-4">
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => {
-                  setSelectedRol(null);
-                  setActionType(null);
-                }}
-              >
-                Cancelar
-              </Button>
-              <Button
-                variant="destructive"
-                size="sm"
-                onClick={handleDeleteConfirm}
-              >
-                Eliminar definitivamente
-              </Button>
-            </DialogFooter>
-          </DialogContent>
-        </Dialog>
       </main>
+
+      {/* ── Modal de Crear / Editar Rol ── */}
+      <RolModal
+        open={isRolModalOpen}
+        onOpenChange={setIsRolModalOpen}
+        initialData={editingRol}
+        onSave={handleSaveRol}
+      />
+
+      {/* ── Dialog Warning: Desactivar / Eliminar Rol ── */}
+      <Dialog open={isWarningDialogOpen} onOpenChange={setIsWarningDialogOpen}>
+        <DialogContent variant="warning" size="default">
+          <DialogHeader>
+            <DialogTitle>
+              {warningAction === "delete"
+                ? "¿Eliminar rol?"
+                : targetRol?.estado === "Activo"
+                ? "¿Desactivar rol?"
+                : "¿Reactivar rol?"}
+            </DialogTitle>
+            <DialogDescription>
+              {warningAction === "delete" ? (
+                <>
+                  Estás a punto de eliminar permanentemente el rol{" "}
+                  <strong className="text-foreground font-semibold">
+                    {targetRol?.nombre}
+                  </strong>
+                  . Los {targetRol?.usuariosAsignados || 0} usuarios con este rol perderán sus facultades.
+                </>
+              ) : targetRol?.estado === "Activo" ? (
+                <>
+                  Estás a punto de desactivar el rol{" "}
+                  <strong className="text-foreground font-semibold">
+                    {targetRol?.nombre}
+                  </strong>
+                  . Los usuarios vinculados no podrán ejecutar sus permisos asociados.
+                </>
+              ) : (
+                <>
+                  ¿Deseas reactivar el rol{" "}
+                  <strong className="text-foreground font-semibold">
+                    {targetRol?.nombre}
+                  </strong>
+                  ?
+                </>
+              )}
+            </DialogDescription>
+          </DialogHeader>
+
+          <DialogFooter showCloseButton={true} stacked={true}>
+            <Button
+              type="button"
+              variant={warningAction === "delete" ? "danger" : targetRol?.estado === "Activo" ? "warning" : "success"}
+              onClick={handleConfirmWarning}
+            >
+              {warningAction === "delete"
+                ? "Eliminar rol"
+                : targetRol?.estado === "Activo"
+                ? "Desactivar rol"
+                : "Reactivar rol"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </WireframeDashboardLayout>
   );
 }
-

@@ -55,6 +55,7 @@ import {
   PaginationPrevious,
   PaginationNext,
 } from "@/components/ui/pagination";
+import { toast } from "sonner";
 import { WireframeDashboardLayout } from "../components/wireframe-dashboard-layout";
 
 interface FacturaItem {
@@ -68,12 +69,12 @@ interface FacturaItem {
   href: string;
 }
 
-const FACTURAS_DATA: FacturaItem[] = [
+const INITIAL_FACTURAS_DATA: FacturaItem[] = [
   {
     numero: "F-2026-00125",
-    proyecto: "Proyecto Identidad",
+    proyecto: "Validación ciudadana",
     entidad: "Registro Civil",
-    servicio: "Consulta de datos",
+    servicio: "Consulta de datos de identidad",
     fechaEmision: "15/09/2026",
     valor: 1250.0,
     estado: "Emitida",
@@ -81,9 +82,9 @@ const FACTURAS_DATA: FacturaItem[] = [
   },
   {
     numero: "F-2026-00124",
-    proyecto: "SRI Integración",
+    proyecto: "Cruce de datos tributarios",
     entidad: "SRI",
-    servicio: "Validación de RUC",
+    servicio: "Consulta de RUC",
     fechaEmision: "10/09/2026",
     valor: 850.0,
     estado: "Pendiente",
@@ -91,21 +92,21 @@ const FACTURAS_DATA: FacturaItem[] = [
   },
   {
     numero: "F-2026-00123",
-    proyecto: "Educación Datos",
-    entidad: "Ministerio de Educación",
-    servicio: "Consulta de títulos",
-    fechaEmision: "05/09/2026",
-    valor: 2300.0,
+    proyecto: "Verificación de títulos",
+    entidad: "SENESCYT",
+    servicio: "Consulta de títulos registrados",
+    fechaEmision: "01/09/2026",
+    valor: 620.0,
     estado: "Emitida",
     href: "/wireframes/facturacion/F-2026-00125",
   },
   {
     numero: "F-2026-00122",
-    proyecto: "Proyecto Salud",
-    entidad: "Ministerio de Salud",
-    servicio: "Intercambio masivo",
-    fechaEmision: "28/08/2026",
-    valor: 4500.0,
+    proyecto: "Validación de vehículos",
+    entidad: "ANT",
+    servicio: "Consulta de licencias y vehículos",
+    fechaEmision: "25/08/2026",
+    valor: 450.0,
     estado: "Anulada",
     href: "/wireframes/facturacion/F-2026-00125",
   },
@@ -124,14 +125,36 @@ const FACTURAS_DATA: FacturaItem[] = [
 export default function WireframeListadoFacturacionPage() {
   const router = useRouter();
 
+  const [facturasList, setFacturasList] = useState<FacturaItem[]>(INITIAL_FACTURAS_DATA);
   const [searchQuery, setSearchQuery] = useState("");
   const [filterEstado, setFilterEstado] = useState("Todos");
   const [fechaDesde, setFechaDesde] = useState("");
   const [fechaHasta, setFechaHasta] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
 
+  const handleDownloadPDF = (numero: string, e?: React.MouseEvent) => {
+    e?.stopPropagation();
+    toast.success(`Descargando factura ${numero}.pdf...`);
+  };
+
+  const handleAnularFactura = (numero: string, e?: React.MouseEvent) => {
+    e?.stopPropagation();
+    setFacturasList((prev) =>
+      prev.map((f) => (f.numero === numero ? { ...f, estado: "Anulada" } : f))
+    );
+    toast.warning(`Factura ${numero} ha sido marcada como Anulada.`);
+  };
+
+  const handleResetFilters = () => {
+    setSearchQuery("");
+    setFilterEstado("Todos");
+    setFechaDesde("");
+    setFechaHasta("");
+    toast.info("Filtros restablecidos.");
+  };
+
   const filteredData = useMemo(() => {
-    return FACTURAS_DATA.filter((item) => {
+    return facturasList.filter((item) => {
       const matchesSearch =
         searchQuery === "" ||
         item.numero.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -143,7 +166,7 @@ export default function WireframeListadoFacturacionPage() {
 
       return matchesSearch && matchesEstado;
     });
-  }, [searchQuery, filterEstado]);
+  }, [facturasList, searchQuery, filterEstado]);
 
   const getBadgeVariant = (estado: FacturaItem["estado"]) => {
     switch (estado) {
@@ -248,16 +271,33 @@ export default function WireframeListadoFacturacionPage() {
         </InputGroup>
       </div>
 
-      {/* Botón Buscar */}
-      <Button
-        type="button"
-        variant="primary"
-        className="h-11 px-6 rounded-xl text-xs font-semibold shadow-xs justify-center"
-      >
-        Buscar
-      </Button>
-    </div>
-        </div >
+            {/* Botones Buscar y Limpiar */}
+            <div className="flex items-center gap-2">
+              <Button
+                type="button"
+                variant="primary"
+                onClick={() => {
+                  toast.success(`Búsqueda ejecutada: ${filteredData.length} resultados encontrados.`);
+                }}
+                className="h-11 px-6 rounded-xl text-xs font-semibold shadow-xs justify-center"
+              >
+                Buscar
+              </Button>
+              {(searchQuery || filterEstado !== "Todos" || fechaDesde || fechaHasta) && (
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={handleResetFilters}
+                  className="h-11 px-3 rounded-xl text-xs font-medium text-muted-foreground hover:text-foreground"
+                  title="Restablecer filtros"
+                >
+                  <RotateCcw className="size-3.5 mr-1" />
+                  <span>Limpiar</span>
+                </Button>
+              )}
+            </div>
+          </div>
+        </div>
 
         {/* ── 3. Tabla de Facturas ── */}
         <Table>
@@ -293,20 +333,21 @@ export default function WireframeListadoFacturacionPage() {
             {filteredData.length === 0 ? (
               <TableRow>
                 <TableCell colSpan={8} className="text-center py-10 text-muted-foreground text-sm">
-                  No se encontraron facturas con los filtros aplicados.
+                  No se encontraron facturas con los criterios seleccionados.
                 </TableCell>
               </TableRow>
             ) : (
               filteredData.map((row) => {
                 const badgeProps = getBadgeVariant(row.estado);
+
                 return (
                   <TableRow
                     key={row.numero}
-                    className="cursor-pointer"
                     onClick={() => router.push(row.href)}
+                    className="cursor-pointer group hover:bg-muted/40 transition-colors"
                   >
                     {/* N° de factura */}
-                    <TableCell className="font-mono font-bold text-foreground">
+                    <TableCell className="font-mono font-bold text-foreground group-hover:text-primary transition-colors">
                       {row.numero}
                     </TableCell>
 
@@ -316,7 +357,7 @@ export default function WireframeListadoFacturacionPage() {
                     </TableCell>
 
                     {/* Entidad */}
-                    <TableCell className="text-muted-foreground font-medium">
+                    <TableCell className="text-muted-foreground">
                       {row.entidad}
                     </TableCell>
 
@@ -372,6 +413,7 @@ export default function WireframeListadoFacturacionPage() {
                               type="button"
                               variant="ghost"
                               size="icon-sm"
+                              onClick={(e) => handleDownloadPDF(row.numero, e)}
                               className="size-8 text-muted-foreground hover:text-foreground hover:bg-muted/50 cursor-pointer"
                               aria-label="Descargar PDF"
                             >
@@ -380,6 +422,46 @@ export default function WireframeListadoFacturacionPage() {
                           </TooltipTrigger>
                           <TooltipContent>Descargar PDF</TooltipContent>
                         </Tooltip>
+
+                        <DropdownMenu>
+                          <Tooltip>
+                            <TooltipTrigger asChild>
+                              <DropdownMenuTrigger asChild>
+                                <Button
+                                  type="button"
+                                  variant="ghost"
+                                  size="icon-sm"
+                                  className="size-8 text-muted-foreground hover:text-foreground hover:bg-muted/50 cursor-pointer"
+                                  aria-label="Más opciones"
+                                >
+                                  <MoreHorizontal className="size-4" />
+                                </Button>
+                              </DropdownMenuTrigger>
+                            </TooltipTrigger>
+                            <TooltipContent>Más opciones</TooltipContent>
+                          </Tooltip>
+                          <DropdownMenuContent align="end" className="w-48">
+                            <DropdownMenuItem onClick={() => router.push(row.href)}>
+                              <FileText className="size-3.5 mr-2" />
+                              <span>Ver desglose completo</span>
+                            </DropdownMenuItem>
+                            <DropdownMenuItem onClick={(e) => handleDownloadPDF(row.numero, e)}>
+                              <Download className="size-3.5 mr-2" />
+                              <span>Exportar PDF firmado</span>
+                            </DropdownMenuItem>
+                            {row.estado !== "Anulada" && (
+                              <>
+                                <DropdownMenuSeparator />
+                                <DropdownMenuItem
+                                  className="text-destructive focus:text-destructive"
+                                  onClick={(e) => handleAnularFactura(row.numero, e)}
+                                >
+                                  <span>Anular factura</span>
+                                </DropdownMenuItem>
+                              </>
+                            )}
+                          </DropdownMenuContent>
+                        </DropdownMenu>
                       </div>
                     </TableCell>
                   </TableRow>
@@ -392,7 +474,7 @@ export default function WireframeListadoFacturacionPage() {
         {/* ── 4. Paginación ── */}
         <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-4">
           <p className="text-xs text-muted-foreground font-medium">
-            Mostrando 1 a {filteredData.length} de 32 facturas
+            Mostrando 1 a {filteredData.length} de {facturasList.length} facturas
           </p>
 
           <Pagination className="mx-0 w-auto justify-end">

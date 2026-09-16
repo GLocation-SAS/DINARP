@@ -43,11 +43,29 @@ import {
   DialogDescription,
   DialogFooter,
 } from "@/components/ui/dialog";
+import { toast } from "sonner";
 import { DetailList } from "@/components/ui/detail-list";
 import { WireframeDashboardLayout } from "../../components/wireframe-dashboard-layout";
 
 export default function WireframeRevisionSolicitudPage() {
   const router = useRouter();
+
+  // Estado interactivo de campos seleccionados
+  const [rcFields, setRcFields] = useState({
+    cedula: true,
+    nombres: true,
+    nacimiento: true,
+  });
+
+  const [sriFields, setSriFields] = useState({
+    ruc: true,
+    estado: false,
+  });
+
+  // Lista interactiva de observaciones
+  const [observacionesList, setObservacionesList] = useState<
+    Array<{ id: string; autor: string; fecha: string; rol: string; texto: string }>
+  >([]);
 
   // Estado de observaciones en página
   const [observacionTexto, setObservacionTexto] = useState("");
@@ -55,14 +73,34 @@ export default function WireframeRevisionSolicitudPage() {
   // Estado de modales
   const [isAprobarModalOpen, setIsAprobarModalOpen] = useState(false);
   const [isRechazarModalOpen, setIsRechazarModalOpen] = useState(false);
+  const [isCorreccionModalOpen, setIsCorreccionModalOpen] = useState(false);
 
   // Estados de campos en modales
   const [modalObsAprobar, setModalObsAprobar] = useState("");
   const [modalMotivoRechazo, setModalMotivoRechazo] = useState("");
+  const [modalMotivoCorreccion, setModalMotivoCorreccion] = useState("");
   const [rechazoError, setRechazoError] = useState(false);
+
+  const handleAddObservacion = () => {
+    if (!observacionTexto.trim()) {
+      toast.error("Ingresa el texto de la observación.");
+      return;
+    }
+    const newObs = {
+      id: `OBS-${Date.now()}`,
+      autor: "María Pérez",
+      fecha: "Hoy, recién",
+      rol: "Revisora DINARP",
+      texto: observacionTexto.trim(),
+    };
+    setObservacionesList((prev) => [newObs, ...prev]);
+    setObservacionTexto("");
+    toast.success("Observación registrada con éxito.");
+  };
 
   const handleConfirmAprobar = () => {
     setIsAprobarModalOpen(false);
+    toast.success("Solicitud SOL-024 aprobada exitosamente.");
     router.push("/wireframes/aprobaciones/SOL-024/seguimiento");
   };
 
@@ -72,6 +110,14 @@ export default function WireframeRevisionSolicitudPage() {
       return;
     }
     setIsRechazarModalOpen(false);
+    toast.warning("Solicitud SOL-024 rechazada.");
+    router.push("/wireframes/aprobaciones");
+  };
+
+  const handleConfirmCorreccion = () => {
+    if (!modalMotivoCorreccion.trim()) return;
+    setIsCorreccionModalOpen(false);
+    toast.info("Se ha solicitado corrección al solicitante.");
     router.push("/wireframes/aprobaciones");
   };
 
@@ -188,25 +234,40 @@ export default function WireframeRevisionSolicitudPage() {
                   </CardTitle>
                 </div>
                 <Badge tone="neutral" appearance="soft" size="sm" className="font-mono text-[10px]">
-                  3 campos
+                  {Object.values(rcFields).filter(Boolean).length} campos autorizados
                 </Badge>
               </CardHeader>
               <CardContent className="p-5 space-y-3 text-xs">
                 <div className="flex items-center gap-2.5">
-                  <Checkbox id="rc-cedula" checked disabled className="data-checked:bg-foreground data-checked:border-foreground" />
-                  <Label htmlFor="rc-cedula" className="text-xs font-medium text-foreground cursor-default">
+                  <Checkbox
+                    id="rc-cedula"
+                    checked={rcFields.cedula}
+                    onCheckedChange={(c) => setRcFields((prev) => ({ ...prev, cedula: !!c }))}
+                    className="data-checked:bg-foreground data-checked:border-foreground cursor-pointer"
+                  />
+                  <Label htmlFor="rc-cedula" className="text-xs font-medium text-foreground cursor-pointer">
                     Número de identificación
                   </Label>
                 </div>
                 <div className="flex items-center gap-2.5">
-                  <Checkbox id="rc-nombres" checked disabled className="data-checked:bg-foreground data-checked:border-foreground" />
-                  <Label htmlFor="rc-nombres" className="text-xs font-medium text-foreground cursor-default">
+                  <Checkbox
+                    id="rc-nombres"
+                    checked={rcFields.nombres}
+                    onCheckedChange={(c) => setRcFields((prev) => ({ ...prev, nombres: !!c }))}
+                    className="data-checked:bg-foreground data-checked:border-foreground cursor-pointer"
+                  />
+                  <Label htmlFor="rc-nombres" className="text-xs font-medium text-foreground cursor-pointer">
                     Nombres
                   </Label>
                 </div>
                 <div className="flex items-center gap-2.5">
-                  <Checkbox id="rc-nacimiento" checked disabled className="data-checked:bg-foreground data-checked:border-foreground" />
-                  <Label htmlFor="rc-nacimiento" className="text-xs font-medium text-foreground cursor-default">
+                  <Checkbox
+                    id="rc-nacimiento"
+                    checked={rcFields.nacimiento}
+                    onCheckedChange={(c) => setRcFields((prev) => ({ ...prev, nacimiento: !!c }))}
+                    className="data-checked:bg-foreground data-checked:border-foreground cursor-pointer"
+                  />
+                  <Label htmlFor="rc-nacimiento" className="text-xs font-medium text-foreground cursor-pointer">
                     Fecha de nacimiento
                   </Label>
                 </div>
@@ -223,19 +284,29 @@ export default function WireframeRevisionSolicitudPage() {
                   </CardTitle>
                 </div>
                 <Badge tone="neutral" appearance="soft" size="sm" className="font-mono text-[10px]">
-                  1 campo
+                  {Object.values(sriFields).filter(Boolean).length} campos autorizados
                 </Badge>
               </CardHeader>
               <CardContent className="p-5 space-y-3 text-xs">
                 <div className="flex items-center gap-2.5">
-                  <Checkbox id="sri-ruc" checked disabled className="data-checked:bg-foreground data-checked:border-foreground" />
-                  <Label htmlFor="sri-ruc" className="text-xs font-medium text-foreground cursor-default">
+                  <Checkbox
+                    id="sri-ruc"
+                    checked={sriFields.ruc}
+                    onCheckedChange={(c) => setSriFields((prev) => ({ ...prev, ruc: !!c }))}
+                    className="data-checked:bg-foreground data-checked:border-foreground cursor-pointer"
+                  />
+                  <Label htmlFor="sri-ruc" className="text-xs font-medium text-foreground cursor-pointer">
                     RUC
                   </Label>
                 </div>
-                <div className="flex items-center gap-2.5 opacity-40">
-                  <Checkbox id="sri-estado" checked={false} disabled />
-                  <Label htmlFor="sri-estado" className="text-xs text-muted-foreground cursor-default line-through">
+                <div className="flex items-center gap-2.5">
+                  <Checkbox
+                    id="sri-estado"
+                    checked={sriFields.estado}
+                    onCheckedChange={(c) => setSriFields((prev) => ({ ...prev, estado: !!c }))}
+                    className="data-checked:bg-foreground data-checked:border-foreground cursor-pointer"
+                  />
+                  <Label htmlFor="sri-estado" className={`text-xs cursor-pointer ${sriFields.estado ? "font-medium text-foreground" : "text-muted-foreground line-through"}`}>
                     Estado tributario
                   </Label>
                 </div>
@@ -258,23 +329,28 @@ export default function WireframeRevisionSolicitudPage() {
           </CardContent>
         </Card>
 
-        {/* ── 6. Sección: Documentos adjuntos (2) ── */}
+        {/* ── 6. Sección: Documentos adjuntos ── */}
         <Card className="border-border bg-surface shadow-xs">
-          <CardHeader className="p-6 pb-3">
+          <CardHeader className="p-6 pb-2">
             <CardTitle className="text-base font-heading font-bold text-foreground">
-              Documentos adjuntos (2)
+              Documentos adjuntos
             </CardTitle>
           </CardHeader>
-          <CardContent className="p-6 pt-0 space-y-2.5">
+          <CardContent className="p-6 pt-2 space-y-3">
             <div className="flex items-center justify-between p-3.5 rounded-xl border border-border bg-background/60">
               <div className="flex items-center gap-3">
                 <FileText className="size-5 text-muted-foreground shrink-0" />
                 <div className="flex flex-col">
-                  <span className="text-xs font-semibold text-foreground">Solicitud_MINX.pdf</span>
+                  <span className="text-xs font-semibold text-foreground">Oficio_solicitud.pdf</span>
                   <span className="text-[10px] text-muted-foreground">PDF · 320 KB</span>
                 </div>
               </div>
-              <Button variant="ghost" size="icon-sm" className="text-muted-foreground hover:text-foreground">
+              <Button
+                variant="ghost"
+                size="icon-sm"
+                onClick={() => toast.success("Descargando Oficio_solicitud.pdf...")}
+                className="text-muted-foreground hover:text-foreground cursor-pointer"
+              >
                 <Download className="size-4" />
               </Button>
             </div>
@@ -287,7 +363,12 @@ export default function WireframeRevisionSolicitudPage() {
                   <span className="text-[10px] text-muted-foreground">PDF · 1.2 MB</span>
                 </div>
               </div>
-              <Button variant="ghost" size="icon-sm" className="text-muted-foreground hover:text-foreground">
+              <Button
+                variant="ghost"
+                size="icon-sm"
+                onClick={() => toast.success("Descargando Plan_de_proyecto.pdf...")}
+                className="text-muted-foreground hover:text-foreground cursor-pointer"
+              >
                 <Download className="size-4" />
               </Button>
             </div>
@@ -298,11 +379,25 @@ export default function WireframeRevisionSolicitudPage() {
         <Card className="border-border bg-surface shadow-xs">
           <CardHeader className="p-6 pb-2">
             <CardTitle className="text-base font-heading font-bold text-foreground">
-              Observaciones del proceso (0)
+              Observaciones del proceso ({observacionesList.length})
             </CardTitle>
           </CardHeader>
           <CardContent className="p-6 pt-2">
-            <p className="text-xs text-muted-foreground italic">Aún no hay observaciones.</p>
+            {observacionesList.length === 0 ? (
+              <p className="text-xs text-muted-foreground italic">Aún no hay observaciones registradas.</p>
+            ) : (
+              <div className="space-y-3">
+                {observacionesList.map((obs) => (
+                  <div key={obs.id} className="p-3.5 rounded-xl border border-border/80 bg-background space-y-1">
+                    <div className="flex items-center justify-between">
+                      <span className="text-xs font-bold text-foreground">{obs.autor} ({obs.rol})</span>
+                      <span className="text-[10px] text-muted-foreground font-mono">{obs.fecha}</span>
+                    </div>
+                    <p className="text-xs text-foreground/90 leading-relaxed">{obs.texto}</p>
+                  </div>
+                ))}
+              </div>
+            )}
           </CardContent>
         </Card>
 
@@ -320,13 +415,26 @@ export default function WireframeRevisionSolicitudPage() {
             maxLength={500}
             value={observacionTexto}
             onChange={(e) => setObservacionTexto(e.target.value)}
-            placeholder="Escribe una observación..."
+            placeholder="Escribe una observación para la bitácora..."
             className="w-full rounded-2xl border border-border bg-surface p-3.5 text-xs sm:text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-foreground/20"
           />
+          {observacionTexto.trim() && (
+            <div className="flex justify-end pt-1">
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                onClick={handleAddObservacion}
+                className="text-xs font-semibold"
+              >
+                Registrar observación
+              </Button>
+            </div>
+          )}
         </div>
 
-        {/* ── 9. Botones de Acción: Rechazar / Aprobar ── */}
-        <div className="flex items-center justify-end gap-3 pt-4 border-t border-border/80">
+        {/* ── 9. Botones de Acción: Rechazar / Solicitar corrección / Aprobar ── */}
+        <div className="flex flex-wrap items-center justify-end gap-3 pt-4 border-t border-border/80">
           <Button
             type="button"
             variant="outline"
@@ -338,6 +446,18 @@ export default function WireframeRevisionSolicitudPage() {
             className="h-11 px-5 rounded-xl text-xs font-semibold border-border text-foreground hover:bg-muted/30"
           >
             Rechazar
+          </Button>
+
+          <Button
+            type="button"
+            variant="outline"
+            onClick={() => {
+              setModalMotivoCorreccion("");
+              setIsCorreccionModalOpen(true);
+            }}
+            className="h-11 px-5 rounded-xl text-xs font-semibold border-border text-foreground hover:bg-muted/30"
+          >
+            Solicitar corrección
           </Button>
 
           <Button
@@ -466,6 +586,56 @@ export default function WireframeRevisionSolicitudPage() {
                 className="w-full h-11 rounded-xl text-xs font-semibold"
               >
                 Rechazar solicitud
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+
+        {/* ══════════════════════════════════════════════════
+            12. MODAL: SOLICITAR CORRECCIÓN
+           ══════════════════════════════════════════════════ */}
+        <Dialog open={isCorreccionModalOpen} onOpenChange={setIsCorreccionModalOpen}>
+          <DialogContent className="max-w-[460px] rounded-3xl p-6 sm:p-8 bg-background border-border shadow-2xl">
+            <DialogHeader className="text-center space-y-2">
+              <DialogTitle className="font-heading font-bold text-xl sm:text-2xl text-foreground">
+                Solicitar corrección
+              </DialogTitle>
+              <DialogDescription className="text-xs sm:text-sm text-muted-foreground leading-relaxed">
+                La solicitud volverá al estado borrador/en corrección para que el solicitante ajuste los datos indicados.
+              </DialogDescription>
+            </DialogHeader>
+
+            <div className="space-y-1.5 text-left my-2">
+              <Label htmlFor="modal-obs-correccion" className="text-xs font-semibold text-foreground">
+                Detalle de correcciones requeridas <span className="text-destructive">*</span>
+              </Label>
+              <textarea
+                id="modal-obs-correccion"
+                rows={3}
+                value={modalMotivoCorreccion}
+                onChange={(e) => setModalMotivoCorreccion(e.target.value)}
+                placeholder="Indica qué campos o documentos deben ser corregidos..."
+                className="w-full rounded-xl border border-border bg-surface p-3 text-xs sm:text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-foreground/20"
+              />
+            </div>
+
+            <DialogFooter className="mt-4 flex flex-col sm:flex-row gap-2.5 w-full">
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => setIsCorreccionModalOpen(false)}
+                className="w-full h-11 rounded-xl text-xs font-semibold"
+              >
+                Cancelar
+              </Button>
+              <Button
+                type="button"
+                variant="primary"
+                onClick={handleConfirmCorreccion}
+                disabled={!modalMotivoCorreccion.trim()}
+                className="w-full h-11 rounded-xl text-xs font-semibold"
+              >
+                Enviar observaciones
               </Button>
             </DialogFooter>
           </DialogContent>
