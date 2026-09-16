@@ -139,7 +139,12 @@ export function Multiselect({
                   <TooltipTrigger asChild>
                     <div className="flex gap-1 overflow-hidden">
                       {selectedOptions.map((opt) => (
-                        <Badge key={opt.value} tone="neutral" appearance="soft" className="px-3 py-0.5 font-medium h-7 rounded-full gap-1 shrink-0">
+                        <Badge
+                          key={opt.value}
+                          tone="primary"
+                          appearance="soft"
+                          className="px-3 py-0.5 font-semibold h-7 rounded-full gap-1 shrink-0 bg-primary/10 text-primary dark:bg-primary/20 dark:text-primary-300 border border-primary/25"
+                        >
                           {opt.label}
                           <div
                             role="button"
@@ -147,8 +152,8 @@ export function Multiselect({
                             className="ring-offset-background rounded-full outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 cursor-pointer hover:bg-primary/30 p-0.5"
                             onClick={(e) => handleRemove(e, opt.value)}
                             onKeyDown={(e) => {
-                               if (e.key === "Enter") handleRemove(e, opt.value)
-                             }}
+                              if (e.key === "Enter") handleRemove(e, opt.value)
+                            }}
                           >
                             <XIcon className="h-3 w-3" />
                           </div>
@@ -167,7 +172,11 @@ export function Multiselect({
               <TooltipProvider delayDuration={300}>
                 <Tooltip>
                   <TooltipTrigger asChild>
-                    <Badge tone="neutral" appearance="soft" className="px-3 py-0.5 font-medium h-7 rounded-full shrink-0">
+                    <Badge
+                      tone="primary"
+                      appearance="soft"
+                      className="px-3 py-0.5 font-semibold h-7 rounded-full shrink-0 bg-primary/10 text-primary dark:bg-primary/20 dark:text-primary-300 border border-primary/25"
+                    >
                       {selectedOptions[0]?.label} +{selected.length - 1} seleccionadas
                     </Badge>
                   </TooltipTrigger>
@@ -199,7 +208,7 @@ export function Multiselect({
                   className="flex h-full w-full bg-transparent text-sm outline-none placeholder:text-muted-foreground disabled:cursor-not-allowed disabled:opacity-50"
                 />
               </div>
-              
+
               <CommandList className="max-h-[220px] overflow-y-auto p-1 no-scrollbar">
                 <CommandEmpty className="py-6 text-center text-sm">
                   {emptyText}
@@ -216,7 +225,7 @@ export function Multiselect({
                       >
                         <Checkbox
                           checked={isSelected}
-                          onCheckedChange={() => {}}
+                          onCheckedChange={() => { }}
                         />
                         <span className="flex-1 truncate">{option.label}</span>
                       </CommandItem>

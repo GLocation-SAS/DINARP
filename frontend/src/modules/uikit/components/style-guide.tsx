@@ -28,8 +28,38 @@ import {
   AlertTriangle,
   Check,
   X,
+  Copy,
 } from "lucide-react";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+
+function getContrastTextColor(hex: string): string {
+  const cleanHex = hex.replace("#", "");
+  if (cleanHex.length !== 6) return "#0f172a";
+  const r = parseInt(cleanHex.substring(0, 2), 16);
+  const g = parseInt(cleanHex.substring(2, 4), 16);
+  const b = parseInt(cleanHex.substring(4, 6), 16);
+  const yiq = (r * 299 + g * 587 + b * 114) / 1000;
+  return yiq >= 140 ? "#0f172a" : "#ffffff";
+}
+
+const STEP_ROLES: Record<string, string> = {
+  "50": "Fondo sutil",
+  "100": "Superficie",
+  "200": "Borde suave",
+  "300": "Borde medio",
+  "400": "Decorativo",
+  "500": "Base / Marca",
+  "600": "Hover",
+  "700": "Presionado",
+  "800": "Texto oscuro",
+  "900": "Alto contraste",
+  "1": "Dato 1",
+  "2": "Dato 2",
+  "3": "Dato 3",
+  "4": "Dato 4",
+  "5": "Dato 5",
+  "6": "Dato 6",
+};
 import { Button } from "@/components/ui/button";
 import { LogoManagerCard } from "./logo-manager-card";
 import {
@@ -461,6 +491,7 @@ export function StyleGuide({
   const [activeScaleName, setActiveScaleName] = useState(FULL_SCALES[0].name);
   const activeScale =
     FULL_SCALES.find((s) => s.name === activeScaleName) || FULL_SCALES[0];
+  const [scaleViewMode, setScaleViewMode] = useState<"detail" | "matrix">("detail");
   const [simulatedColors, setSimulatedColors] = useState<
     Record<string, string>
   >({});
@@ -526,6 +557,7 @@ export function StyleGuide({
             defaultDarkImg="/Logo-vertical-alternativo.svg"
             monoLightImg="/Logo-vertical-negro.svg"
             monoDarkImg="/Logo-vertical-blanco.svg"
+            isMissing
           />
 
           {/* Card 3: Favicon */}
@@ -537,6 +569,7 @@ export function StyleGuide({
             badge2="MÍNIMO"
             defaultLightImg="/favicon.ico"
             defaultDarkImg="/favicon.ico"
+            isMissing
           />
 
           {/* Card 4: Placeholder Escudo Nacional */}
@@ -681,184 +714,294 @@ export function StyleGuide({
           </div>
         }
       >
-        {/* Tabs */}
-        <div className="mb-8 w-full">
+        {/* Top Control Bar: Tabs & View Switcher */}
+        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 mb-6">
           <Tabs
             value={activeScaleName}
             onValueChange={setActiveScaleName}
-            className="w-full"
+            className="w-full lg:w-auto"
           >
-            <TabsList className="flex flex-wrap h-auto w-full justify-start md:w-auto md:inline-flex">
-              {FULL_SCALES.map((scale) => (
-                <TabsTrigger
-                  key={scale.name}
-                  value={scale.name}
-                  className="gap-2"
-                >
-                  <span
+            <TabsList className="flex flex-wrap h-auto w-full justify-start lg:w-auto lg:inline-flex p-1 bg-surface border border-border/60 rounded-2xl gap-1">
+              {FULL_SCALES.map((scale) => {
+                const baseColor =
+                  scale.colors.find((c) => c.level === "500" || c.level === "1" || c.level === "0-bg")?.hex ||
+                  "#000000";
+                const isSelected = activeScaleName === scale.name;
+                return (
+                  <TabsTrigger
+                    key={scale.name}
+                    value={scale.name}
                     className={cn(
-                      "w-2 h-2 rounded-full",
-                      activeScaleName !== scale.name && "opacity-70",
+                      "gap-2 px-3 py-1.5 rounded-xl text-xs font-semibold transition-all",
+                      isSelected
+                        ? "bg-primary text-primary-foreground shadow-xs"
+                        : "text-muted-foreground hover:text-foreground hover:bg-muted/40",
                     )}
-                    style={{
-                      backgroundColor:
-                        scale.colors.find((c) => c.level === "500")?.hex ||
-                        "transparent",
-                    }}
-                  />
-                  {scale.name}
-                </TabsTrigger>
-              ))}
+                  >
+                    <span
+                      className="size-2 rounded-full ring-1 ring-black/10 shrink-0"
+                      style={{ backgroundColor: baseColor }}
+                    />
+                    {scale.name}
+                  </TabsTrigger>
+                );
+              })}
             </TabsList>
           </Tabs>
+
+          {/* View Mode Toggle */}
+          <div className="flex items-center gap-1 p-1 bg-surface border border-border/60 rounded-2xl self-start lg:self-auto shrink-0">
+            <button
+              onClick={() => setScaleViewMode("detail")}
+              className={cn(
+                "px-3 py-1.5 rounded-xl text-xs font-semibold transition-all flex items-center gap-1.5",
+                scaleViewMode === "detail"
+                  ? "bg-muted text-foreground shadow-xs"
+                  : "text-muted-foreground hover:text-foreground",
+              )}
+            >
+              <LayoutGrid className="size-3.5" />
+              Detalle Rampa
+            </button>
+            <button
+              onClick={() => setScaleViewMode("matrix")}
+              className={cn(
+                "px-3 py-1.5 rounded-xl text-xs font-semibold transition-all flex items-center gap-1.5",
+                scaleViewMode === "matrix"
+                  ? "bg-muted text-foreground shadow-xs"
+                  : "text-muted-foreground hover:text-foreground",
+              )}
+            >
+              <Layers className="size-3.5" />
+              Matriz Completa
+            </button>
+          </div>
         </div>
 
-        {/* Selected Scale Card */}
-        <div className="bg-card rounded-[2rem] border border-border/50 p-6 sm:p-8 shadow-sm">
-          {/* Header */}
-          <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6 mb-10 bg-surface/40 p-4 sm:p-5 rounded-3xl border border-border/40 shadow-sm relative overflow-hidden">
-            <div className="flex items-center gap-5 relative z-10">
-
-              <div>
-                <h3 className="text-2xl sm:text-3xl font-heading font-bold text-foreground tracking-tight flex items-center gap-3">
-                  {activeScale.title}
-                </h3>
-                <div className="flex flex-wrap items-center gap-2 sm:gap-3 mt-2 sm:mt-3">
-                  <Badge
-                    tone="neutral"
-                    appearance="soft"
-                    className="text-[9px] sm:text-[10px] px-2 py-0.5 uppercase tracking-widest font-extrabold shadow-sm bg-muted/60 pointer-events-none"
-                  >
-                    Ref. Técnica
-                  </Badge>
-                  <code className="text-primary font-mono text-[11px] sm:text-xs font-bold bg-primary/10 px-2.5 py-1 rounded-md shadow-sm border border-primary/20">
-                    bg-{activeScale.prefix}-500
-                  </code>
-                  <span className="text-muted-foreground font-mono text-[11px] sm:text-xs font-medium px-2 py-1 bg-surface rounded-md border border-border/50">
-                    {activeScale.colors.find((c) => c.level === "500")?.hex}
-                  </span>
-                </div>
-              </div>
-            </div>
-
-            {/* Large gradient bar and Edit action */}
-            <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 sm:gap-6 relative z-10">
-              <div className="hidden lg:flex h-4 w-64 rounded-full overflow-hidden shadow-inner ring-1 ring-border/50 group">
-                {activeScale.colors.map((c) => (
-                  <div
-                    key={c.level}
-                    className="h-full flex-1 transition-all duration-300 hover:scale-y-150 origin-center"
-                    style={{ backgroundColor: c.hex }}
-                    title={c.level}
-                  />
-                ))}
-              </div>
-            </div>
-          </div>
-
-          {/* Swatches Grid */}
-          <div className="grid grid-cols-2 sm:grid-cols-5 md:grid-cols-10 gap-4">
-            {activeScale.colors.map((color) => {
-              const specificSimulatedColor =
-                simulatedColors[`${activeScale.name}-${color.level}`];
-              const isSimulatedBase = !!simulatedColors[activeScale.name];
-              const isMain =
-                color.level === "500" ||
-                color.level === "1" ||
-                color.level === "0-bg";
-
-              const displayHex =
-                specificSimulatedColor ||
-                (isSimulatedBase && isMain
-                  ? simulatedColors[activeScale.name]
-                  : color.hex);
-              const isOutdated =
-                isSimulatedBase && !isMain && !specificSimulatedColor;
-
-              return (
-                <div
-                  key={color.level}
-                  className={cn(
-                    "group relative flex flex-col items-center justify-center p-3 py-4 rounded-2xl bg-surface border border-border/40 transition-all duration-300 overflow-hidden",
-                    !isOutdated && "hover:bg-surface/70 hover:-translate-y-1",
-                    isOutdated && "opacity-60 bg-muted/20",
-                  )}
-                >
-                  {/* Copiar color click area */}
-                  <div
-                    className="absolute inset-0 cursor-pointer z-0"
-                    onClick={() =>
-                      handleCopy(
-                        `bg-${activeScale.prefix}-${color.level}`,
-                        "Clase Tailwind",
-                      )
-                    }
-                    title={`Copiar bg-${activeScale.prefix}-${color.level}`}
-                  />
-
-
-
-                  <div
-                    className={cn(
-                      "w-12 h-12 sm:w-14 sm:h-14 rounded-full shadow-sm mb-3 shrink-0 transition-transform duration-300 relative z-10 pointer-events-none",
-                      !isOutdated && "group-hover:scale-110",
-                    )}
-                    style={{ backgroundColor: displayHex }}
-                  />
-                  <div className="flex flex-col items-center gap-0.5 z-10 w-full pointer-events-none">
-                    <span className="text-sm font-bold text-foreground truncate w-full text-center">
-                      {color.level}
-                    </span>
+        {/* View 1: Detailed Ramp View */}
+        {scaleViewMode === "detail" && (
+          <div className="bg-card rounded-3xl border border-border/60 p-6 sm:p-8 shadow-xs flex flex-col gap-8">
+            {/* Scale Header & Continuous Spectrum */}
+            <div className="flex flex-col gap-6">
+              <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+                <div className="flex flex-col gap-1.5">
+                  <div className="flex items-center gap-3">
                     <span
-                      className={cn(
-                        "text-[10px] text-muted-foreground uppercase font-mono truncate w-full text-center",
-                        specificSimulatedColor || (isSimulatedBase && isMain)
-                          ? "font-bold text-primary"
-                          : "opacity-80",
-                      )}
+                      className="size-4 rounded-full ring-2 ring-border"
+                      style={{
+                        backgroundColor:
+                          activeScale.colors.find((c) => c.level === "500" || c.level === "1")?.hex ||
+                          "currentColor",
+                      }}
+                    />
+                    <h3 className="text-2xl font-heading font-bold text-foreground tracking-tight">
+                      {activeScale.title}
+                    </h3>
+                  </div>
+                  <div className="flex flex-wrap items-center gap-2 mt-1">
+                    <Badge
+                      tone="neutral"
+                      appearance="soft"
+                      size="sm"
+                      className="font-mono text-[10px] uppercase font-bold"
                     >
-                      {displayHex}
+                      Token: bg-{activeScale.prefix}-*
+                    </Badge>
+                    <span className="text-xs text-muted-foreground font-mono">
+                      {activeScale.colors.length} escalones de contraste
                     </span>
                   </div>
-
-                  {isOutdated && (
-                    <div className="absolute inset-0 bg-background/40 backdrop-blur-[1px] flex flex-col items-center justify-center pointer-events-none p-1 z-20">
-                      <Badge
-                        tone="warning"
-                        appearance="solid"
-                        className="text-[8px] h-4 px-1 absolute top-2 whitespace-normal text-center leading-tight pointer-events-none shadow-none"
-                      >
-                        Desactualizado
-                      </Badge>
-                    </div>
-                  )}
-                  {specificSimulatedColor && !isMain && (
-                    <div className="absolute top-2 left-1/2 -translate-x-1/2 pointer-events-none z-20">
-                      <Badge
-                        tone="success"
-                        appearance="solid"
-                        className="text-[8px] h-4 px-1 whitespace-nowrap shadow-sm"
-                      >
-                        Modificado
-                      </Badge>
-                    </div>
-                  )}
-                  {isSimulatedBase && isMain && (
-                    <div className="absolute top-2 left-1/2 -translate-x-1/2 pointer-events-none z-20">
-                      <Badge
-                        tone="success"
-                        appearance="solid"
-                        className="text-[8px] h-4 px-1 whitespace-nowrap shadow-sm"
-                      >
-                        Base nuevo
-                      </Badge>
-                    </div>
-                  )}
                 </div>
-              );
-            })}
+
+                <div className="flex items-center gap-2">
+                  <Button
+                    variant="secondary"
+                    size="sm"
+                    className="rounded-full text-xs"
+                    onClick={() => {
+                      const base = activeScale.colors.find((c) => c.level === "500" || c.level === "1");
+                      if (base) handleCopy(base.hex, `HEX ${activeScale.name} Base`);
+                    }}
+                  >
+                    <Copy className="size-3.5 mr-1.5" />
+                    Copiar HEX Base
+                  </Button>
+                </div>
+              </div>
+
+              {/* Continuous Connected Spectrum Ribbon */}
+              <div className="flex flex-col gap-2">
+                <div className="h-6 w-full rounded-2xl overflow-hidden flex border border-border/60 shadow-inner">
+                  {activeScale.colors.map((c) => (
+                    <button
+                      key={c.level}
+                      onClick={() => handleCopy(`bg-${activeScale.prefix}-${c.level}`, "Clase Tailwind")}
+                      className="h-full flex-1 transition-all duration-200 hover:scale-y-125 origin-bottom relative group cursor-pointer"
+                      style={{ backgroundColor: c.hex }}
+                      title={`${activeScale.prefix}-${c.level} (${c.hex})`}
+                    />
+                  ))}
+                </div>
+                <div className="flex justify-between items-center px-1 text-[10px] font-mono text-muted-foreground">
+                  <span>← Tonos Claros (Fondos / Superficies)</span>
+                  <span>Tonos Oscuros (Bordes / Textos) →</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Swatches Ramp Grid */}
+            <div className="grid grid-cols-2 sm:grid-cols-5 lg:grid-cols-10 gap-3">
+              {activeScale.colors.map((color) => {
+                const specificSimulatedColor =
+                  simulatedColors[`${activeScale.name}-${color.level}`];
+                const isSimulatedBase = !!simulatedColors[activeScale.name];
+                const isMain =
+                  color.level === "500" ||
+                  color.level === "1" ||
+                  color.level === "0-bg";
+
+                const displayHex =
+                  specificSimulatedColor ||
+                  (isSimulatedBase && isMain
+                    ? simulatedColors[activeScale.name]
+                    : color.hex);
+
+                const textColor = getContrastTextColor(displayHex);
+                const role = STEP_ROLES[color.level] || `Nivel ${color.level}`;
+
+                return (
+                  <div
+                    key={color.level}
+                    className="group flex flex-col rounded-2xl bg-surface border border-border/60 overflow-hidden shadow-xs hover:border-primary/50 hover:shadow-md transition-all duration-300"
+                  >
+                    {/* Top Swatch Block */}
+                    <div
+                      className="relative h-24 w-full p-2.5 flex flex-col justify-between transition-transform duration-300"
+                      style={{ backgroundColor: displayHex }}
+                    >
+                      <div className="flex items-start justify-between">
+                        <span
+                          className="font-bold font-mono text-xs tracking-tight"
+                          style={{ color: textColor }}
+                        >
+                          {color.level}
+                        </span>
+
+                        {isMain && (
+                          <span className="text-[9px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded-full backdrop-blur-md bg-black/20 text-white shadow-xs">
+                            Base
+                          </span>
+                        )}
+                      </div>
+
+                      {/* Hover 1-click copy action on swatch */}
+                      <button
+                        onClick={() => handleCopy(`bg-${activeScale.prefix}-${color.level}`, "Clase Tailwind")}
+                        className="opacity-0 group-hover:opacity-100 transition-opacity p-1.5 rounded-lg backdrop-blur-md bg-black/25 text-white self-end hover:scale-110 active:scale-95"
+                        title="Copiar clase Tailwind"
+                      >
+                        <Copy className="size-3" />
+                      </button>
+                    </div>
+
+                    {/* Meta & Token Info */}
+                    <div className="p-2.5 flex flex-col gap-1.5 bg-surface flex-1 justify-between">
+                      <div>
+                        <p className="text-[10px] font-semibold text-foreground/80 truncate">
+                          {role}
+                        </p>
+                        <button
+                          onClick={() => handleCopy(displayHex, "HEX")}
+                          className="text-[10px] font-mono text-muted-foreground hover:text-primary transition-colors flex items-center justify-between w-full group/hex"
+                          title="Copiar HEX"
+                        >
+                          <span>{displayHex}</span>
+                          <Copy className="size-2.5 opacity-0 group-hover/hex:opacity-100" />
+                        </button>
+                      </div>
+
+                      <button
+                        onClick={() => handleCopy(`bg-${activeScale.prefix}-${color.level}`, "Clase Tailwind")}
+                        className="w-full text-center text-[9px] font-mono py-1 px-1 rounded-md bg-muted/40 text-muted-foreground hover:bg-primary/10 hover:text-primary transition-colors truncate"
+                        title="Copiar token Tailwind"
+                      >
+                        bg-{activeScale.prefix}-{color.level}
+                      </button>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
           </div>
-        </div>
+        )}
+
+        {/* View 2: Comparative Matrix View */}
+        {scaleViewMode === "matrix" && (
+          <div className="bg-card rounded-3xl border border-border/60 p-6 sm:p-8 shadow-xs flex flex-col gap-6">
+            <div className="flex flex-col gap-1">
+              <h3 className="text-lg font-heading font-bold text-foreground">
+                Matriz Comparativa de Todas las Escalas
+              </h3>
+              <p className="text-xs text-muted-foreground">
+                Compara la consistencia tonal y luminosidad en paralelo entre todas las familias cromáticas.
+              </p>
+            </div>
+
+            <div className="flex flex-col gap-3">
+              {FULL_SCALES.map((scale) => (
+                <div
+                  key={scale.name}
+                  className="flex flex-col md:flex-row md:items-center gap-3 p-3 rounded-2xl bg-surface border border-border/50 hover:border-primary/40 transition-colors"
+                >
+                  <div className="w-40 shrink-0 flex items-center justify-between">
+                    <button
+                      onClick={() => {
+                        setActiveScaleName(scale.name);
+                        setScaleViewMode("detail");
+                      }}
+                      className="font-bold text-sm text-foreground hover:text-primary transition-colors text-left flex items-center gap-2"
+                    >
+                      <span
+                        className="size-2.5 rounded-full"
+                        style={{
+                          backgroundColor:
+                            scale.colors.find((c) => c.level === "500" || c.level === "1" || c.level === "0-bg")?.hex ||
+                            "#000",
+                        }}
+                      />
+                      {scale.name}
+                    </button>
+                    <code className="text-[10px] font-mono text-muted-foreground">
+                      {scale.prefix}
+                    </code>
+                  </div>
+
+                  <div className="flex-1 h-10 rounded-xl overflow-hidden flex border border-border/60 shadow-inner">
+                    {scale.colors.map((c) => {
+                      const textColor = getContrastTextColor(c.hex);
+                      return (
+                        <button
+                          key={c.level}
+                          onClick={() => handleCopy(`bg-${scale.prefix}-${c.level}`, "Clase Tailwind")}
+                          style={{ backgroundColor: c.hex }}
+                          className="flex-1 h-full flex flex-col items-center justify-center transition-transform hover:scale-y-125 origin-center group relative cursor-pointer"
+                          title={`${scale.name} ${c.level}: ${c.hex}`}
+                        >
+                          <span
+                            className="text-[10px] font-mono font-bold opacity-0 group-hover:opacity-100 transition-opacity"
+                            style={{ color: textColor }}
+                          >
+                            {c.level}
+                          </span>
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
       </SubSection>
 
       {/* Subsección 3: Sistema Tipográfico */}

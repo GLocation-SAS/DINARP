@@ -45,7 +45,6 @@ import { TablesCategoryShowcase } from "../components/tables-category-showcase";
 import { FeedbackStatesShowcase } from "../components/feedback-states-showcase";
 import { ModalsOverlaysShowcase } from "../components/modals-overlays-showcase";
 import { DataManagementShowcase } from "../components/data-management-showcase";
-import { MapGeospatialShowcase } from "../components/map-geospatial-showcase";
 import { RiskAnalyticsShowcase } from "../components/risk-analytics-showcase";
 import { ReportsExportShowcase } from "../components/reports-export-showcase";
 import { ConversationalAssistantShowcase } from "../components/conversational-assistant-showcase";
@@ -67,7 +66,6 @@ const SECTION_COMPONENTS: Record<string, React.ComponentType<{ registerSection?:
   "feedback-states": FeedbackStatesShowcase,
   "modals-overlays": ModalsOverlaysShowcase,
   "data-management-category": DataManagementShowcase,
-  "map-geospatial-category": MapGeospatialShowcase,
   "reports-export-category": ReportsExportShowcase,
   "conversational-assistant-category": ConversationalAssistantShowcase,
 

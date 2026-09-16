@@ -25,13 +25,14 @@ interface LogoManagerCardProps {
   description: string;
   badge1: string;
   badge2: string;
-  defaultLightImg: string;
-  defaultDarkImg: string;
+  defaultLightImg?: string;
+  defaultDarkImg?: string;
   monoLightImg?: string;
   monoDarkImg?: string;
   editLabel?: string;
   maxHeightClass?: string;
   allowedFormats?: string;
+  isMissing?: boolean;
 }
 
 export function LogoManagerCard({
@@ -40,13 +41,14 @@ export function LogoManagerCard({
   description,
   badge1,
   badge2,
-  defaultLightImg,
-  defaultDarkImg,
+  defaultLightImg = "",
+  defaultDarkImg = "",
   monoLightImg,
   monoDarkImg,
   editLabel = "Editar recurso",
   maxHeightClass = "max-h-16",
   allowedFormats = "SVG o PNG",
+  isMissing = false,
 }: LogoManagerCardProps) {
   // Arranca optimistamente pidiendo lo que haya en el bucket de borrador
   // (extensión adivinada, el proxy resuelve la real si es otra — ver
@@ -207,48 +209,62 @@ export function LogoManagerCard({
 
   return (
     <>
-      <div className="flex flex-col rounded-2xl border border-border/60 shadow-xs overflow-hidden group bg-surface">
+      <div className={cn("flex flex-col rounded-2xl overflow-hidden group bg-surface", isMissing ? "border border-dashed border-border/60" : "border border-border/60 shadow-xs")}>
         {/* Image Box */}
-        <div className="relative h-48 p-6 flex flex-col items-center justify-center border-b border-border/40 bg-surface/50">
-          {hasMono && (
-            <div className="absolute top-3 right-3 flex bg-surface border border-border rounded-full p-1 shadow-sm">
-              <button
-                onClick={() => setVariant("color")}
-                className={cn("px-3 py-1 text-[10px] font-bold rounded-full transition-colors uppercase tracking-wider", variant === "color" ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:bg-accent/20")}
-              >
-                Color
-              </button>
-              <button
-                onClick={() => setVariant("mono")}
-                className={cn("px-3 py-1 text-[10px] font-bold rounded-full transition-colors uppercase tracking-wider", variant === "mono" ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:bg-accent/20")}
-              >
-                Mono
-              </button>
+        {isMissing ? (
+          <div className="h-48 w-full bg-muted/20 flex flex-col items-center justify-center p-6 text-center border-b border-dashed border-border/60">
+            <div className="size-12 rounded-full bg-muted/50 flex items-center justify-center mb-3">
+              <ImageOff className="size-5 text-muted-foreground/50" />
             </div>
-          )}
-          <img
-            src={activeLightImg}
-            alt={`${title} Light`}
-            className={`dark:hidden ${maxHeightClass} w-auto object-contain transition-transform group-hover:scale-105`}
-            onError={() => setLightImg(defaultLightImg)}
-          />
-          <img
-            src={activeDarkImg}
-            alt={`${title} Dark`}
-            className={`hidden dark:block ${maxHeightClass} w-auto object-contain transition-transform group-hover:scale-105 drop-shadow-md`}
-            onError={() => setDarkImg(defaultDarkImg)}
-          />
-        </div>
+            <span className="text-sm font-medium text-muted-foreground">Recurso faltante</span>
+            <span className="text-xs text-muted-foreground/60 mt-1 max-w-[200px]">
+              falta el recurso oficial del manual de marca
+            </span>
+          </div>
+        ) : (
+          <div className="relative h-48 p-6 flex flex-col items-center justify-center border-b border-border/40 bg-surface/50">
+            {hasMono && (
+              <div className="absolute top-3 right-3 flex bg-surface border border-border rounded-full p-1 shadow-sm">
+                <button
+                  onClick={() => setVariant("color")}
+                  className={cn("px-3 py-1 text-[10px] font-bold rounded-full transition-colors uppercase tracking-wider", variant === "color" ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:bg-accent/20")}
+                >
+                  Color
+                </button>
+                <button
+                  onClick={() => setVariant("mono")}
+                  className={cn("px-3 py-1 text-[10px] font-bold rounded-full transition-colors uppercase tracking-wider", variant === "mono" ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:bg-accent/20")}
+                >
+                  Mono
+                </button>
+              </div>
+            )}
+            <img
+              src={activeLightImg}
+              alt={`${title} Light`}
+              className={`dark:hidden ${maxHeightClass} w-auto object-contain transition-transform group-hover:scale-105`}
+              onError={() => setLightImg(defaultLightImg)}
+            />
+            <img
+              src={activeDarkImg}
+              alt={`${title} Dark`}
+              className={`hidden dark:block ${maxHeightClass} w-auto object-contain transition-transform group-hover:scale-105 drop-shadow-md`}
+              onError={() => setDarkImg(defaultDarkImg)}
+            />
+          </div>
+        )}
 
         {/* Info Area */}
         <div className="p-6 flex flex-col flex-1 bg-surface">
           <div className="flex gap-2 mb-4">
-            <Badge tone="info" appearance="soft" size="sm" className="font-bold uppercase tracking-wider text-[10px] px-2.5 py-1">
+            <Badge tone={isMissing ? "neutral" : "info"} appearance="soft" size="sm" className="font-bold uppercase tracking-wider text-[10px] px-2.5 py-1">
               {badge1}
             </Badge>
-            <Badge tone="warning" appearance="soft" size="sm" className="font-bold uppercase tracking-wider text-[10px] px-2.5 py-1">
-              {badge2}
-            </Badge>
+            {badge2 && (
+              <Badge tone={isMissing ? "neutral" : "warning"} appearance="soft" size="sm" className="font-bold uppercase tracking-wider text-[10px] px-2.5 py-1">
+                {badge2}
+              </Badge>
+            )}
           </div>
 
           <div className="flex flex-col gap-2 mb-6">
@@ -258,20 +274,20 @@ export function LogoManagerCard({
             </p>
           </div>
 
-          <div className="mt-auto flex flex-col gap-2">
-            {!isMissing && (
-            <a href={lightImg} download className="w-full dark:hidden">
-              <Button variant="primary" className="w-full rounded-full" leftIcon={<Download className="size-4" />}>
-                Descargar SVG
-              </Button>
-            </a>
-            <a href={darkImg} download className="w-full hidden dark:block">
-              <Button variant="primary" className="w-full rounded-full" leftIcon={<Download className="size-4" />}>
-                Descargar SVG
-              </Button>
-            </a>
-
-          </div>
+          {!isMissing && (
+            <div className="mt-auto flex flex-col gap-2">
+              <a href={lightImg} download className="w-full dark:hidden">
+                <Button variant="primary" className="w-full rounded-full" leftIcon={<Download className="size-4" />}>
+                  Descargar SVG
+                </Button>
+              </a>
+              <a href={darkImg} download className="w-full hidden dark:block">
+                <Button variant="primary" className="w-full rounded-full" leftIcon={<Download className="size-4" />}>
+                  Descargar SVG
+                </Button>
+              </a>
+            </div>
+          )}
         </div>
       </div>
 

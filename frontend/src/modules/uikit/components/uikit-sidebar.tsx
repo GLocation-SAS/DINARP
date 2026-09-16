@@ -218,23 +218,10 @@ export const UIKIT_SECTIONS: UIKitSection[] = [
       { id: "404-page", label: "Página 404 (Not Found)" },
       { id: "under-construction-page", label: "Página en construcción" }
     ]
-  }, {
-    id: "map-geospatial-category",
-    label: "Mapa y Geoespacial (Map and Geospatial)",
-    icon: Layout,
-    group: "use-cases",
-    subItems: [
-      { id: "map-container", label: "Map Container & Controls" },
-      { id: "layers-panel", label: "Layers Panel & Legend" },
-      { id: "map-popup", label: "Map Popup & Coordinates" },
-      { id: "map-controls-composition", label: "Controles y Composición Visual" },
-      { id: "layer-patterns", label: "Patrones de Capas (Groups, Actions, Order)" },
-      { id: "map-states", label: "Estados del Mapa (Loading, Empty, Feature)" },
-    ]
   },
 
   // Módulos Especializados 11-15
-  
+
   {
     id: "reports-export-category",
     label: "Reportes y Exportación (Reports and Export)",

@@ -17,7 +17,7 @@ const inputGroupVariants = cva(
     "w-full",
     "min-w-0",
     "items-center",
-    "px-2",
+    "px-4",
 
     "overflow-hidden",
     "rounded-full",
@@ -42,6 +42,8 @@ const inputGroupVariants = cva(
           "hover:border-primary/50",
           "focus-within:border-primary/40",
           "focus-within:shadow-[0_0_20px_-12px_var(--primary)]",
+          "focus-within:border-primary focus-within:ring-4 focus-within:ring-primary/20",
+          "focus-within:shadow-[0_0_20px_-10px_var(--primary)]",
         ].join(" "),
 
         success: [
@@ -51,6 +53,7 @@ const inputGroupVariants = cva(
           "[--input-radial:color-mix(in_srgb,var(--color-success)_12%,transparent)]",
           "[--input-state-color:var(--success)]",
 
+          "focus-within:border-success focus-within:ring-4 focus-within:ring-success/20",
           "focus-within:shadow-[0_0_20px_-10px_var(--success)]",
         ].join(" "),
 
@@ -61,6 +64,7 @@ const inputGroupVariants = cva(
           "[--input-radial:color-mix(in_srgb,var(--color-danger)_12%,transparent)]",
           "[--input-state-color:var(--danger)]",
 
+          "focus-within:border-danger focus-within:ring-4 focus-within:ring-danger/20",
           "focus-within:shadow-[0_0_20px_-10px_var(--danger)]",
         ].join(" "),
       },
@@ -405,7 +409,7 @@ function InputGroupText({
   return (
     <span
       className={cn(
-        "flex items-center gap-2 text-sm text-muted-foreground [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-4",
+        "flex items-center gap-2.5 text-sm text-muted-foreground [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-4 pl-0.5",
         className
       )}
       {...props}

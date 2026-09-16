@@ -145,6 +145,8 @@ export const defaultHeaderConfig = {
   showNotifications: true,
 };
 
+export type HeaderConfig = typeof defaultHeaderConfig;
+
 /* ─────────────────────────────────────────────
    Componente: DropdownNav (para barra blanca)
    ───────────────────────────────────────────── */
@@ -416,21 +418,39 @@ function SearchOverlay({
 
 export function GeoportalHeader({
   customNavItems,
+  customConfig,
   hideUserActions,
   variant = "full",
   extraActions,
+  isStatic = false,
+  className,
 }: {
   customNavItems?: NavItem[];
+  customConfig?: HeaderConfig;
   hideUserActions?: boolean;
   variant?: "full" | "navigation" | "user-actions";
   extraActions?: React.ReactNode;
+  isStatic?: boolean;
+  className?: string;
 }) {
   const pathname = usePathname();
   const [displayNavItems, setDisplayNavItems] = React.useState(customNavItems || defaultNavItems);
-  const [headerConfig, setHeaderConfig] = React.useState(defaultHeaderConfig);
+  const [headerConfig, setHeaderConfig] = React.useState(customConfig || defaultHeaderConfig);
   const [searchOpen, setSearchOpen] = React.useState(false);
   const [sheetOpen, setSheetOpen] = React.useState(false);
   const [scrolled, setScrolled] = React.useState(false);
+
+  React.useEffect(() => {
+    if (customNavItems) {
+      setDisplayNavItems(customNavItems);
+    }
+  }, [customNavItems]);
+
+  React.useEffect(() => {
+    if (customConfig) {
+      setHeaderConfig(customConfig);
+    }
+  }, [customConfig]);
 
   const showNav = variant === "full" || variant === "navigation";
   const showUser = (variant === "full" || variant === "user-actions") && !hideUserActions;
@@ -474,45 +494,54 @@ export function GeoportalHeader({
 
   return (
     <>
-      <div className="h-[98px] lg:h-[106px] w-full shrink-0" aria-hidden="true" />
+      {!isStatic && (
+        <div className="h-[98px] lg:h-[106px] w-full shrink-0" aria-hidden="true" />
+      )}
       <header
-        id="geoportal-header"
+        id={isStatic ? undefined : "geoportal-header"}
         className={cn(
-          "fixed left-1/2 -translate-x-1/2 z-50 w-[calc(100%-2rem)] max-w-7xl flex flex-col transition-all duration-300",
-          scrolled ? "top-2" : "top-4"
+          isStatic
+            ? "relative w-full flex flex-col"
+            : "fixed left-1/2 -translate-x-1/2 z-50 w-[calc(100%-2rem)] max-w-7xl flex flex-col transition-all duration-300",
+          !isStatic && (scrolled ? "top-2" : "top-4"),
+          className
         )}
       >
         <div className="w-full bg-surface/90 backdrop-blur-md rounded-xl shadow-lg border border-border">
           <div className="w-full px-4 md:px-6">
             <div className="relative flex items-center justify-between h-16">
               {/* ── Logo oficial de la marca ── */}
-              <Link
-                href="/"
-                className={cn(
-                  "flex items-center gap-3 shrink-0 group",
-                  "focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none rounded-md"
-                )}
-              >
-                {headerConfig.showLogo && (
-                  <>
-                    <img
-                      src={headerConfig.logoUrlLight}
-                      alt="Logo DINARP GEOportal"
-                      className="h-10 w-auto object-contain dark:hidden"
-                    />
-                    <img
-                      src={headerConfig.logoUrlDark}
-                      alt="Logo DINARP GEOportal"
-                      className="h-10 w-auto object-contain hidden dark:block"
-                    />
-                  </>
-                )}
-                {headerConfig.title && (
-                  <span className="font-bold text-lg text-foreground ml-2 hidden sm:inline-block">
-                    {headerConfig.title}
-                  </span>
-                )}
-              </Link>
+              {variant !== "user-actions" ? (
+                <Link
+                  href="/"
+                  className={cn(
+                    "flex items-center gap-3 shrink-0 group",
+                    "focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none rounded-md"
+                  )}
+                >
+                  {headerConfig.showLogo && (
+                    <>
+                      <img
+                        src={headerConfig.logoUrlLight}
+                        alt="Logo DINARP GEOportal"
+                        className="h-10 w-auto object-contain dark:hidden"
+                      />
+                      <img
+                        src={headerConfig.logoUrlDark}
+                        alt="Logo DINARP GEOportal"
+                        className="h-10 w-auto object-contain hidden dark:block"
+                      />
+                    </>
+                  )}
+                  {headerConfig.title && (
+                    <span className="font-bold text-lg text-foreground ml-2 hidden sm:inline-block">
+                      {headerConfig.title}
+                    </span>
+                  )}
+                </Link>
+              ) : (
+                <div />
+              )}
 
               {/* ── Navegación desktop ── */}
               {showNav && (
@@ -693,10 +722,11 @@ export function GeoportalHeader({
             </div>
           </div>
         </div>
-      </header>
+      </header >
 
       {/* ── Search overlay ── */}
-      <SearchOverlay open={searchOpen} onClose={() => setSearchOpen(false)} navItems={displayNavItems} />
+      < SearchOverlay open={searchOpen} onClose={() => setSearchOpen(false)
+      } navItems={displayNavItems} />
     </>
   );
 }

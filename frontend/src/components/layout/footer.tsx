@@ -113,16 +113,6 @@ export function Footer() {
       </div>
 
       {/* Bottom Bar: Copyright & Socials */}
-      <div className="w-full border-t border-border/60 bg-surface">
-        <div className="max-w-7xl mx-auto px-6 md:px-12 py-6 flex flex-col md:flex-row items-center justify-between gap-6">
-          <div className="text-[10px] text-muted-foreground uppercase tracking-widest font-sans text-center md:text-left">
-            © 2026 GLocation S.A.S. · DINARP — Sistema de Gestión de Riesgos. Todos los derechos reservados.
-          </div>
-
-          <TooltipProvider delayDuration={200}>
-            <div className="flex items-center gap-2.5">
-              {config.socials.facebook.enabled && (
-                <Tooltip>
                   <TooltipTrigger asChild>
                     <a href="#" onClick={(e) => e.preventDefault()} className="size-8 rounded-full bg-surface-subtle border border-border flex items-center justify-center transition-all hover:bg-primary/10 hover:text-primary hover:border-primary/30 text-muted-foreground">
                       <svg className="size-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z" /></svg>

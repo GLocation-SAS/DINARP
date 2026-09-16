@@ -1,0 +1,122 @@
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import {
+  Layers,
+  LayoutGrid,
+  CheckCircle2,
+  FileCode2,
+  Palette,
+  ShieldCheck,
+} from "lucide-react";
+
+export default function WireframesPage() {
+  return (
+    <main className="layout-container py-12 flex flex-col gap-8">
+      {/* Header Section */}
+      <header className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 border-b border-border pb-6">
+        <div className="flex flex-col gap-2">
+          <div className="flex items-center gap-2">
+            <Badge tone="neutral" appearance="soft" size="sm">
+              Entorno Neutral
+            </Badge>
+            <Badge tone="success" appearance="soft" size="sm">
+              <CheckCircle2 className="size-3 mr-1" />
+              Ruta Activa
+            </Badge>
+          </div>
+          <h1 className="font-heading text-2xl md:text-3xl font-bold tracking-tight text-foreground">
+            Wireframes &amp; Prototipos
+          </h1>
+          <p className="text-muted-foreground text-sm max-w-2xl">
+            Espacio de trabajo aislado con tema neutral (<code>data-theme=&quot;wireframe&quot;</code>)
+            para maquetación de flujos y estructuras UX sin interferencia de colores de marca.
+          </p>
+        </div>
+
+        <div className="flex items-center gap-3">
+          <Button variant="secondary" size="sm">
+            <FileCode2 className="size-4 mr-1.5" />
+            Documentación
+          </Button>
+          <Button variant="primary" size="sm">
+            <Layers className="size-4 mr-1.5" />
+            Nuevo Wireframe
+          </Button>
+        </div>
+      </header>
+
+      {/* Grid Overview */}
+      <section className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <Card size="sm" className="bg-card border-border">
+          <CardHeader>
+            <div className="size-10 rounded-lg bg-muted flex items-center justify-center text-foreground mb-1">
+              <Palette className="size-5" />
+            </div>
+            <CardTitle>Tema Monocromático</CardTitle>
+            <CardDescription>
+              Variables semánticas mapeadas a la escala neutral para centrar el diseño en jerarquía y contenido.
+            </CardDescription>
+          </CardHeader>
+        </Card>
+
+        <Card size="sm" className="bg-card border-border">
+          <CardHeader>
+            <div className="size-10 rounded-lg bg-muted flex items-center justify-center text-foreground mb-1">
+              <ShieldCheck className="size-5" />
+            </div>
+            <CardTitle>Aislamiento Total</CardTitle>
+            <CardDescription>
+              No altera las rutas productivas ni las pantallas del kit oficial de DINARP.
+            </CardDescription>
+          </CardHeader>
+        </Card>
+
+        <Card size="sm" className="bg-card border-border">
+          <CardHeader>
+            <div className="size-10 rounded-lg bg-muted flex items-center justify-center text-foreground mb-1">
+              <LayoutGrid className="size-5" />
+            </div>
+            <CardTitle>Tokens Semánticos</CardTitle>
+            <CardDescription>
+              Utiliza exclusivamente clases semánticas del Design System sin colores hexadecimales hardcodeados.
+            </CardDescription>
+          </CardHeader>
+        </Card>
+      </section>
+
+      {/* Status Panel */}
+      <section className="rounded-2xl border border-border bg-surface p-6 flex flex-col gap-4">
+        <h2 className="font-heading text-lg font-bold text-foreground">
+          Confirmación de Estado
+        </h2>
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 p-4 rounded-xl bg-surface-subtle border border-border">
+          <div className="flex items-center gap-3">
+            <span className="relative flex size-3">
+              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-foreground opacity-75" />
+              <span className="relative inline-flex size-3 rounded-full bg-foreground" />
+            </span>
+            <div>
+              <p className="text-sm font-semibold text-foreground">
+                Ruta <code>/wireframes</code> configurada y operativa
+              </p>
+              <p className="text-xs text-muted-foreground">
+                Hereda <code>data-theme=&quot;wireframe&quot;</code> en todas las subrutas hijas.
+              </p>
+            </div>
+          </div>
+          <Badge tone="neutral" appearance="outline" size="sm">
+            src/app/wireframes/
+          </Badge>
+        </div>
+      </section>
+    </main>
+  );
+}
+

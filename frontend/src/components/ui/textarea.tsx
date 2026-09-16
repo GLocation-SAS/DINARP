@@ -19,6 +19,7 @@ const textareaVariants = cva(
           "[--input-radial:color-mix(in_srgb,var(--color-primary)_15%,transparent)]",
           "hover:border-primary/50",
           "focus-within:border-primary",
+          "focus-within:border-primary focus-within:ring-4 focus-within:ring-primary/20",
           "focus-within:shadow-[0_0_10px_-10px_var(--primary)]",
         ].join(" "),
         secondary: [
@@ -26,6 +27,7 @@ const textareaVariants = cva(
           "[--input-radial:color-mix(in_srgb,var(--color-secondary)_15%,transparent)]",
           "hover:border-secondary/50",
           "focus-within:border-secondary",
+          "focus-within:border-secondary focus-within:ring-4 focus-within:ring-secondary/20",
           "focus-within:shadow-[0_0_10px_-10px_var(--secondary)]",
         ].join(" "),
       },
@@ -36,6 +38,7 @@ const textareaVariants = cva(
           "[--input-glow:var(--danger)]",
           "[--input-radial:color-mix(in_srgb,var(--color-danger)_12%,transparent)]",
           "focus-within:shadow-[0_0_10px_-8px_var(--danger)]",
+          "focus-within:ring-4 focus-within:ring-danger/20 focus-within:shadow-[0_0_10px_-8px_var(--danger)]",
         ].join(" "),
       },
     },

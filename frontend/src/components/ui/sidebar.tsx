@@ -537,13 +537,18 @@ function SidebarMenuButton({
       data-active={isActive}
       className={cn(
         sidebarMenuButtonVariants({ variant, size }),
+        "relative overflow-hidden rounded-md",
         isActive && [
-          "bg-primary text-sidebar-primary-foreground font-bold shadow-md shadow-primary/20",
-          "dark:text-white dark:[&_svg]:text-white",
-          "rounded-xl",
-          "hover:bg-primary/90 hover:text-sidebar-primary-foreground dark:hover:text-white"
+          "bg-gradient-to-r from-muted/30 via-primary/20 to-primary/80 dark:from-white/[0.04] dark:via-primary/30 dark:to-primary/90",
+          "text-primary dark:text-white font-semibold shadow-xs",
+          "before:absolute before:left-0 before:top-1/2 before:-translate-y-1/2 before:w-1 before:h-5 before:bg-primary dark:before:bg-white before:rounded-r-full",
+          "after:absolute after:right-1.5 after:top-1/2 after:-translate-y-1/2 after:w-1 after:h-4 after:bg-primary-300 after:dark:bg-white after:rounded-full after:shadow-[0_0_8px_var(--primary)] group-data-[collapsible=icon]:after:hidden",
+          "hover:from-muted/40 hover:via-primary/30 hover:to-primary/90"
         ],
-        !isActive && "rounded-xl hover:bg-muted/50",
+        !isActive && [
+          "hover:bg-gradient-to-r hover:from-transparent hover:via-muted/20 hover:to-muted/40",
+          "text-sidebar-foreground hover:text-primary dark:hover:text-primary-300"
+        ],
         "group-data-[collapsible=icon]:justify-center",
         className
       )}
@@ -707,7 +712,14 @@ function SidebarMenuSubButton({
       data-size={size}
       data-active={isActive}
       className={cn(
-        "flex h-7 min-w-0 -translate-x-px items-center gap-2 overflow-hidden rounded-full px-3 text-sidebar-foreground ring-sidebar-ring outline-hidden group-data-[collapsible=icon]:hidden hover:bg-sidebar-accent hover:text-sidebar-accent-foreground dark:hover:text-white focus-visible:ring-2 active:bg-sidebar-accent active:text-sidebar-accent-foreground disabled:pointer-events-none disabled:opacity-50 aria-disabled:pointer-events-none aria-disabled:opacity-50 data-[size=md]:text-sm data-[size=sm]:text-xs data-active:bg-surface data-active:shadow-sm data-active:text-foreground dark:data-active:text-white dark:data-active:[&_svg]:text-white dark:data-active:bg-muted/50 [&>span:last-child]:truncate [&>svg]:size-4 [&>svg]:shrink-0",
+        "relative overflow-hidden flex h-7 min-w-0 -translate-x-px items-center gap-2 rounded-md px-3 text-sidebar-foreground ring-sidebar-ring outline-hidden group-data-[collapsible=icon]:hidden focus-visible:ring-2 disabled:pointer-events-none disabled:opacity-50 aria-disabled:pointer-events-none aria-disabled:opacity-50 data-[size=md]:text-sm data-[size=sm]:text-xs [&>span:last-child]:truncate [&>svg]:size-4 [&>svg]:shrink-0 transition-all duration-200",
+        isActive && [
+          "bg-gradient-to-r from-muted/30 via-primary/20 to-primary/70 dark:from-white/[0.04] dark:via-primary/25 dark:to-primary/80",
+          "text-primary dark:text-white font-medium shadow-xs",
+          "before:absolute before:left-0 before:top-1/2 before:-translate-y-1/2 before:w-0.5 before:h-4 before:bg-primary dark:before:bg-white before:rounded-r-full",
+          "after:absolute after:right-1 after:top-1/2 after:-translate-y-1/2 after:w-1 after:h-3 after:bg-primary-300 after:dark:bg-white after:rounded-full after:shadow-[0_0_6px_var(--primary)]"
+        ],
+        !isActive && "text-muted-foreground hover:text-primary dark:hover:text-primary-300 hover:bg-muted/40",
         className
       )}
       {...props}

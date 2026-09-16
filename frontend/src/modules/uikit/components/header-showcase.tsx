@@ -5,7 +5,7 @@ import { SubSection } from './sub-section';
 import { cn } from "@/lib/utils";
 import { Monitor, Tablet, Smartphone, GripVertical, Layers, Menu, User, Settings2 } from "lucide-react";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { defaultNavItems, NavItem, defaultHeaderConfig } from "@/components/layout/geoportal-header";
+import { GeoportalHeader, defaultNavItems, NavItem, defaultHeaderConfig } from "@/components/layout/geoportal-header";
 import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter, DialogTrigger } from "@/components/ui/dialog";
@@ -230,20 +230,21 @@ export function HeaderShowcase() {
           )}
           style={{ width: `${viewportWidth}px`, maxWidth: "100%" }}
         >
-          {/* Header dentro del iframe simulado con la variante correspondiente */}
-          <iframe
-            ref={iframeRef}
-            key={theme}
-            src={`/header-preview?variant=${headerVariant}&theme=${theme}`}
-            className="w-full h-[600px] border-none bg-background pointer-events-auto"
-            title="Header Preview"
-            onLoad={() => {
-              if (iframeRef.current?.contentWindow) {
-                iframeRef.current.contentWindow.postMessage({ type: 'UPDATE_NAV', payload: safePayload }, '*');
-                iframeRef.current.contentWindow.postMessage({ type: 'UPDATE_HEADER_CONFIG', payload: headerConfig }, '*');
-              }
-            }}
-          />
+          {/* Header renderizado directamente como componente vivo en la sección de demostración */}
+          <div className="w-full bg-muted/20 p-4 md:p-6 min-h-[360px] flex flex-col">
+            <GeoportalHeader
+              variant={headerVariant}
+              isStatic={true}
+              customNavItems={navItemsState.filter((_, i) => !hiddenItems.includes(i))}
+              customConfig={headerConfig}
+            />
+            <div className="p-8 flex-1 flex flex-col items-center justify-center text-center text-muted-foreground bg-surface rounded-xl border border-dashed border-border mt-4">
+              <span className="text-sm font-semibold text-foreground">Vista interactiva de navegación</span>
+              <span className="text-xs text-muted-foreground mt-1 font-mono">
+                Ancho viewport: {Math.round(viewportWidth)}px · Variante activa: {headerVariant}
+              </span>
+            </div>
+          </div>
 
           {/* ── Drag handle derecho ── */}
           <div
@@ -302,7 +303,7 @@ export function HeaderShowcase() {
               </tr>
               <tr>
                 <td className="px-6 py-4 font-semibold text-primary">User Actions (Usuario)</td>
-                <td className="px-6 py-4 text-center text-success font-bold">Sí</td>
+                <td className="px-6 py-4 text-center text-muted-foreground font-bold">No</td>
                 <td className="px-6 py-4 text-center text-muted-foreground font-bold">No</td>
                 <td className="px-6 py-4 text-center text-success font-bold">Sí</td>
                 <td className="px-6 py-4 text-center text-success font-bold">Sí</td>
