@@ -49,7 +49,7 @@ export function WireframeDashboardLayout({
       title: "SOLICITUDES",
       items: [
         { id: "solicitudes", label: "Solicitudes", icon: FileText, href: "/wireframes/solicitudes" },
-        { id: "aprobaciones", label: "Aprobaciones", icon: CheckSquare, href: "/wireframes/solicitudes" },
+        { id: "aprobaciones", label: "Aprobaciones y permisos", icon: CheckSquare, href: "/wireframes/aprobaciones" },
         { id: "proyectos", label: "Proyectos", icon: Folder, href: "/wireframes/solicitudes" },
       ],
     },

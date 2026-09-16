@@ -49,7 +49,7 @@ export default function WireframeDashboardPage() {
       title: "Aprobaciones",
       description: "Revisa las solicitudes pendientes de aprobación.",
       icon: UserCheck,
-      href: "/wireframes/solicitudes",
+      href: "/wireframes/aprobaciones",
     },
     {
       id: "catalogo-fuentes",
