@@ -190,100 +190,66 @@ export default function WireframeListadoSeguimientoPage() {
         </div>
 
         {/* ── 2. Buscador y Filtros ── */}
-        <div className="space-y-3">
-          {/* Input de Búsqueda */}
-          <div className="w-full max-w-md">
-            <InputGroup
-              size="default"
-              leftIcon={<Search className="size-4 text-muted-foreground" />}
-              className="bg-surface h-11 rounded-xl border-border/80"
-            >
-              <InputGroupInput
-                placeholder="Buscar por código, proyecto o institución..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="text-xs sm:text-sm"
-              />
-            </InputGroup>
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-3">
+          {/* Buscador */}
+          <div className="w-full sm:max-w-md">
+            <SearchBar
+              placeholder="Buscar por código, proyecto o institución..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              onClear={() => setSearchQuery("")}
+              className="bg-surface rounded-xl border-border/80"
+            />
           </div>
 
-          {/* Barra de Filtros Desplegables y Fechas */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3 items-end">
-            {/* Filtro Estado */}
+          <div className="flex items-center gap-2 w-full sm:w-auto justify-end">
+            {/* Botón Filtros Desplegable */}
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button
                   variant="outline"
-                  className="h-11 px-3 py-1.5 flex flex-col items-start justify-center bg-surface border-border/80 text-left w-full"
+                  className="h-11 px-4 text-xs font-semibold gap-2 border-border/80 bg-surface w-full sm:w-auto cursor-pointer"
                 >
-                  <span className="text-[10px] font-medium text-muted-foreground leading-none">Estado</span>
-                  <div className="w-full flex items-center justify-between gap-1 mt-0.5">
-                    <span className="text-xs font-semibold text-foreground truncate">{filterEstado}</span>
-                    <ChevronDown className="size-3.5 text-muted-foreground shrink-0" />
-                  </div>
+                  <Filter className="size-3.5 text-muted-foreground" />
+                  <span>Filtros</span>
+                  {(filterEstado !== "Todos" || filterInstitucion !== "Todas" || filterResponsable !== "Todos") && (
+                    <span className="size-2 rounded-full bg-foreground" />
+                  )}
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="start" className="w-48">
-                <DropdownMenuLabel className="text-xs">Estado de solicitud</DropdownMenuLabel>
+              <DropdownMenuContent align="end" className="w-56">
+                <DropdownMenuLabel className="text-xs font-bold text-foreground">
+                  Filtrar por Estado
+                </DropdownMenuLabel>
                 <DropdownMenuSeparator />
                 <DropdownMenuRadioGroup value={filterEstado} onValueChange={setFilterEstado}>
-                  <DropdownMenuRadioItem value="Todos">Todos</DropdownMenuRadioItem>
+                  <DropdownMenuRadioItem value="Todos">Todos los estados</DropdownMenuRadioItem>
                   <DropdownMenuRadioItem value="En revisión">En revisión</DropdownMenuRadioItem>
                   <DropdownMenuRadioItem value="Aprobada">Aprobada</DropdownMenuRadioItem>
                   <DropdownMenuRadioItem value="En implementación">En implementación</DropdownMenuRadioItem>
                   <DropdownMenuRadioItem value="Requiere ajustes">Requiere ajustes</DropdownMenuRadioItem>
                   <DropdownMenuRadioItem value="Borrador">Borrador</DropdownMenuRadioItem>
                 </DropdownMenuRadioGroup>
-              </DropdownMenuContent>
-            </DropdownMenu>
 
-            {/* Filtro Institución */}
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button
-                  variant="outline"
-                  className="h-11 px-3 py-1.5 flex flex-col items-start justify-center bg-surface border-border/80 text-left w-full"
-                >
-                  <span className="text-[10px] font-medium text-muted-foreground leading-none">Institución</span>
-                  <div className="w-full flex items-center justify-between gap-1 mt-0.5">
-                    <span className="text-xs font-semibold text-foreground truncate">{filterInstitucion}</span>
-                    <ChevronDown className="size-3.5 text-muted-foreground shrink-0" />
-                  </div>
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="start" className="w-52">
-                <DropdownMenuLabel className="text-xs">Institución solicitante</DropdownMenuLabel>
                 <DropdownMenuSeparator />
+                <DropdownMenuLabel className="text-xs font-bold text-foreground">
+                  Institución Solicitante
+                </DropdownMenuLabel>
                 <DropdownMenuRadioGroup value={filterInstitucion} onValueChange={setFilterInstitucion}>
-                  <DropdownMenuRadioItem value="Todas">Todas</DropdownMenuRadioItem>
+                  <DropdownMenuRadioItem value="Todas">Todas las instituciones</DropdownMenuRadioItem>
                   <DropdownMenuRadioItem value="Ministerio de Gobierno">Ministerio de Gobierno</DropdownMenuRadioItem>
                   <DropdownMenuRadioItem value="Ministerio de Educación">Ministerio de Educación</DropdownMenuRadioItem>
                   <DropdownMenuRadioItem value="Municipio de Quito">Municipio de Quito</DropdownMenuRadioItem>
                   <DropdownMenuRadioItem value="Agencia de Tránsito">Agencia de Tránsito</DropdownMenuRadioItem>
                   <DropdownMenuRadioItem value="Municipio de Cuenca">Municipio de Cuenca</DropdownMenuRadioItem>
                 </DropdownMenuRadioGroup>
-              </DropdownMenuContent>
-            </DropdownMenu>
 
-            {/* Filtro Responsable */}
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button
-                  variant="outline"
-                  className="h-11 px-3 py-1.5 flex flex-col items-start justify-center bg-surface border-border/80 text-left w-full"
-                >
-                  <span className="text-[10px] font-medium text-muted-foreground leading-none">Responsable</span>
-                  <div className="w-full flex items-center justify-between gap-1 mt-0.5">
-                    <span className="text-xs font-semibold text-foreground truncate">{filterResponsable}</span>
-                    <ChevronDown className="size-3.5 text-muted-foreground shrink-0" />
-                  </div>
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="start" className="w-48">
-                <DropdownMenuLabel className="text-xs">Responsable actual</DropdownMenuLabel>
                 <DropdownMenuSeparator />
+                <DropdownMenuLabel className="text-xs font-bold text-foreground">
+                  Responsable
+                </DropdownMenuLabel>
                 <DropdownMenuRadioGroup value={filterResponsable} onValueChange={setFilterResponsable}>
-                  <DropdownMenuRadioItem value="Todos">Todos</DropdownMenuRadioItem>
+                  <DropdownMenuRadioItem value="Todos">Todos los responsables</DropdownMenuRadioItem>
                   <DropdownMenuRadioItem value="María López">María López</DropdownMenuRadioItem>
                   <DropdownMenuRadioItem value="Carlos Núñez">Carlos Núñez</DropdownMenuRadioItem>
                   <DropdownMenuRadioItem value="Ana Torres">Ana Torres</DropdownMenuRadioItem>
@@ -293,51 +259,18 @@ export default function WireframeListadoSeguimientoPage() {
               </DropdownMenuContent>
             </DropdownMenu>
 
-            {/* Fecha Desde */}
-            <div className="space-y-0.5">
-              <span className="text-[10px] font-medium text-muted-foreground block pl-1">Desde</span>
-              <InputGroup
-                size="default"
-                rightIcon={<CalendarIcon className="size-3.5 text-muted-foreground" />}
-                className="bg-surface h-11 rounded-xl border-border/80"
+            {(searchQuery || filterEstado !== "Todos" || filterInstitucion !== "Todas" || filterResponsable !== "Todos" || fechaDesde || fechaHasta) && (
+              <Button
+                type="button"
+                variant="outline"
+                onClick={resetFilters}
+                className="h-11 px-3 text-xs font-medium text-muted-foreground hover:text-foreground cursor-pointer"
+                title="Restablecer filtros"
               >
-                <InputGroupInput
-                  placeholder="dd/mm/aaaa"
-                  value={fechaDesde}
-                  onChange={(e) => setFechaDesde(e.target.value)}
-                  className="text-xs font-mono"
-                />
-              </InputGroup>
-            </div>
-
-            {/* Fecha Hasta */}
-            <div className="space-y-0.5">
-              <span className="text-[10px] font-medium text-muted-foreground block pl-1">Hasta</span>
-              <InputGroup
-                size="default"
-                rightIcon={<CalendarIcon className="size-3.5 text-muted-foreground" />}
-                className="bg-surface h-11 rounded-xl border-border/80"
-              >
-                <InputGroupInput
-                  placeholder="dd/mm/aaaa"
-                  value={fechaHasta}
-                  onChange={(e) => setFechaHasta(e.target.value)}
-                  className="text-xs font-mono"
-                />
-              </InputGroup>
-            </div>
-
-            {/* Botón Limpiar Filtros */}
-            <Button
-              type="button"
-              variant="outline"
-              onClick={resetFilters}
-              className="h-11 px-3.5 text-xs font-semibold gap-1.5 border-border shrink-0 w-full justify-center"
-              title="Limpiar filtros"
-            >
-              <RotateCcw className="size-3.5" />
-              <span>Limpiar filtros</span>
-            </Button>
+                <RotateCcw className="size-3.5 mr-1" />
+                <span>Limpiar</span>
+              </Button>
+            )}
           </div>
         </div>
 

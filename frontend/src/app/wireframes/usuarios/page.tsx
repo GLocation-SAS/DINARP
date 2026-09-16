@@ -391,6 +391,22 @@ export default function WireframeListadoUsuariosPage() {
                             type="button"
                             variant="ghost"
                             size="icon-sm"
+                            onClick={(e) => handleOpenDetailModal(row, e)}
+                            className="size-8 text-muted-foreground hover:text-foreground hover:bg-muted/50"
+                            aria-label="Ver detalle"
+                          >
+                            <Eye className="size-3.5" />
+                          </Button>
+                        </TooltipTrigger>
+                        <TooltipContent>Ver detalle</TooltipContent>
+                      </Tooltip>
+
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <Button
+                            type="button"
+                            variant="ghost"
+                            size="icon-sm"
                             onClick={(e) => handleOpenEditModal(row, e)}
                             className="size-8 text-muted-foreground hover:text-foreground hover:bg-muted/50"
                             aria-label="Editar usuario"
@@ -401,52 +417,21 @@ export default function WireframeListadoUsuariosPage() {
                         <TooltipContent>Editar usuario</TooltipContent>
                       </Tooltip>
 
-                      <DropdownMenu>
-                        <Tooltip>
-                          <TooltipTrigger asChild>
-                            <DropdownMenuTrigger asChild>
-                              <Button
-                                type="button"
-                                variant="ghost"
-                                size="icon-sm"
-                                className="size-8 text-muted-foreground hover:text-foreground hover:bg-muted/50"
-                                aria-label="Más opciones"
-                              >
-                                <MoreVertical className="size-3.5" />
-                              </Button>
-                            </DropdownMenuTrigger>
-                          </TooltipTrigger>
-                          <TooltipContent>Más opciones</TooltipContent>
-                        </Tooltip>
-                        <DropdownMenuContent align="end" className="w-44">
-                          <DropdownMenuItem onClick={(e) => handleOpenDetailModal(row, e)}>
-                            <Eye className="size-3.5 mr-2 text-muted-foreground" />
-                            <span>Ver detalle</span>
-                          </DropdownMenuItem>
-                          <DropdownMenuItem onClick={(e) => handleOpenEditModal(row, e)}>
-                            <Pencil className="size-3.5 mr-2 text-muted-foreground" />
-                            <span>Editar</span>
-                          </DropdownMenuItem>
-                          <DropdownMenuSeparator />
-                          {row.estado === "Activo" ? (
-                            <DropdownMenuItem
-                              className="text-foreground focus:text-foreground"
-                              onClick={(e) => handleOpenDeactivateModal(row, e)}
-                            >
-                              <Lock className="size-3.5 mr-2" />
-                              <span>Desactivar</span>
-                            </DropdownMenuItem>
-                          ) : (
-                            <DropdownMenuItem
-                              className="text-foreground focus:text-foreground"
-                              onClick={(e) => handleOpenDeactivateModal(row, e)}
-                            >
-                              <Unlock className="size-3.5 mr-2" />
-                              <span>Reactivar</span>
-                            </DropdownMenuItem>
-                          )}
-                        </DropdownMenuContent>
-                      </DropdownMenu>
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <Button
+                            type="button"
+                            variant="ghost"
+                            size="icon-sm"
+                            onClick={(e) => handleOpenDeactivateModal(row, e)}
+                            className="size-8 text-muted-foreground hover:text-foreground hover:bg-muted/50"
+                            aria-label={row.estado === "Activo" ? "Desactivar" : "Reactivar"}
+                          >
+                            {row.estado === "Activo" ? <Lock className="size-3.5" /> : <Unlock className="size-3.5" />}
+                          </Button>
+                        </TooltipTrigger>
+                        <TooltipContent>{row.estado === "Activo" ? "Desactivar" : "Reactivar"}</TooltipContent>
+                      </Tooltip>
                     </div>
                   </TableCell>
                 </TableRow>

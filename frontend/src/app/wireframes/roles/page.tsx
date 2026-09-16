@@ -382,6 +382,22 @@ export default function WireframeListadoRolesPage() {
                             type="button"
                             variant="ghost"
                             size="icon-sm"
+                            onClick={(e) => handleOpenDetailModal(row, e)}
+                            className="size-8 text-muted-foreground hover:text-foreground hover:bg-muted/50"
+                            aria-label="Ver detalle"
+                          >
+                            <Eye className="size-3.5" />
+                          </Button>
+                        </TooltipTrigger>
+                        <TooltipContent>Ver detalle</TooltipContent>
+                      </Tooltip>
+
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <Button
+                            type="button"
+                            variant="ghost"
+                            size="icon-sm"
                             onClick={(e) => handleOpenEdit(row, e)}
                             className="size-8 text-muted-foreground hover:text-foreground hover:bg-muted/50"
                             aria-label="Editar rol"
@@ -392,63 +408,53 @@ export default function WireframeListadoRolesPage() {
                         <TooltipContent>Editar rol</TooltipContent>
                       </Tooltip>
 
-                      <DropdownMenu>
-                        <Tooltip>
-                          <TooltipTrigger asChild>
-                            <DropdownMenuTrigger asChild>
-                              <Button
-                                type="button"
-                                variant="ghost"
-                                size="icon-sm"
-                                className="size-8 text-muted-foreground hover:text-foreground hover:bg-muted/50"
-                                aria-label="Más opciones"
-                              >
-                                <MoreVertical className="size-3.5" />
-                              </Button>
-                            </DropdownMenuTrigger>
-                          </TooltipTrigger>
-                          <TooltipContent>Más opciones</TooltipContent>
-                        </Tooltip>
-                        <DropdownMenuContent align="end" className="w-44">
-                          <DropdownMenuItem onClick={(e) => handleOpenDetailModal(row, e)}>
-                            <Eye className="size-3.5 mr-2 text-muted-foreground" />
-                            <span>Ver detalle</span>
-                          </DropdownMenuItem>
-                          <DropdownMenuItem onClick={(e) => handleOpenEdit(row, e)}>
-                            <Pencil className="size-3.5 mr-2 text-muted-foreground" />
-                            <span>Editar</span>
-                          </DropdownMenuItem>
-                          <DropdownMenuItem onClick={(e) => handleDuplicate(row, e)}>
-                            <Copy className="size-3.5 mr-2 text-muted-foreground" />
-                            <span>Duplicar rol</span>
-                          </DropdownMenuItem>
-                          <DropdownMenuSeparator />
-                          {row.estado === "Activo" ? (
-                            <DropdownMenuItem
-                              className="text-foreground focus:text-foreground"
-                              onClick={(e) => handleOpenWarning(row, "toggle", e)}
-                            >
-                              <Lock className="size-3.5 mr-2" />
-                              <span>Desactivar</span>
-                            </DropdownMenuItem>
-                          ) : (
-                            <DropdownMenuItem
-                              className="text-foreground focus:text-foreground"
-                              onClick={(e) => handleOpenWarning(row, "toggle", e)}
-                            >
-                              <Unlock className="size-3.5 mr-2" />
-                              <span>Reactivar</span>
-                            </DropdownMenuItem>
-                          )}
-                          <DropdownMenuItem
-                            className="text-destructive focus:text-destructive"
-                            onClick={(e) => handleOpenWarning(row, "delete", e)}
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <Button
+                            type="button"
+                            variant="ghost"
+                            size="icon-sm"
+                            onClick={(e) => handleDuplicate(row, e)}
+                            className="size-8 text-muted-foreground hover:text-foreground hover:bg-muted/50"
+                            aria-label="Duplicar rol"
                           >
-                            <Trash2 className="size-3.5 mr-2" />
-                            <span>Eliminar</span>
-                          </DropdownMenuItem>
-                        </DropdownMenuContent>
-                      </DropdownMenu>
+                            <Copy className="size-3.5" />
+                          </Button>
+                        </TooltipTrigger>
+                        <TooltipContent>Duplicar rol</TooltipContent>
+                      </Tooltip>
+
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <Button
+                            type="button"
+                            variant="ghost"
+                            size="icon-sm"
+                            onClick={(e) => handleOpenWarning(row, "toggle", e)}
+                            className="size-8 text-muted-foreground hover:text-foreground hover:bg-muted/50"
+                            aria-label={row.estado === "Activo" ? "Desactivar" : "Reactivar"}
+                          >
+                            {row.estado === "Activo" ? <Lock className="size-3.5" /> : <Unlock className="size-3.5" />}
+                          </Button>
+                        </TooltipTrigger>
+                        <TooltipContent>{row.estado === "Activo" ? "Desactivar" : "Reactivar"}</TooltipContent>
+                      </Tooltip>
+
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <Button
+                            type="button"
+                            variant="ghost"
+                            size="icon-sm"
+                            onClick={(e) => handleOpenWarning(row, "delete", e)}
+                            className="size-8 text-destructive hover:text-destructive hover:bg-destructive/10"
+                            aria-label="Eliminar rol"
+                          >
+                            <Trash2 className="size-3.5" />
+                          </Button>
+                        </TooltipTrigger>
+                        <TooltipContent>Eliminar rol</TooltipContent>
+                      </Tooltip>
                     </div>
                   </TableCell>
                 </TableRow>
