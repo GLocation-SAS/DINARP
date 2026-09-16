@@ -1,11 +1,10 @@
 ﻿const fs = require('fs');
-let content = fs.readFileSync('src/modules/uikit/components/forms-filters-showcase.tsx', 'utf8');
+let content = fs.readFileSync('src/modules/uikit/components/data-showcase.tsx', 'utf8');
 
-if (!content.includes('import { Badge }')) {
-    content = content.replace(
-        /import \{ Button \} from "@\/components\/ui\/button";/,
-        `import { Button } from "@/components/ui/button";\nimport { Badge } from "@/components/ui/badge";`
-    );
-}
+// I accidentally deleted the whole import block with the fuzzy replacement logic. Let's fix it by regex instead.
+content = content.replace(
+  'Hash, Clock, Navigation, GraduationCap, AlertTriangle, Map, CheckCircle2, Info, XCircle, Zap',
+  'Hash, Clock, Navigation, GraduationCap, AlertTriangle, Map, CheckCircle2, Info, XCircle, Zap, FileText'
+);
 
-fs.writeFileSync('src/modules/uikit/components/forms-filters-showcase.tsx', content, 'utf8');
+fs.writeFileSync('src/modules/uikit/components/data-showcase.tsx', content, 'utf8');

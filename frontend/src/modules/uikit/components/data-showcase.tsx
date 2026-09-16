@@ -6,7 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import {
   Building2, Layers, BarChart3,
   MapPin, Shield, Bell, Globe,
-  Hash, Clock, Navigation, GraduationCap, AlertTriangle, Map, CheckCircle2, Info, XCircle, Zap
+  Hash, Clock, Navigation, GraduationCap, AlertTriangle, Map, CheckCircle2, Info, XCircle, Zap, FileText
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { CapacityCard } from "@/components/ui/capacity-card";

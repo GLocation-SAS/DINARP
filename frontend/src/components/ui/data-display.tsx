@@ -167,7 +167,7 @@ export function InteractiveCard({
       )}
     >
       {subtitle && (
-        <Badge appearance="soft" tone={color === "default" || color === "purple" ? "neutral" : color} className={`text-[10px] px-2 py-0.5 mb-2 shadow-none border-transparent font-semibold z-10 ${color !== "default" ? "bg-" + color + "/20 text-" + color : "bg-muted-foreground/20 text-foreground"}`}>
+        <Badge appearance="soft" tone={color === "default" || color === "purple" ? "neutral" : color} className={cn("text-[10px] px-2 py-0.5 mb-2 shadow-none border-transparent font-semibold z-10", color !== "default" && "bg-" + color + "/20 text-" + color)}>
           {subtitle}
         </Badge>
       )}
