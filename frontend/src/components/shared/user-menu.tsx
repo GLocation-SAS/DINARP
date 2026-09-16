@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
+import { useRouter } from "next/navigation";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -26,8 +27,14 @@ import { Sheet, SheetContent, SheetTitle } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
 
 export function UserMenu() {
+  const router = useRouter();
   const isMobile = useIsMobile();
   const [open, setOpen] = useState(false);
+
+  const navigateTo = (path: string) => {
+    setOpen(false);
+    router.push(path);
+  };
 
   const TriggerButton = (
     <button className="group flex items-center gap-2 rounded-full outline-none pr-3 pl-1.5 py-1.5 hover:bg-surface-subtle data-[state=open]:bg-surface-subtle transition-all cursor-pointer border border-transparent hover:border-border">
@@ -92,15 +99,15 @@ export function UserMenu() {
             <div className="h-px bg-border/60 mx-1 sm:mx-2 mb-4 sm:mb-6" />
 
             <div className="flex flex-col gap-1 sm:gap-2">
-              <MobileMenuItem icon={User} label="Perfil" onClick={() => setOpen(false)} />
-              <MobileMenuItem icon={Diamond} label="Suscripción" onClick={() => setOpen(false)} />
-              <MobileMenuItem icon={Sparkles} label="Inspiraciones" isActive onClick={() => setOpen(false)} />
-              <MobileMenuItem icon={Settings} label="Ajustes" onClick={() => setOpen(false)} />
+              <MobileMenuItem icon={User} label="Perfil" onClick={() => navigateTo("/construccion")} />
+              <MobileMenuItem icon={Diamond} label="Suscripción" onClick={() => navigateTo("/construccion")} />
+              <MobileMenuItem icon={Sparkles} label="Inspiraciones" isActive onClick={() => navigateTo("/uikit")} />
+              <MobileMenuItem icon={Settings} label="Ajustes" onClick={() => navigateTo("/construccion")} />
 
               <div className="h-px bg-border my-2 mx-1 sm:mx-2" />
 
-              <MobileMenuItem icon={Bell} label="Actualizaciones" badge="Nuevo" onClick={() => setOpen(false)} />
-              <MobileMenuItem icon={LogOut} label="Cerrar sesión" isWarning onClick={() => setOpen(false)} />
+              <MobileMenuItem icon={Bell} label="Actualizaciones" badge="Nuevo" onClick={() => navigateTo("/notifications-menu-preview")} />
+              <MobileMenuItem icon={LogOut} label="Cerrar sesión" isWarning onClick={() => navigateTo("/login")} />
             </div>
           </div>
         </SheetContent>
@@ -140,15 +147,15 @@ export function UserMenu() {
         </div>
 
         <div className="flex flex-col gap-0.5">
-          <DesktopMenuItem icon={User} label="Perfil" onClick={() => setOpen(false)} />
-          <DesktopMenuItem icon={Diamond} label="Suscripción" onClick={() => setOpen(false)} />
-          <DesktopMenuItem icon={Sparkles} label="Inspiraciones" isActive onClick={() => setOpen(false)} />
-          <DesktopMenuItem icon={Settings} label="Ajustes" onClick={() => setOpen(false)} />
+          <DesktopMenuItem icon={User} label="Perfil" onClick={() => navigateTo("/construccion")} />
+          <DesktopMenuItem icon={Diamond} label="Suscripción" onClick={() => navigateTo("/construccion")} />
+          <DesktopMenuItem icon={Sparkles} label="Inspiraciones" isActive onClick={() => navigateTo("/uikit")} />
+          <DesktopMenuItem icon={Settings} label="Ajustes" onClick={() => navigateTo("/construccion")} />
 
           <DropdownMenuSeparator className="my-1 bg-border/50" />
 
-          <DesktopMenuItem icon={Bell} label="Actualizaciones" badge="Nuevo" onClick={() => setOpen(false)} />
-          <DesktopMenuItem icon={LogOut} label="Cerrar sesión" isWarning onClick={() => setOpen(false)} />
+          <DesktopMenuItem icon={Bell} label="Actualizaciones" badge="Nuevo" onClick={() => navigateTo("/notifications-menu-preview")} />
+          <DesktopMenuItem icon={LogOut} label="Cerrar sesión" isWarning onClick={() => navigateTo("/login")} />
         </div>
       </DropdownMenuContent>
     </DropdownMenu>

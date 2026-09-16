@@ -1,6 +1,7 @@
 "use client";
 
 import React from 'react';
+import { useRouter } from 'next/navigation';
 import { toast } from "sonner";
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
@@ -29,6 +30,7 @@ import { CapacityCard } from '@/components/ui/capacity-card';
 import { InputGroup, InputGroupInput, InputGroupButton } from '@/components/ui/input-group';
 
 export default function DesignSystemLoginPage() {
+  const router = useRouter();
   const [email, setEmail] = React.useState('');
   const [password, setPassword] = React.useState('');
   const [emailState, setEmailState] = React.useState<'default' | 'success' | 'error'>('default');
@@ -72,7 +74,7 @@ export default function DesignSystemLoginPage() {
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
-    window.location.href = '/uikit?login=success';
+    router.push('/uikit?login=success');
   };
 
   return (

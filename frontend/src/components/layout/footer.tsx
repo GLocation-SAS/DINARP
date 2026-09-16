@@ -74,9 +74,9 @@ export function Footer() {
             </h3>
             <ul className="flex flex-col items-start font-sans text-body-sm text-muted-foreground gap-3 sm:gap-3.5">
               <li><Link href="/" className="hover:text-primary transition-colors duration-200">Inicio</Link></li>
-              <li><Link href="#" className="hover:text-primary transition-colors duration-200">Interoperabilidad</Link></li>
-              <li><Link href="#" className="hover:text-primary transition-colors duration-200">Solicitudes</Link></li>
-              <li><Link href="#" className="hover:text-primary transition-colors duration-200">Centro de ayuda</Link></li>
+              <li><Link href="/construccion" className="hover:text-primary transition-colors duration-200">Interoperabilidad</Link></li>
+              <li><Link href="/construccion" className="hover:text-primary transition-colors duration-200">Solicitudes</Link></li>
+              <li><Link href="/construccion" className="hover:text-primary transition-colors duration-200">Centro de ayuda</Link></li>
             </ul>
           </div>
 
@@ -86,9 +86,9 @@ export function Footer() {
               Información
             </h3>
             <ul className="flex flex-col items-start font-sans text-body-sm text-muted-foreground gap-3 sm:gap-3.5">
-              <li><Link href="#" className="hover:text-primary transition-colors duration-200">Acerca de DINARP</Link></li>
-              <li><Link href="#" className="hover:text-primary transition-colors duration-200">Documentación</Link></li>
-              <li><Link href="#" className="hover:text-primary transition-colors duration-200">Contacto</Link></li>
+              <li><Link href="/construccion" className="hover:text-primary transition-colors duration-200">Acerca de DINARP</Link></li>
+              <li><Link href="/uikit" className="hover:text-primary transition-colors duration-200">Documentación</Link></li>
+              <li><Link href="/construccion" className="hover:text-primary transition-colors duration-200">Contacto</Link></li>
             </ul>
           </div>
 
@@ -98,9 +98,9 @@ export function Footer() {
               Legal
             </h3>
             <ul className="flex flex-col items-start font-sans text-body-sm text-muted-foreground gap-3 sm:gap-3.5">
-              <li><Link href="#" className="hover:text-primary transition-colors duration-200">Política de privacidad</Link></li>
-              <li><Link href="#" className="hover:text-primary transition-colors duration-200">Términos y condiciones</Link></li>
-              <li><Link href="#" className="hover:text-primary transition-colors duration-200">Tratamiento de datos</Link></li>
+              <li><Link href="/construccion" className="hover:text-primary transition-colors duration-200">Política de privacidad</Link></li>
+              <li><Link href="/construccion" className="hover:text-primary transition-colors duration-200">Términos y condiciones</Link></li>
+              <li><Link href="/construccion" className="hover:text-primary transition-colors duration-200">Tratamiento de datos</Link></li>
             </ul>
           </div>
 

@@ -35,6 +35,14 @@ jobs:
         run: rm -rf src/app/api
       - name: Build with Next.js
         run: npm run build
+      - name: Prepare static export for GitHub Pages
+        run: |
+          touch out/.nojekyll
+          if [ -f out/_not-found.html ]; then
+            cp out/_not-found.html out/404.html
+          elif [ -f out/_not-found/index.html ]; then
+            cp out/_not-found/index.html out/404.html
+          fi
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
