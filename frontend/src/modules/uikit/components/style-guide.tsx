@@ -547,30 +547,58 @@ export function StyleGuide({
           />
 
           {/* Card 2: Vertical */}
-          <LogoManagerCard
-            slot="vertical"
-            title="Logotipo Vertical"
-            description="Versión vertical del logotipo. Diseñada para composiciones verticales y banners donde el espacio horizontal es reducido."
-            badge1="VERTICAL"
-            badge2="SECUNDARIO"
-            defaultLightImg="/logotipo.png"
-            defaultDarkImg="/logotipo.png"
-            monoLightImg="/logotipo.png"
-            monoDarkImg="/logotipo.png"
-          />
+          <div className="flex flex-col rounded-3xl border border-dashed border-border/60 bg-surface/50 overflow-hidden shadow-sm group">
+            <div className="h-48 w-full bg-muted/20 flex flex-col items-center justify-center p-6 text-center border-b border-dashed border-border/60">
+              <div className="size-12 rounded-full bg-muted/50 flex items-center justify-center mb-3">
+                <ImageOff className="size-5 text-muted-foreground/50" />
+              </div>
+              <span className="text-sm font-medium text-muted-foreground">Recurso faltante</span>
+              <span className="text-xs text-muted-foreground/60 mt-1 max-w-[200px]">falta el recurso oficial del manual de marca</span>
+            </div>
+            <div className="p-6 flex flex-col flex-1 bg-surface/50">
+              <div className="flex gap-2 mb-4">
+                <Badge tone="neutral" appearance="soft" size="sm" className="font-bold uppercase tracking-wider text-[10px] px-2.5 py-1 opacity-50">
+                  VERTICAL
+                </Badge>
+                <Badge tone="neutral" appearance="soft" size="sm" className="font-bold uppercase tracking-wider text-[10px] px-2.5 py-1 opacity-50">
+                  SECUNDARIO
+                </Badge>
+              </div>
+              <div className="flex flex-col gap-2">
+                <h3 className="text-foreground/70 font-bold text-lg">Logotipo Vertical</h3>
+                <p className="text-muted-foreground/60 text-sm leading-relaxed">
+                  Versión vertical del logotipo. Diseñada para composiciones verticales y banners donde el espacio horizontal es reducido.
+                </p>
+              </div>
+            </div>
+          </div>
 
           {/* Card 3: Símbolo / Compacto */}
-          <LogoManagerCard
-            slot="sin-lema"
-            title="Logotipo Compacto / Símbolo"
-            description="Versión condensada del logotipo sin texto descriptivo inferior. Ideal para sidebars, botones y elementos compactos."
-            badge1="COMPACTO"
-            badge2="SÍMBOLO"
-            defaultLightImg="/logotipo.png"
-            defaultDarkImg="/logotipo.png"
-            monoLightImg="/logotipo.png"
-            monoDarkImg="/logotipo.png"
-          />
+          <div className="flex flex-col rounded-3xl border border-dashed border-border/60 bg-surface/50 overflow-hidden shadow-sm group">
+            <div className="h-48 w-full bg-muted/20 flex flex-col items-center justify-center p-6 text-center border-b border-dashed border-border/60">
+              <div className="size-12 rounded-full bg-muted/50 flex items-center justify-center mb-3">
+                <ImageOff className="size-5 text-muted-foreground/50" />
+              </div>
+              <span className="text-sm font-medium text-muted-foreground">Recurso faltante</span>
+              <span className="text-xs text-muted-foreground/60 mt-1 max-w-[200px]">falta el recurso oficial del manual de marca</span>
+            </div>
+            <div className="p-6 flex flex-col flex-1 bg-surface/50">
+              <div className="flex gap-2 mb-4">
+                <Badge tone="neutral" appearance="soft" size="sm" className="font-bold uppercase tracking-wider text-[10px] px-2.5 py-1 opacity-50">
+                  COMPACTO
+                </Badge>
+                <Badge tone="neutral" appearance="soft" size="sm" className="font-bold uppercase tracking-wider text-[10px] px-2.5 py-1 opacity-50">
+                  SÍMBOLO
+                </Badge>
+              </div>
+              <div className="flex flex-col gap-2">
+                <h3 className="text-foreground/70 font-bold text-lg">Logotipo Compacto / Símbolo</h3>
+                <p className="text-muted-foreground/60 text-sm leading-relaxed">
+                  Versión condensada del logotipo sin texto descriptivo inferior. Ideal para sidebars, botones y elementos compactos.
+                </p>
+              </div>
+            </div>
+          </div>
 
           {/* Card 4: Placeholder Escudo Nacional */}
           <div className="flex flex-col rounded-3xl border border-dashed border-border/60 bg-surface/50 overflow-hidden shadow-sm group">
