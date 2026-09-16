@@ -262,123 +262,123 @@ export default function WireframeListadoFacturacionPage() {
         {/* ── 3. Tabla de Facturas ── */}
         <div className="overflow-x-auto rounded-2xl border border-border bg-surface shadow-xs">
           <Table className="w-full border-spacing-0">
-              <TableHeader>
-                <TableRow className="border-b border-border/80 bg-muted/30 hover:bg-muted/30">
-                  <TableHead className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider py-3.5 px-4 text-left">
-                    N° DE FACTURA
-                  </TableHead>
-                  <TableHead className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider py-3.5 px-4 text-left">
-                    PROYECTO / SOLICITUD
-                  </TableHead>
-                  <TableHead className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider py-3.5 px-4 text-left">
-                    ENTIDAD
-                  </TableHead>
-                  <TableHead className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider py-3.5 px-4 text-left">
-                    SERVICIO
-                  </TableHead>
-                  <TableHead className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider py-3.5 px-4 text-left">
-                    FECHA DE EMISIÓN
-                  </TableHead>
-                  <TableHead className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider py-3.5 px-4 text-left">
-                    VALOR (USD)
-                  </TableHead>
-                  <TableHead className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider py-3.5 px-4 text-left">
-                    ESTADO
-                  </TableHead>
-                  <TableHead className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider py-3.5 px-4 text-center">
-                    ACCIONES
-                  </TableHead>
+            <TableHeader>
+              <TableRow className="border-b border-border/80 bg-muted/30 hover:bg-muted/30">
+                <TableHead className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider py-3.5 px-4 text-left">
+                  N° DE FACTURA
+                </TableHead>
+                <TableHead className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider py-3.5 px-4 text-left">
+                  PROYECTO / SOLICITUD
+                </TableHead>
+                <TableHead className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider py-3.5 px-4 text-left">
+                  ENTIDAD
+                </TableHead>
+                <TableHead className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider py-3.5 px-4 text-left">
+                  SERVICIO
+                </TableHead>
+                <TableHead className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider py-3.5 px-4 text-left">
+                  FECHA DE EMISIÓN
+                </TableHead>
+                <TableHead className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider py-3.5 px-4 text-left">
+                  VALOR (USD)
+                </TableHead>
+                <TableHead className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider py-3.5 px-4 text-left">
+                  ESTADO
+                </TableHead>
+                <TableHead className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider py-3.5 px-4 text-center">
+                  ACCIONES
+                </TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {filteredData.length === 0 ? (
+                <TableRow>
+                  <TableCell colSpan={8} className="text-center py-10 text-muted-foreground text-sm">
+                    No se encontraron facturas con los filtros aplicados.
+                  </TableCell>
                 </TableRow>
-              </TableHeader>
-              <TableBody>
-                {filteredData.length === 0 ? (
-                  <TableRow>
-                    <TableCell colSpan={8} className="text-center py-10 text-muted-foreground text-sm">
-                      No se encontraron facturas con los filtros aplicados.
-                    </TableCell>
-                  </TableRow>
-                ) : (
-                  filteredData.map((row) => {
-                    const badgeProps = getBadgeVariant(row.estado);
-                    return (
-                      <TableRow
-                        key={row.numero}
-                        className="border-b border-border/40 hover:bg-muted/20 transition-colors cursor-pointer"
-                        onClick={() => router.push(row.href)}
-                      >
-                        {/* N° de factura */}
-                        <TableCell className="py-4 px-4 text-xs font-mono font-bold text-foreground whitespace-nowrap">
-                          {row.numero}
-                        </TableCell>
+              ) : (
+                filteredData.map((row) => {
+                  const badgeProps = getBadgeVariant(row.estado);
+                  return (
+                    <TableRow
+                      key={row.numero}
+                      className="border-b border-border/40 hover:bg-muted/20 transition-colors cursor-pointer"
+                      onClick={() => router.push(row.href)}
+                    >
+                      {/* N° de factura */}
+                      <TableCell className="py-4 px-4 text-xs font-mono font-bold text-foreground whitespace-nowrap">
+                        {row.numero}
+                      </TableCell>
 
-                        {/* Proyecto / Solicitud */}
-                        <TableCell className="py-4 px-4 text-xs font-semibold text-foreground max-w-[180px]">
-                          {row.proyecto}
-                        </TableCell>
+                      {/* Proyecto / Solicitud */}
+                      <TableCell className="py-4 px-4 text-xs font-semibold text-foreground max-w-[180px]">
+                        {row.proyecto}
+                      </TableCell>
 
-                        {/* Entidad */}
-                        <TableCell className="py-4 px-4 text-xs text-muted-foreground whitespace-nowrap">
-                          {row.entidad}
-                        </TableCell>
+                      {/* Entidad */}
+                      <TableCell className="py-4 px-4 text-xs text-muted-foreground whitespace-nowrap">
+                        {row.entidad}
+                      </TableCell>
 
-                        {/* Servicio */}
-                        <TableCell className="py-4 px-4 text-xs text-muted-foreground whitespace-nowrap">
-                          {row.servicio}
-                        </TableCell>
+                      {/* Servicio */}
+                      <TableCell className="py-4 px-4 text-xs text-muted-foreground whitespace-nowrap">
+                        {row.servicio}
+                      </TableCell>
 
-                        {/* Fecha de emisión */}
-                        <TableCell className="py-4 px-4 text-xs text-muted-foreground whitespace-nowrap font-mono">
-                          {row.fechaEmision}
-                        </TableCell>
+                      {/* Fecha de emisión */}
+                      <TableCell className="py-4 px-4 text-xs text-muted-foreground whitespace-nowrap font-mono">
+                        {row.fechaEmision}
+                      </TableCell>
 
-                        {/* Valor (USD) */}
-                        <TableCell className="py-4 px-4 text-xs font-mono font-bold text-foreground whitespace-nowrap">
-                          {row.valor.toLocaleString("es-EC", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
-                        </TableCell>
+                      {/* Valor (USD) */}
+                      <TableCell className="py-4 px-4 text-xs font-mono font-bold text-foreground whitespace-nowrap">
+                        {row.valor.toLocaleString("es-EC", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                      </TableCell>
 
-                        {/* Estado */}
-                        <TableCell className="py-4 px-4 whitespace-nowrap">
-                          <Badge
-                            tone={badgeProps.tone}
-                            appearance={badgeProps.appearance}
-                            size="sm"
-                            className="font-medium text-xs"
-                          >
-                            {row.estado}
-                          </Badge>
-                        </TableCell>
+                      {/* Estado */}
+                      <TableCell className="py-4 px-4 whitespace-nowrap">
+                        <Badge
+                          tone={badgeProps.tone}
+                          appearance={badgeProps.appearance}
+                          size="sm"
+                          className="font-medium text-xs"
+                        >
+                          {row.estado}
+                        </Badge>
+                      </TableCell>
 
-                        {/* Acciones */}
-                        <TableCell className="py-4 px-4 text-center whitespace-nowrap" onClick={(e) => e.stopPropagation()}>
-                          <DropdownMenu>
-                            <DropdownMenuTrigger asChild>
-                              <Button
-                                type="button"
-                                variant="ghost"
-                                size="icon-sm"
-                                className="size-8 rounded-lg text-muted-foreground hover:text-foreground"
-                              >
-                                <MoreHorizontal className="size-4" />
-                              </Button>
-                            </DropdownMenuTrigger>
-                            <DropdownMenuContent align="end" className="w-44">
-                              <DropdownMenuItem onClick={() => router.push(row.href)}>
-                                <Eye className="size-3.5 mr-2" />
-                                <span>Ver detalle</span>
-                              </DropdownMenuItem>
-                              <DropdownMenuItem>
-                                <Download className="size-3.5 mr-2" />
-                                <span>Descargar PDF</span>
-                              </DropdownMenuItem>
-                            </DropdownMenuContent>
-                          </DropdownMenu>
-                        </TableCell>
-                      </TableRow>
-                    );
-                  })
-                )}
-              </TableBody>
-            </Table>
+                      {/* Acciones */}
+                      <TableCell className="py-4 px-4 text-center whitespace-nowrap" onClick={(e) => e.stopPropagation()}>
+                        <DropdownMenu>
+                          <DropdownMenuTrigger asChild>
+                            <Button
+                              type="button"
+                              variant="ghost"
+                              size="icon-sm"
+                              className="size-8 rounded-lg text-muted-foreground hover:text-foreground"
+                            >
+                              <MoreHorizontal className="size-4" />
+                            </Button>
+                          </DropdownMenuTrigger>
+                          <DropdownMenuContent align="end" className="w-44">
+                            <DropdownMenuItem onClick={() => router.push(row.href)}>
+                              <Eye className="size-3.5 mr-2" />
+                              <span>Ver detalle</span>
+                            </DropdownMenuItem>
+                            <DropdownMenuItem>
+                              <Download className="size-3.5 mr-2" />
+                              <span>Descargar PDF</span>
+                            </DropdownMenuItem>
+                          </DropdownMenuContent>
+                        </DropdownMenu>
+                      </TableCell>
+                    </TableRow>
+                  );
+                })
+              )}
+            </TableBody>
+          </Table>
         </div>
 
         {/* ── 4. Paginación ── */}

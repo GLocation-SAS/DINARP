@@ -334,101 +334,101 @@ export default function WireframeServiciosHabilitadosPage() {
         {/* ── 4. Tabla de Servicios Habilitados ── */}
         <div className="overflow-x-auto rounded-2xl border border-border bg-surface shadow-xs">
           <Table className="w-full border-spacing-0">
-              <TableHeader>
-                <TableRow className="border-b border-border/80 bg-muted/30 hover:bg-muted/30">
-                  <TableHead className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider py-3.5 px-4 text-left">
-                    SERVICIO
-                  </TableHead>
-                  <TableHead className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider py-3.5 px-4 text-left">
-                    FUENTE
-                  </TableHead>
-                  <TableHead className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider py-3.5 px-4 text-left">
-                    CONSUMIDOR
-                  </TableHead>
-                  <TableHead className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider py-3.5 px-4 text-left">
-                    ESTADO
-                  </TableHead>
-                  <TableHead className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider py-3.5 px-4 text-left">
-                    VIGENCIA
-                  </TableHead>
-                  <TableHead className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider py-3.5 px-4 text-left">
-                    ÚLTIMA ACTUALIZACIÓN
-                  </TableHead>
-                  <TableHead className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider py-3.5 px-4 text-right">
-                    ACCIONES
-                  </TableHead>
+            <TableHeader>
+              <TableRow className="border-b border-border/80 bg-muted/30 hover:bg-muted/30">
+                <TableHead className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider py-3.5 px-4 text-left">
+                  SERVICIO
+                </TableHead>
+                <TableHead className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider py-3.5 px-4 text-left">
+                  FUENTE
+                </TableHead>
+                <TableHead className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider py-3.5 px-4 text-left">
+                  CONSUMIDOR
+                </TableHead>
+                <TableHead className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider py-3.5 px-4 text-left">
+                  ESTADO
+                </TableHead>
+                <TableHead className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider py-3.5 px-4 text-left">
+                  VIGENCIA
+                </TableHead>
+                <TableHead className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider py-3.5 px-4 text-left">
+                  ÚLTIMA ACTUALIZACIÓN
+                </TableHead>
+                <TableHead className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider py-3.5 px-4 text-right">
+                  ACCIONES
+                </TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {filteredServicios.length === 0 ? (
+                <TableRow>
+                  <TableCell colSpan={7} className="text-center py-10 text-muted-foreground text-sm">
+                    No se encontraron servicios habilitados con los criterios de búsqueda.
+                  </TableCell>
                 </TableRow>
-              </TableHeader>
-              <TableBody>
-                {filteredServicios.length === 0 ? (
-                  <TableRow>
-                    <TableCell colSpan={7} className="text-center py-10 text-muted-foreground text-sm">
-                      No se encontraron servicios habilitados con los criterios de búsqueda.
+              ) : (
+                filteredServicios.map((s) => (
+                  <TableRow
+                    key={s.id}
+                    className="border-b border-border/40 hover:bg-muted/20 transition-colors cursor-pointer"
+                    onClick={() => router.push(s.href)}
+                  >
+                    {/* Servicio */}
+                    <TableCell className="py-4 px-4 text-xs font-bold text-foreground max-w-[200px]">
+                      {s.servicio}
+                    </TableCell>
+
+                    {/* Fuente */}
+                    <TableCell className="py-4 px-4 text-xs text-muted-foreground whitespace-nowrap">
+                      {s.fuente}
+                    </TableCell>
+
+                    {/* Consumidor */}
+                    <TableCell className="py-4 px-4 text-xs text-muted-foreground whitespace-nowrap">
+                      {s.consumidor}
+                    </TableCell>
+
+                    {/* Estado */}
+                    <TableCell className="py-4 px-4 whitespace-nowrap">
+                      <Badge
+                        tone="neutral"
+                        appearance={s.estado === "Activo" ? "solid" : "outline"}
+                        size="sm"
+                        className="font-medium gap-1.5 text-xs capitalize"
+                      >
+                        <span className="size-1.5 rounded-full bg-foreground" />
+                        {s.estado}
+                      </Badge>
+                    </TableCell>
+
+                    {/* Vigencia */}
+                    <TableCell className="py-4 px-4 text-xs text-muted-foreground whitespace-nowrap font-mono">
+                      {s.vigencia}
+                    </TableCell>
+
+                    {/* Última actualización */}
+                    <TableCell className="py-4 px-4 text-xs text-muted-foreground whitespace-nowrap">
+                      {s.ultimaActualizacion}
+                    </TableCell>
+
+                    {/* Acciones */}
+                    <TableCell className="py-4 px-4 text-right whitespace-nowrap" onClick={(e) => e.stopPropagation()}>
+                      <Button
+                        type="button"
+                        variant="outline"
+                        size="sm"
+                        onClick={() => router.push(s.href)}
+                        className="h-8 px-3 rounded-lg text-xs font-semibold gap-1.5 border-border"
+                      >
+                        <Eye className="size-3.5" />
+                        <span>Ver detalle</span>
+                      </Button>
                     </TableCell>
                   </TableRow>
-                ) : (
-                  filteredServicios.map((s) => (
-                    <TableRow
-                      key={s.id}
-                      className="border-b border-border/40 hover:bg-muted/20 transition-colors cursor-pointer"
-                      onClick={() => router.push(s.href)}
-                    >
-                      {/* Servicio */}
-                      <TableCell className="py-4 px-4 text-xs font-bold text-foreground max-w-[200px]">
-                        {s.servicio}
-                      </TableCell>
-
-                      {/* Fuente */}
-                      <TableCell className="py-4 px-4 text-xs text-muted-foreground whitespace-nowrap">
-                        {s.fuente}
-                      </TableCell>
-
-                      {/* Consumidor */}
-                      <TableCell className="py-4 px-4 text-xs text-muted-foreground whitespace-nowrap">
-                        {s.consumidor}
-                      </TableCell>
-
-                      {/* Estado */}
-                      <TableCell className="py-4 px-4 whitespace-nowrap">
-                        <Badge
-                          tone="neutral"
-                          appearance={s.estado === "Activo" ? "solid" : "outline"}
-                          size="sm"
-                          className="font-medium gap-1.5 text-xs capitalize"
-                        >
-                          <span className="size-1.5 rounded-full bg-foreground" />
-                          {s.estado}
-                        </Badge>
-                      </TableCell>
-
-                      {/* Vigencia */}
-                      <TableCell className="py-4 px-4 text-xs text-muted-foreground whitespace-nowrap font-mono">
-                        {s.vigencia}
-                      </TableCell>
-
-                      {/* Última actualización */}
-                      <TableCell className="py-4 px-4 text-xs text-muted-foreground whitespace-nowrap">
-                        {s.ultimaActualizacion}
-                      </TableCell>
-
-                      {/* Acciones */}
-                      <TableCell className="py-4 px-4 text-right whitespace-nowrap" onClick={(e) => e.stopPropagation()}>
-                        <Button
-                          type="button"
-                          variant="outline"
-                          size="sm"
-                          onClick={() => router.push(s.href)}
-                          className="h-8 px-3 rounded-lg text-xs font-semibold gap-1.5 border-border"
-                        >
-                          <Eye className="size-3.5" />
-                          <span>Ver detalle</span>
-                        </Button>
-                      </TableCell>
-                    </TableRow>
-                  ))
-                )}
-              </TableBody>
-            </Table>
+                ))
+              )}
+            </TableBody>
+          </Table>
         </div>
 
         {/* ── 5. Paginación ── */}

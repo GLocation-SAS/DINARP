@@ -332,107 +332,107 @@ export default function WireframeDatosIdentidadPage() {
             {/* Tabla con Checkbox */}
             <div className="overflow-x-auto rounded-2xl border border-border bg-surface shadow-xs">
               <Table className="w-full border-spacing-0">
-                  <TableHeader>
-                    <TableRow className="border-b border-border/80 bg-muted/30 hover:bg-muted/30">
-                      <TableHead className="w-12 py-3.5 px-4 text-center">
-                        <Checkbox
-                          checked={
-                            selectedCampos.length === filteredCampos.length && filteredCampos.length > 0
-                              ? true
-                              : selectedCampos.length > 0
-                                ? "indeterminate"
-                                : false
-                          }
-                          onCheckedChange={toggleSelectAll}
-                          aria-label="Seleccionar todos los campos"
-                        />
-                      </TableHead>
-                      <TableHead className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider py-3.5 px-4 text-left">
-                        CAMPO
-                      </TableHead>
-                      <TableHead className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider py-3.5 px-4 text-left">
-                        DESCRIPCIÓN
-                      </TableHead>
-                      <TableHead className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider py-3.5 px-4 text-left">
-                        TIPO DE DATO
-                      </TableHead>
-                      <TableHead className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider py-3.5 px-4 text-left">
-                        OBLIGATORIO
-                      </TableHead>
-                      <TableHead className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider py-3.5 px-4 text-right">
-                        ACCIONES
-                      </TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {filteredCampos.map((c) => {
-                      const isSelected = selectedCampos.includes(c.id);
-                      return (
-                        <TableRow
-                          key={c.id}
-                          className={`border-b border-border/40 transition-colors cursor-pointer ${isSelected ? "bg-muted/30" : "hover:bg-muted/10"
-                            }`}
-                          onClick={() => toggleCampo(c.id)}
-                        >
-                          {/* Checkbox */}
-                          <TableCell className="py-4 px-4 text-center" onClick={(e) => e.stopPropagation()}>
-                            <Checkbox
-                              checked={isSelected}
-                              onCheckedChange={() => toggleCampo(c.id)}
-                              aria-label={`Seleccionar ${c.campo}`}
-                            />
-                          </TableCell>
+                <TableHeader>
+                  <TableRow className="border-b border-border/80 bg-muted/30 hover:bg-muted/30">
+                    <TableHead className="w-12 py-3.5 px-4 text-center">
+                      <Checkbox
+                        checked={
+                          selectedCampos.length === filteredCampos.length && filteredCampos.length > 0
+                            ? true
+                            : selectedCampos.length > 0
+                              ? "indeterminate"
+                              : false
+                        }
+                        onCheckedChange={toggleSelectAll}
+                        aria-label="Seleccionar todos los campos"
+                      />
+                    </TableHead>
+                    <TableHead className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider py-3.5 px-4 text-left">
+                      CAMPO
+                    </TableHead>
+                    <TableHead className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider py-3.5 px-4 text-left">
+                      DESCRIPCIÓN
+                    </TableHead>
+                    <TableHead className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider py-3.5 px-4 text-left">
+                      TIPO DE DATO
+                    </TableHead>
+                    <TableHead className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider py-3.5 px-4 text-left">
+                      OBLIGATORIO
+                    </TableHead>
+                    <TableHead className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider py-3.5 px-4 text-right">
+                      ACCIONES
+                    </TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {filteredCampos.map((c) => {
+                    const isSelected = selectedCampos.includes(c.id);
+                    return (
+                      <TableRow
+                        key={c.id}
+                        className={`border-b border-border/40 transition-colors cursor-pointer ${isSelected ? "bg-muted/30" : "hover:bg-muted/10"
+                          }`}
+                        onClick={() => toggleCampo(c.id)}
+                      >
+                        {/* Checkbox */}
+                        <TableCell className="py-4 px-4 text-center" onClick={(e) => e.stopPropagation()}>
+                          <Checkbox
+                            checked={isSelected}
+                            onCheckedChange={() => toggleCampo(c.id)}
+                            aria-label={`Seleccionar ${c.campo}`}
+                          />
+                        </TableCell>
 
-                          {/* Campo */}
-                          <TableCell className="py-4 px-4 text-xs font-bold text-foreground">
-                            <div>{c.campo}</div>
-                            <span className="font-mono text-[10px] text-muted-foreground block font-normal">
-                              {c.codigoTecnico}
-                            </span>
-                          </TableCell>
+                        {/* Campo */}
+                        <TableCell className="py-4 px-4 text-xs font-bold text-foreground">
+                          <div>{c.campo}</div>
+                          <span className="font-mono text-[10px] text-muted-foreground block font-normal">
+                            {c.codigoTecnico}
+                          </span>
+                        </TableCell>
 
-                          {/* Descripción */}
-                          <TableCell className="py-4 px-4 text-xs text-muted-foreground max-w-[320px] leading-relaxed">
-                            {c.descripcion}
-                          </TableCell>
+                        {/* Descripción */}
+                        <TableCell className="py-4 px-4 text-xs text-muted-foreground max-w-[320px] leading-relaxed">
+                          {c.descripcion}
+                        </TableCell>
 
-                          {/* Tipo de Dato */}
-                          <TableCell className="py-4 px-4 text-xs whitespace-nowrap">
-                            <span className="font-mono text-xs bg-muted/60 px-2 py-0.5 rounded text-foreground">
-                              {c.tipoDato}
-                            </span>
-                          </TableCell>
+                        {/* Tipo de Dato */}
+                        <TableCell className="py-4 px-4 text-xs whitespace-nowrap">
+                          <span className="font-mono text-xs bg-muted/60 px-2 py-0.5 rounded text-foreground">
+                            {c.tipoDato}
+                          </span>
+                        </TableCell>
 
-                          {/* Obligatorio */}
-                          <TableCell className="py-4 px-4 text-xs whitespace-nowrap">
-                            {c.obligatorio ? (
-                              <Badge tone="neutral" appearance="solid" size="sm" className="font-semibold text-[10px]">
-                                Sí
-                              </Badge>
-                            ) : (
-                              <Badge tone="neutral" appearance="outline" size="sm" className="font-medium text-[10px]">
-                                No
-                              </Badge>
-                            )}
-                          </TableCell>
+                        {/* Obligatorio */}
+                        <TableCell className="py-4 px-4 text-xs whitespace-nowrap">
+                          {c.obligatorio ? (
+                            <Badge tone="neutral" appearance="solid" size="sm" className="font-semibold text-[10px]">
+                              Sí
+                            </Badge>
+                          ) : (
+                            <Badge tone="neutral" appearance="outline" size="sm" className="font-medium text-[10px]">
+                              No
+                            </Badge>
+                          )}
+                        </TableCell>
 
-                          {/* Acciones */}
-                          <TableCell className="py-4 px-4 text-right whitespace-nowrap" onClick={(e) => e.stopPropagation()}>
-                            <Button
-                              type="button"
-                              variant={isSelected ? "primary" : "outline"}
-                              size="sm"
-                              onClick={() => toggleCampo(c.id)}
-                              className="h-8 px-3 rounded-lg text-xs font-semibold"
-                            >
-                              {isSelected ? "Seleccionado" : "Agregar"}
-                            </Button>
-                          </TableCell>
-                        </TableRow>
-                      );
-                    })}
-                  </TableBody>
-                </Table>
+                        {/* Acciones */}
+                        <TableCell className="py-4 px-4 text-right whitespace-nowrap" onClick={(e) => e.stopPropagation()}>
+                          <Button
+                            type="button"
+                            variant={isSelected ? "primary" : "outline"}
+                            size="sm"
+                            onClick={() => toggleCampo(c.id)}
+                            className="h-8 px-3 rounded-lg text-xs font-semibold"
+                          >
+                            {isSelected ? "Seleccionado" : "Agregar"}
+                          </Button>
+                        </TableCell>
+                      </TableRow>
+                    );
+                  })}
+                </TableBody>
+              </Table>
             </div>
 
             {/* Barra Inferior Flotante / Acciones */}

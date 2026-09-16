@@ -390,137 +390,137 @@ export default function WireframeSolicitudesPage() {
         {/* ── Tabla de Solicitudes con Table UI Component ── */}
         <div className="overflow-x-auto rounded-2xl border border-border bg-surface shadow-xs">
           <Table className="w-full border-spacing-0">
-              <TableHeader>
-                <TableRow className="border-b border-border/80 bg-muted/30 hover:bg-muted/30">
-                  <TableHead className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider py-3.5 px-4 text-left">
-                    CÓDIGO
-                  </TableHead>
-                  <TableHead className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider py-3.5 px-4 text-left">
-                    SOLICITUD
-                  </TableHead>
-                  <TableHead className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider py-3.5 px-4 text-left">
-                    INSTITUCIÓN SOLICITANTE
-                  </TableHead>
-                  <TableHead className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider py-3.5 px-4 text-left">
-                    INSTITUCIÓN FUENTE
-                  </TableHead>
-                  <TableHead className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider py-3.5 px-4 text-left">
-                    ESTADO
-                  </TableHead>
-                  <TableHead className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider py-3.5 px-4 text-left">
-                    PRIORIDAD
-                  </TableHead>
-                  <TableHead className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider py-3.5 px-4 text-left">
-                    <span className="inline-flex items-center gap-1">
-                      ÚLTIMA ACTUALIZACIÓN
-                      <ArrowDown className="size-3" />
-                    </span>
-                  </TableHead>
-                  <TableHead className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider py-3.5 px-4 text-right">
-                    ACCIONES
-                  </TableHead>
+            <TableHeader>
+              <TableRow className="border-b border-border/80 bg-muted/30 hover:bg-muted/30">
+                <TableHead className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider py-3.5 px-4 text-left">
+                  CÓDIGO
+                </TableHead>
+                <TableHead className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider py-3.5 px-4 text-left">
+                  SOLICITUD
+                </TableHead>
+                <TableHead className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider py-3.5 px-4 text-left">
+                  INSTITUCIÓN SOLICITANTE
+                </TableHead>
+                <TableHead className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider py-3.5 px-4 text-left">
+                  INSTITUCIÓN FUENTE
+                </TableHead>
+                <TableHead className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider py-3.5 px-4 text-left">
+                  ESTADO
+                </TableHead>
+                <TableHead className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider py-3.5 px-4 text-left">
+                  PRIORIDAD
+                </TableHead>
+                <TableHead className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider py-3.5 px-4 text-left">
+                  <span className="inline-flex items-center gap-1">
+                    ÚLTIMA ACTUALIZACIÓN
+                    <ArrowDown className="size-3" />
+                  </span>
+                </TableHead>
+                <TableHead className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider py-3.5 px-4 text-right">
+                  ACCIONES
+                </TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {filteredSolicitudes.length === 0 ? (
+                <TableRow>
+                  <TableCell colSpan={8} className="text-center py-10 text-muted-foreground text-sm">
+                    No se encontraron solicitudes con los filtros aplicados.
+                  </TableCell>
                 </TableRow>
-              </TableHeader>
-              <TableBody>
-                {filteredSolicitudes.length === 0 ? (
-                  <TableRow>
-                    <TableCell colSpan={8} className="text-center py-10 text-muted-foreground text-sm">
-                      No se encontraron solicitudes con los filtros aplicados.
+              ) : (
+                filteredSolicitudes.map((item) => (
+                  <TableRow
+                    key={item.codigo}
+                    className="border-b border-border/40 hover:bg-muted/20 transition-colors"
+                  >
+                    {/* Código */}
+                    <TableCell className="py-4 px-4 text-xs font-mono font-medium text-foreground whitespace-nowrap">
+                      {item.codigo}
+                    </TableCell>
+
+                    {/* Solicitud */}
+                    <TableCell className="py-4 px-4 text-xs font-semibold text-foreground max-w-[220px]">
+                      {item.solicitud}
+                    </TableCell>
+
+                    {/* Institución Solicitante */}
+                    <TableCell className="py-4 px-4 text-xs text-muted-foreground">
+                      {item.institucionSolicitante}
+                    </TableCell>
+
+                    {/* Institución Fuente */}
+                    <TableCell className="py-4 px-4 text-xs text-muted-foreground whitespace-nowrap">
+                      {item.institucionFuente}
+                    </TableCell>
+
+                    {/* Estado con Badge UI */}
+                    <TableCell className="py-4 px-4 whitespace-nowrap">
+                      <Badge
+                        tone="neutral"
+                        appearance="soft"
+                        size="sm"
+                        className="font-medium gap-1.5 capitalize text-xs"
+                      >
+                        <span className="size-1.5 rounded-full bg-foreground" />
+                        {item.estado}
+                      </Badge>
+                    </TableCell>
+
+                    {/* Prioridad con Badge UI */}
+                    <TableCell className="py-4 px-4 whitespace-nowrap">
+                      <span className="inline-flex items-center gap-1.5 text-xs text-muted-foreground font-medium">
+                        <span className="size-1.5 rounded-full bg-muted-foreground" />
+                        {item.prioridad}
+                      </span>
+                    </TableCell>
+
+                    {/* Última Actualización */}
+                    <TableCell className="py-4 px-4 text-xs text-muted-foreground whitespace-nowrap">
+                      {item.ultimaActualizacion}
+                    </TableCell>
+
+                    {/* Acciones con Button UI */}
+                    <TableCell className="py-4 px-4 text-right whitespace-nowrap">
+                      <div className="inline-flex items-center gap-1">
+                        <Button
+                          type="button"
+                          variant="ghost"
+                          size="icon-sm"
+                          title="Ver detalles"
+                          aria-label="Ver detalles"
+                          onClick={() => router.push("/wireframes/solicitudes/detalle")}
+                          className="text-muted-foreground hover:text-foreground hover:bg-muted/50 cursor-pointer"
+                        >
+                          <Eye className="size-4" />
+                        </Button>
+                        <Button
+                          type="button"
+                          variant="ghost"
+                          size="icon-sm"
+                          title="Editar solicitud"
+                          aria-label="Editar solicitud"
+                          className="text-muted-foreground hover:text-foreground hover:bg-muted/50"
+                        >
+                          <Pencil className="size-4" />
+                        </Button>
+                        <Button
+                          type="button"
+                          variant="ghost"
+                          size="icon-sm"
+                          title="Más opciones"
+                          aria-label="Más opciones"
+                          className="text-muted-foreground hover:text-foreground hover:bg-muted/50"
+                        >
+                          <MoreVertical className="size-4" />
+                        </Button>
+                      </div>
                     </TableCell>
                   </TableRow>
-                ) : (
-                  filteredSolicitudes.map((item) => (
-                    <TableRow
-                      key={item.codigo}
-                      className="border-b border-border/40 hover:bg-muted/20 transition-colors"
-                    >
-                      {/* Código */}
-                      <TableCell className="py-4 px-4 text-xs font-mono font-medium text-foreground whitespace-nowrap">
-                        {item.codigo}
-                      </TableCell>
-
-                      {/* Solicitud */}
-                      <TableCell className="py-4 px-4 text-xs font-semibold text-foreground max-w-[220px]">
-                        {item.solicitud}
-                      </TableCell>
-
-                      {/* Institución Solicitante */}
-                      <TableCell className="py-4 px-4 text-xs text-muted-foreground">
-                        {item.institucionSolicitante}
-                      </TableCell>
-
-                      {/* Institución Fuente */}
-                      <TableCell className="py-4 px-4 text-xs text-muted-foreground whitespace-nowrap">
-                        {item.institucionFuente}
-                      </TableCell>
-
-                      {/* Estado con Badge UI */}
-                      <TableCell className="py-4 px-4 whitespace-nowrap">
-                        <Badge
-                          tone="neutral"
-                          appearance="soft"
-                          size="sm"
-                          className="font-medium gap-1.5 capitalize text-xs"
-                        >
-                          <span className="size-1.5 rounded-full bg-foreground" />
-                          {item.estado}
-                        </Badge>
-                      </TableCell>
-
-                      {/* Prioridad con Badge UI */}
-                      <TableCell className="py-4 px-4 whitespace-nowrap">
-                        <span className="inline-flex items-center gap-1.5 text-xs text-muted-foreground font-medium">
-                          <span className="size-1.5 rounded-full bg-muted-foreground" />
-                          {item.prioridad}
-                        </span>
-                      </TableCell>
-
-                      {/* Última Actualización */}
-                      <TableCell className="py-4 px-4 text-xs text-muted-foreground whitespace-nowrap">
-                        {item.ultimaActualizacion}
-                      </TableCell>
-
-                      {/* Acciones con Button UI */}
-                      <TableCell className="py-4 px-4 text-right whitespace-nowrap">
-                        <div className="inline-flex items-center gap-1">
-                          <Button
-                            type="button"
-                            variant="ghost"
-                            size="icon-sm"
-                            title="Ver detalles"
-                            aria-label="Ver detalles"
-                            onClick={() => router.push("/wireframes/solicitudes/detalle")}
-                            className="text-muted-foreground hover:text-foreground hover:bg-muted/50 cursor-pointer"
-                          >
-                            <Eye className="size-4" />
-                          </Button>
-                          <Button
-                            type="button"
-                            variant="ghost"
-                            size="icon-sm"
-                            title="Editar solicitud"
-                            aria-label="Editar solicitud"
-                            className="text-muted-foreground hover:text-foreground hover:bg-muted/50"
-                          >
-                            <Pencil className="size-4" />
-                          </Button>
-                          <Button
-                            type="button"
-                            variant="ghost"
-                            size="icon-sm"
-                            title="Más opciones"
-                            aria-label="Más opciones"
-                            className="text-muted-foreground hover:text-foreground hover:bg-muted/50"
-                          >
-                            <MoreVertical className="size-4" />
-                          </Button>
-                        </div>
-                      </TableCell>
-                    </TableRow>
-                  ))
-                )}
-              </TableBody>
-            </Table>
+                ))
+              )}
+            </TableBody>
+          </Table>
         </div>
 
         {/* ── Footer: Resultados & Paginación con Pagination UI Component ── */}

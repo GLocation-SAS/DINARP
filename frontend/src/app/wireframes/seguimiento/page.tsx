@@ -338,111 +338,111 @@ export default function WireframeListadoSeguimientoPage() {
         {/* ── 3. Tabla de Seguimiento ── */}
         <div className="overflow-x-auto rounded-2xl border border-border bg-surface shadow-xs">
           <Table className="w-full border-spacing-0">
-              <TableHeader>
-                <TableRow className="border-b border-border/80 bg-muted/30 hover:bg-muted/30">
-                  <TableHead className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider py-3.5 px-4 text-left">
-                    CÓDIGO
-                  </TableHead>
-                  <TableHead className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider py-3.5 px-4 text-left">
-                    PROYECTO / SOLICITUD
-                  </TableHead>
-                  <TableHead className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider py-3.5 px-4 text-left">
-                    INSTITUCIÓN SOLICITANTE
-                  </TableHead>
-                  <TableHead className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider py-3.5 px-4 text-left">
-                    FUENTE
-                  </TableHead>
-                  <TableHead className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider py-3.5 px-4 text-left">
-                    ESTADO ACTUAL
-                  </TableHead>
-                  <TableHead className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider py-3.5 px-4 text-left">
-                    RESPONSABLE ACTUAL
-                  </TableHead>
-                  <TableHead className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider py-3.5 px-4 text-left">
-                    ÚLTIMA ACTUALIZACIÓN
-                  </TableHead>
-                  <TableHead className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider py-3.5 px-4 text-right">
-                    ACCIONES
-                  </TableHead>
+            <TableHeader>
+              <TableRow className="border-b border-border/80 bg-muted/30 hover:bg-muted/30">
+                <TableHead className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider py-3.5 px-4 text-left">
+                  CÓDIGO
+                </TableHead>
+                <TableHead className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider py-3.5 px-4 text-left">
+                  PROYECTO / SOLICITUD
+                </TableHead>
+                <TableHead className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider py-3.5 px-4 text-left">
+                  INSTITUCIÓN SOLICITANTE
+                </TableHead>
+                <TableHead className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider py-3.5 px-4 text-left">
+                  FUENTE
+                </TableHead>
+                <TableHead className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider py-3.5 px-4 text-left">
+                  ESTADO ACTUAL
+                </TableHead>
+                <TableHead className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider py-3.5 px-4 text-left">
+                  RESPONSABLE ACTUAL
+                </TableHead>
+                <TableHead className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider py-3.5 px-4 text-left">
+                  ÚLTIMA ACTUALIZACIÓN
+                </TableHead>
+                <TableHead className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider py-3.5 px-4 text-right">
+                  ACCIONES
+                </TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {filteredData.length === 0 ? (
+                <TableRow>
+                  <TableCell colSpan={8} className="text-center py-10 text-muted-foreground text-sm">
+                    No se encontraron solicitudes con los filtros aplicados.
+                  </TableCell>
                 </TableRow>
-              </TableHeader>
-              <TableBody>
-                {filteredData.length === 0 ? (
-                  <TableRow>
-                    <TableCell colSpan={8} className="text-center py-10 text-muted-foreground text-sm">
-                      No se encontraron solicitudes con los filtros aplicados.
-                    </TableCell>
-                  </TableRow>
-                ) : (
-                  filteredData.map((row) => {
-                    const badgeProps = getBadgeVariant(row.estado);
-                    return (
-                      <TableRow
-                        key={row.codigo}
-                        className="border-b border-border/40 hover:bg-muted/20 transition-colors cursor-pointer"
-                        onClick={() => router.push(row.href)}
-                      >
-                        {/* Código */}
-                        <TableCell className="py-4 px-4 text-xs font-mono font-bold text-foreground whitespace-nowrap">
-                          {row.codigo}
-                        </TableCell>
+              ) : (
+                filteredData.map((row) => {
+                  const badgeProps = getBadgeVariant(row.estado);
+                  return (
+                    <TableRow
+                      key={row.codigo}
+                      className="border-b border-border/40 hover:bg-muted/20 transition-colors cursor-pointer"
+                      onClick={() => router.push(row.href)}
+                    >
+                      {/* Código */}
+                      <TableCell className="py-4 px-4 text-xs font-mono font-bold text-foreground whitespace-nowrap">
+                        {row.codigo}
+                      </TableCell>
 
-                        {/* Proyecto / Solicitud */}
-                        <TableCell className="py-4 px-4 text-xs font-semibold text-foreground max-w-[200px]">
-                          {row.proyecto}
-                        </TableCell>
+                      {/* Proyecto / Solicitud */}
+                      <TableCell className="py-4 px-4 text-xs font-semibold text-foreground max-w-[200px]">
+                        {row.proyecto}
+                      </TableCell>
 
-                        {/* Institución solicitante */}
-                        <TableCell className="py-4 px-4 text-xs text-muted-foreground whitespace-nowrap">
-                          {row.institucion}
-                        </TableCell>
+                      {/* Institución solicitante */}
+                      <TableCell className="py-4 px-4 text-xs text-muted-foreground whitespace-nowrap">
+                        {row.institucion}
+                      </TableCell>
 
-                        {/* Fuente */}
-                        <TableCell className="py-4 px-4 text-xs text-muted-foreground whitespace-nowrap">
-                          {row.fuente}
-                        </TableCell>
+                      {/* Fuente */}
+                      <TableCell className="py-4 px-4 text-xs text-muted-foreground whitespace-nowrap">
+                        {row.fuente}
+                      </TableCell>
 
-                        {/* Estado actual */}
-                        <TableCell className="py-4 px-4 whitespace-nowrap">
-                          <Badge
-                            tone={badgeProps.tone}
-                            appearance={badgeProps.appearance}
-                            size="sm"
-                            className="font-medium gap-1.5 text-xs capitalize"
-                          >
-                            <span className="size-1.5 rounded-full bg-current" />
-                            {row.estado}
-                          </Badge>
-                        </TableCell>
+                      {/* Estado actual */}
+                      <TableCell className="py-4 px-4 whitespace-nowrap">
+                        <Badge
+                          tone={badgeProps.tone}
+                          appearance={badgeProps.appearance}
+                          size="sm"
+                          className="font-medium gap-1.5 text-xs capitalize"
+                        >
+                          <span className="size-1.5 rounded-full bg-current" />
+                          {row.estado}
+                        </Badge>
+                      </TableCell>
 
-                        {/* Responsable actual */}
-                        <TableCell className="py-4 px-4 text-xs text-foreground font-medium whitespace-nowrap">
-                          {row.responsable}
-                        </TableCell>
+                      {/* Responsable actual */}
+                      <TableCell className="py-4 px-4 text-xs text-foreground font-medium whitespace-nowrap">
+                        {row.responsable}
+                      </TableCell>
 
-                        {/* Última actualización */}
-                        <TableCell className="py-4 px-4 text-xs text-muted-foreground whitespace-nowrap">
-                          {row.ultimaActualizacion}
-                        </TableCell>
+                      {/* Última actualización */}
+                      <TableCell className="py-4 px-4 text-xs text-muted-foreground whitespace-nowrap">
+                        {row.ultimaActualizacion}
+                      </TableCell>
 
-                        {/* Acciones */}
-                        <TableCell className="py-4 px-4 text-right whitespace-nowrap" onClick={(e) => e.stopPropagation()}>
-                          <Button
-                            type="button"
-                            variant="outline"
-                            size="sm"
-                            onClick={() => router.push(row.href)}
-                            className="h-8 px-3 rounded-lg text-xs font-semibold border-border"
-                          >
-                            <span>Ver trazabilidad</span>
-                          </Button>
-                        </TableCell>
-                      </TableRow>
-                    );
-                  })
-                )}
-              </TableBody>
-            </Table>
+                      {/* Acciones */}
+                      <TableCell className="py-4 px-4 text-right whitespace-nowrap" onClick={(e) => e.stopPropagation()}>
+                        <Button
+                          type="button"
+                          variant="outline"
+                          size="sm"
+                          onClick={() => router.push(row.href)}
+                          className="h-8 px-3 rounded-lg text-xs font-semibold border-border"
+                        >
+                          <span>Ver trazabilidad</span>
+                        </Button>
+                      </TableCell>
+                    </TableRow>
+                  );
+                })
+              )}
+            </TableBody>
+          </Table>
         </div>
 
         {/* ── 4. Paginación ── */}

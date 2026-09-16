@@ -178,61 +178,61 @@ export default function WireframeHistorialServicioPage() {
         {/* ── 3. Tabla / Timeline de Eventos ── */}
         <div className="overflow-x-auto rounded-2xl border border-border bg-surface shadow-xs">
           <Table className="w-full border-spacing-0">
-              <TableHeader>
-                <TableRow className="border-b border-border/80 bg-muted/30 hover:bg-muted/30">
-                  <TableHead className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider py-3.5 px-4 text-left">
-                    FECHA Y HORA
-                  </TableHead>
-                  <TableHead className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider py-3.5 px-4 text-left">
-                    EVENTO
-                  </TableHead>
-                  <TableHead className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider py-3.5 px-4 text-left">
-                    DESCRIPCIÓN
-                  </TableHead>
-                  <TableHead className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider py-3.5 px-4 text-left">
-                    USUARIO / RESPONSABLE
-                  </TableHead>
-                  <TableHead className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider py-3.5 px-4 text-right">
-                    TIPO
-                  </TableHead>
+            <TableHeader>
+              <TableRow className="border-b border-border/80 bg-muted/30 hover:bg-muted/30">
+                <TableHead className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider py-3.5 px-4 text-left">
+                  FECHA Y HORA
+                </TableHead>
+                <TableHead className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider py-3.5 px-4 text-left">
+                  EVENTO
+                </TableHead>
+                <TableHead className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider py-3.5 px-4 text-left">
+                  DESCRIPCIÓN
+                </TableHead>
+                <TableHead className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider py-3.5 px-4 text-left">
+                  USUARIO / RESPONSABLE
+                </TableHead>
+                <TableHead className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider py-3.5 px-4 text-right">
+                  TIPO
+                </TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {HISTORIAL_DATA.map((item) => (
+                <TableRow key={item.id} className="border-b border-border/40 hover:bg-muted/20 transition-colors">
+                  {/* Fecha y hora */}
+                  <TableCell className="py-4 px-4 text-xs font-mono text-muted-foreground whitespace-nowrap">
+                    {item.fechaHora}
+                  </TableCell>
+
+                  {/* Evento */}
+                  <TableCell className="py-4 px-4 text-xs font-bold text-foreground whitespace-nowrap">
+                    <div className="flex items-center gap-2">
+                      <span className="size-2 rounded-full bg-foreground" />
+                      <span>{item.evento}</span>
+                    </div>
+                  </TableCell>
+
+                  {/* Descripción */}
+                  <TableCell className="py-4 px-4 text-xs text-muted-foreground max-w-[320px] leading-relaxed">
+                    {item.descripcion}
+                  </TableCell>
+
+                  {/* Usuario */}
+                  <TableCell className="py-4 px-4 text-xs text-foreground font-medium whitespace-nowrap">
+                    {item.usuario}
+                  </TableCell>
+
+                  {/* Tipo */}
+                  <TableCell className="py-4 px-4 text-right whitespace-nowrap">
+                    <Badge tone="neutral" appearance="soft" size="sm" className="font-medium text-[11px]">
+                      {item.tipo}
+                    </Badge>
+                  </TableCell>
                 </TableRow>
-              </TableHeader>
-              <TableBody>
-                {HISTORIAL_DATA.map((item) => (
-                  <TableRow key={item.id} className="border-b border-border/40 hover:bg-muted/20 transition-colors">
-                    {/* Fecha y hora */}
-                    <TableCell className="py-4 px-4 text-xs font-mono text-muted-foreground whitespace-nowrap">
-                      {item.fechaHora}
-                    </TableCell>
-
-                    {/* Evento */}
-                    <TableCell className="py-4 px-4 text-xs font-bold text-foreground whitespace-nowrap">
-                      <div className="flex items-center gap-2">
-                        <span className="size-2 rounded-full bg-foreground" />
-                        <span>{item.evento}</span>
-                      </div>
-                    </TableCell>
-
-                    {/* Descripción */}
-                    <TableCell className="py-4 px-4 text-xs text-muted-foreground max-w-[320px] leading-relaxed">
-                      {item.descripcion}
-                    </TableCell>
-
-                    {/* Usuario */}
-                    <TableCell className="py-4 px-4 text-xs text-foreground font-medium whitespace-nowrap">
-                      {item.usuario}
-                    </TableCell>
-
-                    {/* Tipo */}
-                    <TableCell className="py-4 px-4 text-right whitespace-nowrap">
-                      <Badge tone="neutral" appearance="soft" size="sm" className="font-medium text-[11px]">
-                        {item.tipo}
-                      </Badge>
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
+              ))}
+            </TableBody>
+          </Table>
         </div>
       </main>
     </WireframeDashboardLayout>

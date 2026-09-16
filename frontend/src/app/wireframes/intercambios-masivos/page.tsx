@@ -329,109 +329,109 @@ export default function WireframeIntercambiosMasivosPage() {
         {/* ── 4. Tabla de Intercambios Masivos ── */}
         <div className="overflow-x-auto rounded-2xl border border-border bg-surface shadow-xs">
           <Table className="w-full border-spacing-0">
-              <TableHeader>
-                <TableRow className="border-b border-border/80 bg-muted/30 hover:bg-muted/30">
-                  <TableHead className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider py-3.5 px-4 text-left">
-                    CÓDIGO
-                  </TableHead>
-                  <TableHead className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider py-3.5 px-4 text-left">
-                    SOLICITUD / PROYECTO
-                  </TableHead>
-                  <TableHead className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider py-3.5 px-4 text-left">
-                    FUENTE
-                  </TableHead>
-                  <TableHead className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider py-3.5 px-4 text-left">
-                    CONSUMIDOR
-                  </TableHead>
-                  <TableHead className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider py-3.5 px-4 text-left">
-                    TIPO DE INFORMACIÓN
-                  </TableHead>
-                  <TableHead className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider py-3.5 px-4 text-left">
-                    ESTADO
-                  </TableHead>
-                  <TableHead className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider py-3.5 px-4 text-left">
-                    FECHA CREACIÓN
-                  </TableHead>
-                  <TableHead className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider py-3.5 px-4 text-right">
-                    ACCIONES
-                  </TableHead>
+            <TableHeader>
+              <TableRow className="border-b border-border/80 bg-muted/30 hover:bg-muted/30">
+                <TableHead className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider py-3.5 px-4 text-left">
+                  CÓDIGO
+                </TableHead>
+                <TableHead className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider py-3.5 px-4 text-left">
+                  SOLICITUD / PROYECTO
+                </TableHead>
+                <TableHead className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider py-3.5 px-4 text-left">
+                  FUENTE
+                </TableHead>
+                <TableHead className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider py-3.5 px-4 text-left">
+                  CONSUMIDOR
+                </TableHead>
+                <TableHead className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider py-3.5 px-4 text-left">
+                  TIPO DE INFORMACIÓN
+                </TableHead>
+                <TableHead className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider py-3.5 px-4 text-left">
+                  ESTADO
+                </TableHead>
+                <TableHead className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider py-3.5 px-4 text-left">
+                  FECHA CREACIÓN
+                </TableHead>
+                <TableHead className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider py-3.5 px-4 text-right">
+                  ACCIONES
+                </TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {filteredData.length === 0 ? (
+                <TableRow>
+                  <TableCell colSpan={8} className="text-center py-10 text-muted-foreground text-sm">
+                    No se encontraron solicitudes de intercambio masivo.
+                  </TableCell>
                 </TableRow>
-              </TableHeader>
-              <TableBody>
-                {filteredData.length === 0 ? (
-                  <TableRow>
-                    <TableCell colSpan={8} className="text-center py-10 text-muted-foreground text-sm">
-                      No se encontraron solicitudes de intercambio masivo.
+              ) : (
+                filteredData.map((b) => (
+                  <TableRow
+                    key={b.codigo}
+                    className="border-b border-border/40 hover:bg-muted/20 transition-colors cursor-pointer"
+                    onClick={() => router.push(b.href)}
+                  >
+                    {/* Código */}
+                    <TableCell className="py-4 px-4 text-xs font-mono font-bold text-foreground whitespace-nowrap">
+                      {b.codigo}
+                    </TableCell>
+
+                    {/* Proyecto */}
+                    <TableCell className="py-4 px-4 text-xs font-semibold text-foreground max-w-[220px]">
+                      {b.proyecto}
+                    </TableCell>
+
+                    {/* Fuente */}
+                    <TableCell className="py-4 px-4 text-xs text-muted-foreground whitespace-nowrap">
+                      {b.fuente}
+                    </TableCell>
+
+                    {/* Consumidor */}
+                    <TableCell className="py-4 px-4 text-xs text-muted-foreground whitespace-nowrap">
+                      {b.consumidor}
+                    </TableCell>
+
+                    {/* Tipo de Información */}
+                    <TableCell className="py-4 px-4 text-xs text-muted-foreground max-w-[180px] truncate">
+                      {b.tipoInformacion}
+                    </TableCell>
+
+                    {/* Estado */}
+                    <TableCell className="py-4 px-4 whitespace-nowrap">
+                      <Badge
+                        tone="neutral"
+                        appearance="soft"
+                        size="sm"
+                        className="font-medium gap-1.5 text-xs capitalize"
+                      >
+                        <span className="size-1.5 rounded-full bg-foreground" />
+                        {b.estado}
+                      </Badge>
+                    </TableCell>
+
+                    {/* Fecha de Creación */}
+                    <TableCell className="py-4 px-4 text-xs text-muted-foreground whitespace-nowrap">
+                      {b.fechaCreacion}
+                    </TableCell>
+
+                    {/* Acciones */}
+                    <TableCell className="py-4 px-4 text-right whitespace-nowrap" onClick={(e) => e.stopPropagation()}>
+                      <Button
+                        type="button"
+                        variant="outline"
+                        size="sm"
+                        onClick={() => router.push(b.href)}
+                        className="h-8 px-3 rounded-lg text-xs font-semibold gap-1.5 border-border"
+                      >
+                        <Eye className="size-3.5" />
+                        <span>Ver detalle</span>
+                      </Button>
                     </TableCell>
                   </TableRow>
-                ) : (
-                  filteredData.map((b) => (
-                    <TableRow
-                      key={b.codigo}
-                      className="border-b border-border/40 hover:bg-muted/20 transition-colors cursor-pointer"
-                      onClick={() => router.push(b.href)}
-                    >
-                      {/* Código */}
-                      <TableCell className="py-4 px-4 text-xs font-mono font-bold text-foreground whitespace-nowrap">
-                        {b.codigo}
-                      </TableCell>
-
-                      {/* Proyecto */}
-                      <TableCell className="py-4 px-4 text-xs font-semibold text-foreground max-w-[220px]">
-                        {b.proyecto}
-                      </TableCell>
-
-                      {/* Fuente */}
-                      <TableCell className="py-4 px-4 text-xs text-muted-foreground whitespace-nowrap">
-                        {b.fuente}
-                      </TableCell>
-
-                      {/* Consumidor */}
-                      <TableCell className="py-4 px-4 text-xs text-muted-foreground whitespace-nowrap">
-                        {b.consumidor}
-                      </TableCell>
-
-                      {/* Tipo de Información */}
-                      <TableCell className="py-4 px-4 text-xs text-muted-foreground max-w-[180px] truncate">
-                        {b.tipoInformacion}
-                      </TableCell>
-
-                      {/* Estado */}
-                      <TableCell className="py-4 px-4 whitespace-nowrap">
-                        <Badge
-                          tone="neutral"
-                          appearance="soft"
-                          size="sm"
-                          className="font-medium gap-1.5 text-xs capitalize"
-                        >
-                          <span className="size-1.5 rounded-full bg-foreground" />
-                          {b.estado}
-                        </Badge>
-                      </TableCell>
-
-                      {/* Fecha de Creación */}
-                      <TableCell className="py-4 px-4 text-xs text-muted-foreground whitespace-nowrap">
-                        {b.fechaCreacion}
-                      </TableCell>
-
-                      {/* Acciones */}
-                      <TableCell className="py-4 px-4 text-right whitespace-nowrap" onClick={(e) => e.stopPropagation()}>
-                        <Button
-                          type="button"
-                          variant="outline"
-                          size="sm"
-                          onClick={() => router.push(b.href)}
-                          className="h-8 px-3 rounded-lg text-xs font-semibold gap-1.5 border-border"
-                        >
-                          <Eye className="size-3.5" />
-                          <span>Ver detalle</span>
-                        </Button>
-                      </TableCell>
-                    </TableRow>
-                  ))
-                )}
-              </TableBody>
-            </Table>
+                ))
+              )}
+            </TableBody>
+          </Table>
         </div>
 
         {/* ── 5. Paginación ── */}

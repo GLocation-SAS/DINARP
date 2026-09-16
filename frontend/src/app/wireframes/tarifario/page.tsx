@@ -444,39 +444,39 @@ export default function WireframeTarifarioCotizacionPage() {
             </div>
 
             <div className="flex justify-end pt-2">
-                <Pagination className="mx-0 w-auto justify-end">
-                  <PaginationContent className="gap-1">
-                    <PaginationItem>
-                      <PaginationPrevious href="#" className="size-8 rounded-lg border border-border" />
-                    </PaginationItem>
-                    <PaginationItem>
-                      <PaginationLink href="#" isActive className="size-8 rounded-lg text-xs">
-                        1
-                      </PaginationLink>
-                    </PaginationItem>
-                    <PaginationItem>
-                      <PaginationLink href="#" className="size-8 rounded-lg text-xs">
-                        2
-                      </PaginationLink>
-                    </PaginationItem>
-                    <PaginationItem>
-                      <PaginationLink href="#" className="size-8 rounded-lg text-xs">
-                        3
-                      </PaginationLink>
-                    </PaginationItem>
-                    <PaginationItem>
-                      <PaginationEllipsis className="size-8" />
-                    </PaginationItem>
-                    <PaginationItem>
-                      <PaginationLink href="#" className="size-8 rounded-lg text-xs">
-                        10
-                      </PaginationLink>
-                    </PaginationItem>
-                    <PaginationItem>
-                      <PaginationNext href="#" className="size-8 rounded-lg border border-border" />
-                    </PaginationItem>
-                  </PaginationContent>
-                </Pagination>
+              <Pagination className="mx-0 w-auto justify-end">
+                <PaginationContent className="gap-1">
+                  <PaginationItem>
+                    <PaginationPrevious href="#" className="size-8 rounded-lg border border-border" />
+                  </PaginationItem>
+                  <PaginationItem>
+                    <PaginationLink href="#" isActive className="size-8 rounded-lg text-xs">
+                      1
+                    </PaginationLink>
+                  </PaginationItem>
+                  <PaginationItem>
+                    <PaginationLink href="#" className="size-8 rounded-lg text-xs">
+                      2
+                    </PaginationLink>
+                  </PaginationItem>
+                  <PaginationItem>
+                    <PaginationLink href="#" className="size-8 rounded-lg text-xs">
+                      3
+                    </PaginationLink>
+                  </PaginationItem>
+                  <PaginationItem>
+                    <PaginationEllipsis className="size-8" />
+                  </PaginationItem>
+                  <PaginationItem>
+                    <PaginationLink href="#" className="size-8 rounded-lg text-xs">
+                      10
+                    </PaginationLink>
+                  </PaginationItem>
+                  <PaginationItem>
+                    <PaginationNext href="#" className="size-8 rounded-lg border border-border" />
+                  </PaginationItem>
+                </PaginationContent>
+              </Pagination>
             </div>
           </TabsContent>
 

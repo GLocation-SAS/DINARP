@@ -224,137 +224,137 @@ export default function WireframeListadoUsuariosPage() {
         {/* ── 3. Tabla de Usuarios ── */}
         <div className="overflow-x-auto rounded-2xl border border-border bg-surface shadow-xs">
           <Table className="w-full border-spacing-0">
-              <TableHeader>
-                <TableRow className="border-b border-border/80 bg-muted/30 hover:bg-muted/30">
-                  <TableHead className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider py-3.5 px-6 text-left">
-                    NOMBRE
-                  </TableHead>
-                  <TableHead className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider py-3.5 px-6 text-left">
-                    CORREO ELECTRÓNICO
-                  </TableHead>
-                  <TableHead className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider py-3.5 px-6 text-left">
-                    INSTITUCIÓN
-                  </TableHead>
-                  <TableHead className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider py-3.5 px-6 text-left">
-                    ROL
-                  </TableHead>
-                  <TableHead className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider py-3.5 px-6 text-left">
-                    ESTADO
-                  </TableHead>
-                  <TableHead className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider py-3.5 px-6 text-left">
-                    ÚLTIMO ACCESO
-                  </TableHead>
-                  <TableHead className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider py-3.5 px-6 text-right">
-                    ACCIONES
-                  </TableHead>
+            <TableHeader>
+              <TableRow className="border-b border-border/80 bg-muted/30 hover:bg-muted/30">
+                <TableHead className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider py-3.5 px-6 text-left">
+                  NOMBRE
+                </TableHead>
+                <TableHead className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider py-3.5 px-6 text-left">
+                  CORREO ELECTRÓNICO
+                </TableHead>
+                <TableHead className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider py-3.5 px-6 text-left">
+                  INSTITUCIÓN
+                </TableHead>
+                <TableHead className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider py-3.5 px-6 text-left">
+                  ROL
+                </TableHead>
+                <TableHead className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider py-3.5 px-6 text-left">
+                  ESTADO
+                </TableHead>
+                <TableHead className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider py-3.5 px-6 text-left">
+                  ÚLTIMO ACCESO
+                </TableHead>
+                <TableHead className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider py-3.5 px-6 text-right">
+                  ACCIONES
+                </TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {filteredData.length === 0 ? (
+                <TableRow>
+                  <TableCell colSpan={7} className="text-center py-10 text-muted-foreground text-sm">
+                    No se encontraron usuarios con los filtros aplicados.
+                  </TableCell>
                 </TableRow>
-              </TableHeader>
-              <TableBody>
-                {filteredData.length === 0 ? (
-                  <TableRow>
-                    <TableCell colSpan={7} className="text-center py-10 text-muted-foreground text-sm">
-                      No se encontraron usuarios con los filtros aplicados.
+              ) : (
+                filteredData.map((row) => (
+                  <TableRow
+                    key={row.id}
+                    className="border-b border-border/40 hover:bg-muted/20 transition-colors cursor-pointer"
+                    onClick={() => router.push(`/wireframes/usuarios/${row.id}`)}
+                  >
+                    {/* Nombre con Avatar de Iniciales */}
+                    <TableCell className="py-4 px-6 whitespace-nowrap">
+                      <div className="flex items-center gap-3">
+                        <div className="size-8 rounded-full bg-muted-foreground/20 text-foreground font-bold text-xs flex items-center justify-center shrink-0">
+                          {row.iniciales}
+                        </div>
+                        <span className="text-xs font-bold text-foreground">
+                          {row.nombre}
+                        </span>
+                      </div>
+                    </TableCell>
+
+                    {/* Correo Electrónico */}
+                    <TableCell className="py-4 px-6 text-xs text-muted-foreground whitespace-nowrap">
+                      {row.correo}
+                    </TableCell>
+
+                    {/* Institución */}
+                    <TableCell className="py-4 px-6 text-xs text-muted-foreground whitespace-nowrap">
+                      {row.institucion}
+                    </TableCell>
+
+                    {/* Rol */}
+                    <TableCell className="py-4 px-6 text-xs text-foreground font-medium whitespace-nowrap">
+                      {row.rol}
+                    </TableCell>
+
+                    {/* Estado Badge */}
+                    <TableCell className="py-4 px-6 whitespace-nowrap">
+                      <Badge
+                        tone={row.estado === "Activo" ? "success" : "danger"}
+                        appearance="soft"
+                        size="sm"
+                        className="font-medium gap-1 text-xs"
+                      >
+                        {row.estado}
+                      </Badge>
+                    </TableCell>
+
+                    {/* Último acceso */}
+                    <TableCell className="py-4 px-6 text-xs text-muted-foreground whitespace-nowrap font-mono">
+                      {row.ultimoAcceso}
+                    </TableCell>
+
+                    {/* Acciones */}
+                    <TableCell className="py-4 px-6 text-right whitespace-nowrap" onClick={(e) => e.stopPropagation()}>
+                      <div className="flex items-center justify-end gap-1">
+                        <Button
+                          type="button"
+                          variant="ghost"
+                          size="icon-sm"
+                          onClick={() => router.push(`/wireframes/usuarios/${row.id}/editar`)}
+                          className="size-8 text-muted-foreground hover:text-foreground"
+                          title="Editar usuario"
+                        >
+                          <Pencil className="size-3.5" />
+                        </Button>
+
+                        <DropdownMenu>
+                          <DropdownMenuTrigger asChild>
+                            <Button
+                              type="button"
+                              variant="ghost"
+                              size="icon-sm"
+                              className="size-8 text-muted-foreground hover:text-foreground"
+                            >
+                              <MoreVertical className="size-3.5" />
+                            </Button>
+                          </DropdownMenuTrigger>
+                          <DropdownMenuContent align="end" className="w-40">
+                            <DropdownMenuItem onClick={() => router.push(`/wireframes/usuarios/${row.id}`)}>
+                              <Eye className="size-3.5 mr-2" />
+                              <span>Ver detalle</span>
+                            </DropdownMenuItem>
+                            <DropdownMenuItem onClick={() => router.push(`/wireframes/usuarios/${row.id}/editar`)}>
+                              <Pencil className="size-3.5 mr-2" />
+                              <span>Editar</span>
+                            </DropdownMenuItem>
+                            <DropdownMenuSeparator />
+                            <DropdownMenuItem className="text-destructive focus:text-destructive">
+                              <Lock className="size-3.5 mr-2" />
+                              <span>Desactivar</span>
+                            </DropdownMenuItem>
+                          </DropdownMenuContent>
+                        </DropdownMenu>
+                      </div>
                     </TableCell>
                   </TableRow>
-                ) : (
-                  filteredData.map((row) => (
-                    <TableRow
-                      key={row.id}
-                      className="border-b border-border/40 hover:bg-muted/20 transition-colors cursor-pointer"
-                      onClick={() => router.push(`/wireframes/usuarios/${row.id}`)}
-                    >
-                      {/* Nombre con Avatar de Iniciales */}
-                      <TableCell className="py-4 px-6 whitespace-nowrap">
-                        <div className="flex items-center gap-3">
-                          <div className="size-8 rounded-full bg-muted-foreground/20 text-foreground font-bold text-xs flex items-center justify-center shrink-0">
-                            {row.iniciales}
-                          </div>
-                          <span className="text-xs font-bold text-foreground">
-                            {row.nombre}
-                          </span>
-                        </div>
-                      </TableCell>
-
-                      {/* Correo Electrónico */}
-                      <TableCell className="py-4 px-6 text-xs text-muted-foreground whitespace-nowrap">
-                        {row.correo}
-                      </TableCell>
-
-                      {/* Institución */}
-                      <TableCell className="py-4 px-6 text-xs text-muted-foreground whitespace-nowrap">
-                        {row.institucion}
-                      </TableCell>
-
-                      {/* Rol */}
-                      <TableCell className="py-4 px-6 text-xs text-foreground font-medium whitespace-nowrap">
-                        {row.rol}
-                      </TableCell>
-
-                      {/* Estado Badge */}
-                      <TableCell className="py-4 px-6 whitespace-nowrap">
-                        <Badge
-                          tone={row.estado === "Activo" ? "success" : "danger"}
-                          appearance="soft"
-                          size="sm"
-                          className="font-medium gap-1 text-xs"
-                        >
-                          {row.estado}
-                        </Badge>
-                      </TableCell>
-
-                      {/* Último acceso */}
-                      <TableCell className="py-4 px-6 text-xs text-muted-foreground whitespace-nowrap font-mono">
-                        {row.ultimoAcceso}
-                      </TableCell>
-
-                      {/* Acciones */}
-                      <TableCell className="py-4 px-6 text-right whitespace-nowrap" onClick={(e) => e.stopPropagation()}>
-                        <div className="flex items-center justify-end gap-1">
-                          <Button
-                            type="button"
-                            variant="ghost"
-                            size="icon-sm"
-                            onClick={() => router.push(`/wireframes/usuarios/${row.id}/editar`)}
-                            className="size-8 text-muted-foreground hover:text-foreground"
-                            title="Editar usuario"
-                          >
-                            <Pencil className="size-3.5" />
-                          </Button>
-
-                          <DropdownMenu>
-                            <DropdownMenuTrigger asChild>
-                              <Button
-                                type="button"
-                                variant="ghost"
-                                size="icon-sm"
-                                className="size-8 text-muted-foreground hover:text-foreground"
-                              >
-                                <MoreVertical className="size-3.5" />
-                              </Button>
-                            </DropdownMenuTrigger>
-                            <DropdownMenuContent align="end" className="w-40">
-                              <DropdownMenuItem onClick={() => router.push(`/wireframes/usuarios/${row.id}`)}>
-                                <Eye className="size-3.5 mr-2" />
-                                <span>Ver detalle</span>
-                              </DropdownMenuItem>
-                              <DropdownMenuItem onClick={() => router.push(`/wireframes/usuarios/${row.id}/editar`)}>
-                                <Pencil className="size-3.5 mr-2" />
-                                <span>Editar</span>
-                              </DropdownMenuItem>
-                              <DropdownMenuSeparator />
-                              <DropdownMenuItem className="text-destructive focus:text-destructive">
-                                <Lock className="size-3.5 mr-2" />
-                                <span>Desactivar</span>
-                              </DropdownMenuItem>
-                            </DropdownMenuContent>
-                          </DropdownMenu>
-                        </div>
-                      </TableCell>
-                    </TableRow>
-                  ))
-                )}
-              </TableBody>
-            </Table>
+                ))
+              )}
+            </TableBody>
+          </Table>
         </div>
 
         {/* ── 4. Paginación ── */}
