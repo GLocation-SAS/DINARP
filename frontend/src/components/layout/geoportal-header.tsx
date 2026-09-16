@@ -518,30 +518,21 @@ export function GeoportalHeader({
           <div className="w-full px-3 sm:px-6">
             <div className="relative flex items-center justify-between h-14 sm:h-16">
               {/* ── Logo oficial de la marca ── */}
-              {variant !== "user-actions" ? (
-                <Link
-                  href="/"
-                  className={cn(
-                    "flex items-center gap-2 sm:gap-3 shrink-0 group",
-                    "focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none rounded-md"
-                  )}
-                >
-                  {headerConfig.showLogo && (
-                    <img
-                      src={getAssetPath(headerConfig.logoUrlLight || "/logotipo.png")}
-                      alt="Logo DINARP GEOportal"
-                      className="h-8 sm:h-10 w-auto object-contain"
-                    />
-                  )}
-                  {headerConfig.title && (
-                    <span className="font-bold text-lg text-foreground ml-2 hidden sm:inline-block">
-                      {headerConfig.title}
-                    </span>
-                  )}
-                </Link>
-              ) : (
-                <div />
-              )}
+              <Link
+                href="/"
+                className={cn(
+                  "flex items-center shrink-0 group",
+                  "focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none rounded-md"
+                )}
+              >
+                {headerConfig.showLogo && (
+                  <img
+                    src={getAssetPath(headerConfig.logoUrlLight || "/logotipo.png")}
+                    alt="Logo DINARP"
+                    className="h-8 sm:h-10 w-auto object-contain"
+                  />
+                )}
+              </Link>
 
               {/* ── Navegación desktop ── */}
               {showNav && (

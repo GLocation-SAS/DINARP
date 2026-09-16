@@ -1058,7 +1058,19 @@
   --border: var(--primitive-neutral-300);
   --border-strong: var(--primitive-neutral-400);
   --input: var(--primitive-neutral-300);
-  --ring: var(--primitive-neutral-800);
+  /* Sidebar */
+  --sidebar: var(--primitive-neutral-50);
+  --sidebar-foreground: var(--primitive-neutral-800);
+  --sidebar-primary: var(--primitive-neutral-900);
+  --sidebar-primary-foreground: var(--primitive-neutral-50);
+  --sidebar-accent: var(--primitive-neutral-200);
+  --sidebar-accent-foreground: var(--primitive-neutral-900);
+  --sidebar-border: var(--primitive-neutral-300);
+  --sidebar-ring: var(--primitive-neutral-800);
+
+  /* Brand Accents Grayscale */
+  --brand-yellow: var(--primitive-neutral-400);
+  --brand-red: var(--primitive-neutral-700);
 
   /* Data Visualization */
   --chart-1: var(--primitive-neutral-900);
@@ -1078,7 +1090,9 @@
 [data-theme="dark"] [data-theme="wireframe"],
 .dark [data-theme="wireframe"],
 [data-theme="wireframe"][data-theme="dark"],
-[data-theme="wireframe"].dark {
+[data-theme="wireframe"].dark,
+[data-theme="wireframe"] [data-theme="dark"],
+[data-theme="wireframe"] .dark {
   --background: var(--primitive-neutral-950);
   --foreground: var(--primitive-neutral-50);
 
@@ -1129,6 +1143,38 @@
   --border-strong: var(--primitive-neutral-700);
   --input: var(--primitive-neutral-800);
   --ring: var(--primitive-neutral-400);
+
+  /* Sidebar */
+  --sidebar: var(--primitive-neutral-900);
+  --sidebar-foreground: var(--primitive-neutral-200);
+  --sidebar-primary: var(--primitive-neutral-100);
+  --sidebar-primary-foreground: var(--primitive-neutral-950);
+  --sidebar-accent: var(--primitive-neutral-800);
+  --sidebar-accent-foreground: var(--primitive-neutral-100);
+  --sidebar-border: var(--primitive-neutral-800);
+  --sidebar-ring: var(--primitive-neutral-400);
+
+  /* Brand Accents Grayscale */
+  --brand-yellow: var(--primitive-neutral-400);
+  --brand-red: var(--primitive-neutral-700);
+
+  /* Data Visualization */
+  --chart-1: var(--primitive-neutral-100);
+  --chart-2: var(--primitive-neutral-300);
+  --chart-3: var(--primitive-neutral-500);
+  --chart-4: var(--primitive-neutral-600);
+  --chart-5: var(--primitive-neutral-700);
+  --chart-6: var(--primitive-neutral-800);
+
+  /* Risk Levels */
+  --risk-low: var(--primitive-neutral-400);
+  --risk-medium: var(--primitive-neutral-500);
+  --risk-high: var(--primitive-neutral-700);
+  --risk-critical: var(--primitive-neutral-900);
+}
+
+[data-theme="wireframe"] img {
+  filter: grayscale(100%);
 }
 
 /*

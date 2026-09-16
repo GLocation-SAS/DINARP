@@ -215,13 +215,13 @@ export default function WireframeSolicitudDetallePage() {
           {/* Columna Izquierda / Central (2 Columnas) */}
           <div className="lg:col-span-2 space-y-6">
             {/* 3.1 Información General del Proyecto y Solicitante */}
-            <Card className="border-border bg-surface shadow-xs">
-              <CardHeader className="p-5 pb-3 border-b border-border/60">
-                <div className="flex items-center gap-2.5">
-                  <div className="size-8 rounded-lg bg-muted/60 flex items-center justify-center text-foreground">
-                    <Building2 className="size-4" />
+            <Card className="border-border bg-surface shadow-xs" innerClassName="p-0 gap-0">
+              <CardHeader className="p-5 sm:p-6 pb-4 border-b border-border/60">
+                <div className="flex items-center gap-3">
+                  <div className="size-9 rounded-xl bg-muted/60 border border-border/50 flex items-center justify-center text-foreground shrink-0">
+                    <Building2 className="size-4 text-primary" />
                   </div>
-                  <div>
+                  <div className="text-left">
                     <CardTitle className="text-base font-heading font-bold text-foreground">
                       Institución Solicitante y Proyecto
                     </CardTitle>
@@ -231,7 +231,7 @@ export default function WireframeSolicitudDetallePage() {
                   </div>
                 </div>
               </CardHeader>
-              <CardContent className="p-5">
+              <CardContent className="p-5 sm:p-6">
                 <DetailList
                   columns={2}
                   items={[
@@ -275,13 +275,13 @@ export default function WireframeSolicitudDetallePage() {
             </Card>
 
             {/* 3.2 Institución Fuente, Intercambio y Datos Solicitados */}
-            <Card className="border-border bg-surface shadow-xs">
-              <CardHeader className="p-5 pb-3 border-b border-border/60">
-                <div className="flex items-center gap-2.5">
-                  <div className="size-8 rounded-lg bg-muted/60 flex items-center justify-center text-foreground">
-                    <Database className="size-4" />
+            <Card className="border-border bg-surface shadow-xs" innerClassName="p-0 gap-0">
+              <CardHeader className="p-5 sm:p-6 pb-4 border-b border-border/60">
+                <div className="flex items-center gap-3">
+                  <div className="size-9 rounded-xl bg-muted/60 border border-border/50 flex items-center justify-center text-foreground shrink-0">
+                    <Database className="size-4 text-primary" />
                   </div>
-                  <div>
+                  <div className="text-left">
                     <CardTitle className="text-base font-heading font-bold text-foreground">
                       Institución Fuente y Especificación de Datos
                     </CardTitle>
@@ -291,7 +291,7 @@ export default function WireframeSolicitudDetallePage() {
                   </div>
                 </div>
               </CardHeader>
-              <CardContent className="p-5 space-y-5">
+              <CardContent className="p-5 sm:p-6 space-y-5">
                 <DetailList
                   columns={2}
                   items={[
@@ -323,18 +323,18 @@ export default function WireframeSolicitudDetallePage() {
                   ]}
                 />
 
-                <div className="pt-3 border-t border-border/50">
-                  <span className="text-xs font-bold text-muted-foreground uppercase tracking-wider block mb-2.5">
+                <div className="pt-4 border-t border-border/50 text-left">
+                  <span className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider block mb-2.5 text-left">
                     Campos y Atributos Solicitados:
                   </span>
-                  <div className="flex flex-wrap gap-2">
+                  <div className="flex flex-wrap gap-2 justify-start">
                     {solicitud.fuente.datosSolicitados.map((campo, idx) => (
                       <Badge
                         key={idx}
                         tone="neutral"
                         appearance="outline"
                         size="md"
-                        className="font-mono text-xs normal-case bg-background/50"
+                        className="font-mono text-xs normal-case bg-background/50 text-left"
                       >
                         {campo}
                       </Badge>
@@ -345,13 +345,13 @@ export default function WireframeSolicitudDetallePage() {
             </Card>
 
             {/* 3.3 Finalidad de Uso y Clasificación Legal */}
-            <Card className="border-border bg-surface shadow-xs">
-              <CardHeader className="p-5 pb-3 border-b border-border/60">
-                <div className="flex items-center gap-2.5">
-                  <div className="size-8 rounded-lg bg-muted/60 flex items-center justify-center text-foreground">
-                    <ShieldAlert className="size-4" />
+            <Card className="border-border bg-surface shadow-xs" innerClassName="p-0 gap-0">
+              <CardHeader className="p-5 sm:p-6 pb-4 border-b border-border/60">
+                <div className="flex items-center gap-3">
+                  <div className="size-9 rounded-xl bg-muted/60 border border-border/50 flex items-center justify-center text-foreground shrink-0">
+                    <ShieldAlert className="size-4 text-primary" />
                   </div>
-                  <div>
+                  <div className="text-left">
                     <CardTitle className="text-base font-heading font-bold text-foreground">
                       Finalidad de Uso & Marco Regulatorio
                     </CardTitle>
@@ -361,14 +361,14 @@ export default function WireframeSolicitudDetallePage() {
                   </div>
                 </div>
               </CardHeader>
-              <CardContent className="p-5">
+              <CardContent className="p-5 sm:p-6">
                 <DetailList
                   columns={1}
                   items={[
                     {
                       label: "Propósito Institucional",
                       value: (
-                        <p className="text-sm text-foreground/90 leading-relaxed font-normal">
+                        <p className="text-sm text-foreground/90 leading-relaxed font-normal text-left">
                           {solicitud.finalidad.proposito}
                         </p>
                       ),
@@ -376,7 +376,7 @@ export default function WireframeSolicitudDetallePage() {
                     {
                       label: "Base Legal",
                       value: (
-                        <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed">
+                        <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed text-left">
                           {solicitud.finalidad.baseLegal}
                         </p>
                       ),
@@ -398,13 +398,13 @@ export default function WireframeSolicitudDetallePage() {
           {/* Columna Derecha (1 Columna: Observaciones & Documentos) */}
           <div className="space-y-6">
             {/* 3.4 Observaciones Registradas */}
-            <Card className="border-border bg-surface shadow-xs">
-              <CardHeader className="p-5 pb-3 border-b border-border/60">
-                <div className="flex items-center gap-2.5">
-                  <div className="size-8 rounded-lg bg-muted/60 flex items-center justify-center text-foreground">
-                    <MessageSquare className="size-4" />
+            <Card className="border-border bg-surface shadow-xs" innerClassName="p-0 gap-0">
+              <CardHeader className="p-5 sm:p-6 pb-4 border-b border-border/60">
+                <div className="flex items-center gap-3">
+                  <div className="size-9 rounded-xl bg-muted/60 border border-border/50 flex items-center justify-center text-foreground shrink-0">
+                    <MessageSquare className="size-4 text-primary" />
                   </div>
-                  <div>
+                  <div className="text-left">
                     <CardTitle className="text-base font-heading font-bold text-foreground">
                       Observaciones
                     </CardTitle>
@@ -414,7 +414,7 @@ export default function WireframeSolicitudDetallePage() {
                   </div>
                 </div>
               </CardHeader>
-              <CardContent className="p-5 space-y-4">
+              <CardContent className="p-5 sm:p-6 space-y-4">
                 {solicitud.observaciones.map((obs) => (
                   <div
                     key={obs.id}
@@ -431,7 +431,7 @@ export default function WireframeSolicitudDetallePage() {
                     <span className="text-[10px] text-muted-foreground font-medium block leading-none">
                       {obs.rol}
                     </span>
-                    <p className="text-xs text-foreground/80 leading-relaxed pt-1">
+                    <p className="text-xs text-foreground/80 leading-relaxed pt-1 text-left">
                       {obs.texto}
                     </p>
                   </div>
@@ -440,13 +440,13 @@ export default function WireframeSolicitudDetallePage() {
             </Card>
 
             {/* 3.5 Documentos Adjuntos */}
-            <Card className="border-border bg-surface shadow-xs">
-              <CardHeader className="p-5 pb-3 border-b border-border/60">
-                <div className="flex items-center gap-2.5">
-                  <div className="size-8 rounded-lg bg-muted/60 flex items-center justify-center text-foreground">
-                    <Paperclip className="size-4" />
+            <Card className="border-border bg-surface shadow-xs" innerClassName="p-0 gap-0">
+              <CardHeader className="p-5 sm:p-6 pb-4 border-b border-border/60">
+                <div className="flex items-center gap-3">
+                  <div className="size-9 rounded-xl bg-muted/60 border border-border/50 flex items-center justify-center text-foreground shrink-0">
+                    <Paperclip className="size-4 text-primary" />
                   </div>
-                  <div>
+                  <div className="text-left">
                     <CardTitle className="text-base font-heading font-bold text-foreground">
                       Documentos Adjuntos
                     </CardTitle>

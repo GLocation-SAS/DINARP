@@ -528,11 +528,11 @@ export default function WireframeReportesPage() {
                 <text x="32" y="129" textAnchor="end" fontSize="10" fill="currentColor" opacity="0.6">2.000</text>
                 <text x="32" y="163" textAnchor="end" fontSize="10" fill="currentColor" opacity="0.6">0</text>
 
-                {/* Blue Line: Exitosas */}
+                {/* Main Line: Exitosas */}
                 <path
                   d="M 50 88 L 100 52 L 140 68 L 180 52 L 220 50 L 260 68 L 300 50 L 340 52 L 380 72 L 420 40 L 460 65 L 490 65 L 515 48"
                   fill="none"
-                  stroke="#2563eb"
+                  stroke="var(--chart-1)"
                   strokeWidth="2.5"
                   strokeLinecap="round"
                   strokeLinejoin="round"
@@ -543,14 +543,14 @@ export default function WireframeReportesPage() {
                   [260, 68], [300, 50], [340, 52], [380, 72], [420, 40],
                   [460, 65], [490, 65], [515, 48]
                 ].map(([cx, cy], i) => (
-                  <circle key={i} cx={cx} cy={cy} r="3" fill="#2563eb" className="transition-all hover:r-4" />
+                  <circle key={i} cx={cx} cy={cy} r="3" fill="var(--chart-1)" className="transition-all hover:r-4" />
                 ))}
 
-                {/* Red Line: Con error */}
+                {/* Sub Line: Con error */}
                 <path
                   d="M 50 148 L 100 145 L 140 148 L 180 148 L 220 148 L 260 148 L 300 148 L 340 148 L 380 148 L 420 148 L 460 148 L 490 148 L 515 148"
                   fill="none"
-                  stroke="#ef4444"
+                  stroke="var(--chart-3)"
                   strokeWidth="2"
                   strokeLinecap="round"
                   strokeLinejoin="round"
@@ -561,7 +561,7 @@ export default function WireframeReportesPage() {
                   [260, 148], [300, 148], [340, 148], [380, 148], [420, 148],
                   [460, 148], [490, 148], [515, 148]
                 ].map(([cx, cy], i) => (
-                  <circle key={i} cx={cx} cy={cy} r="2.5" fill="#ef4444" />
+                  <circle key={i} cx={cx} cy={cy} r="2.5" fill="var(--chart-3)" />
                 ))}
 
                 {/* X Axis Labels */}
@@ -578,11 +578,11 @@ export default function WireframeReportesPage() {
             {/* Bottom Legend */}
             <div className="flex items-center justify-center gap-6 pt-2 border-t border-border/50 text-xs">
               <div className="flex items-center gap-2">
-                <span className="size-2.5 rounded-full bg-blue-600" />
+                <span className="size-2.5 rounded-full bg-chart-1" />
                 <span className="text-muted-foreground font-medium">Exitosas</span>
               </div>
               <div className="flex items-center gap-2">
-                <span className="size-2.5 rounded-full bg-rose-500" />
+                <span className="size-2.5 rounded-full bg-chart-3" />
                 <span className="text-muted-foreground font-medium">Con error</span>
               </div>
             </div>
@@ -607,7 +607,7 @@ export default function WireframeReportesPage() {
                     cy="50"
                     r="38"
                     fill="transparent"
-                    stroke="#2563eb"
+                    stroke="var(--chart-1)"
                     strokeWidth="16"
                     strokeDasharray="162.3 238.7"
                     strokeDashoffset="0"
@@ -619,7 +619,7 @@ export default function WireframeReportesPage() {
                     cy="50"
                     r="38"
                     fill="transparent"
-                    stroke="#0d9488"
+                    stroke="var(--chart-2)"
                     strokeWidth="16"
                     strokeDasharray="43.0 238.7"
                     strokeDashoffset="-162.3"
@@ -631,7 +631,7 @@ export default function WireframeReportesPage() {
                     cy="50"
                     r="38"
                     fill="transparent"
-                    stroke="#16a34a"
+                    stroke="var(--chart-3)"
                     strokeWidth="16"
                     strokeDasharray="21.5 238.7"
                     strokeDashoffset="-205.3"
@@ -643,7 +643,7 @@ export default function WireframeReportesPage() {
                     cy="50"
                     r="38"
                     fill="transparent"
-                    stroke="#64748b"
+                    stroke="var(--chart-4)"
                     strokeWidth="16"
                     strokeDasharray="11.9 238.7"
                     strokeDashoffset="-226.8"
@@ -665,7 +665,7 @@ export default function WireframeReportesPage() {
               <div className="space-y-3 w-full sm:w-auto text-xs">
                 <div className="flex items-center justify-between sm:justify-start gap-3">
                   <div className="flex items-center gap-2">
-                    <span className="size-2.5 rounded-full bg-blue-600" />
+                    <span className="size-2.5 rounded-full bg-chart-1" />
                     <span className="text-muted-foreground">Consultas en línea</span>
                   </div>
                   <span className="font-bold text-foreground font-mono">68%</span>
@@ -673,7 +673,7 @@ export default function WireframeReportesPage() {
 
                 <div className="flex items-center justify-between sm:justify-start gap-3">
                   <div className="flex items-center gap-2">
-                    <span className="size-2.5 rounded-full bg-teal-600" />
+                    <span className="size-2.5 rounded-full bg-chart-2" />
                     <span className="text-muted-foreground">Intercambio masivo</span>
                   </div>
                   <span className="font-bold text-foreground font-mono">18%</span>
@@ -681,7 +681,7 @@ export default function WireframeReportesPage() {
 
                 <div className="flex items-center justify-between sm:justify-start gap-3">
                   <div className="flex items-center gap-2">
-                    <span className="size-2.5 rounded-full bg-emerald-600" />
+                    <span className="size-2.5 rounded-full bg-chart-3" />
                     <span className="text-muted-foreground">Excepcionalidades</span>
                   </div>
                   <span className="font-bold text-foreground font-mono">9%</span>
@@ -689,7 +689,7 @@ export default function WireframeReportesPage() {
 
                 <div className="flex items-center justify-between sm:justify-start gap-3">
                   <div className="flex items-center gap-2">
-                    <span className="size-2.5 rounded-full bg-slate-500" />
+                    <span className="size-2.5 rounded-full bg-chart-4" />
                     <span className="text-muted-foreground">Otros</span>
                   </div>
                   <span className="font-bold text-foreground font-mono">5%</span>

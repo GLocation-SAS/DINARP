@@ -17,6 +17,7 @@ export interface StepperProps {
   completedSteps?: number[];
   onStepClick?: (index: number) => void;
   orientation?: "horizontal" | "vertical";
+  stepPrefix?: string;
 }
 
 export function Stepper({ 
@@ -24,7 +25,8 @@ export function Stepper({
   activeStep, 
   completedSteps = [], 
   onStepClick,
-  orientation = "horizontal"
+  orientation = "horizontal",
+  stepPrefix = "Paso"
 }: StepperProps) {
   const isVertical = orientation === "vertical";
 
@@ -118,7 +120,7 @@ export function Stepper({
                 isVertical ? "items-start text-left mt-[-2px]" : "items-center text-center w-full"
               )}>
                 <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest mb-0.5">
-                  Step {index + 1}
+                  {stepPrefix} {index + 1}
                 </span>
                 <span className={cn(
                   "text-sm font-semibold mb-1.5 transition-colors duration-300 whitespace-nowrap",
@@ -136,7 +138,7 @@ export function Stepper({
                       ? "bg-primary/10 text-primary" 
                       : "bg-surface-subtle text-muted-foreground border border-border"
                 )}>
-                  {isCompleted ? "Completed" : isActive ? "In Progress" : "Pending"}
+                  {isCompleted ? "Completado" : isActive ? "En curso" : "Pendiente"}
                 </span>
               </div>
             </li>

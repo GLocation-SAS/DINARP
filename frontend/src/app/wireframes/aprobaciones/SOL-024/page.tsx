@@ -132,13 +132,13 @@ export default function WireframeRevisionSolicitudPage() {
         </div>
 
         {/* ── 3. Sección: Información general ── */}
-        <Card className="border-border bg-surface shadow-xs">
-          <CardHeader className="p-6 pb-2">
+        <Card className="border-border bg-surface shadow-xs" innerClassName="p-0 gap-0">
+          <CardHeader className="p-6 pb-4 border-b border-border/60">
             <CardTitle className="text-base font-heading font-bold text-foreground">
               Información general
             </CardTitle>
           </CardHeader>
-          <CardContent className="p-6 pt-2">
+          <CardContent className="p-6">
             <DetailList
               columns={2}
               items={[
@@ -179,7 +179,7 @@ export default function WireframeRevisionSolicitudPage() {
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {/* Card Registro Civil */}
-            <Card className="border-border bg-surface shadow-xs">
+            <Card className="border-border bg-surface shadow-xs" innerClassName="p-0 gap-0">
               <CardHeader className="p-5 pb-3 flex flex-row items-center justify-between space-y-0 border-b border-border/60">
                 <div className="flex items-center gap-2">
                   <Building2 className="size-4 text-foreground" />
@@ -214,7 +214,7 @@ export default function WireframeRevisionSolicitudPage() {
             </Card>
 
             {/* Card SRI */}
-            <Card className="border-border bg-surface shadow-xs">
+            <Card className="border-border bg-surface shadow-xs" innerClassName="p-0 gap-0">
               <CardHeader className="p-5 pb-3 flex flex-row items-center justify-between space-y-0 border-b border-border/60">
                 <div className="flex items-center gap-2">
                   <Building2 className="size-4 text-foreground" />
@@ -245,14 +245,14 @@ export default function WireframeRevisionSolicitudPage() {
         </div>
 
         {/* ── 5. Sección: Justificación de la solicitud ── */}
-        <Card className="border-border bg-surface shadow-xs">
-          <CardHeader className="p-6 pb-2">
+        <Card className="border-border bg-surface shadow-xs" innerClassName="p-0 gap-0">
+          <CardHeader className="p-6 pb-3 border-b border-border/60">
             <CardTitle className="text-base font-heading font-bold text-foreground">
               Justificación de la solicitud
             </CardTitle>
           </CardHeader>
-          <CardContent className="p-6 pt-2">
-            <p className="text-xs sm:text-sm text-foreground/90 leading-relaxed font-normal">
+          <CardContent className="p-6">
+            <p className="text-xs sm:text-sm text-foreground/90 leading-relaxed font-normal text-left">
               Se requiere validar la identidad de los beneficiarios del programa social, cruzando información con el Registro Civil y el SRI, con el fin de evitar duplicidad de registros.
             </p>
           </CardContent>

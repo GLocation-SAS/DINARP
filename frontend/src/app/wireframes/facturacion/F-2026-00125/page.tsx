@@ -197,12 +197,12 @@ export default function WireframeDetalleFacturaPage() {
         </Card>
 
         {/* ── 4. Sección: Conceptos Facturados ── */}
-        <Card className="rounded-2xl border-border bg-surface p-6 sm:p-8 space-y-6 shadow-xs">
+        <div className="space-y-3">
           <h2 className="text-sm font-bold text-foreground">
             Conceptos facturados
           </h2>
 
-          <div className="overflow-x-auto">
+          <div className="overflow-x-auto rounded-2xl border border-border bg-surface shadow-xs">
             <Table className="w-full border-spacing-0">
               <TableHeader>
                 <TableRow className="border-b border-border/80 bg-muted/30 hover:bg-muted/30">
@@ -251,34 +251,34 @@ export default function WireframeDetalleFacturaPage() {
                 </TableRow>
               </TableBody>
             </Table>
-          </div>
 
-          {/* Subtotales y Totales */}
-          <div className="flex flex-col items-end space-y-2 pt-4">
-            <div className="w-full sm:w-72 space-y-2 text-xs">
-              <div className="flex justify-between items-center py-1 border-b border-border/40">
-                <span className="text-muted-foreground">Subtotal</span>
-                <span className="font-mono font-semibold text-foreground">1.250,00</span>
-              </div>
-              <div className="flex justify-between items-center py-1 border-b border-border/40">
-                <span className="text-muted-foreground">IVA (0%)</span>
-                <span className="font-mono font-semibold text-foreground">0,00</span>
-              </div>
-              <div className="flex justify-between items-center p-3 rounded-xl bg-primary/10 border border-primary/20 text-primary font-bold text-sm">
-                <span>Total (USD)</span>
-                <span className="font-mono">1.250,00</span>
+            {/* Subtotales y Totales */}
+            <div className="flex flex-col items-end space-y-2 p-6 border-t border-border/40 bg-surface-subtle/30">
+              <div className="w-full sm:w-72 space-y-2 text-xs">
+                <div className="flex justify-between items-center py-1 border-b border-border/40">
+                  <span className="text-muted-foreground">Subtotal</span>
+                  <span className="font-mono font-semibold text-foreground">1.250,00</span>
+                </div>
+                <div className="flex justify-between items-center py-1 border-b border-border/40">
+                  <span className="text-muted-foreground">IVA (0%)</span>
+                  <span className="font-mono font-semibold text-foreground">0,00</span>
+                </div>
+                <div className="flex justify-between items-center p-3 rounded-xl bg-primary/10 border border-primary/20 text-primary font-bold text-sm">
+                  <span>Total (USD)</span>
+                  <span className="font-mono">1.250,00</span>
+                </div>
               </div>
             </div>
           </div>
-        </Card>
+        </div>
 
         {/* ── 5. Sección: Historial de Estados ── */}
-        <Card className="rounded-2xl border-border bg-surface p-6 sm:p-8 space-y-6 shadow-xs">
+        <div className="space-y-3">
           <h2 className="text-sm font-bold text-foreground">
             Historial de estados
           </h2>
 
-          <div className="overflow-x-auto">
+          <div className="overflow-x-auto rounded-2xl border border-border bg-surface shadow-xs">
             <Table className="w-full border-spacing-0">
               <TableHeader>
                 <TableRow className="border-b border-border/80 bg-muted/30 hover:bg-muted/30">
@@ -350,7 +350,7 @@ export default function WireframeDetalleFacturaPage() {
               </TableBody>
             </Table>
           </div>
-        </Card>
+        </div>
 
         {/* Modal de confirmación de descarga */}
         <Dialog open={downloadSuccess} onOpenChange={setDownloadSuccess}>
