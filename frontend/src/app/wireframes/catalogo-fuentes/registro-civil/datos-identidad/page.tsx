@@ -341,8 +341,8 @@ export default function WireframeDatosIdentidadPage() {
                             selectedCampos.length === filteredCampos.length && filteredCampos.length > 0
                               ? true
                               : selectedCampos.length > 0
-                              ? "indeterminate"
-                              : false
+                                ? "indeterminate"
+                                : false
                           }
                           onCheckedChange={toggleSelectAll}
                           aria-label="Seleccionar todos los campos"
@@ -371,9 +371,8 @@ export default function WireframeDatosIdentidadPage() {
                       return (
                         <TableRow
                           key={c.id}
-                          className={`border-b border-border/40 transition-colors cursor-pointer ${
-                            isSelected ? "bg-muted/30" : "hover:bg-muted/10"
-                          }`}
+                          className={`border-b border-border/40 transition-colors cursor-pointer ${isSelected ? "bg-muted/30" : "hover:bg-muted/10"
+                            }`}
                           onClick={() => toggleCampo(c.id)}
                         >
                           {/* Checkbox */}
@@ -542,3 +541,4 @@ export default function WireframeDatosIdentidadPage() {
     </WireframeDashboardLayout>
   );
 }
+
