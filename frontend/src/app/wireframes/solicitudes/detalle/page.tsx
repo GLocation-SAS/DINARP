@@ -201,7 +201,8 @@ export default function WireframeSolicitudDetallePage() {
             <Button
               type="button"
               variant="primary"
-              className="h-10 px-5 rounded-xl text-xs font-semibold gap-2 shadow-xs"
+              onClick={() => router.push("/wireframes/solicitudes/seguimiento")}
+              className="h-10 px-5 rounded-xl text-xs font-semibold gap-2 shadow-xs cursor-pointer"
             >
               <Activity className="size-4" />
               <span>Ver seguimiento</span>
@@ -493,3 +494,4 @@ export default function WireframeSolicitudDetallePage() {
     </WireframeDashboardLayout>
   );
 }
+
