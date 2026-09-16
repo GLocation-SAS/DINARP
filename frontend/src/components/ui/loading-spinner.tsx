@@ -15,7 +15,7 @@ const LoadingSpinner = React.forwardRef<HTMLDivElement, LoadingSpinnerProps>(
       md: "h-16 w-16",
       lg: "h-[104px] w-[104px]",
     };
-    
+
 
     const shieldClasses = {
       sm: "h-[18px] w-[18px]",
@@ -56,7 +56,7 @@ const LoadingSpinner = React.forwardRef<HTMLDivElement, LoadingSpinnerProps>(
             className={cn("absolute inset-0 m-auto object-contain pointer-events-none", shieldClasses[size])}
           />
         </div>
-        
+
         {/* Mensaje opcional */}
         {label && (
           <span className="text-sm font-medium text-muted-foreground animate-pulse">
