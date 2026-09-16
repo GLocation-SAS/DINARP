@@ -367,3 +367,4 @@ export function RolDetailClient({ id }: RolDetailClientProps) {
     </WireframeDashboardLayout>
   );
 }
+

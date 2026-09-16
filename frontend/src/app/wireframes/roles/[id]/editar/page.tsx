@@ -19,3 +19,4 @@ export default async function WireframeRolEditPage({ params }: PageProps) {
   const { id } = await params;
   return <RolEditClient id={id} />;
 }
+

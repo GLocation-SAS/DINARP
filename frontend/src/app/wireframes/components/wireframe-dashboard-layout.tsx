@@ -68,7 +68,7 @@ export function WireframeDashboardLayout({
       items: [
         { id: "cotizacion", label: "Cotización / Tarifario", icon: Receipt, href: "/wireframes/tarifario" },
         { id: "facturacion", label: "Facturación", icon: CreditCard, href: "/wireframes/facturacion" },
-        { id: "reportes", label: "Reportes", icon: BarChart2, href: "/wireframes/solicitudes" },
+        { id: "reportes", label: "Reportes", icon: BarChart2, href: "/wireframes/reportes" },
       ],
     },
     {
