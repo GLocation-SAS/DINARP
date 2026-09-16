@@ -518,6 +518,30 @@ export default function WireframesPage() {
             <h3 className="font-heading font-bold text-base text-foreground">Restablecer contraseña</h3>
             <p className="text-xs text-muted-foreground mt-1">/wireframes/restablecer-contrasena</p>
           </Link>
+
+          <Link
+            href="/wireframes/construccion"
+            className="group flex flex-col p-5 rounded-2xl border border-border bg-surface hover:border-foreground/30 hover:shadow-sm transition-all"
+          >
+            <div className="flex items-center justify-between mb-2">
+              <Badge tone="warning" appearance="soft" size="sm">Sistema</Badge>
+              <ArrowRight className="size-4 text-muted-foreground group-hover:translate-x-1 transition-transform" />
+            </div>
+            <h3 className="font-heading font-bold text-base text-foreground">En Construcción</h3>
+            <p className="text-xs text-muted-foreground mt-1">/wireframes/construccion</p>
+          </Link>
+
+          <Link
+            href="/wireframes/404"
+            className="group flex flex-col p-5 rounded-2xl border border-border bg-surface hover:border-foreground/30 hover:shadow-sm transition-all"
+          >
+            <div className="flex items-center justify-between mb-2">
+              <Badge tone="danger" appearance="soft" size="sm">Sistema</Badge>
+              <ArrowRight className="size-4 text-muted-foreground group-hover:translate-x-1 transition-transform" />
+            </div>
+            <h3 className="font-heading font-bold text-base text-foreground">Error 404 No Encontrado</h3>
+            <p className="text-xs text-muted-foreground mt-1">/wireframes/404</p>
+          </Link>
         </div>
       </section>
 

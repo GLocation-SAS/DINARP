@@ -85,7 +85,7 @@ export function WireframeDashboardLayout({
       items: [
         { id: "solicitudes", label: "Solicitudes", icon: FileText, href: "/wireframes/solicitudes" },
         { id: "aprobaciones", label: "Aprobaciones y permisos", icon: CheckSquare, href: "/wireframes/aprobaciones" },
-        { id: "proyectos", label: "Proyectos", icon: Folder, href: "/wireframes/solicitudes" },
+        { id: "proyectos", label: "Proyectos", icon: Folder, href: "/wireframes/construccion" },
       ],
     },
     {
@@ -109,7 +109,7 @@ export function WireframeDashboardLayout({
       items: [
         { id: "usuarios", label: "Usuarios", icon: Users, href: "/wireframes/usuarios" },
         { id: "roles", label: "Roles y permisos", icon: ShieldCheck, href: "/wireframes/roles" },
-        { id: "configuracion", label: "Configuración", icon: Settings, href: "/wireframes/solicitudes" },
+        { id: "configuracion", label: "Configuración", icon: Settings, href: "/wireframes/construccion" },
       ],
     },
   ];

@@ -1,8 +1,9 @@
 "use client";
 
 import * as React from "react";
+import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { Hammer, Layout, FileQuestion } from "lucide-react";
+import { Hammer, Layout, FileQuestion, ArrowUpRight } from "lucide-react";
 import { SubSection } from "./sub-section";
 import { LoginGeoportalShowcase } from "./login-geoportal-showcase";
 
@@ -13,21 +14,27 @@ export function SystemPagesShowcase({ registerSection }: { registerSection?: (id
         {/* Login UI Kit */}
         <SubSection
           id="login-uikit"
-          title="Pantalla de Login UI Kit"
-          description="Pantalla de acceso para el UI Kit."
+          title="Pantalla de Login"
+          description="Pantalla de autenticación y acceso al sistema institucional."
           icon={Layout}
           registerSection={registerSection}
         >
           <div className="flex gap-4 items-center flex-wrap">
-            <Button variant="neutral" onClick={() => window.open('/login', '_blank')}>
-              <Layout className="size-4 mr-2" />
-              Probar Pantalla Login
+            <Button variant="neutral" asChild>
+              <Link href="/login" target="_blank">
+                <Layout className="size-4 mr-2" />
+                Probar Pantalla Login
+                <ArrowUpRight className="size-3.5 ml-1.5 opacity-60" />
+              </Link>
+            </Button>
+            <Button variant="outline" asChild>
+              <Link href="/wireframes/login" target="_blank">
+                Ver Login Wireframe
+                <ArrowUpRight className="size-3.5 ml-1.5 opacity-60" />
+              </Link>
             </Button>
           </div>
         </SubSection>
-
-
-
 
         <SubSection
           id="404-page"
@@ -37,9 +44,18 @@ export function SystemPagesShowcase({ registerSection }: { registerSection?: (id
           registerSection={registerSection}
         >
           <div className="flex gap-4 items-center flex-wrap">
-            <Button variant="neutral" onClick={() => window.open('/ruta-inexistente', '_blank')}>
-              <FileQuestion className="size-4 mr-2" />
-              Probar Pantalla 404
+            <Button variant="neutral" asChild>
+              <Link href="/404" target="_blank">
+                <FileQuestion className="size-4 mr-2" />
+                Probar Pantalla 404
+                <ArrowUpRight className="size-3.5 ml-1.5 opacity-60" />
+              </Link>
+            </Button>
+            <Button variant="outline" asChild>
+              <Link href="/wireframes/404" target="_blank">
+                Ver 404 Wireframe
+                <ArrowUpRight className="size-3.5 ml-1.5 opacity-60" />
+              </Link>
             </Button>
           </div>
         </SubSection>
@@ -52,9 +68,18 @@ export function SystemPagesShowcase({ registerSection }: { registerSection?: (id
           registerSection={registerSection}
         >
           <div className="flex gap-4 items-center flex-wrap">
-            <Button variant="neutral" onClick={() => window.open('/construccion', '_blank')}>
-              <Hammer className="size-4 mr-2" />
-              Probar Pantalla Construcción
+            <Button variant="neutral" asChild>
+              <Link href="/construccion" target="_blank">
+                <Hammer className="size-4 mr-2" />
+                Probar Pantalla Construcción
+                <ArrowUpRight className="size-3.5 ml-1.5 opacity-60" />
+              </Link>
+            </Button>
+            <Button variant="outline" asChild>
+              <Link href="/wireframes/construccion" target="_blank">
+                Ver Wireframe Construcción
+                <ArrowUpRight className="size-3.5 ml-1.5 opacity-60" />
+              </Link>
             </Button>
           </div>
         </SubSection>
