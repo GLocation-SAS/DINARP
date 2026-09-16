@@ -12,7 +12,7 @@ export interface SubSectionProps {
   color?: "primary" | "secondary" | "success" | "warning" | "danger" | "info" | "neutral";
 }
 
-export function SubSection({ id, title, description, children, registerSection, icon: Icon, isEditable, color = "secondary" }: SubSectionProps) {
+export function SubSection({ id, title, description, children, registerSection, icon: Icon, isEditable, color = "primary" }: SubSectionProps) {
   const { showOnlyEditable } = React.useContext(UIKitContext);
 
   if (showOnlyEditable && !isEditable) {

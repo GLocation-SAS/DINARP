@@ -11,7 +11,7 @@ import { Textarea } from "@/components/ui/textarea";
 const ChatAssistant = () => {
     const [isOpen, setIsOpen] = useState(false);
     const [messages, setMessages] = useState<{ role: 'bot' | 'user', text: string }[]>([
-        { role: 'bot', text: '¡Hola! Soy el asistente virtual del Geoportal GRisk. ¿En qué te puedo ayudar hoy?' }
+        { role: 'bot', text: '¡Hola! Soy el asistente virtual del Geoportal DINARP. ¿En qué te puedo ayudar hoy?' }
     ]);
     const [input, setInput] = useState('');
 
@@ -21,7 +21,7 @@ const ChatAssistant = () => {
         setInput('');
 
         setTimeout(() => {
-            setMessages(prev => [...prev, { role: 'bot', text: 'He procesado tu consulta sobre la base de datos de GRisk. ¿Deseas ver más detalles?' }]);
+            setMessages(prev => [...prev, { role: 'bot', text: 'He procesado tu consulta sobre la base de datos de DINARP. ¿Deseas ver más detalles?' }]);
         }, 1200);
     };
 
@@ -61,7 +61,7 @@ const ChatAssistant = () => {
                                 </AvatarFallback>
                             </Avatar>
                             <div className="flex flex-col text-left">
-                                <h3 className="text-sm font-bold tracking-tight text-foreground">Asistente GRisk IA</h3>
+                                <h3 className="text-sm font-bold tracking-tight text-foreground">Asistente DINARP IA</h3>
                                 <span className="text-[10px] text-success font-medium flex items-center gap-1">
                                     <span className="size-1.5 rounded-full bg-success animate-pulse inline-block" />
                                     En línea

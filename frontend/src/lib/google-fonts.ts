@@ -1,7 +1,7 @@
 /**
  * Descarga archivos .woff2 reales de Google Fonts — misma lógica que ya se
  * usó en el pipeline de export-design-tokens.mjs del geovisor (ver
- * geovisor-grisk-app), adaptada a TypeScript/Route Handler. Server-only.
+ * geovisor-dinarp-app), adaptada a TypeScript/Route Handler. Server-only.
  */
 
 const WEIGHTS = [400, 500, 600, 700];

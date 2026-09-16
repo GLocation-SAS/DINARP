@@ -1,4 +1,4 @@
-import { Montserrat, Nunito } from "next/font/google";
+import { Montserrat, Poppins } from "next/font/google";
 import Script from "next/script";
 import "./globals.css";
 
@@ -18,13 +18,13 @@ import messages from "../../messages/es.json";
   Se utiliza como tipografía principal para textos, formularios,
   tablas, botones, menús y navegación.
 
-  Nunito:
+  Poppins:
   Se utiliza para títulos, subtítulos y encabezados institucionales.
 
   Las variables creadas aquí se conectan con las variables
   configuradas en globals.css:
 
-  --font-heading: var(--font-nunito);
+  --font-heading: var(--font-poppins);
   --font-sans: var(--font-montserrat);
 */
 
@@ -34,19 +34,20 @@ const montserrat = Montserrat({
   display: "swap",
 });
 
-const nunito = Nunito({
+const poppins = Poppins({
+  weight: ["300", "400", "500", "600", "700", "800", "900"],
   subsets: ["latin"],
-  variable: "--font-nunito",
+  variable: "--font-poppins",
   display: "swap",
 });
 
 export const metadata = {
-  title: "GRisk KIT UX / UI",
-  description: "Base frontend y sistema de diseño de GRisk.",
+  title: "DINARP KIT UX / UI",
+  description: "Base frontend y sistema de diseño de DINARP.",
   icons: [
     {
-      url: "/Favicon.svg",
-      href: "/Favicon.svg",
+      url: "/logotipo.png",
+      href: "/logotipo.png",
     }
   ],
 };
@@ -74,7 +75,7 @@ export default async function RootLayout({
           Se registran las dos variables tipográficas en el documento.
         */
         montserrat.variable,
-        nunito.variable,
+        poppins.variable,
 
         /*
           Montserrat será la fuente predeterminada del proyecto.
@@ -119,3 +120,4 @@ export default async function RootLayout({
     </html>
   );
 }
+

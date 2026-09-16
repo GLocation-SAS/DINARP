@@ -1,5 +1,5 @@
 /*
-  GRisk â€” GEOportal | Design tokens globales
+  DINARP â€” GEOportal | Design tokens globales
   ------------------------------------------------------------
   Este archivo centraliza la identidad visual y los estilos base.
 
@@ -63,7 +63,7 @@
     className="font-mono text-caption"
   */
 
-  --font-heading: var(--font-nunito);
+  --font-heading: var(--font-poppins);
   --font-sans: var(--font-montserrat);
   --font-mono: var(--font-montserrat);
 
@@ -80,10 +80,10 @@
   className="font-heading font-semibold"
   className="font-heading font-bold"
 */
---font-weight-regular: 400;
---font-weight-medium: 500;
---font-weight-semibold: 600;
---font-weight-bold: 700;
+  --font-weight-regular: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
 
   /*
     ESCALAS PRIMITIVAS EXPUESTAS A TAILWIND
@@ -474,32 +474,32 @@
     PRIMARY â€” azul institucional profundo (Azul Gubernamental)
     Uso base: navegaciÃ³n, acciones principales, encabezados y foco.
   */
-  --primitive-primary-50: #EBF1F7;
-  --primitive-primary-100: #CFDEF0;
-  --primitive-primary-200: #A4C1E3;
-  --primitive-primary-300: #73A0D3;
-  --primitive-primary-400: #3F70AB;
-  --primitive-primary-500: #0F2A4A;
-  --primitive-primary-600: #12243D;
-  --primitive-primary-700: #0D1A2C;
-  --primitive-primary-800: #09121D;
-  --primitive-primary-900: #05080E;
+  --primitive-primary-50: #F7F7F8;
+  --primitive-primary-100: #E9E7EC;
+  --primitive-primary-200: #CAC3D6;
+  --primitive-primary-300: #A798C4;
+  --primitive-primary-400: #7E63B5;
+  --primitive-primary-500: #4F318B;
+  --primitive-primary-600: #3A216E;
+  --primitive-primary-700: #2C1657;
+  --primitive-primary-800: #1F0E41;
+  --primitive-primary-900: #14082B;
 
   /*
     SECONDARY â€” morado secundario (Morado Gubernamental)
     Uso base: acciones complementarias, informaciÃ³n cartogrÃ¡fica,
     iconos de apoyo y elementos secundarios.
   */
-  --primitive-secondary-50: #F3F8FA;
-  --primitive-secondary-100: #E7F1F5;
-  --primitive-secondary-200: #B7D6E2;
-  --primitive-secondary-300: #88BACE;
-  --primitive-secondary-400: #589EBA;
-  --primitive-secondary-500: #10759D;
-  --primitive-secondary-600: #0D5E7E;
-  --primitive-secondary-700: #0A465E;
-  --primitive-secondary-800: #062F3F;
-  --primitive-secondary-900: #03171F;
+  --primitive-secondary-50: #F6F6F8;
+  --primitive-secondary-100: #E6E6EE;
+  --primitive-secondary-200: #C2C2DA;
+  --primitive-secondary-300: #9696CA;
+  --primitive-secondary-400: #5F5FBE;
+  --primitive-secondary-500: #2D2D96;
+  --primitive-secondary-600: #1D1D76;
+  --primitive-secondary-700: #13135D;
+  --primitive-secondary-800: #0C0C44;
+  --primitive-secondary-900: #07072C;
 
   /*
     SUCCESS â€” confirmaciÃ³n positiva
@@ -507,32 +507,32 @@
     No representa automÃ¡ticamente el nivel de riesgo bajo; ese
     significado se asigna despuÃ©s mediante --risk-low.
   */
-  --primitive-success-50: #F3FAF9;
-  --primitive-success-100: #E7F4F3;
-  --primitive-success-200: #B6DFDB;
-  --primitive-success-300: #86CAC4;
-  --primitive-success-400: #56B4AC;
-  --primitive-success-500: #0D9488;
-  --primitive-success-600: #0A766D;
-  --primitive-success-700: #085952;
-  --primitive-success-800: #053B36;
-  --primitive-success-900: #031E1B;
+  --primitive-success-50: #E6F0F0;
+  --primitive-success-100: #CCE2E1;
+  --primitive-success-200: #99C5C3;
+  --primitive-success-300: #66A7A4;
+  --primitive-success-400: #338A86;
+  --primitive-success-500: #006D68;
+  --primitive-success-600: #005753;
+  --primitive-success-700: #00413E;
+  --primitive-success-800: #002C2A;
+  --primitive-success-900: #001615;
 
   /*
     WARNING â€” advertencia preventiva
     Uso: informaciÃ³n pendiente, validaciones parciales o precauciÃ³n.
     Se combina con texto oscuro para mantener contraste.
   */
-  --primitive-warning-50: #FEF7F3;
-  --primitive-warning-100: #FDEEE7;
-  --primitive-warning-200: #F9CDB6;
-  --primitive-warning-300: #F5AC86;
-  --primitive-warning-400: #F08A55;
-  --primitive-warning-500: #EA580C;
-  --primitive-warning-600: #BB460A;
-  --primitive-warning-700: #8C3507;
-  --primitive-warning-800: #5E2305;
-  --primitive-warning-900: #2F1202;
+  --primitive-warning-50: #FFF6EB;
+  --primitive-warning-100: #FFEDD6;
+  --primitive-warning-200: #FFDAAD;
+  --primitive-warning-300: #FFC885;
+  --primitive-warning-400: #FFB55C;
+  --primitive-warning-500: #FFA333;
+  --primitive-warning-600: #CC8229;
+  --primitive-warning-700: #99621F;
+  --primitive-warning-800: #664114;
+  --primitive-warning-900: #33210A;
 
   /*
     DANGER â€” error y acciones destructivas
@@ -553,16 +553,16 @@
     INFO â€” comunicaciÃ³n informativa (Azul oscuro Gubernamental)
     Uso: banners, ayudas, estados neutrales y mensajes explicativos.
   */
-  --primitive-info-50: #F7F5F9;
-  --primitive-info-100: #EBE5F1;
-  --primitive-info-200: #D0C4DD;
-  --primitive-info-300: #B5A2C8;
-  --primitive-info-400: #9B82B4;
-  --primitive-info-500: #826A9C;
-  --primitive-info-600: #68557C;
-  --primitive-info-700: #4E405D;
-  --primitive-info-800: #342A3E;
-  --primitive-info-900: #1C1721;
+  --primitive-info-50: #F7F7F8;
+  --primitive-info-100: #E5E6E9;
+  --primitive-info-200: #BFC2CB;
+  --primitive-info-300: #9599AD;
+  --primitive-info-400: #5E6893;
+  --primitive-info-500: #2C3459;
+  --primitive-info-600: #20274A;
+  --primitive-info-700: #171E3E;
+  --primitive-info-800: #111733;
+  --primitive-info-900: #0C1127;
 
   /*
     ACENTOS DE MARCA INSTITUCIONAL
@@ -676,7 +676,7 @@
     Ejemplo:
     className="bg-primary text-primary-foreground"
   */
-  --primary: var(--primitive-primary-500);
+  --primary: var(--primitive-primary-400);
   --primary-foreground: var(--primitive-neutral-50);
 
   --secondary: var(--primitive-secondary-500);
@@ -709,16 +709,16 @@
     Siempre combina fondo y foreground del mismo estado.
     Ejemplo: bg-warning text-warning-foreground
   */
-  --success: var(--primitive-success-500);
+  --success: var(--primitive-success-400);
   --success-foreground: var(--primitive-neutral-950);
 
-  --info: var(--primitive-info-500);
+  --info: var(--primitive-info-400);
   --info-foreground: var(--primitive-neutral-50);
 
-  --warning: var(--primitive-warning-500);
+  --warning: var(--primitive-warning-400);
   --warning-foreground: var(--primitive-neutral-950);
 
-  --danger: var(--primitive-danger-500);
+  --danger: var(--primitive-danger-400);
   --danger-foreground: var(--primitive-neutral-50);
 
   --destructive: var(--primitive-danger-600);
@@ -1032,6 +1032,7 @@
   generan de forma predeterminada, especialmente para Layouts.
 */
 @layer utilities {
+
   /*
     CONTENEDOR DE PANTALLA
     Controla el ancho mÃ¡ximo y el padding seguro en los bordes de
@@ -1724,10 +1725,10 @@ select:-webkit-autofill:focus {
   }
 
   /* ExcepciÃ³n para indicadores de carga esenciales (WCAG) */
-  .grisk-spinner__ring,
+  .DINARP-spinner__ring,
   .animate-spin,
   .animate-spin-slow,
-  [role="status"] .grisk-spinner__ring,
+  [role="status"] .DINARP-spinner__ring,
   [role="status"] svg {
     animation-duration: 1s !important;
     animation-iteration-count: infinite !important;
@@ -1736,19 +1737,20 @@ select:-webkit-autofill:focus {
 }
 
 /*
-  GRisk SPINNER COMPONENT ANIMATIONS
+  DINARP SPINNER COMPONENT ANIMATIONS
   ------------------------------------------------------------
 */
-@keyframes grisk-spin {
+@keyframes DINARP-spin {
   from {
     transform: rotate(0deg);
   }
+
   to {
     transform: rotate(360deg);
   }
 }
 
-.grisk-spinner {
+.DINARP-spinner {
   position: relative;
   display: inline-flex;
   align-items: center;
@@ -1756,23 +1758,23 @@ select:-webkit-autofill:focus {
   flex-shrink: 0;
 }
 
-.grisk-spinner__ring {
+.DINARP-spinner__ring {
   position: absolute;
   inset: 0;
   border-radius: 50%;
-  
-  background: 
+
+  background:
     radial-gradient(farthest-side, var(--primary) 94%, transparent) top/8px 8px no-repeat,
     conic-gradient(transparent 30%, var(--primary));
-  
+
   -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - 8px), black 0);
   mask: radial-gradient(farthest-side, transparent calc(100% - 8px), black 0);
-  
+
   transform-origin: center;
-  animation: grisk-spin 1s linear infinite;
+  animation: DINARP-spin 1s linear infinite;
 }
 
-.grisk-spinner__shield {
+.DINARP-spinner__shield {
   position: relative;
   z-index: 2;
 
@@ -1788,9 +1790,15 @@ select:-webkit-autofill:focus {
   initial-value: 0deg;
   inherits: false;
 }
+
 @keyframes rotate-border {
-  from { --border-angle: 0deg; }
-  to { --border-angle: 360deg; }
+  from {
+    --border-angle: 0deg;
+  }
+
+  to {
+    --border-angle: 360deg;
+  }
 }
 
 .capacity-card {
@@ -1806,7 +1814,7 @@ select:-webkit-autofill:focus {
   inset: 0;
   border-radius: inherit;
   padding: 1.5px;
-  background: conic-gradient(from var(--border-angle, 0deg), transparent 0deg, transparent 280deg, var(--card-accent, #0F2A4A) 360deg);
+  background: conic-gradient(from var(--border-angle, 0deg), transparent 0deg, transparent 280deg, var(--card-accent, #4F318B) 360deg);
   -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
   -webkit-mask-composite: xor;
   mask-composite: exclude;
@@ -1838,9 +1846,11 @@ select:-webkit-autofill:focus {
   opacity: 1;
   animation: rotate-border 2s linear infinite;
 }
+
 .capacity-card:hover::after {
   opacity: 1;
 }
+
 /* Excepcion de reduced-motion para asegurar que las animaciones solicitadas siempre funcionen */
 .capacity-card::before {
   animation-duration: 2s !important;
@@ -1854,9 +1864,10 @@ select:-webkit-autofill:focus {
    and overriding the text color.
 */
 input:-webkit-autofill,
-input:-webkit-autofill:hover, 
-input:-webkit-autofill:focus, 
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
 input:-webkit-autofill:active {
   transition: background-color 5000s ease-in-out 0s !important;
   -webkit-text-fill-color: var(--color-foreground) !important;
 }
+

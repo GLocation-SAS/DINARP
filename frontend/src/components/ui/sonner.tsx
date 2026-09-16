@@ -23,101 +23,71 @@ const Toaster = ({ ...props }: ToasterProps) => {
       offset={80}
       icons={{
         success: (
-          <div className="flex items-center justify-center shrink-0 size-10 rounded-lg bg-success text-white shadow-sm">
-            <CircleCheckIcon className="size-5 stroke-[2px]" />
-          </div>
+          <div className="flex items-center justify-center shrink-0 size-10 rounded-full bg-success/15 text-success"><CircleCheckIcon className="size-5 stroke-[2.5px]" /></div>
         ),
         info: (
-          <div className="flex items-center justify-center shrink-0 size-10 rounded-lg bg-info text-white shadow-sm">
-            <InfoIcon className="size-5 stroke-[2px]" />
-          </div>
+          <div className="flex items-center justify-center shrink-0 size-10 rounded-full bg-info/15 text-info"><InfoIcon className="size-5 stroke-[2.5px]" /></div>
         ),
         warning: (
-          <div className="flex items-center justify-center shrink-0 size-10 rounded-lg bg-warning text-white shadow-sm">
-            <TriangleAlertIcon className="size-5 stroke-[2px]" />
-          </div>
+          <div className="flex items-center justify-center shrink-0 size-10 rounded-full bg-warning/15 text-warning"><TriangleAlertIcon className="size-5 stroke-[2.5px]" /></div>
         ),
         error: (
-          <div className="flex items-center justify-center shrink-0 size-10 rounded-lg bg-danger text-white shadow-sm">
-            <OctagonXIcon className="size-5 stroke-[2px]" />
-          </div>
+          <div className="flex items-center justify-center shrink-0 size-10 rounded-full bg-danger/15 text-danger"><OctagonXIcon className="size-5 stroke-[2.5px]" /></div>
         ),
         loading: (
-          <div className="flex items-center justify-center shrink-0 size-10 rounded-lg bg-primary text-white shadow-sm">
-            <Loader2Icon className="size-5 animate-spin stroke-[2px]" />
+          <div className="flex items-center justify-center shrink-0 size-10 rounded-full bg-primary/15 text-primary">
+            <Loader2Icon className="size-5 animate-spin stroke-[2.5px]" />
           </div>
         ),
       }}
-      style={{} as React.CSSProperties}
+      style={{}}
       toastOptions={{
         classNames: {
           toast: `
             group toast
             !flex
-            !rounded-xl
+            !rounded-full
             !border
-            !shadow-xl
+            !shadow-xl shadow-black/5
             backdrop-blur-2xl
             transition-all duration-300
-            !gap-4
-            !py-4
-            !px-6
+            !gap-5
+            !py-3.5 !px-6
             !flex-row
             !items-center
             !justify-start
-            !min-w-[340px]
+            !w-fit !min-w-fit
             font-sans
-            /* Default styles (Base) */
-            !bg-surface
-            !border-border
+            !bg-background
+            !border-border/30
             !text-foreground
 
-            /* Default Type Styles (When no severity is provided) */
-            group-[[data-type=default]]:!bg-primary/5
-            group-[[data-type=default]]:!border-primary/20
-            
-            
-            /* Success styles */
-            group-[[data-type=success]]:!bg-success/10 
-            group-[[data-type=success]]:!border-success/20
-            
-            /* Info styles */
-            group-[[data-type=info]]:!bg-info/10 
-            group-[[data-type=info]]:!border-info/20
-            
-            /* Warning styles */
-            group-[[data-type=warning]]:!bg-warning/10 
-            group-[[data-type=warning]]:!border-warning/20
-            
-            /* Error styles */
-            group-[[data-type=error]]:!bg-danger/10 
-            group-[[data-type=error]]:!border-danger/20
+            /* Dark mode semantic backgrounds */
+            dark:group-[[data-type=success]]:!bg-success/15
+            dark:group-[[data-type=success]]:!border-success/20
+            dark:group-[[data-type=info]]:!bg-info/15
+            dark:group-[[data-type=info]]:!border-info/20
+            dark:group-[[data-type=warning]]:!bg-warning/15
+            dark:group-[[data-type=warning]]:!border-warning/20
+            dark:group-[[data-type=error]]:!bg-danger/15
+            dark:group-[[data-type=error]]:!border-danger/20
+            dark:group-[[data-type=default]]:!bg-primary/15
+            dark:group-[[data-type=default]]:!border-primary/20
           `,
 
           title: `
-            text-[14px]
-            font-bold
-            tracking-tight
-            leading-tight
-            text-left
-            w-full
-            text-foreground
-            
-            /* Colores de título dinámicos */
-            group-[[data-type=success]]:!text-success-700 dark:group-[[data-type=success]]:!text-success-400
-            group-[[data-type=info]]:!text-info-700 dark:group-[[data-type=info]]:!text-info-400
-            group-[[data-type=warning]]:!text-warning-700 dark:group-[[data-type=warning]]:!text-warning-400
-            group-[[data-type=error]]:!text-danger-700 dark:group-[[data-type=error]]:!text-danger-400
-          `,
+              text-[14px]
+              !text-foreground
+              font-medium
+              leading-snug
+              text-left
+              w-full
+              !m-0
+              line-clamp-2
+            `,
 
           description: `
-            text-xs
-            !text-foreground/80
-            font-medium
-            leading-snug
-            text-left
-            w-full
-            !mt-0.5
+            hidden
           `,
 
           icon: `
@@ -127,14 +97,17 @@ const Toaster = ({ ...props }: ToasterProps) => {
             !items-center
             !justify-center
             !m-0
-            !mr-2
+            !self-center
           `,
 
           loader: `
             !static
             !shrink-0
             !flex
+            !items-center
+            !justify-center
             !m-0
+            !self-center
           `,
 
           content: `
@@ -145,10 +118,10 @@ const Toaster = ({ ...props }: ToasterProps) => {
             overflow-hidden
           `,
 
-          actionButton: badgeVariants({ tone: "primary", appearance: "soft", className: "hover:opacity-80 cursor-pointer px-4 py-2" }),
+          actionButton: badgeVariants({ tone: "neutral", appearance: "solid", className: "hover:opacity-80 cursor-pointer px-4 py-2" }),
 
           cancelButton: `
-            rounded-xl
+            rounded-full
             bg-muted
             text-muted-foreground
             hover:bg-muted-foreground/10

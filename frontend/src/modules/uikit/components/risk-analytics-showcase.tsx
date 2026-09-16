@@ -100,7 +100,7 @@ export function RiskAnalyticsShowcase({ registerSection }: { registerSection?: (
       {/* 3. CRITICALITY BADGE */}
       <SubSection icon={AlertOctagon} id="criticality-badge" title="Criticality Badge" description="Insignia para categorización de prioridad y atención institucional urgente." registerSection={registerSection}>
         <div className="flex flex-wrap gap-3 items-center">
-          <Badge tone="error" appearance="filled" className="px-3 py-1 font-black">Urgente</Badge>
+          <Badge tone="error" appearance="filled" className="px-3 py-1 font-bold">Urgente</Badge>
           <Badge tone="error" appearance="soft" className="px-3 py-1 font-bold">Alta</Badge>
           <Badge tone="warning" appearance="soft" className="px-3 py-1 font-bold">Media</Badge>
           <Badge tone="info" appearance="soft" className="px-3 py-1 font-bold">Baja</Badge>
@@ -180,7 +180,7 @@ export function RiskAnalyticsShowcase({ registerSection }: { registerSection?: (
             </div>
             <div className="h-40 flex items-center justify-center relative">
               <div className="size-28 rounded-full border-[12px] border-primary border-t-warning border-r-danger flex items-center justify-center">
-                <span className="text-xs font-black text-foreground">100%</span>
+                <span className="text-xs font-bold text-foreground">100%</span>
               </div>
             </div>
             <div className="flex justify-center gap-4 text-[10px] font-semibold">
@@ -244,7 +244,7 @@ export function RiskAnalyticsShowcase({ registerSection }: { registerSection?: (
               Diagnóstico Territorial IA
             </span>
             <span className="text-[10px] text-muted-foreground font-medium bg-surface/80 px-2 py-1 rounded-md border border-border/50 backdrop-blur-sm w-fit">
-              Fuente: GRisk GeoAnalytics • 10 Mar 2026
+              Fuente: DINARP GeoAnalytics • 10 Mar 2026
             </span>
           </div>
 
@@ -362,3 +362,4 @@ export function RiskAnalyticsShowcase({ registerSection }: { registerSection?: (
     </div>
   );
 }
+

@@ -262,7 +262,7 @@ export function DataShowcase({ registerSection }: { registerSection?: (id: strin
           <div className="space-y-6">
             <div>
               <h3 className="text-sm font-bold text-muted-foreground uppercase tracking-wider">Status examples</h3>
-              <p className="text-xs text-muted-foreground italic mt-1">Casos reales de aplicación en el Geoportal GRisk.</p>
+              <p className="text-xs text-muted-foreground italic mt-1">Casos reales de aplicación en el Geoportal DINARP.</p>
             </div>
             <div className="flex flex-wrap gap-4 items-end">
               <Badge tone="success" appearance="soft" icon={<CheckCircle2 className="size-3.5" />}>Activo</Badge>

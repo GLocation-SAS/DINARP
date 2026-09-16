@@ -56,13 +56,13 @@ export function Footer() {
           <div className="flex flex-col items-start text-left lg:pr-8">
             <Link href="/" className="mb-6 inline-block focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-md">
               <img
-                src="/logo.svg"
-                alt="GRisk Logo"
+                src="/logotipo.png"
+                alt="DINARP Logo"
                 className="h-12 w-auto object-contain block dark:hidden"
               />
               <img
-                src="/logo-alternativo.svg"
-                alt="GRisk Logo"
+                src="/logotipo.png"
+                alt="DINARP Logo"
                 className="h-12 w-auto object-contain hidden dark:block"
               />
             </Link>
@@ -117,7 +117,7 @@ export function Footer() {
       <div className="w-full border-t border-border/60 bg-surface">
         <div className="max-w-7xl mx-auto px-6 md:px-12 py-6 flex flex-col md:flex-row items-center justify-between gap-6">
           <div className="text-[10px] text-muted-foreground uppercase tracking-widest font-sans text-center md:text-left">
-            © 2026 GLocation S.A.S. · GRisk — Sistema de Gestión de Riesgos. Todos los derechos reservados.
+            © 2026 GLocation S.A.S. · DINARP — Sistema de Gestión de Riesgos. Todos los derechos reservados.
           </div>
 
           <TooltipProvider delayDuration={200}>

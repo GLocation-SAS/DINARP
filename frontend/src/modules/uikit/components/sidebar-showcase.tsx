@@ -207,13 +207,13 @@ function SidebarPreview({ collapsed, variant = "full", navItems = NAV_ITEMS, con
             ) : (
               <>
                 <img
-                  src="/logo.svg"
-                  alt="Logo GRisk GEOportal"
+                  src="/logotipo.png"
+                  alt="Logo DINARP GEOportal"
                   className="h-9 w-auto object-contain dark:hidden"
                 />
                 <img
-                  src="/logo-alternativo.svg"
-                  alt="Logo GRisk GEOportal"
+                  src="/logotipo.png"
+                  alt="Logo DINARP GEOportal"
                   className="h-9 w-auto object-contain hidden dark:block"
                 />
               </>
@@ -308,7 +308,7 @@ function SidebarPreview({ collapsed, variant = "full", navItems = NAV_ITEMS, con
             {!collapsed && (
               <div className="flex-1 min-w-0">
                 <p className="text-xs font-semibold text-foreground truncate">María Arango</p>
-                <p className="text-[10px] text-muted-foreground truncate">m.arango@grisk.gov</p>
+                <p className="text-[10px] text-muted-foreground truncate">m.arango@DINARP.gov</p>
               </div>
             )}
             {!collapsed && (

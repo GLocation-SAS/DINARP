@@ -26,17 +26,13 @@ function Calendar({
 
   return (
     <div className={cn(
-      "relative overflow-hidden rounded-2xl border border-primary-400/50 shadow-2xl shadow-primary-400/20 dark:shadow-primary-400/10 transition-all duration-300 min-w-[320px]",
+      "relative bg-surface p-4 sm:p-5 rounded-3xl transition-all duration-300 w-fit",
       className
     )}>
-      {/* Top glow effect */}
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-3/4 h-2 bg-primary-400 blur-xl rounded-full" />
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-1/2 h-[2px] bg-primary-400 blur-[2px] rounded-full" />
-
       <DayPicker
         showOutsideDays={showOutsideDays}
         className={cn(
-          "group/calendar p-4 [--cell-radius:9999px] [--cell-size:2.5rem]",
+          "group/calendar [--cell-radius:9999px] [--cell-size:2.5rem]",
           String.raw`rtl:**:[.rdp-button\_next>svg]:rotate-180`,
           String.raw`rtl:**:[.rdp-button\_previous>svg]:rotate-180`
         )}
@@ -46,7 +42,7 @@ function Calendar({
           formatMonthDropdown: (date) =>
             date.toLocaleString(locale?.code, { month: "short" }),
           formatCaption: (date) => {
-            const month = date.toLocaleString(locale?.code || 'en-US', { month: 'short' });
+            const month = date.toLocaleString(locale?.code || 'en-US', { month: 'long' });
             const year = date.getFullYear();
             return `${month} ${year}`;
           },
@@ -60,40 +56,40 @@ function Calendar({
           ),
           month: cn("flex w-full flex-col gap-4", defaultClassNames.month),
           nav: cn(
-            "absolute inset-x-0 top-0 flex w-full items-center justify-between gap-1 z-20",
+            "absolute inset-x-0 top-0 flex w-full items-center justify-between px-2 z-20",
             defaultClassNames.nav
           ),
           button_previous: cn(
             buttonVariants({ variant: "ghost" }),
-            "size-10 rounded-full border border-border/40 p-0 select-none aria-disabled:opacity-20 hover:bg-muted/50 hover:border-border transition-colors",
+            "size-8 rounded-full bg-surface shadow-[0_2px_8px_rgba(0,0,0,0.06)] border border-border/30 p-0 select-none aria-disabled:opacity-20 hover:bg-muted/50 transition-colors text-muted-foreground hover:text-foreground",
             defaultClassNames.button_previous
           ),
           button_next: cn(
             buttonVariants({ variant: "ghost" }),
-            "size-10 rounded-full border border-border/40 p-0 select-none aria-disabled:opacity-20 hover:bg-muted/50 hover:border-border transition-colors",
+            "size-8 rounded-full bg-surface shadow-[0_2px_8px_rgba(0,0,0,0.06)] border border-border/30 p-0 select-none aria-disabled:opacity-20 hover:bg-muted/50 transition-colors text-muted-foreground hover:text-foreground",
             defaultClassNames.button_next
           ),
           month_caption: cn(
-            "flex h-10 w-full items-center justify-center px-10 mb-2",
+            "flex h-8 w-full items-center justify-center mb-3",
             defaultClassNames.month_caption
           ),
           caption_label: cn(
-            "text-base font-heading font-semibold text-foreground tracking-tight select-none",
+            "text-[14px] font-medium text-foreground tracking-tight select-none capitalize",
             defaultClassNames.caption_label
           ),
           month_grid: "w-full border-collapse",
           weekdays: cn("flex mb-2", defaultClassNames.weekdays),
           weekday: cn(
-            "flex-1 text-[0.7rem] font-bold text-muted-foreground/60 uppercase tracking-widest select-none",
+            "flex-1 text-[11px] font-semibold text-muted-foreground/60 uppercase tracking-widest select-none text-center h-8 flex items-center justify-center",
             defaultClassNames.weekday
           ),
-          week: cn("mt-1 flex w-full", defaultClassNames.week),
+          week: cn("flex w-full mt-1", defaultClassNames.week),
           day: cn(
-            "group/day relative h-10 w-10 p-0 text-center select-none",
+            "group/day relative h-10 w-10 p-0 text-center select-none flex items-center justify-center",
             defaultClassNames.day
           ),
           today: cn(
-            "text-primary font-bold after:absolute after:bottom-1 after:left-1/2 after:-translate-x-1/2 after:size-1 after:rounded-full after:bg-primary",
+            "text-primary font-bold",
             defaultClassNames.today
           ),
           outside: cn(
@@ -110,20 +106,12 @@ function Calendar({
         components={{
           Chevron: ({ className, orientation, ...props }) => {
             if (orientation === "left") {
-              return (
-                <ChevronLeftIcon className={cn("size-4 text-foreground/70", className)} {...props} />
-              )
+              return <ChevronLeftIcon className={cn("size-4", className)} {...props} />
             }
-
             if (orientation === "right") {
-              return (
-                <ChevronRightIcon className={cn("size-4 text-foreground/70", className)} {...props} />
-              )
+              return <ChevronRightIcon className={cn("size-4", className)} {...props} />
             }
-
-            return (
-              <ChevronDownIcon className={cn("size-4 text-foreground/70", className)} {...props} />
-            )
+            return <ChevronDownIcon className={cn("size-4", className)} {...props} />
           },
           DayButton: ({ ...props }) => (
             <CalendarDayButton locale={locale} {...props} />
@@ -156,7 +144,7 @@ function CalendarDayButton({
   return (
     <Button
       ref={ref}
-      variant={isSelected || modifiers.range_start || modifiers.range_end ? "primary" : "ghost"}
+      variant="ghost"
       size="icon"
       data-day={day.date.toLocaleDateString(locale?.code)}
       data-selected-single={isSelected}
@@ -164,18 +152,24 @@ function CalendarDayButton({
       data-range-end={modifiers.range_end}
       data-range-middle={modifiers.range_middle}
       className={cn(
-        "relative isolate z-10 flex size-10 items-center justify-center rounded-full border-0 leading-none font-medium transition-all duration-300",
-        (!isSelected && !modifiers.range_start && !modifiers.range_end && !modifiers.range_middle) && "hover:bg-primary/20 hover:text-foreground",
-        isSelected && "font-bold",
-        modifiers.range_start && [
-          "!rounded-r-none",
-          "before:absolute before:inset-0 before:right-[-50%] before:bg-primary/20 before:-z-10"
+        "relative isolate z-10 flex size-9 items-center justify-center rounded-full border-0 text-[13px] font-medium transition-all duration-200",
+        (!isSelected && !modifiers.selected) && "text-foreground hover:bg-muted/70",
+        (isSelected || modifiers.range_start || modifiers.range_end) && "bg-primary text-primary-foreground hover:bg-primary hover:text-primary-foreground shadow-sm font-semibold",
+        modifiers.range_middle && "bg-transparent text-primary hover:bg-primary/20",
+        
+        /* Connecting background for ranges */
+        modifiers.range_start && !modifiers.range_end && [
+          "before:absolute before:inset-y-0 before:left-1/2 before:right-[-6px] before:bg-primary/10 before:-z-10 before:rounded-l-none"
         ],
-        modifiers.range_end && [
-          "!rounded-l-none",
-          "before:absolute before:inset-0 before:left-[-50%] before:bg-primary/20 before:-z-10"
+        modifiers.range_end && !modifiers.range_start && [
+          "before:absolute before:inset-y-0 before:left-[-6px] before:right-1/2 before:bg-primary/10 before:-z-10 before:rounded-r-none"
         ],
-        modifiers.range_middle && "!rounded-none bg-primary/20 text-foreground hover:bg-primary/30 w-full",
+        modifiers.range_middle && [
+          "before:absolute before:inset-y-0 before:-inset-x-[6px] before:bg-primary/10 before:-z-10 before:rounded-none"
+        ],
+        
+        modifiers.outside && "text-muted-foreground/30",
+        modifiers.disabled && "text-muted-foreground/20 opacity-50",
         className
       )}
       {...props}

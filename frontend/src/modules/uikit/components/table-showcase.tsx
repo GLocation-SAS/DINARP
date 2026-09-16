@@ -221,7 +221,7 @@ export function TableShowcase({ registerSection }: { registerSection?: (id: stri
       <div className="flex items-start gap-3.5 text-left pb-6 border-b border-border/60">
         <TableProperties className="w-7 h-7 text-primary flex-shrink-0 mt-1" />
         <div>
-          <h2 className="text-h2 font-heading font-black text-primary-500">Table</h2>
+          <h2 className="text-h2 font-heading font-bold text-primary-500">Table</h2>
           <p className="text-muted-foreground text-sm mt-1">Componente de visualización de datos tabulares estructurados con soporte para acciones y estados.</p>
         </div>
       </div>
@@ -334,3 +334,4 @@ export function TableShowcase({ registerSection }: { registerSection?: (id: stri
     </Card>
   );
 }
+

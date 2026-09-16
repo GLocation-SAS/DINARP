@@ -139,11 +139,7 @@ export function Multiselect({
                   <TooltipTrigger asChild>
                     <div className="flex gap-1 overflow-hidden">
                       {selectedOptions.map((opt) => (
-                        <Badge
-                          key={opt.value}
-                          tone="secondary"
-                          className="px-2 py-0.5 font-medium h-6 rounded-md gap-1 bg-primary/10 text-primary hover:bg-primary/20 border-0 shrink-0"
-                        >
+                        <Badge key={opt.value} tone="neutral" appearance="soft" className="px-3 py-0.5 font-medium h-7 rounded-full gap-1 shrink-0">
                           {opt.label}
                           <div
                             role="button"
@@ -171,7 +167,7 @@ export function Multiselect({
               <TooltipProvider delayDuration={300}>
                 <Tooltip>
                   <TooltipTrigger asChild>
-                    <Badge tone="secondary" className="px-2 py-0.5 font-medium h-6 rounded-md bg-primary/10 text-primary hover:bg-primary/20 border-0 shrink-0">
+                    <Badge tone="neutral" appearance="soft" className="px-3 py-0.5 font-medium h-7 rounded-full shrink-0">
                       {selectedOptions[0]?.label} +{selected.length - 1} seleccionadas
                     </Badge>
                   </TooltipTrigger>

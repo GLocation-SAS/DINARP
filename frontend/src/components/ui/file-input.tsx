@@ -22,18 +22,11 @@ import {
   Play,
   Trash2,
   ArrowUp,
+  FileUp
 } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip"
-
-// ─── Types ───────────────────────────────────────────────────────────────────
 
 export type FileItemStatus =
   | "idle"
@@ -78,222 +71,151 @@ export interface FileUploadProps {
   onCancel?: (id: string) => void
 }
 
-// ─── File type registry ────────────────────────────────────────────────────
-
-// Badge variant/appearance from Design System
-// variant: "primary" | "secondary" | "error" | "success" | "warning" | "info" | "neutral"
-// appearance: "default" | "outline" | "soft"
 interface FileTypeDef {
   label: string
-  iconColor: string                              // semantic token class for icon
-  badgeVariant: "primary" | "secondary" | "error" | "success" | "warning" | "info" | "neutral"
-  badgeAppearance: "solid" | "outline" | "soft" | "ghost"
-  icon: React.ReactNode
+  badgeTone: "primary" | "secondary" | "danger" | "success" | "warning" | "info" | "neutral"
 }
 
-// Mapping: file type → closest semantic token
-// PDF  → error/danger (red)       Excel/CSV → success (green)
-// Word → info (blue)              ZIP/Archive → warning (amber)
-// PPT  → warning (orange)         Image → secondary (violet)
-// Video → secondary               Audio → warning (soft)
-// Geo formats → success (geo/earth)  JSON/Code → primary
-// TXT  → neutral                  Unknown → neutral
 const EXT_MAP: Record<string, FileTypeDef> = {
-  pdf: { label: "PDF", iconColor: "text-danger", badgeVariant: "error", badgeAppearance: "solid", icon: <FileText className="size-8" /> },
-  doc: { label: "Word", iconColor: "text-info", badgeVariant: "info", badgeAppearance: "solid", icon: <FileText className="size-8" /> },
-  docx: { label: "Word", iconColor: "text-info", badgeVariant: "info", badgeAppearance: "solid", icon: <FileText className="size-8" /> },
-  xls: { label: "Excel", iconColor: "text-success", badgeVariant: "success", badgeAppearance: "solid", icon: <FileSpreadsheet className="size-8" /> },
-  xlsx: { label: "Excel", iconColor: "text-success", badgeVariant: "success", badgeAppearance: "solid", icon: <FileSpreadsheet className="size-8" /> },
-  csv: { label: "CSV", iconColor: "text-success", badgeVariant: "success", badgeAppearance: "solid", icon: <FileSpreadsheet className="size-8" /> },
-  ppt: { label: "PowerPoint", iconColor: "text-warning", badgeVariant: "warning", badgeAppearance: "solid", icon: <FileText className="size-8" /> },
-  pptx: { label: "PowerPoint", iconColor: "text-warning", badgeVariant: "warning", badgeAppearance: "solid", icon: <FileText className="size-8" /> },
-  jpg: { label: "Image", iconColor: "text-secondary", badgeVariant: "secondary", badgeAppearance: "solid", icon: <FileImage className="size-8" /> },
-  jpeg: { label: "Image", iconColor: "text-secondary", badgeVariant: "secondary", badgeAppearance: "solid", icon: <FileImage className="size-8" /> },
-  png: { label: "Image", iconColor: "text-secondary", badgeVariant: "secondary", badgeAppearance: "solid", icon: <FileImage className="size-8" /> },
-  webp: { label: "Image", iconColor: "text-secondary", badgeVariant: "secondary", badgeAppearance: "solid", icon: <FileImage className="size-8" /> },
-  mp4: { label: "Video", iconColor: "text-secondary", badgeVariant: "secondary", badgeAppearance: "solid", icon: <FileVideo className="size-8" /> },
-  mov: { label: "Video", iconColor: "text-secondary", badgeVariant: "secondary", badgeAppearance: "solid", icon: <FileVideo className="size-8" /> },
-  webm: { label: "Video", iconColor: "text-secondary", badgeVariant: "secondary", badgeAppearance: "solid", icon: <FileVideo className="size-8" /> },
-  mp3: { label: "Audio", iconColor: "text-warning", badgeVariant: "warning", badgeAppearance: "solid", icon: <FileAudio className="size-8" /> },
-  wav: { label: "Audio", iconColor: "text-warning", badgeVariant: "warning", badgeAppearance: "solid", icon: <FileAudio className="size-8" /> },
-  zip: { label: "ZIP", iconColor: "text-warning", badgeVariant: "warning", badgeAppearance: "solid", icon: <FileArchive className="size-8" /> },
-  rar: { label: "Archive", iconColor: "text-warning", badgeVariant: "warning", badgeAppearance: "solid", icon: <FileArchive className="size-8" /> },
-  "7z": { label: "Archive", iconColor: "text-warning", badgeVariant: "warning", badgeAppearance: "solid", icon: <FileArchive className="size-8" /> },
-  geojson: { label: "GeoJSON", iconColor: "text-success", badgeVariant: "success", badgeAppearance: "solid", icon: <Globe className="size-8" /> },
-  shp: { label: "SHP", iconColor: "text-success", badgeVariant: "success", badgeAppearance: "solid", icon: <Layers className="size-8" /> },
-  kml: { label: "KML", iconColor: "text-info", badgeVariant: "info", badgeAppearance: "solid", icon: <Map className="size-8" /> },
-  kmz: { label: "KMZ", iconColor: "text-info", badgeVariant: "info", badgeAppearance: "solid", icon: <Map className="size-8" /> },
-  txt: { label: "TXT", iconColor: "text-muted-foreground", badgeVariant: "neutral", badgeAppearance: "solid", icon: <FileText className="size-8" /> },
-  json: { label: "JSON", iconColor: "text-primary", badgeVariant: "primary", badgeAppearance: "solid", icon: <FileCode className="size-8" /> },
+  pdf: { label: ".pdf", badgeTone: "danger" },
+  doc: { label: ".doc", badgeTone: "info" },
+  docx: { label: ".docx", badgeTone: "info" },
+  xls: { label: ".xls", badgeTone: "success" },
+  xlsx: { label: ".xlsx", badgeTone: "success" },
+  csv: { label: ".csv", badgeTone: "success" },
+  ppt: { label: ".ppt", badgeTone: "warning" },
+  pptx: { label: ".pptx", badgeTone: "warning" },
+  jpg: { label: ".jpg", badgeTone: "secondary" },
+  jpeg: { label: ".jpeg", badgeTone: "secondary" },
+  png: { label: ".png", badgeTone: "secondary" },
+  gif: { label: ".gif", badgeTone: "success" },
+  webp: { label: ".webp", badgeTone: "secondary" },
+  mp4: { label: ".mp4", badgeTone: "secondary" },
+  mp3: { label: ".mp3", badgeTone: "warning" },
+  zip: { label: ".zip", badgeTone: "warning" },
+  rar: { label: ".rar", badgeTone: "warning" },
+  geojson: { label: ".json", badgeTone: "success" },
+  txt: { label: ".txt", badgeTone: "neutral" },
+  json: { label: ".json", badgeTone: "primary" },
+  ai: { label: ".ai", badgeTone: "warning" },
+  psd: { label: ".psd", badgeTone: "secondary" },
 }
 
 const DEFAULT_TYPE: FileTypeDef = {
-  label: "File",
-  iconColor: "text-muted-foreground",
-  badgeVariant: "neutral",
-  badgeAppearance: "solid",
-  icon: <FileGeneric className="size-8" />,
+  label: ".file",
+  badgeTone: "neutral",
 }
 
 function getFileType(file: File): FileTypeDef {
   const ext = file.name.split(".").pop()?.toLowerCase() ?? ""
-  return EXT_MAP[ext] ?? DEFAULT_TYPE
+  return EXT_MAP[ext] ?? { label: "." + ext, badgeTone: "neutral" }
 }
 
-function isImage(file: File) {
-  return file.type.startsWith("image/")
+function formatBytes(bytes: number, decimals = 1) {
+  if (!+bytes) return "0 B"
+  const k = 1024
+  const sizes = ["B", "KB", "MB", "GB"]
+  const i = Math.floor(Math.log(bytes) / Math.log(k))
+  return `${parseFloat((bytes / Math.pow(k, i)).toFixed(decimals))} ${sizes[i]}`
 }
 
-function isVideo(file: File) {
-  return file.type.startsWith("video/")
-}
-
-// ─── formatBytes ───────────────────────�// ─── FileItem Component ────────────────────────────────────────────────────
-
-interface FileItemProps {
-  item: FileItemData
-  disabled?: boolean
-  onRemove: () => void
-  onRetry: () => void
-  onCancel: () => void
-}
-
-function FileItem({ item, disabled, onRemove, onRetry, onCancel }: FileItemProps) {
+function FileItem({ item, disabled, onRemove, onRetry, onCancel }: { item: FileItemData; disabled?: boolean; onRemove: () => void; onRetry: () => void; onCancel: () => void }) {
   const { file, status, progress = 0, errorType } = item
-  const [showSuccess, setShowSuccess] = React.useState(false)
-
-  React.useEffect(() => {
-    if (status === "success") {
-      const t = setTimeout(() => setShowSuccess(true), 150)
-      return () => clearTimeout(t)
-    } else {
-      setShowSuccess(false)
-    }
-  }, [status])
-
-  const isIdle = progress === 0 && status !== "success" && status !== "error"
-  const isSuccess = status === "success" || showSuccess
+  const fileType = getFileType(file)
+  
+  const isUploading = status === "uploading"
   const isError = status === "error"
-
-  const stateColorClass = isSuccess
-    ? "bg-success"
-    : isError
-      ? "bg-danger"
-      : isIdle
-        ? "bg-muted-foreground"
-        : "bg-primary"
-
-  const glowColorClass = isSuccess
-    ? "bg-success/15"
-    : isError
-      ? "bg-danger/15"
-      : isIdle
-        ? "bg-muted"
-        : "bg-primary/20"
+  const isSuccess = status === "success"
 
   return (
     <div
       className={cn(
-        "relative overflow-hidden rounded-2xl border bg-surface p-4 sm:p-5 shadow-sm transition-all duration-300",
-        "animate-in fade-in slide-in-from-bottom-3",
-        status === "cancelled" ? "border-dashed opacity-70" : "border-border",
+        "relative flex items-center justify-between p-2.5 rounded-lg border transition-all group overflow-hidden",
+        isError ? "border-danger/40 bg-danger/5" : "border-border/50 bg-background",
         disabled && "opacity-50 pointer-events-none"
       )}
     >
-      {/* Background Subtle Glow & Grid */}
-      <div className={cn("absolute -top-10 -left-10 size-40 blur-3xl rounded-full opacity-60 pointer-events-none transition-colors duration-500", glowColorClass)} />
-      <div className="absolute inset-0 pointer-events-none opacity-[0.02] dark:opacity-[0.05]" style={{ backgroundImage: "linear-gradient(#000 1px, transparent 1px), linear-gradient(90deg, #000 1px, transparent 1px)", backgroundSize: "16px 16px" }} />
+      {/* Uploading Progress Background */}
+      {isUploading && (
+        <div 
+          className="absolute inset-0 bg-gradient-to-r from-success/90 to-primary/90 transition-all duration-300 ease-out z-0"
+          style={{ width: `${progress}%` }}
+        />
+      )}
 
-      <div className="relative flex items-start gap-4">
-        {/* Left: Icon */}
-        <div className={cn("size-10 sm:size-12 shrink-0 flex items-center justify-center rounded-full text-white shadow-sm transition-colors duration-500", stateColorClass)}>
-          {isSuccess ? <CheckCircle2 className="size-5 sm:size-6" strokeWidth={2.5} /> : isError ? <AlertTriangle className="size-5 sm:size-6" strokeWidth={2} /> : <UploadCloud className="size-5 sm:size-6" strokeWidth={2.5} />}
+      <div className="relative z-10 flex items-center gap-3 min-w-0 flex-1">
+        {/* Extension Badge */}
+        {isError ? (
+          <div className="size-6 shrink-0 rounded-full bg-danger/10 text-danger flex items-center justify-center">
+            <AlertTriangle className="size-3.5" strokeWidth={2.5} />
+          </div>
+        ) : (
+          <Badge 
+            tone={fileType.badgeTone} 
+            appearance="soft" 
+            className={cn("px-2 py-0.5 text-[11px] font-bold uppercase rounded-md shrink-0 w-11 justify-center", isUploading && progress > 10 && "!bg-white/25 !text-white")}
+          >
+            {fileType.label}
+          </Badge>
+        )}
+        
+        {/* File Name & Error Message */}
+        <div className="flex flex-col min-w-0">
+          <span className={cn(
+            "text-[13px] font-medium truncate max-w-[200px] sm:max-w-[300px]", 
+            isUploading && progress > 30 ? "text-white mix-blend-difference" : isError ? "text-danger-700 dark:text-danger-400" : "text-foreground"
+          )}>
+            {file.name}
+          </span>
+          {isError && (
+            <span className="text-[11px] font-medium text-danger-600 dark:text-danger-400 truncate">
+              {errorType === "format" ? "Formato no permitido" : 
+               errorType === "size" ? "Supera el límite de peso" : 
+               "Error al cargar archivo"}
+            </span>
+          )}
         </div>
+      </div>
 
-        {/* Right: Content */}
-        <div className="flex-1 min-w-0 pt-0.5">
+      <div className="relative z-10 flex items-center gap-2 shrink-0 ml-4">
+        {/* File Size (Hidden if error to make room for buttons) */}
+        {!isError && (
+          <span className={cn("text-[11px] font-semibold tabular-nums uppercase mr-1", isUploading && progress > 80 ? "text-white/90" : "text-muted-foreground")}>
+            {formatBytes(file.size, 0)}
+          </span>
+        )}
 
-          {/* Header row: Title and Close */}
-          <div className="flex items-start justify-between gap-2">
-            <p className="text-[13px] sm:text-sm font-semibold text-foreground truncate">
-              {isSuccess ? "Subido" : isError ? "Error" : "Subiendo"}{" "}
-              <span className="text-primary font-medium">"{file.name}"</span>
-            </p>
-            {!disabled && (
+        {/* Action Buttons */}
+        {!disabled && (
+          <div className="flex items-center gap-1">
+            {isError && (
               <button
                 type="button"
-                onClick={status === "uploading" ? onCancel : onRemove}
-                aria-label={status === "uploading" ? "Cancelar carga" : "Eliminar archivo"}
-                className="shrink-0 p-1.5 rounded-full text-muted-foreground hover:bg-muted hover:text-foreground transition-colors -mt-1.5 -mr-1.5"
+                onClick={onRetry}
+                className="text-danger hover:text-white hover:bg-danger p-1.5 rounded-md transition-colors"
+                title="Reintentar"
               >
-                <X className="size-4" strokeWidth={2} />
+                <RefreshCw className="size-3.5" strokeWidth={2.5} />
               </button>
             )}
+            <button
+              type="button"
+              onClick={isUploading ? onCancel : onRemove}
+              className={cn(
+                "transition-colors p-1.5 rounded-md", 
+                isUploading && progress > 90 ? "text-white/80 hover:text-white hover:bg-white/20" : 
+                isError ? "text-danger-700/70 hover:text-danger hover:bg-danger/10" : 
+                "text-muted-foreground hover:text-foreground hover:bg-muted"
+              )}
+              title={isUploading ? "Cancelar" : "Eliminar"}
+            >
+              <X className="size-3.5" strokeWidth={2.5} />
+            </button>
           </div>
-
-          {/* Message */}
-          <p className="text-[13px] text-muted-foreground mt-0.5">
-            {isSuccess
-              ? "¡Subido con éxito!"
-              : isError
-                ? "Ha ocurrido un error al intentar subir."
-                : isIdle
-                  ? "Por favor, espera mientras nos preparamos."
-                  : "Por favor, espera mientras subimos tu archivo."}
-          </p>
-
-          {/* Progress Bar */}
-          {(status === "uploading" || isSuccess || status === "queued") && (
-            <div className="w-full h-1.5 rounded-full bg-muted overflow-hidden mt-4">
-              <div
-                className={cn("h-full rounded-full transition-all duration-300 ease-out", isSuccess ? "bg-success" : "bg-primary")}
-                style={{ width: `${isSuccess ? 100 : Math.min(Math.max(progress, 0), 100)}%` }}
-              />
-            </div>
-          )}
-
-          {/* Footer row: Percentage and Actions */}
-          <div className="flex items-center justify-between mt-3">
-            <span className="text-[11px] sm:text-xs text-muted-foreground font-medium">
-              {isSuccess ? "100%" : Math.round(progress)}% subido{isSuccess ? "!" : "..."}
-            </span>
-
-            {/* Actions */}
-            {!disabled && status !== "success" && (
-              <div className="flex items-center gap-3 sm:gap-4">
-                {status === "uploading" && (
-                  <button type="button" onClick={onCancel} className="text-[11px] sm:text-xs font-semibold text-muted-foreground hover:text-foreground transition-colors">
-                    Cancelar
-                  </button>
-                )}
-                {isError && (
-                  <button type="button" onClick={onRetry} className="text-[11px] sm:text-xs font-semibold text-danger hover:text-danger-600 transition-colors">
-                    Reintentar
-                  </button>
-                )}
-              </div>
-            )}
-          </div>
-        </div>
+        )}
       </div>
     </div>
   )
-}
-// ─── DropZone ──────────────────────────────────────────────────────────────
-
-interface DropZoneProps {
-  inputRef: React.RefObject<HTMLInputElement | null>
-  disabled?: boolean
-  multiple?: boolean
-  accept?: string
-  allowedFormats?: string
-  maxSizeMB?: number
-  maxFiles?: number
-  isDragging: boolean
-  onDragOver: (e: React.DragEvent) => void
-  onDragLeave: (e: React.DragEvent) => void
-  onDrop: (e: React.DragEvent) => void
-  onClick: () => void
 }
 
 function DropZone({
@@ -301,20 +223,17 @@ function DropZone({
   disabled,
   multiple,
   accept,
-  allowedFormats = "PDF, Word, Excel, CSV, imágenes, videos y archivos geoespaciales",
-  maxSizeMB = 20,
-  maxFiles = 10,
+  allowedFormats,
   isDragging,
   onDragOver,
   onDragLeave,
   onDrop,
   onClick,
-}: DropZoneProps) {
+}: any) {
   return (
     <div
       role="button"
       tabIndex={disabled ? -1 : 0}
-      aria-label="Zona de carga de archivos. Arrastra un archivo o presiona Enter para seleccionar."
       onDragOver={onDragOver}
       onDragLeave={onDragLeave}
       onDrop={onDrop}
@@ -326,95 +245,84 @@ function DropZone({
         }
       }}
       className={cn(
-        "relative w-full rounded-[2rem] border-2 transition-all duration-500 outline-none overflow-hidden",
-        "focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
-        "flex flex-col items-center justify-center gap-6 text-center",
-        "py-16 px-6",
-        isDragging
-          ? "border-primary bg-primary/[0.08] shadow-[0_0_40px_-10px_var(--color-primary)] scale-[1.02]"
-          : "border-border/60 border-dashed bg-gradient-to-b from-primary/5 to-surface hover:border-primary/60 hover:border-solid hover:shadow-[0_0_40px_-15px_var(--color-primary)] hover:bg-primary/[0.02] shadow-sm",
-        disabled ? "opacity-50 cursor-not-allowed pointer-events-none" : "cursor-pointer group"
+        "group relative w-full rounded-2xl transition-all duration-500 outline-none overflow-hidden cursor-pointer",
+        "flex flex-col items-center justify-center gap-5 text-center",
+        "py-12 px-6 sm:py-16 sm:px-8",
+        "border-2 border-dashed",
+        isDragging 
+          ? "border-primary bg-primary/5 scale-[1.02] shadow-[0_0_30px_-5px_var(--color-primary)]" 
+          : "border-border/60 bg-gradient-to-br from-background via-surface to-muted/20 hover:border-primary/40 hover:bg-primary/[0.03]",
+        disabled && "opacity-50 cursor-not-allowed pointer-events-none"
       )}
     >
-      {/* Structured Dot Pattern Background */}
-      <div
-        className="absolute inset-0 pointer-events-none opacity-[0.03] dark:opacity-[0.05] group-hover:opacity-[0.08] transition-opacity duration-500"
-        style={{
-          backgroundImage: `radial-gradient(circle at 2px 2px, currentColor 1.5px, transparent 0)`,
-          backgroundSize: '24px 24px'
-        }}
+      {/* 1. Pulsing inner border ring on hover */}
+      <div className="absolute inset-0 rounded-2xl ring-1 ring-inset ring-primary/0 group-hover:ring-primary/60 group-hover:animate-pulse transition-all duration-700 pointer-events-none z-0" />
+
+      {/* 2. Bottom glowing gradient on hover */}
+      <div className="absolute bottom-0 inset-x-0 h-40 bg-gradient-to-t from-primary/15 via-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none z-0" />
+
+      {/* Dynamic Background Grid */}
+      <div 
+        className="absolute inset-0 pointer-events-none opacity-[0.03] dark:opacity-[0.05] group-hover:opacity-[0.08] transition-opacity duration-500 z-0" 
+        style={{ backgroundImage: 'radial-gradient(circle at 2px 2px, currentColor 1.5px, transparent 0)', backgroundSize: '24px 24px' }} 
       />
 
-      {/* Dynamic Background Glow */}
-      <div className={cn(
-        "absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 size-72 rounded-full blur-[80px] pointer-events-none transition-all duration-700 ease-out",
-        isDragging ? "bg-primary/40 scale-150" : "bg-primary/10 group-hover:bg-primary/30 group-hover:scale-125"
-      )} />
-
-      {/* Central Icon */}
-      <div className="relative z-10 flex items-center justify-center mt-2">
-        {/* Pulsing ring on hover/drag */}
+      {/* Floating Icon Graphic */}
+      <div className="relative flex items-center justify-center size-24 z-10">
         <div className={cn(
-          "absolute inset-0 rounded-full border border-primary transition-all duration-700",
-          isDragging ? "animate-ping opacity-60 scale-150" : "opacity-0 group-hover:animate-ping group-hover:opacity-30 group-hover:scale-150"
+          "absolute inset-0 rounded-full blur-2xl transition-all duration-700 ease-out pointer-events-none",
+          isDragging ? "bg-primary/40 scale-150" : "bg-primary/20 group-hover:bg-primary/30 group-hover:scale-125"
+        )} />
+        
+        <div className={cn(
+          "absolute inset-0 rounded-full border border-primary transition-all duration-700 pointer-events-none",
+          isDragging ? "animate-ping opacity-60 scale-150" : "opacity-0"
         )} />
 
-        <div
-          className={cn(
-            "relative flex items-center justify-center rounded-full transition-all duration-500",
-            "size-20 border-2",
-            isDragging
-              ? "bg-primary text-primary-foreground border-primary scale-110 shadow-primary/30 shadow-lg"
-              : "bg-background text-primary border-primary/20 shadow-sm group-hover:border-primary group-hover:bg-primary group-hover:text-primary-foreground group-hover:scale-110 group-hover:shadow-lg group-hover:shadow-primary/25"
-          )}
-        >
-          <ArrowUp
-            className={cn(
-              "size-8 transition-all duration-300",
-              isDragging ? "animate-bounce" : "group-hover:-translate-y-1"
-            )}
-            strokeWidth={2.5}
-          />
+        <div className={cn(
+          "relative flex items-center justify-center size-16 rounded-full transition-all duration-500 border-2",
+          isDragging 
+            ? "bg-primary border-primary text-primary-foreground scale-110 shadow-primary/30 shadow-lg" 
+            : "bg-surface border-primary/20 text-primary shadow-sm group-hover:bg-primary group-hover:border-primary group-hover:text-primary-foreground group-hover:-translate-y-2 group-hover:shadow-lg group-hover:shadow-primary/25"
+        )}>
+          <FileUp className={cn("size-7 transition-all duration-300", isDragging ? "animate-bounce" : "")} strokeWidth={2.5} />
         </div>
       </div>
 
-      {/* Hero Text */}
-      <div className="space-y-1 z-10 max-w-md mt-2">
-        <p className={cn(
-          "text-sm font-medium tracking-tight transition-colors",
-          isDragging ? "text-primary" : "text-foreground/80"
-        )}>
-          {isDragging ? "¡Suéltalos aquí mismo!" : "Arrastra y suelta tus archivos aquí, o"}
+      <div className="space-y-1.5 z-10 mt-2">
+        <h4 className={cn("text-[17px] font-bold transition-colors duration-300", isDragging ? "text-primary" : "text-foreground")}>
+          {isDragging ? "¡Suelta para cargar!" : "Arrastra y suelta aquí, o"}
+        </h4>
+        <p className="text-[13px] text-muted-foreground font-medium max-w-sm mx-auto">
+          {allowedFormats || "Soporta imágenes, documentos y archivos comprimidos."}
         </p>
       </div>
 
-      {/* Button */}
+      {/* Action Button (shown when not dragging) */}
       {!isDragging && (
-        <div className="z-10 flex flex-col items-center gap-3">
-          <Button
-            type="button"
-            variant="primary"
-            className="rounded-full px-8 py-5 text-base font-semibold shadow-md"
-            disabled={disabled}
-            onClick={(e) => {
-              e.stopPropagation()
-              if (!disabled) onClick()
-            }}
+        <div className="z-10 mt-3 transition-all duration-500 group-hover:scale-105">
+          <Button 
+            type="button" 
+            variant="primary" 
+            className="rounded-full px-8 font-semibold shadow-md pointer-events-none"
             tabIndex={-1}
           >
-            {multiple ? "Seleccionar Archivos" : "Seleccionar Archivo"}
+            Seleccionar archivo
           </Button>
-
-          <p className="text-[11px] text-muted-foreground font-medium mt-1">
-            Soporta imágenes, documentos y más • Máx. {maxSizeMB} MB
-          </p>
         </div>
       )}
+
+      {/* Badges Ribbon */}
+      <div className="flex flex-wrap items-center justify-center gap-2 mt-4 z-10 opacity-70 group-hover:opacity-100 transition-opacity duration-300">
+        <Badge tone="secondary" appearance="outline" size="sm">.jpeg</Badge>
+        <Badge tone="primary" appearance="outline" size="sm">.png</Badge>
+        <Badge tone="success" appearance="outline" size="sm">.csv</Badge>
+        <Badge tone="danger" appearance="outline" size="sm">.pdf</Badge>
+        <Badge tone="info" appearance="outline" size="sm">.mp4</Badge>
+      </div>
     </div>
   )
 }
-
-// ─── Main FileUpload ───────────────────────────────────────────────────────
 
 export function FileUpload({
   label,
@@ -425,7 +333,7 @@ export function FileUpload({
   disabled = false,
   required = false,
   className,
-  allowedFormats = "PDF, Word, Excel, CSV, imágenes, videos y archivos geoespaciales",
+  allowedFormats,
   items = [],
   onFileSelect,
   onRemove,
@@ -463,15 +371,11 @@ export function FileUpload({
     if (e.target) e.target.value = ""
   }
 
-  return (
-    <div className={cn("flex flex-col gap-3 w-full text-left", className)}>
-      {label && (
-        <label className={cn("text-sm font-semibold text-foreground", disabled && "opacity-50")}>
-          {label}
-          {required && <span className="text-danger ml-1">*</span>}
-        </label>
-      )}
+  const uploadingItems = items.filter(i => i.status === "uploading")
+  const uploadedItems = items.filter(i => i.status === "success" || i.status === "idle" || i.status === "error")
 
+  return (
+    <div className={cn("flex flex-col xl:flex-row gap-6 w-full items-start", className)}>
       <input
         ref={inputRef}
         type="file"
@@ -483,63 +387,74 @@ export function FileUpload({
         aria-hidden="true"
       />
 
-      <DropZone
-        inputRef={inputRef}
-        disabled={disabled}
-        multiple={multiple}
-        accept={accept}
-        allowedFormats={allowedFormats}
-        maxSizeMB={maxSizeMB}
-        maxFiles={maxFiles}
-        isDragging={isDragging}
-        onDragOver={handleDragOver}
-        onDragLeave={handleDragLeave}
-        onDrop={handleDrop}
-        onClick={() => inputRef.current?.click()}
-      />
+      {/* Left Side: Dropzone */}
+      <div className="flex-1 w-full max-w-2xl shrink-0">
+        {label && (
+          <label className={cn("text-sm font-semibold text-foreground block mb-2", disabled && "opacity-50")}>
+            {label}
+            {required && <span className="text-danger ml-1">*</span>}
+          </label>
+        )}
+        <DropZone
+          inputRef={inputRef}
+          disabled={disabled}
+          multiple={multiple}
+          accept={accept}
+          allowedFormats={allowedFormats}
+          isDragging={isDragging}
+          onDragOver={handleDragOver}
+          onDragLeave={handleDragLeave}
+          onDrop={handleDrop}
+          onClick={() => inputRef.current?.click()}
+        />
+      </div>
 
-      {items.length > 0 && (
-        <div className="space-y-3 mt-2">
-          {/* Resumen superior estilo gestor documental */}
-          <div className="flex items-center justify-between text-xs text-muted-foreground pb-1 border-b border-border/40">
-            <span className="font-semibold text-foreground">
-              Archivos seleccionados ({items.length}/{maxFiles})
-            </span>
-            <div className="flex items-center gap-3">
-              <span>
-                {(items.reduce((acc, i) => acc + i.file.size, 0) / (1024 * 1024)).toFixed(1)} MB en total
-              </span>
-              <span>•</span>
-              <span>
-                {items.filter(i => i.status === "success").length} completados
-              </span>
-              {items.some(i => i.status === "uploading") && (
-                <>
-                  <span>•</span>
-                  <span className="text-primary font-medium">
-                    {items.filter(i => i.status === "uploading").length} cargando
-                  </span>
-                </>
-              )}
+      {/* Right Side: Files List */}
+      {(uploadingItems.length > 0 || uploadedItems.length > 0) && (
+        <div className="w-full xl:w-[350px] shrink-0 flex flex-col gap-6 bg-surface border border-border/40 p-4 sm:p-5 rounded-xl shadow-sm">
+          <div>
+            <h5 className="text-[15px] font-bold text-foreground mb-1">Archivos</h5>
+          </div>
+
+          {uploadingItems.length > 0 && (
+            <div className="space-y-2">
+              <p className="text-[12px] font-medium text-muted-foreground mb-3">
+                Subiendo - {uploadingItems.length} archivos
+              </p>
+              <div className="space-y-2">
+                {uploadingItems.map(item => (
+                  <FileItem
+                    key={item.id}
+                    item={item}
+                    disabled={disabled}
+                    onRemove={() => onRemove?.(item.id)}
+                    onRetry={() => onRetry?.(item.id)}
+                    onCancel={() => onCancel?.(item.id)}
+                  />
+                ))}
+              </div>
             </div>
-          </div>
+          )}
 
-          <div
-            role="list"
-            aria-label="Archivos cargados"
-            className="space-y-2"
-          >
-            {items.map((item) => (
-              <FileItem
-                key={item.id}
-                item={item}
-                disabled={disabled}
-                onRemove={() => onRemove?.(item.id)}
-                onRetry={() => onRetry?.(item.id)}
-                onCancel={() => onCancel?.(item.id)}
-              />
-            ))}
-          </div>
+          {uploadedItems.length > 0 && (
+            <div className="space-y-2">
+              <p className="text-[12px] font-medium text-muted-foreground mb-3">
+                Completados - {uploadedItems.length} archivos
+              </p>
+              <div className="space-y-2 max-h-[300px] overflow-y-auto pr-2 scrollbar-thin">
+                {uploadedItems.map(item => (
+                  <FileItem
+                    key={item.id}
+                    item={item}
+                    disabled={disabled}
+                    onRemove={() => onRemove?.(item.id)}
+                    onRetry={() => onRetry?.(item.id)}
+                    onCancel={() => onCancel?.(item.id)}
+                  />
+                ))}
+              </div>
+            </div>
+          )}
         </div>
       )}
     </div>

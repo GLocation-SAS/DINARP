@@ -12,7 +12,7 @@ import {
   X,
   Info,
   HelpCircle,
-  Check,
+  Check, Trash2,
 } from "lucide-react";
 import { cva, type VariantProps } from "class-variance-authority";
 import {
@@ -23,7 +23,7 @@ import {
 } from "@/components/ui/tooltip";
 
 const dialogVariants = cva(
-  "fixed top-1/2 left-1/2 z-50 flex flex-col w-[calc(100%-2rem)] -translate-x-1/2 -translate-y-1/2 gap-6 rounded-[2rem] border border-border/40 bg-background duration-300 outline-none data-open:animate-in data-open:fade-in-0 data-open:zoom-in-95 data-closed:animate-out data-closed:fade-out-0 data-closed:zoom-out-95 shadow-2xl",
+  "fixed top-1/2 left-1/2 z-50 flex flex-col w-[calc(100%-2rem)] -translate-x-1/2 -translate-y-1/2 gap-6 rounded-[2.5rem] border border-border/40 bg-background duration-300 outline-none data-open:animate-in data-open:fade-in-0 data-open:zoom-in-95 data-closed:animate-out data-closed:fade-out-0 data-closed:zoom-out-95 shadow-2xl",
   {
     variants: {
       variant: {
@@ -94,32 +94,29 @@ function DialogIcon({
   variant,
 }: {
   variant?:
-    "standard" | "default" | "success" | "danger" | "warning" | "info" | null;
+  "standard" | "default" | "success" | "danger" | "warning" | "info" | null;
 }) {
   if (!variant || variant === "default" || variant === "standard") return null;
 
   const icons = {
-    success: <Check className="size-6 text-success stroke-[2.5px]" />,
-    danger: <X className="size-6 text-danger stroke-[2.5px]" />,
-    warning: <AlertTriangle className="size-6 text-warning stroke-[2.5px]" />,
-    info: <Info className="size-6 text-info stroke-[2.5px]" />,
+    success: <CheckCircle2 className="size-10 text-success stroke-[2px]" />,
+    danger: <Trash2 className="size-10 text-danger stroke-[2px]" />,
+    warning: <AlertTriangle className="size-10 text-warning stroke-[2px]" />,
+    info: <Info className="size-10 text-info stroke-[2px]" />,
   };
 
-  const ringColor = {
-    success: "ring-success/20",
-    danger: "ring-danger/20",
-    warning: "ring-warning/20",
-    info: "ring-info/20",
+  const bgColors = {
+    success: "bg-success/15",
+    danger: "bg-danger/15",
+    warning: "bg-warning/15",
+    info: "bg-info/15",
   };
+
+  const bgColor = bgColors[variant as keyof typeof bgColors];
 
   return (
-    <div className="flex justify-center w-full mt-2 mb-4">
-      <div
-        className={cn(
-          "size-14 rounded-full bg-background flex items-center justify-center shadow-lg shadow-black/5 ring-1 relative z-20 transition-transform duration-500 hover:scale-110",
-          ringColor[variant as keyof typeof ringColor],
-        )}
-      >
+    <div className="flex justify-center w-full mt-4 mb-4 relative">
+      <div className={cn("flex items-center justify-center size-20 rounded-full transition-transform duration-500 hover:scale-110", bgColor)}>
         {icons[variant as keyof typeof icons]}
       </div>
     </div>
@@ -157,15 +154,15 @@ function DialogContent({
               className={cn(
                 "absolute -top-32 left-1/2 -translate-x-1/2 w-[150%] h-[150%] rounded-[100%] blur-[60px] opacity-25 transition-all duration-1000",
                 variant === "success" &&
-                  "bg-gradient-to-b from-success via-success/40 to-transparent",
+                "bg-gradient-to-b from-success via-success/40 to-transparent",
                 variant === "danger" &&
-                  "bg-gradient-to-b from-danger via-danger/40 to-transparent",
+                "bg-gradient-to-b from-danger via-danger/40 to-transparent",
                 variant === "warning" &&
-                  "bg-gradient-to-b from-warning via-warning/40 to-transparent",
+                "bg-gradient-to-b from-warning via-warning/40 to-transparent",
                 variant === "info" &&
-                  "bg-gradient-to-b from-info via-info/40 to-transparent",
+                "bg-gradient-to-b from-info via-info/40 to-transparent",
                 (variant === "default" || !variant) &&
-                  "bg-gradient-to-b from-primary via-primary/30 to-transparent",
+                "bg-gradient-to-b from-primary via-primary/30 to-transparent",
               )}
             />
           </div>
@@ -237,7 +234,7 @@ function DialogFooter({
       className={cn(
         "flex flex-col-reverse gap-3 w-full pt-4",
         !stacked &&
-          "sm:flex-row sm:flex-wrap-reverse sm:justify-center sm:gap-3 [&>*]:w-full sm:[&>*]:flex-1 sm:[&>*]:min-w-[140px]",
+        "sm:flex-row sm:flex-wrap-reverse sm:justify-center sm:gap-3 [&>*]:w-full sm:[&>*]:flex-1 sm:[&>*]:min-w-[140px]",
         stacked && "[&>*]:w-full",
         className,
       )}
@@ -261,7 +258,7 @@ function DialogTitle({
     <DialogPrimitive.Title
       data-slot="dialog-title"
       className={cn(
-        "text-xl sm:text-2xl font-heading font-black tracking-tight text-foreground",
+        "text-xl sm:text-2xl font-heading font-bold tracking-tight text-foreground",
         className,
       )}
       {...props}

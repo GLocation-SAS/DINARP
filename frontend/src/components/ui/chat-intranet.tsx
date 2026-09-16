@@ -55,7 +55,7 @@ export function ChatIntranet({ className }: { className?: string } = {}) {
             </AvatarFallback>
           </Avatar>
           <div className="flex flex-col text-left">
-            <h3 className="font-semibold text-foreground text-sm tracking-wide leading-none">Asistente GRisk IA</h3>
+            <h3 className="font-semibold text-foreground text-sm tracking-wide leading-none">Asistente DINARP IA</h3>
             <span className="text-[10px] text-success font-medium flex items-center gap-1 mt-1">
               <span className="size-1.5 rounded-full bg-success animate-pulse inline-block" />
               En línea
@@ -74,8 +74,8 @@ export function ChatIntranet({ className }: { className?: string } = {}) {
             {/* Welcome Text */}
             <div className="text-center space-y-4 relative z-10 w-full animate-in fade-in slide-in-from-bottom-4 duration-700">
               <Badge tone="info" appearance="soft" className="mx-auto rounded-full px-3 py-0.5 text-[10px] font-bold tracking-wider mb-2">Eficiencia con IA</Badge>
-              <h2 className="text-4xl sm:text-5xl font-black text-transparent bg-clip-text bg-gradient-to-br from-foreground to-foreground/80 tracking-tight text-center">
-                Bienvenido a GRisk IA
+              <h2 className="text-4xl sm:text-5xl font-bold text-transparent bg-clip-text bg-gradient-to-br from-foreground to-foreground/80 tracking-tight text-center">
+                Bienvenido a DINARP IA
               </h2>
               <p className="text-sm sm:text-base text-muted-foreground max-w-2xl mx-auto font-medium leading-relaxed">
                 Alcanza tus objetivos de gestión territorial con eficiencia potenciada por IA. Asegurando una administración inteligente y procesos optimizados.
@@ -187,3 +187,4 @@ export function ChatIntranet({ className }: { className?: string } = {}) {
     </div>
   );
 }
+

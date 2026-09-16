@@ -14,7 +14,7 @@ import { ChatIntranetShowcase } from "./chat-intranet-showcase";
 
 export function ConversationalAssistantShowcase({ registerSection }: { registerSection?: (id: string, el: HTMLElement | null) => void }) {
   const [messages, setMessages] = React.useState<Array<{ sender: "user" | "assistant" | "system" | "error"; text: string }>>([
-    { sender: "assistant", text: "¡Hola! Soy el asistente virtual del Geoportal GRisk. ¿En qué te puedo ayudar hoy?" }
+    { sender: "assistant", text: "¡Hola! Soy el asistente virtual del Geoportal DINARP. ¿En qué te puedo ayudar hoy?" }
   ]);
   const [inputText, setInputText] = React.useState("");
   const [isTyping, setIsTyping] = React.useState(false);
@@ -54,7 +54,7 @@ export function ConversationalAssistantShowcase({ registerSection }: { registerS
           <div className="p-3 rounded-xl border border-border bg-surface flex items-center justify-between text-xs">
             <div className="flex items-center gap-2">
               <Database className="size-4 text-primary" />
-              <span className="font-semibold text-foreground">Fuente: Geodatabase Catastral GRisk</span>
+              <span className="font-semibold text-foreground">Fuente: Geodatabase Catastral DINARP</span>
             </div>
             <Badge tone="neutral" appearance="soft">API Oficial</Badge>
           </div>

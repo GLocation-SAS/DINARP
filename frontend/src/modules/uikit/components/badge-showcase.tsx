@@ -18,7 +18,7 @@ export function BadgeShowcase({ registerSection }: { registerSection?: (id: stri
       <div className="flex items-start gap-3.5 text-left pb-6">
         <Sparkles className="w-6 h-6 text-primary flex-shrink-0 mt-1" />
         <div>
-          <h2 className="text-h2 font-heading font-black text-foreground">Componentes de Estado: Badges</h2>
+          <h2 className="text-h2 font-heading font-bold text-foreground">Componentes de Estado: Badges</h2>
           <p className="text-muted-foreground text-sm mt-2">Indicadores visuales compactos para estados, categorías y etiquetas con soporte para variantes semánticas y estilos de contorno.</p>
         </div>
       </div>
@@ -76,7 +76,7 @@ export function BadgeShowcase({ registerSection }: { registerSection?: (id: stri
         <div className="space-y-6">
           <div>
             <h3 className="text-sm font-bold text-muted-foreground uppercase tracking-wider">Ejemplos de uso</h3>
-            <p className="text-xs text-muted-foreground italic mt-1">Casos reales de aplicación en el Geoportal GRisk.</p>
+            <p className="text-xs text-muted-foreground italic mt-1">Casos reales de aplicación en el Geoportal DINARP.</p>
           </div>
           <div className="flex flex-wrap gap-4 items-end">
             <Badge tone="success" appearance="soft" icon={<Check />}>Activo</Badge>
@@ -98,4 +98,5 @@ export function BadgeShowcase({ registerSection }: { registerSection?: (id: stri
     </Card>
   );
 }
+
 

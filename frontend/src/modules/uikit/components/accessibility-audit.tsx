@@ -262,7 +262,7 @@ export function AccessibilityAudit() {
           <div className="flex gap-4 p-4 bg-background rounded-xl border border-border/50 h-28 items-center">
             <div className="flex-1 flex flex-col justify-center items-center gap-1 border-r border-border/50">
               <span className="text-xs text-muted-foreground font-bold uppercase tracking-wider">Contraste</span>
-              <span className={cn("text-3xl font-black", auditResults.contrast.ratio >= 4.5 ? "text-success" : "text-danger")}>
+              <span className={cn("text-3xl font-bold", auditResults.contrast.ratio >= 4.5 ? "text-success" : "text-danger")}>
                 {auditResults.contrast.ratio} : 1
               </span>
               <span className="text-[10px] text-muted-foreground">Requerido: 4.5 : 1</span>
@@ -324,7 +324,7 @@ export function AccessibilityAudit() {
           </div>
 
           <p className="text-sm text-muted-foreground mt-2">
-            La regla GRisk define que todo botón, icono de tabla o control de interacción tenga al menos 40x40px de área de clic.
+            La regla DINARP define que todo botón, icono de tabla o control de interacción tenga al menos 40x40px de área de clic.
           </p>
         </div>
 
@@ -414,3 +414,4 @@ export function AccessibilityAudit() {
     </div>
   );
 }
+

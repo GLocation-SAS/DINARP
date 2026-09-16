@@ -68,7 +68,6 @@ const SECTION_COMPONENTS: Record<string, React.ComponentType<{ registerSection?:
   "modals-overlays": ModalsOverlaysShowcase,
   "data-management-category": DataManagementShowcase,
   "map-geospatial-category": MapGeospatialShowcase,
-  "risk-analytics-category": RiskAnalyticsShowcase,
   "reports-export-category": ReportsExportShowcase,
   "conversational-assistant-category": ConversationalAssistantShowcase,
 
@@ -164,20 +163,27 @@ function UIKitContent() {
         <div className="flex-1">
           <div className="w-full px-4 md:px-8 lg:px-12 py-6 lg:py-8 space-y-8">
             {/* Hero section */}
-            <Card variant="featured" innerClassName="!py-4 !px-6 md:!py-5 md:!px-8 flex flex-col items-start gap-0.5" className="animate-in fade-in slide-in-from-bottom-4 duration-500 bg-primary text-primary-foreground border-transparent shadow-xl relative overflow-hidden rounded-xl">
-              <CardBadge className="rounded-full bg-white/10 hover:bg-white/10 text-white/90 border-transparent !mb-1 py-0.5 px-3 text-[10px] tracking-widest font-semibold uppercase shadow-none">
-                KIT DE DISEÑO · GRisk
-              </CardBadge>
-              <CardTitle className="!text-3xl md:!text-4xl font-heading font-black text-white !mb-1.5 relative z-10 tracking-tight">
-                {activeSection.label}
-              </CardTitle>
-              <CardDescription className="text-sm md:text-base max-w-[1000px] text-white/80 relative z-10 leading-relaxed font-medium">
-                {activeSection.description || "Visualizando componentes correspondientes a la categoría seleccionada."}
-              </CardDescription>
-              <CardDecorativeIcon>
-                <LayoutTemplate className="w-32 h-32 text-white opacity-10 rotate-12 scale-150 absolute -right-4 -bottom-4" />
-              </CardDecorativeIcon>
-            </Card>
+            <div className="animate-in fade-in slide-in-from-bottom-4 duration-500 relative py-8 px-6 md:py-10 md:px-8 border border-border/50 bg-card shadow-sm rounded-2xl mb-8 overflow-hidden">
+              <div className="absolute top-0 left-0 w-2 h-full bg-primary" />
+              <div className="absolute -right-10 -top-10 opacity-[0.03] dark:opacity-10 pointer-events-none">
+                <LayoutTemplate className="w-64 h-64 text-primary" />
+              </div>
+
+              <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 relative z-10">
+                <div className="space-y-4">
+                  <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-primary/10 text-primary text-xs font-bold tracking-widest uppercase">
+                    <LayoutTemplate className="w-4 h-4" />
+                    Kit de Diseño · DINARP
+                  </div>
+                  <h1 className="text-3xl md:text-5xl font-heading font-bold text-primary tracking-tight">
+                    {activeSection.label}
+                  </h1>
+                  <p className="text-base md:text-lg max-w-[800px] text-foreground/80 leading-relaxed font-medium">
+                    {activeSection.description || "Visualizando componentes correspondientes a la categoría seleccionada."}
+                  </p>
+                </div>
+              </div>
+            </div>
 
 
             {/* Render only the active section */}
@@ -202,3 +208,4 @@ export function UIKitView() {
     </TooltipProvider>
   );
 }
+

@@ -9,7 +9,7 @@ import { toast } from "sonner";
 import { Toaster } from "@/components/ui/sonner";
 import { Banner, ProgressBar, EmptyState } from "@/components/ui/data-display";
 import { Skeleton } from "@/components/ui/skeleton";
-import { GRiskSpinner } from "@/components/ui/grisk-spinner";
+import { DINARPSpinner } from "@/components/ui/dinarp-spinner";
 import { ToastShowcase } from "./toast-showcase";
 import { TooltipShowcase } from "./tooltip-showcase";
 import { Alert } from "@/components/ui/alert";
@@ -38,15 +38,15 @@ export function FeedbackStatesShowcase({ registerSection }: { registerSection?: 
             <h4 className="text-sm font-bold text-foreground">Tamaños</h4>
             <div className="flex items-center gap-12 flex-wrap">
               <div className="flex flex-col items-center gap-4">
-                <GRiskSpinner size="sm" hideLabel={true} />
+                <DINARPSpinner size="sm" hideLabel={true} />
                 <span className="text-xs font-mono text-muted-foreground bg-muted px-2 py-1 rounded">sm</span>
               </div>
               <div className="flex flex-col items-center gap-4">
-                <GRiskSpinner size="md" hideLabel={true} />
+                <DINARPSpinner size="md" hideLabel={true} />
                 <span className="text-xs font-mono text-muted-foreground bg-muted px-2 py-1 rounded">md</span>
               </div>
               <div className="flex flex-col items-center gap-4">
-                <GRiskSpinner size="lg" hideLabel={true} />
+                <DINARPSpinner size="lg" hideLabel={true} />
                 <span className="text-xs font-mono text-muted-foreground bg-muted px-2 py-1 rounded">lg</span>
               </div>
             </div>
@@ -55,7 +55,7 @@ export function FeedbackStatesShowcase({ registerSection }: { registerSection?: 
           <div className="space-y-6 border-t border-border/50 pt-8">
             <h4 className="text-sm font-bold text-foreground">Con mensaje de carga</h4>
             <div className="flex items-center justify-center p-8 bg-surface/50 border border-border/50 rounded-xl">
-              <GRiskSpinner size="md" label="Cargando información..." />
+              <DINARPSpinner size="md" label="Cargando información..." />
             </div>
           </div>
         </div>
@@ -111,7 +111,7 @@ export function FeedbackStatesShowcase({ registerSection }: { registerSection?: 
             <EmptyState
               title="Aún no hay datos"
               description="Comienza agregando información al sistema."
-              action={<Button variant="primary" size="sm">Agregar información</Button>}
+              
             />
           </div>
 
@@ -121,7 +121,7 @@ export function FeedbackStatesShowcase({ registerSection }: { registerSection?: 
               type="search"
               title="No se encontraron resultados"
               description="No encontramos información que coincida con los filtros seleccionados."
-              action={<Button variant="neutral" size="sm">Limpiar filtros</Button>}
+              
             />
           </div>
 
@@ -131,7 +131,7 @@ export function FeedbackStatesShowcase({ registerSection }: { registerSection?: 
               type="error"
               title="Algo salió mal"
               description="No pudimos cargar la información solicitada. Intenta nuevamente."
-              action={<Button variant="danger" size="sm">Reintentar</Button>}
+              
             />
           </div>
         </div>
@@ -146,7 +146,7 @@ export function FeedbackStatesShowcase({ registerSection }: { registerSection?: 
           <Alert variant="success" icon={<CheckCircle2 className="h-4 w-4" />} title="Guardado exitoso">
             El reporte de incidente se ha registrado correctamente en el sistema.
           </Alert>
-          <Alert variant="warning" icon={<AlertTriangle className="h-4 w-4" />} title="Advertencia" action={<Button variant="warning" size="sm">Ver detalles</Button>} onClose={() => { }}>
+          <Alert variant="warning" icon={<AlertTriangle className="h-4 w-4" />} title="Advertencia"  onClose={() => { }}>
             Existen 3 zonas con alertas preventivas que requieren atención.
           </Alert>
           <Alert variant="danger" icon={<XCircle className="h-4 w-4" />} title="Error de conexión">

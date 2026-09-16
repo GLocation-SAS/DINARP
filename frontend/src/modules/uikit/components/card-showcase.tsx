@@ -157,9 +157,9 @@ export function CardShowcase() {
                             <CardBadge className="bg-primary/20 text-primary text-[10px] px-2 py-0.5 mb-2">
                                 Design
                             </CardBadge>
-                            <CardTitle className="text-sm font-bold text-foreground">Product Design</CardTitle>
+                            <CardTitle className="text-sm font-bold text-primary">Product Design</CardTitle>
                             <CardDescription className="text-xs">320 lecciones</CardDescription>
-                            <CardDecorativeIcon className="opacity-30">
+                            <CardDecorativeIcon>
                                 <PenTool className="size-32 text-primary" />
                             </CardDecorativeIcon>
                         </Card>
@@ -169,9 +169,9 @@ export function CardShowcase() {
                             <CardBadge className="bg-secondary/20 text-secondary text-[10px] px-2 py-0.5 mb-2">
                                 Languages
                             </CardBadge>
-                            <CardTitle className="text-sm font-bold text-foreground">English for IT</CardTitle>
+                            <CardTitle className="text-sm font-bold text-secondary">English for IT</CardTitle>
                             <CardDescription className="text-xs">PSTC lessons</CardDescription>
-                            <CardDecorativeIcon className="opacity-30">
+                            <CardDecorativeIcon>
                                 <Languages className="size-32 text-secondary" />
                             </CardDecorativeIcon>
                         </Card>
@@ -181,9 +181,9 @@ export function CardShowcase() {
                             <CardBadge className="bg-info/20 text-info text-[10px] px-2 py-0.5 mb-2">
                                 Design
                             </CardBadge>
-                            <CardTitle className="text-sm font-bold text-foreground">App Design</CardTitle>
+                            <CardTitle className="text-sm font-bold text-info">App Design</CardTitle>
                             <CardDescription className="text-xs">250 lecciones</CardDescription>
-                            <CardDecorativeIcon className="opacity-30">
+                            <CardDecorativeIcon>
                                 <Layers className="size-32 text-info" />
                             </CardDecorativeIcon>
                         </Card>
@@ -193,9 +193,9 @@ export function CardShowcase() {
                             <CardBadge className="bg-warning/20 text-warning text-[10px] px-2 py-0.5 mb-2">
                                 Design
                             </CardBadge>
-                            <CardTitle className="text-sm font-bold text-foreground">Design Management</CardTitle>
+                            <CardTitle className="text-sm font-bold text-warning">Design Management</CardTitle>
                             <CardDescription className="text-xs">220 lecciones</CardDescription>
-                            <CardDecorativeIcon className="opacity-30">
+                            <CardDecorativeIcon>
                                 <BookOpen className="size-32 text-warning" />
                             </CardDecorativeIcon>
                         </Card>

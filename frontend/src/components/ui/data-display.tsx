@@ -3,7 +3,7 @@
 /**
  * data-display.tsx
  * ─────────────────
- * 13 componentes de Data Display para GRisk GEOportal Design System.
+ * 13 componentes de Data Display para DINARP GEOportal Design System.
  * Todos usan exclusivamente tokens semánticos del sistema.
  *
  * Exports:

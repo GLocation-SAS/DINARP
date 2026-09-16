@@ -2,7 +2,7 @@
 
 /**
  * @component GeoportalSidebar
- * @description Menú de navegación lateral (Sidebar) del Design System GRisk.
+ * @description Menú de navegación lateral (Sidebar) del Design System DINARP.
  * 
  * Variantes y Comportamiento:
  * - **Desktop Expanded**: Muestra íconos y textos. Las subsecciones (ej. Trámites, Recursos) mantienen jerarquía y se separan con un Divider al finalizar el grupo.
@@ -206,13 +206,13 @@ export function GeoportalSidebar({
               <Link href="/" className="flex items-center gap-3 shrink-0 group focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none rounded-md overflow-hidden w-full justify-start">
                 {/* Expanded logos */}
                 <img
-                  src="/logo.svg"
-                  alt="Logo GRisk GEOportal"
+                  src="/logotipo.png"
+                  alt="Logo DINARP GEOportal"
                   className="h-9 lg:h-10 w-auto object-contain transition-transform group-hover:scale-105 group-data-[collapsible=icon]:hidden dark:hidden"
                 />
                 <img
-                  src="/logo-alternativo.svg"
-                  alt="Logo GRisk GEOportal"
+                  src="/logotipo.png"
+                  alt="Logo DINARP GEOportal"
                   className="h-9 lg:h-10 w-auto object-contain transition-transform group-hover:scale-105 group-data-[collapsible=icon]:hidden hidden dark:block"
                 />
                 {/* Collapsed logos (symbol) */}

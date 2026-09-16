@@ -20,7 +20,7 @@ const LOGIN_STEPS: Step[] = [
 ];
 
 const defaultLoginConfig = {
-  title: "Bienvenido al \n Geoportal GRisk",
+  title: "Bienvenido al \n Geoportal DINARP",
   description: "Información geoespacial, análisis de riesgos e indicadores territoriales para apoyar la toma de decisiones sobre las instituciones educativas.",
   cards: [
     { title: "Visor territorial", description: "Explora instituciones educativas, capas geográficas y áreas de influencia.", icon: "Map", color: "primary" },

@@ -1,7 +1,7 @@
 "use client";
 
 // components/layout/geoportal-header.tsx
-// Header institucional de 2 barras para páginas internas del geoportal GRisk.
+// Header institucional de 2 barras para páginas internas del geoportal DINARP.
 // Barra superior: azul primary con branding institucional.
 // Barra inferior: blanca con logo, secciones, notificaciones y menú de usuario.
 
@@ -136,8 +136,8 @@ export const defaultNavItems: NavItem[] = [
 
 export const defaultHeaderConfig = {
   showLogo: true,
-  logoUrlLight: "/logo.svg",
-  logoUrlDark: "/logo-alternativo.svg",
+  logoUrlLight: "/logotipo.png",
+  logoUrlDark: "/logotipo.png",
   title: "",
   showSearch: true,
   showThemeToggle: true,
@@ -497,12 +497,12 @@ export function GeoportalHeader({
                   <>
                     <img
                       src={headerConfig.logoUrlLight}
-                      alt="Logo GRisk GEOportal"
+                      alt="Logo DINARP GEOportal"
                       className="h-10 w-auto object-contain dark:hidden"
                     />
                     <img
                       src={headerConfig.logoUrlDark}
-                      alt="Logo GRisk GEOportal"
+                      alt="Logo DINARP GEOportal"
                       className="h-10 w-auto object-contain hidden dark:block"
                     />
                   </>
@@ -616,12 +616,12 @@ export function GeoportalHeader({
                               <>
                                 <img
                                   src={headerConfig.logoUrlLight}
-                                  alt="Logo GRisk GEOportal"
+                                  alt="Logo DINARP GEOportal"
                                   className="h-9 w-auto object-contain dark:hidden"
                                 />
                                 <img
                                   src={headerConfig.logoUrlDark}
-                                  alt="Logo GRisk GEOportal"
+                                  alt="Logo DINARP GEOportal"
                                   className="h-9 w-auto object-contain hidden dark:block"
                                 />
                               </>

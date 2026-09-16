@@ -19,7 +19,7 @@ import { cn } from "@/lib/utils";
 import { motion, AnimatePresence } from "framer-motion";
 
 interface LogoManagerCardProps {
-  /** Identificador del recurso en grisk-kit-assets (bucket de borrador, NUNCA grisk-design-tokens). */
+  /** Identificador del recurso en dinarp-kit-assets (bucket de borrador, NUNCA dinarp-design-tokens). */
   slot: "horizontal" | "vertical" | "escudo" | "favicon" | "sin-lema";
   title: string;
   description: string;

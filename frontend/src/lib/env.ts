@@ -4,7 +4,7 @@
  */
 export const env = {
   // Bucket de borrador del editor del kit — deliberadamente DISTINTO de
-  // grisk-design-tokens (el que lee el geovisor en producción, visible
+  // dinarp-design-tokens (el que lee el geovisor en producción, visible
   // al cliente). Nunca deben apuntar al mismo bucket.
-  KIT_ASSETS_BUCKET: process.env.KIT_ASSETS_BUCKET ?? 'grisk-kit-assets',
+  KIT_ASSETS_BUCKET: process.env.KIT_ASSETS_BUCKET ?? 'dinarp-kit-assets',
 } as const;

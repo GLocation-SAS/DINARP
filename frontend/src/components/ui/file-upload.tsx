@@ -5,10 +5,6 @@
  * ──────────────────
  * Dropzone básica + lista de archivos.
  * Limpia, simple y funcional. Sin badges de tipo ni preview.
- *
- * Para la versión avanzada con tipo de archivo, badges,
- * preview de imagen/video y animaciones → usar FileUploadAdvanced
- * (src/components/ui/file-input.tsx)
  */
 
 import * as React from "react"
@@ -19,7 +15,6 @@ import {
   AlertTriangle,
   RefreshCw,
   X,
-  XCircle,
   Trash2,
 } from "lucide-react"
 
@@ -31,8 +26,6 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip"
-
-// ─── Types ────────────────────────────────────────────────────────────────────
 
 export type FileUploadStatus =
   | "idle"
@@ -68,8 +61,6 @@ export interface FileUploadProps {
   onCancel?: (id: string) => void
 }
 
-// ─── Helpers ──────────────────────────────────────────────────────────────────
-
 function formatBytes(bytes: number, decimals = 1) {
   if (!+bytes) return "0 B"
   const k = 1024
@@ -77,8 +68,6 @@ function formatBytes(bytes: number, decimals = 1) {
   const i = Math.floor(Math.log(bytes) / Math.log(k))
   return `${parseFloat((bytes / Math.pow(k, i)).toFixed(decimals))} ${sizes[i]}`
 }
-
-// ─── FileItem ─────────────────────────────────────────────────────────────────
 
 function FileItem({
   item,
@@ -95,26 +84,36 @@ function FileItem({
 }) {
   const { file, status, errorType, progress } = item
 
+  const isUploading = status === "uploading"
+  const isSuccess = status === "success"
+  const isError = status === "error"
+
   return (
     <TooltipProvider delayDuration={300}>
       <div
         role="listitem"
-        aria-label={`${file.name}, ${status}`}
         className={cn(
-          "group relative w-full bg-background p-3 sm:p-3.5 transition-all duration-200 border-t border-border/50",
-          status === "error" && "bg-danger/5",
+          "group relative w-full bg-background p-4 sm:p-5 transition-all duration-300 border-t border-border/50",
+          isError && "bg-danger/5",
+          isSuccess && "bg-success/[0.02]",
           disabled && "opacity-50 pointer-events-none"
         )}
       >
-        <div className="flex items-center gap-3 w-full">
+        <div className="flex items-center gap-4 w-full">
           {/* Icon */}
           <div className="shrink-0">
-            {status === "success" ? (
-              <CheckCircle2 className="size-5 text-success" />
-            ) : status === "error" ? (
-              <AlertTriangle className="size-5 text-danger" />
+            {isSuccess ? (
+              <div className="size-9 rounded-full bg-success/15 flex items-center justify-center text-success">
+                <CheckCircle2 className="size-4" strokeWidth={2.5} />
+              </div>
+            ) : isError ? (
+              <div className="size-9 rounded-full bg-danger/15 flex items-center justify-center text-danger">
+                <AlertTriangle className="size-4" strokeWidth={2.5} />
+              </div>
             ) : (
-              <FileIcon className={cn("size-5 text-primary", status === "uploading" && "animate-pulse")} />
+              <div className="size-9 rounded-full bg-muted flex items-center justify-center text-muted-foreground">
+                <FileIcon className={cn("size-4", isUploading && "animate-pulse text-primary")} />
+              </div>
             )}
           </div>
 
@@ -123,7 +122,7 @@ function FileItem({
             <div className="flex items-center justify-between gap-2">
               <Tooltip>
                 <TooltipTrigger asChild>
-                  <p className="text-xs sm:text-sm font-semibold text-foreground truncate cursor-default leading-tight">
+                  <p className={cn("text-[13px] sm:text-[14px] font-semibold truncate cursor-default leading-tight", isError ? "text-danger-700 dark:text-danger-400" : "text-foreground")}>
                     {file.name}
                   </p>
                 </TooltipTrigger>
@@ -131,53 +130,56 @@ function FileItem({
               </Tooltip>
 
               <div className="flex items-center gap-2 shrink-0">
-                {status === "uploading" && (
-                  <span className="text-xs font-semibold text-primary tabular-nums">
+                {isUploading && (
+                  <span className="text-xs font-bold text-primary tabular-nums mr-2">
                     {Math.round(progress)}%
                   </span>
                 )}
-                {status === "uploading" && (
+                {isUploading && (
                   <Tooltip>
                     <TooltipTrigger asChild>
-                      <button
+                      <Button
                         type="button"
+                        variant="neutral"
+                        size="icon"
                         onClick={onCancel}
-                        aria-label="Cancelar carga"
-                        className="p-1.5 rounded-md border border-border/60 text-muted-foreground hover:bg-muted hover:text-foreground transition-colors"
+                        className="size-8 text-muted-foreground"
                       >
-                        <X className="size-3.5" />
-                      </button>
+                        <X className="size-4" />
+                      </Button>
                     </TooltipTrigger>
                     <TooltipContent>Cancelar carga</TooltipContent>
                   </Tooltip>
                 )}
-                {status !== "uploading" && !disabled && (
-                  <div className="flex items-center gap-1.5">
-                    {status === "error" && (
+                {!isUploading && !disabled && (
+                  <div className="flex items-center gap-2">
+                    {isError && (
                       <Tooltip>
                         <TooltipTrigger asChild>
-                          <button
+                          <Button
                             type="button"
+                            variant="neutral"
+                            size="icon"
                             onClick={onRetry}
-                            aria-label="Reintentar"
-                            className="p-1.5 rounded-md border border-border/60 text-primary hover:bg-primary/10 transition-colors"
+                            className="size-8 text-danger hover:text-danger-600 hover:bg-danger/10"
                           >
-                            <RefreshCw className="size-3.5" />
-                          </button>
+                            <RefreshCw className="size-4" />
+                          </Button>
                         </TooltipTrigger>
                         <TooltipContent>Reintentar</TooltipContent>
                       </Tooltip>
                     )}
                     <Tooltip>
                       <TooltipTrigger asChild>
-                        <button
+                        <Button
                           type="button"
+                          variant="neutral"
+                          size="icon"
                           onClick={onRemove}
-                          aria-label="Eliminar archivo"
-                          className="p-1.5 rounded-md border border-border/60 text-muted-foreground hover:bg-muted hover:text-foreground transition-colors"
+                          className="size-8 text-muted-foreground"
                         >
-                          <Trash2 className="size-3.5" />
-                        </button>
+                          <Trash2 className="size-4" />
+                        </Button>
                       </TooltipTrigger>
                       <TooltipContent>Eliminar</TooltipContent>
                     </Tooltip>
@@ -186,40 +188,39 @@ function FileItem({
               </div>
             </div>
 
-            {/* Status messaging / Subtitle */}
+            {/* Status messaging */}
             <div className="flex items-center justify-between gap-2 text-xs">
               <span className={cn(
-                "text-[11px]",
-                status === "success" ? "text-success font-medium" :
-                status === "error" ? "text-danger font-medium" :
-                "text-muted-foreground"
+                "text-[12px] mt-0.5",
+                isSuccess ? "text-success font-medium" :
+                  isError ? "text-danger font-medium" :
+                    "text-muted-foreground font-medium"
               )}>
-                {status === "idle" && formatBytes(file.size)}
-                {status === "uploading" && formatBytes(file.size)}
-                {status === "success" && "Archivo cargado correctamente."}
+                {(status === "idle" || isUploading) && formatBytes(file.size)}
+                {isSuccess && "Archivo cargado correctamente."}
                 {status === "cancelled" && "Carga cancelada."}
-                {status === "error" && (
+                {isError && (
                   errorType === "format" ? "Formato de archivo no permitido." :
-                  errorType === "size"   ? "El archivo supera el tamaño límite." :
-                  errorType === "invalid" ? "No se pudo procesar el archivo." :
-                  errorType === "network" ? "Error de red al cargar el archivo." :
-                  "Error al cargar el archivo."
+                    errorType === "size" ? "El archivo supera el tamaño límite." :
+                      errorType === "invalid" ? "No se pudo procesar el archivo." :
+                        errorType === "network" ? "Error de red al cargar el archivo." :
+                          "Error al cargar el archivo."
                 )}
               </span>
             </div>
 
-            {/* Progress bar line at bottom of item */}
-            {status === "uploading" && (
+            {/* Progress bar line at bottom of item (Gradient on uploading/success) */}
+            {(isUploading || isSuccess) && (
               <div
                 role="progressbar"
-                aria-valuenow={Math.round(progress)}
+                aria-valuenow={isSuccess ? 100 : Math.round(progress)}
                 aria-valuemin={0}
                 aria-valuemax={100}
-                className="w-full h-1 rounded-full bg-primary/20 overflow-hidden mt-1.5"
+                className="w-full h-1.5 rounded-full bg-muted overflow-hidden mt-3"
               >
                 <div
-                  className="h-full bg-primary transition-all duration-300 ease-out rounded-full"
-                  style={{ width: `${Math.min(Math.max(progress, 0), 100)}%` }}
+                  className="h-full bg-gradient-to-r from-success/90 to-primary/90 transition-all duration-500 ease-out rounded-full"
+                  style={{ width: `${isSuccess ? 100 : Math.min(Math.max(progress, 0), 100)}%` }}
                 />
               </div>
             )}
@@ -230,12 +231,9 @@ function FileItem({
   )
 }
 
-// ─── DropZone Header ─────────────────────────────────────────────────────────
-
 function DropZoneHeader({
   disabled,
   multiple,
-  itemsCount,
   isDragging,
   onDragOver,
   onDragLeave,
@@ -244,15 +242,12 @@ function DropZoneHeader({
 }: {
   disabled?: boolean
   multiple?: boolean
-  itemsCount: number
   isDragging: boolean
   onDragOver: (e: React.DragEvent) => void
   onDragLeave: (e: React.DragEvent) => void
   onDrop: (e: React.DragEvent) => void
   onClick: () => void
 }) {
-  const isUploadingAny = itemsCount > 0
-
   return (
     <div
       role="button"
@@ -269,13 +264,13 @@ function DropZoneHeader({
         }
       }}
       className={cn(
-        "w-full p-3 sm:p-4 transition-all duration-200 cursor-pointer select-none",
-        "flex flex-col sm:flex-row items-center justify-between gap-3 bg-muted/40",
-        isDragging && "bg-primary/10",
+        "w-full p-4 sm:p-5 transition-all duration-300 cursor-pointer select-none",
+        "flex flex-col sm:flex-row items-center justify-between gap-3 bg-muted/30 hover:bg-muted/60",
+        isDragging && "bg-primary/5 border-primary/20",
         disabled && "opacity-50 cursor-not-allowed pointer-events-none"
       )}
     >
-      <div className="flex items-center gap-3">
+      <div className="flex items-center gap-4">
         <Button
           type="button"
           variant="primary"
@@ -283,28 +278,19 @@ function DropZoneHeader({
           disabled={disabled}
           tabIndex={-1}
           onClick={(e) => { e.stopPropagation(); if (!disabled) onClick() }}
-          className="shrink-0 w-auto font-semibold shadow-2xs h-8 text-xs px-3"
+          className="shrink-0 w-auto font-semibold shadow-sm h-9 text-[13px] px-4 rounded-full"
         >
-          <UploadCloud className="size-4 mr-1.5" />
+          <UploadCloud className="size-4 mr-2" />
           {multiple ? "Seleccionar archivos..." : "Seleccionar archivo..."}
         </Button>
 
-        <span className="text-xs text-muted-foreground truncate hidden sm:inline">
+        <span className={cn("text-[13px] font-medium transition-colors hidden sm:inline", isDragging ? "text-primary" : "text-muted-foreground")}>
           {isDragging ? "Suelta los archivos para cargarlos" : "Arrastra y suelta archivos aquí"}
         </span>
       </div>
-
-      {itemsCount > 0 && (
-        <div className="flex items-center gap-2 text-xs text-primary font-bold shrink-0">
-          <CheckCircle2 className="size-4" />
-          <span>Listo para cargar</span>
-        </div>
-      )}
     </div>
   )
 }
-
-// ─── Main FileUpload Box ─────────────────────────────────────────────────────
 
 export function FileUpload({
   label,
@@ -354,7 +340,7 @@ export function FileUpload({
   return (
     <div className={cn("flex flex-col gap-2 w-full text-left", className)}>
       {label && (
-        <label className={cn("text-sm font-semibold text-foreground", disabled && "opacity-50")}>
+        <label className={cn("text-[14px] font-bold text-foreground mb-1", disabled && "opacity-50")}>
           {label}
           {required && <span className="text-danger ml-1">*</span>}
         </label>
@@ -371,16 +357,13 @@ export function FileUpload({
         aria-hidden="true"
       />
 
-      {/* Single Box Container (Cajita Integrada) */}
       <div className={cn(
-        "w-full rounded-xl border border-border overflow-hidden bg-background shadow-2xs transition-all duration-200",
-        isDragging && "ring-2 ring-primary border-primary"
+        "w-full rounded-xl border overflow-hidden bg-background shadow-sm transition-all duration-300",
+        isDragging ? "ring-2 ring-primary border-primary" : "border-border/80"
       )}>
-        {/* Top bar header */}
         <DropZoneHeader
           disabled={disabled}
           multiple={multiple}
-          itemsCount={items.length}
           isDragging={isDragging}
           onDragOver={handleDragOver}
           onDragLeave={handleDragLeave}
@@ -388,9 +371,8 @@ export function FileUpload({
           onClick={() => inputRef.current?.click()}
         />
 
-        {/* List of files embedded directly inside the container */}
         {items.length > 0 && (
-          <div role="list" aria-label="Archivos" className="w-full">
+          <div role="list" aria-label="Archivos" className="w-full flex flex-col">
             {items.map((item) => (
               <FileItem
                 key={item.id}

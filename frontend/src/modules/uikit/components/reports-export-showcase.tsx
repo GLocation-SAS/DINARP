@@ -142,43 +142,7 @@ export function ReportsExportShowcase({ registerSection }: { registerSection?: (
       </SubSection>
 
       {/* 4. REPORT STATUS */}
-      <SubSection icon={Clock} id="report-status" title="Estado de Reporte" description="Proceso lógico de generación de un reporte: Preparando → Generando → Disponible / Error." registerSection={registerSection}>
-        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6">
-          <div className="p-4 rounded-xl border border-border bg-surface space-y-4">
-            <Badge tone="neutral" appearance="soft" className="gap-1"><Clock className="size-3" /> Preparando</Badge>
-            <p className="text-xs text-muted-foreground font-medium">Organizando la información del reporte.</p>
-          </div>
-
-          <div className="p-4 rounded-xl border border-border bg-surface space-y-4">
-            <Badge tone="warning" appearance="soft" className="gap-1"><Sliders className="size-3" /> Generando</Badge>
-            <div className="space-y-2">
-              <p className="text-xs text-muted-foreground font-medium">Procesando el archivo.</p>
-              <div className="space-y-1">
-                <div className="flex justify-between text-[10px] font-bold text-warning">
-                  <span>Procesando información...</span>
-                  <span>80%</span>
-                </div>
-                <ProgressBar value={80} className="[&>div]:bg-warning" />
-              </div>
-            </div>
-          </div>
-
-          <div className="p-4 rounded-xl border border-success/30 bg-success/5 space-y-4">
-            <Badge tone="success" appearance="filled" className="gap-1 shadow-sm"><CheckCircle2 className="size-3" /> Disponible</Badge>
-            <p className="text-xs text-muted-foreground font-medium text-success">Archivo listo para descargar.</p>
-          </div>
-
-          <div className="p-4 rounded-xl border border-danger/30 bg-danger/5 space-y-4">
-            <Badge tone="error" appearance="soft" className="gap-1"><AlertCircle className="size-3" /> Error</Badge>
-            <div className="space-y-3">
-              <p className="text-xs text-muted-foreground font-medium text-danger">No fue posible generar el reporte.</p>
-              <Button variant="danger" size="sm" className="w-full h-8">
-                <RotateCcw className="size-3 mr-2" /> Reintentar
-              </Button>
-            </div>
-          </div>
-        </div>
-      </SubSection>
+      
 
       {/* 5. DOWNLOAD LIST / ITEM STATES */}
       <SubSection icon={ListOrdered} id="download-list" title="Lista de Descargas y Estados" description="Fila individual enriquecida con metadatos completos y acciones, mostrando sus variantes de estado." registerSection={registerSection}>

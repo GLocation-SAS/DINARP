@@ -19,7 +19,7 @@ export function ToggleShowcase({ registerSection }: { registerSection?: (id: str
       <div className="flex items-start gap-3.5 text-left pb-6 border-b border-border/60">
         <ToggleLeft className="w-7 h-7 text-primary flex-shrink-0 mt-1" />
         <div>
-          <h2 className="text-h2 font-heading font-black text-primary-500">Toggle</h2>
+          <h2 className="text-h2 font-heading font-bold text-primary-500">Toggle</h2>
           <p className="text-muted-foreground text-sm mt-1">Botones de estado binario para activar o desactivar opciones y agrupar selecciones.</p>
         </div>
       </div>
@@ -115,3 +115,4 @@ export function ToggleShowcase({ registerSection }: { registerSection?: (id: str
     </Card>
   );
 }
+

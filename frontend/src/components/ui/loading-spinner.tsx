@@ -33,13 +33,13 @@ const LoadingSpinner = React.forwardRef<HTMLDivElement, LoadingSpinnerProps>(
           {...props}
         >
           <svg
-            className="grisk-spinner-svg absolute inset-0 w-full h-full"
+            className="dinarp-spinner-svg absolute inset-0 w-full h-full"
             viewBox="0 0 66 66"
             xmlns="http://www.w3.org/2000/svg"
             aria-hidden="true"
           >
             <circle
-              className="grisk-spinner-path"
+              className="dinarp-spinner-path"
               fill="none"
               strokeWidth={size === "sm" ? "5" : size === "md" ? "6" : "6"}
               strokeLinecap="round"

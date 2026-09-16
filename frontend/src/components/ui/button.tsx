@@ -45,16 +45,9 @@ const buttonVariants = cva(
           "border-primary",
           "text-white",
           "bg-primary",
-
-          // Radial fill
-          "[--radial-bg:var(--primitive-primary-300)] dark:[--radial-bg:var(--primitive-primary-300)]",
-
-          // Glow
-          "[--glow:var(--primitive-primary-300)]",
-
-          // Hover
+          "[--radial-bg:var(--primitive-primary-600)] dark:[--radial-bg:var(--primitive-primary-600)]",
+          "[--glow:var(--primitive-primary-600)]",
           "hover:text-white/90",
-
         ].join(" "),
 
         secondary: [
@@ -65,8 +58,8 @@ const buttonVariants = cva(
           "bg-secondary/5",
           "dark:bg-secondary/10",
 
-          "[--radial-bg:var(--primitive-secondary-200)] dark:[--radial-bg:var(--primitive-secondary-800)]",
-          "[--glow:var(--primitive-secondary-300)] dark:[--glow:var(--primitive-secondary-500)]",
+          
+          
 
           "hover:bg-secondary/15",
           "hover:text-secondary",
@@ -78,10 +71,8 @@ const buttonVariants = cva(
           "border-success",
           "text-white",
           "bg-success",
-
-          "[--radial-bg:var(--primitive-success-600)]",
+          "[--radial-bg:var(--primitive-success-600)] dark:[--radial-bg:var(--primitive-success-600)]",
           "[--glow:var(--primitive-success-600)]",
-
           "hover:text-white/90",
         ].join(" "),
 
@@ -89,10 +80,8 @@ const buttonVariants = cva(
           "border-warning",
           "text-white",
           "bg-warning",
-
-          "[--radial-bg:var(--primitive-warning-600)]",
+          "[--radial-bg:var(--primitive-warning-600)] dark:[--radial-bg:var(--primitive-warning-600)]",
           "[--glow:var(--primitive-warning-600)]",
-
           "hover:text-white/90",
         ].join(" "),
 
@@ -100,10 +89,8 @@ const buttonVariants = cva(
           "border-danger",
           "text-white",
           "bg-danger",
-
-          "[--radial-bg:var(--primitive-danger-700)]",
-          "[--glow:var(--primitive-danger-700)]",
-
+          "[--radial-bg:var(--primitive-danger-600)] dark:[--radial-bg:var(--primitive-danger-600)]",
+          "[--glow:var(--primitive-danger-600)]",
           "hover:text-white/90",
         ].join(" "),
 
@@ -111,13 +98,9 @@ const buttonVariants = cva(
           "border-info",
           "text-white",
           "bg-info",
-
-          "[--radial-bg:var(--primitive-info-600)]",
+          "[--radial-bg:var(--primitive-info-600)] dark:[--radial-bg:var(--primitive-info-600)]",
           "[--glow:var(--primitive-info-600)]",
-
-          "hover:bg-info-600",
-          "hover:border-info-600",
-          "hover:text-white",
+          "hover:text-white/90",
         ].join(" "),
         ghost: [
           // Colors
@@ -128,10 +111,10 @@ const buttonVariants = cva(
           "bg-transparent",
 
           // Radial
-          "[--radial-bg:hsl(var(--foreground)/0.10)]",
+          "",
 
           // Glow
-          "[--glow:hsl(var(--foreground)/0.20)]",
+          "",
 
           // Hover
           "hover:text-foreground",
@@ -146,10 +129,10 @@ const buttonVariants = cva(
           "text-foreground",
 
           // Radial
-          "[--radial-bg:hsl(var(--muted-foreground)/0.15)]",
+          "",
 
           // Glow
-          "[--glow:hsl(var(--muted-foreground)/0.15)]",
+          "",
 
           // Hover
           "hover:bg-muted-foreground",
@@ -167,10 +150,10 @@ const buttonVariants = cva(
           "text-foreground",
 
           // Radial
-          "[--radial-bg:hsl(var(--muted-foreground)/0.25)]",
+          "",
 
           // Glow
-          "[--glow:hsl(var(--muted-foreground)/0.20)]",
+          "",
 
           // Hover
           "hover:border-foreground/20",
@@ -353,3 +336,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
 Button.displayName = "Button"
 
 export { Button, buttonVariants }
+
+
+
+

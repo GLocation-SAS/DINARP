@@ -1,19 +1,19 @@
 import React from "react";
 import { cn } from "@/lib/utils";
 
-export type GRiskSpinnerProps = {
+export type DINARPSpinnerProps = {
   size?: "sm" | "md" | "lg";
   label?: string;
   className?: string;
   hideLabel?: boolean;
 };
 
-export function GRiskSpinner({
+export function DINARPSpinner({
   size = "md",
   label = "Cargando información",
   className = "",
   hideLabel = false,
-}: GRiskSpinnerProps) {
+}: DINARPSpinnerProps) {
   const sizeMap = {
     sm: 64,
     md: 96,
@@ -32,7 +32,7 @@ export function GRiskSpinner({
   return (
     <div className={cn("flex flex-col items-center justify-center gap-4", className)}>
       <div
-        className="grisk-spinner"
+        className="DINARP-spinner"
         style={{
           width: spinnerSize,
           height: spinnerSize,
@@ -40,10 +40,10 @@ export function GRiskSpinner({
         role="status"
         aria-label={label}
       >
-        <div className="grisk-spinner__ring" aria-hidden="true" />
+        <div className="DINARP-spinner__ring" aria-hidden="true" />
 
         <img
-          className="grisk-spinner__shield dark:hidden"
+          className="DINARP-spinner__shield dark:hidden"
           src="/Favicon.svg"
           alt="Cargando"
           aria-hidden="true"
@@ -54,7 +54,7 @@ export function GRiskSpinner({
         />
         
         <img
-          className="grisk-spinner__shield hidden dark:block"
+          className="DINARP-spinner__shield hidden dark:block"
           src="/Favicon%20alternativo.svg"
           alt="Cargando"
           aria-hidden="true"

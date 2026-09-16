@@ -234,25 +234,7 @@ export const UIKIT_SECTIONS: UIKitSection[] = [
   },
 
   // Módulos Especializados 11-15
-  {
-    id: "risk-analytics-category",
-    label: "Riesgos y Analítica (Risk and Analytics)",
-    icon: ShieldAlert,
-    group: "data",
-    subItems: [
-      { id: "risk-badge", label: "Risk Badge" },
-      { id: "risk-scale", label: "Risk Scale" },
-      { id: "criticality-badge", label: "Criticality Badge" },
-      { id: "kpi-card", label: "KPI Card" },
-      { id: "charts-group", label: "Bar, Donut & Line Charts" },
-      { id: "trend-indicator", label: "Trend Indicator" },
-      { id: "interpretation-card", label: "Interpretation Card" },
-      { id: "risk-matrix", label: "Risk Matrix" },
-      { id: "probability-impact-selector", label: "Probability / Impact Selector" },
-      { id: "risk-summary", label: "Risk Summary" },
-      { id: "risk-legend", label: "Risk Legend" },
-    ]
-  },
+  
   {
     id: "reports-export-category",
     label: "Reportes y Exportación (Reports and Export)",
@@ -347,14 +329,14 @@ export function UIKitSidebar({ activeSection, onNavigate }: UIKitSidebarProps) {
           <div className="flex items-center shrink-0">
             {/* Expanded Logos */}
             <Image
-              src="/logo-negro.svg"
+              src="/logotipo.png"
               alt="GLocation Logo"
               width={150}
               height={35}
               className="h-[35px] w-auto group-data-[state=collapsed]:hidden animate-in fade-in duration-300 dark:hidden"
             />
             <Image
-              src="/logo-blanco.svg"
+              src="/logotipo.png"
               alt="GLocation Logo Dark"
               width={150}
               height={35}

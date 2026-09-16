@@ -3,7 +3,7 @@
 /**
  * map-geospatial.tsx
  * ───────────────────
- * Sistema de componentes geoespaciales para GRisk GEOportal.
+ * Sistema de componentes geoespaciales para DINARP GEOportal.
  * Diseñados para interacciones con mapas (Mapbox / Leaflet / Cesium)
  * y paneles de capas geográficas.
  */

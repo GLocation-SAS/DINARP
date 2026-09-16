@@ -17,7 +17,7 @@ import {
   Circle,
   Download,
   Contrast,
-  Image as ImageIcon,
+  Image as ImageIcon, ImageOff,
   Edit2,
   Ruler,
   LayoutGrid,
@@ -54,7 +54,7 @@ const SEMANTIC_COLORS = [
   {
     name: "Primary",
     title: "Primary",
-    hex: "#0F2A4A",
+    hex: "#7E63B5",
     variable: "--primary",
     class: "bg-primary",
     foreground: "text-primary-foreground",
@@ -69,7 +69,7 @@ const SEMANTIC_COLORS = [
   {
     name: "Secondary",
     title: "Secondary",
-    hex: "#10759D",
+    hex: "#2D2D96",
     variable: "--secondary",
     class: "bg-secondary",
     foreground: "text-secondary-foreground",
@@ -83,7 +83,7 @@ const SEMANTIC_COLORS = [
   {
     name: "Success",
     title: "Success",
-    hex: "#0D9488",
+    hex: "#338A86",
     variable: "--success",
     class: "bg-success",
     foreground: "text-success-foreground",
@@ -97,7 +97,7 @@ const SEMANTIC_COLORS = [
   {
     name: "Warning",
     title: "Warning",
-    hex: "#EA580C",
+    hex: "#FFB55C",
     variable: "--warning",
     class: "bg-warning",
     foreground: "text-warning-foreground",
@@ -111,7 +111,7 @@ const SEMANTIC_COLORS = [
   {
     name: "Danger",
     title: "Danger",
-    hex: "#9F1239",
+    hex: "#BC5974",
     variable: "--danger",
     class: "bg-danger",
     foreground: "text-danger-foreground",
@@ -123,9 +123,7 @@ const SEMANTIC_COLORS = [
     ),
   },
   {
-    name: "Info",
-    title: "Info",
-    hex: "#8B5CF6",
+    name: "Info", title: "Info", hex: "#5E6893",
     variable: "--info",
     class: "bg-info",
     foreground: "text-info-foreground",
@@ -186,16 +184,16 @@ const FULL_SCALES = [
     title: "Primary",
     prefix: "primary",
     colors: [
-      { level: "50", hex: "#EBF1F7" },
-      { level: "100", hex: "#CFDEF0" },
-      { level: "200", hex: "#A4C1E3" },
-      { level: "300", hex: "#73A0D3" },
-      { level: "400", hex: "#3F70AB" },
-      { level: "500", hex: "#0F2A4A" },
-      { level: "600", hex: "#12243D" },
-      { level: "700", hex: "#0D1A2C" },
-      { level: "800", hex: "#09121D" },
-      { level: "900", hex: "#05080E" },
+      { level: "50", hex: "#F7F7F8" },
+      { level: "100", hex: "#E9E7EC" },
+      { level: "200", hex: "#CAC3D6" },
+      { level: "300", hex: "#A798C4" },
+      { level: "400", hex: "#7E63B5" },
+      { level: "500", hex: "#4F318B" },
+      { level: "600", hex: "#3A216E" },
+      { level: "700", hex: "#2C1657" },
+      { level: "800", hex: "#1F0E41" },
+      { level: "900", hex: "#14082B" },
     ],
   },
   {
@@ -203,16 +201,16 @@ const FULL_SCALES = [
     title: "Secondary",
     prefix: "secondary",
     colors: [
-      { level: "50", hex: "#F3F8FA" },
-      { level: "100", hex: "#E7F1F5" },
-      { level: "200", hex: "#B7D6E2" },
-      { level: "300", hex: "#88BACE" },
-      { level: "400", hex: "#589EBA" },
-      { level: "500", hex: "#10759D" },
-      { level: "600", hex: "#0D5E7E" },
-      { level: "700", hex: "#0A465E" },
-      { level: "800", hex: "#062F3F" },
-      { level: "900", hex: "#03171F" },
+      { level: "50", hex: "#F6F6F8" },
+      { level: "100", hex: "#E6E6EE" },
+      { level: "200", hex: "#C2C2DA" },
+      { level: "300", hex: "#9696CA" },
+      { level: "400", hex: "#5F5FBE" },
+      { level: "500", hex: "#2D2D96" },
+      { level: "600", hex: "#1D1D76" },
+      { level: "700", hex: "#13135D" },
+      { level: "800", hex: "#0C0C44" },
+      { level: "900", hex: "#07072C" },
     ],
   },
   {
@@ -220,16 +218,16 @@ const FULL_SCALES = [
     title: "Success",
     prefix: "success",
     colors: [
-      { level: "50", hex: "#F3FAF9" },
-      { level: "100", hex: "#E7F4F3" },
-      { level: "200", hex: "#B6DFDB" },
-      { level: "300", hex: "#86CAC4" },
-      { level: "400", hex: "#56B4AC" },
-      { level: "500", hex: "#0D9488" },
-      { level: "600", hex: "#0A766D" },
-      { level: "700", hex: "#085952" },
-      { level: "800", hex: "#053B36" },
-      { level: "900", hex: "#031E1B" },
+      { level: "50", hex: "#E6F0F0" },
+      { level: "100", hex: "#CCE2E1" },
+      { level: "200", hex: "#99C5C3" },
+      { level: "300", hex: "#66A7A4" },
+      { level: "400", hex: "#338A86" },
+      { level: "500", hex: "#006D68" },
+      { level: "600", hex: "#005753" },
+      { level: "700", hex: "#00413E" },
+      { level: "800", hex: "#002C2A" },
+      { level: "900", hex: "#001615" },
     ],
   },
   {
@@ -237,16 +235,16 @@ const FULL_SCALES = [
     title: "Warning",
     prefix: "warning",
     colors: [
-      { level: "50", hex: "#FEF7F3" },
-      { level: "100", hex: "#FDEEE7" },
-      { level: "200", hex: "#F9CDB6" },
-      { level: "300", hex: "#F5AC86" },
-      { level: "400", hex: "#F08A55" },
-      { level: "500", hex: "#EA580C" },
-      { level: "600", hex: "#BB460A" },
-      { level: "700", hex: "#8C3507" },
-      { level: "800", hex: "#5E2305" },
-      { level: "900", hex: "#2F1202" },
+      { level: "50", hex: "#FFF6EB" },
+      { level: "100", hex: "#FFEDD6" },
+      { level: "200", hex: "#FFDAAD" },
+      { level: "300", hex: "#FFC885" },
+      { level: "400", hex: "#FFB55C" },
+      { level: "500", hex: "#FFA333" },
+      { level: "600", hex: "#CC8229" },
+      { level: "700", hex: "#99621F" },
+      { level: "800", hex: "#664114" },
+      { level: "900", hex: "#33210A" },
     ],
   },
   {
@@ -271,16 +269,16 @@ const FULL_SCALES = [
     title: "Info",
     prefix: "info",
     colors: [
-      { level: "50", hex: "#F5F3FF" },
-      { level: "100", hex: "#EDE9FE" },
-      { level: "200", hex: "#DDD6FE" },
-      { level: "300", hex: "#C4B5FD" },
-      { level: "400", hex: "#A78BFA" },
-      { level: "500", hex: "#8B5CF6" },
-      { level: "600", hex: "#7C3AED" },
-      { level: "700", hex: "#6D28D9" },
-      { level: "800", hex: "#5B21B6" },
-      { level: "900", hex: "#4C1D95" },
+      { level: "50", hex: "#F7F7F8" },
+      { level: "100", hex: "#E5E6E9" },
+      { level: "200", hex: "#BFC2CB" },
+      { level: "300", hex: "#9599AD" },
+      { level: "400", hex: "#5E6893" },
+      { level: "500", hex: "#2C3459" },
+      { level: "600", hex: "#20274A" },
+      { level: "700", hex: "#171E3E" },
+      { level: "800", hex: "#111733" },
+      { level: "900", hex: "#0C1127" },
     ],
   },
   {
@@ -479,7 +477,7 @@ export function StyleGuide({
   const [simulatedFonts, setSimulatedFonts] = useState<{
     heading: string;
     body: string;
-  }>({ heading: "Nunito", body: "Montserrat" });
+  }>({ heading: "Poppins", body: "Montserrat" });
   const [editingFontFamily, setEditingFontFamily] = useState<{
     id: "heading" | "body";
     title: string;
@@ -503,63 +501,92 @@ export function StyleGuide({
         title="Recursos de Marca: Logotipos"
         icon={ImageIcon}
       >
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-4 gap-6 w-full">
-          {/* Card 1: Horizontal */}
-          <LogoManagerCard
-            slot="horizontal"
-            title="Logotipo Horizontal"
-            description="Versión principal del logotipo. Recomendada para encabezados, páginas web, documentos y espacios horizontales."
-            badge1="HORIZONTAL"
-            badge2="PRINCIPAL"
-            defaultLightImg="/Logo-horizontal.svg"
-            defaultDarkImg="/Logo-horizontal-alternativo.svg"
-            monoLightImg="/Logo-horizontal-negro.svg"
-            monoDarkImg="/Logo-horizontal-blanco.svg"
-            editLabel="Editar logotipo"
-          />
+        <div className="grid grid-cols-1 xl:grid-cols-2 gap-8 w-full">
+            {/* Card 1: Horizontal (was previously sin lema) */}
+            <LogoManagerCard
+              slot="horizontal"
+              title="Logotipo Horizontal"
+              description="Versión principal del logotipo. Recomendada para encabezados, páginas web, documentos y espacios horizontales."
+              badge1="HORIZONTAL"
+              badge2="PRINCIPAL"
+              defaultLightImg="/logotipo.png"
+              defaultDarkImg="/logotipo.png"
+              monoLightImg="/logotipo.png"
+              monoDarkImg="/logotipo.png"
+            />
+  
+            {/* Card 2: Vertical */}
+            <LogoManagerCard
+              slot="vertical"
+              title="Logotipo Vertical"
+              description="Versión alternativa para espacios más estrechos o composiciones verticales, donde el logotipo horizontal no se adapta correctamente."
+              badge1="VERTICAL"
+              badge2="SECUNDARIO"
+              defaultLightImg="/Logo-vertical.svg"
+              defaultDarkImg="/Logo-vertical-alternativo.svg"
+              monoLightImg="/Logo-vertical-negro.svg"
+              monoDarkImg="/Logo-vertical-blanco.svg"
+            />
+  
+            {/* Card 3: Favicon */}
+              <LogoManagerCard
+                slot="favicon"
+                title="Favicon"
+                description="Versión simplificada del símbolo que identifica el sitio en la pestaña del navegador y en espacios digitales de tamaño muy pequeño."
+                badge1="FAVICON"
+                badge2="MÍNIMO"
+                defaultLightImg="/favicon.ico"
+                defaultDarkImg="/favicon.ico"
+              />
+              
+              {/* Card 4: Placeholder Escudo Nacional */}
+              <div className="flex flex-col rounded-3xl border border-dashed border-border/60 bg-surface/50 overflow-hidden shadow-sm group">
+                <div className="h-48 w-full bg-muted/20 flex flex-col items-center justify-center p-6 text-center border-b border-dashed border-border/60">
+                  <div className="size-12 rounded-full bg-muted/50 flex items-center justify-center mb-3">
+                    <ImageOff className="size-5 text-muted-foreground/50" />
+                  </div>
+                  <span className="text-sm font-medium text-muted-foreground">Recurso faltante</span>
+                  <span className="text-xs text-muted-foreground/60 mt-1 max-w-[200px]">Este imagotipo aún no ha sido provisto.</span>
+                </div>
+                <div className="p-6 flex flex-col flex-1 bg-surface/50">
+                  <div className="flex gap-2 mb-4">
+                    <Badge tone="neutral" appearance="soft" size="sm" className="font-bold uppercase tracking-wider text-[10px] px-2.5 py-1 opacity-50">
+                      ESCUDO
+                    </Badge>
+                  </div>
+                  <div className="flex flex-col gap-2">
+                    <h3 className="text-foreground/70 font-bold text-lg">Escudo Nacional / Institucional</h3>
+                    <p className="text-muted-foreground/60 text-sm leading-relaxed">
+                      Versión formal del escudo para documentos oficiales. Pendiente de cargar al repositorio de activos.
+                    </p>
+                  </div>
+                </div>
+              </div>
 
-          {/* Card 2: Vertical */}
-          <LogoManagerCard
-            slot="vertical"
-            title="Logotipo Vertical"
-            description="Versión alternativa para espacios más estrechos o composiciones verticales, donde el logotipo horizontal no se adapta correctamente."
-            badge1="VERTICAL"
-            badge2="SECUNDARIO"
-            defaultLightImg="/Logo-vertical.svg"
-            defaultDarkImg="/Logo-vertical-alternativo.svg"
-            monoLightImg="/Logo-vertical-negro.svg"
-            monoDarkImg="/Logo-vertical-blanco.svg"
-            editLabel="Editar logotipo"
-            maxHeightClass="max-h-24"
-          />
-
-          {/* Card 4: Favicon */}
-          <LogoManagerCard
-            slot="favicon"
-            title="Favicon"
-            description="Versión simplificada del símbolo que identifica el sitio en la pestaña del navegador y en espacios digitales de tamaño muy pequeño."
-            badge1="FAVICON"
-            badge2="MÍNIMO"
-            defaultLightImg="/Favicon.svg"
-            defaultDarkImg="/Favicon alternativo.svg"
-            editLabel="Editar favicon"
-            allowedFormats=".svg,.png,.ico"
-          />
-
-          {/* Card 5: Logos sin lema */}
-          <LogoManagerCard
-            slot="sin-lema"
-            title="Logos sin lema"
-            description="Versiones del logotipo sin el lema o slogan institucional, ideales para aplicaciones donde se requiere mayor legibilidad en menor espacio."
-            badge1="SIN LEMA"
-            badge2="ALTERNATIVA"
-            defaultLightImg="/logo.svg"
-            defaultDarkImg="/logo-alternativo.svg"
-            monoLightImg="/logo-negro.svg"
-            monoDarkImg="/logo-blanco.svg"
-            editLabel="Editar logotipo"
-          />
-        </div>
+              {/* Card 5: Placeholder Sin Lema */}
+              <div className="flex flex-col rounded-3xl border border-dashed border-border/60 bg-surface/50 overflow-hidden shadow-sm group">
+                <div className="h-48 w-full bg-muted/20 flex flex-col items-center justify-center p-6 text-center border-b border-dashed border-border/60">
+                  <div className="size-12 rounded-full bg-muted/50 flex items-center justify-center mb-3">
+                    <ImageOff className="size-5 text-muted-foreground/50" />
+                  </div>
+                  <span className="text-sm font-medium text-muted-foreground">Recurso faltante</span>
+                  <span className="text-xs text-muted-foreground/60 mt-1 max-w-[200px]">La versión vertical vacía aún no está disponible.</span>
+                </div>
+                <div className="p-6 flex flex-col flex-1 bg-surface/50">
+                  <div className="flex gap-2 mb-4">
+                    <Badge tone="neutral" appearance="soft" size="sm" className="font-bold uppercase tracking-wider text-[10px] px-2.5 py-1 opacity-50">
+                      VERTICAL VACÍO
+                    </Badge>
+                  </div>
+                  <div className="flex flex-col gap-2">
+                    <h3 className="text-foreground/70 font-bold text-lg">Logotipo vertical vacío</h3>
+                    <p className="text-muted-foreground/60 text-sm leading-relaxed">
+                      Variante limpia sin el texto inferior para usos reducidos. Pendiente de cargar al repositorio de activos.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
       </SubSection>
 
       {/* Subsección 1.5: Colores de Marca */}
@@ -570,7 +597,7 @@ export function StyleGuide({
         icon={Contrast}
         description="Los colores semánticos ayudan a reconocer rápidamente qué está ocurriendo en la interfaz. Cada color comunica un significado específico, como éxito, advertencia, error o información. Estos son colores generales base y semánticos."
       >
-        <div className="flex flex-col gap-12">
+        <div className="flex flex-col gap-14">
           {[
             {
               title: "Los Principales",
@@ -584,53 +611,47 @@ export function StyleGuide({
             },
             { title: "Otros", dot: "bg-muted", filters: ["Surface", "Muted"] },
           ].map((category) => (
-            <div key={category.title} className="flex flex-col gap-6">
-              <h4 className="text-xl font-heading font-black text-foreground flex items-center gap-3">
-                <div className={`w-1.5 h-6 rounded-full ${category.dot}`} />
+            <div key={category.title} className="flex flex-col gap-8">
+              <h4 className="text-2xl font-heading font-bold text-foreground flex items-center gap-3">
+                <div className={`w-2 h-8 rounded-full ${category.dot}`} />
                 {category.title}
               </h4>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+              <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
                 {SEMANTIC_COLORS.filter((color) =>
                   category.filters.includes(color.name),
                 ).map((color) => (
                   <div
                     key={color.name}
-                    className="flex flex-col rounded-xl border border-border/60 shadow-sm overflow-hidden bg-surface group hover:shadow-md transition-all duration-300 hover:-translate-y-1"
+                    className="flex flex-col sm:flex-row items-center gap-6 p-6 sm:p-8 rounded-[2rem] border border-border/40 shadow-sm bg-surface/30 hover:bg-surface hover:shadow-md hover:border-border/80 transition-all duration-300 group"
                   >
-                    {/* Top Half (Color) */}
+                    {/* Swatch */}
                     <div
                       className={cn(
-                        "p-5 flex flex-col justify-between h-36 transition-all duration-300 group-hover:brightness-105 relative overflow-hidden",
-                        color.class,
-                        color.foreground,
+                        "w-full h-32 sm:w-32 sm:h-32 rounded-2xl shrink-0 shadow-sm ring-1 ring-black/5 relative overflow-hidden transition-transform duration-500 group-hover:scale-105",
+                        color.class
                       )}
                     >
-                      <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent opacity-50 pointer-events-none" />
-                      <div className="flex justify-between items-center w-full relative z-10">
-                        <Badge
-                          tone="secondary"
-                          className="bg-black/30 text-white hover:bg-black/40 border-transparent pointer-events-none shadow-sm backdrop-blur-sm"
-                        >
-                          {color.name}
-                        </Badge>
-                        <Badge
-                          tone="secondary"
-                          className="bg-black/30 text-white hover:bg-black/40 border-transparent font-mono pointer-events-none shadow-sm backdrop-blur-sm"
-                        >
-                          {color.hex}
-                        </Badge>
-                      </div>
-                      <h3 className="text-2xl font-heading font-bold text-left relative z-10 drop-shadow-md">
-                        {color.title}
-                      </h3>
+                      <div className="absolute inset-0 bg-gradient-to-br from-white/20 to-transparent opacity-50" />
                     </div>
 
-                    {/* Bottom Half (Details) */}
-                    <div className="p-5 flex flex-col gap-4 bg-surface/40 flex-1 relative z-10">
-                      <p className="text-sm text-muted-foreground leading-relaxed">
+                    {/* Info */}
+                    <div className="flex flex-col gap-3 flex-1 w-full">
+                      <div className="flex flex-col sm:flex-row sm:items-center justify-between w-full gap-2">
+                        <div className="flex items-center gap-3">
+                          <h3 className="text-xl sm:text-2xl font-heading font-bold text-foreground tracking-tight">
+                            {color.title}
+                          </h3>
+                          <Badge tone="neutral" appearance="soft" className="uppercase text-[9px] font-bold tracking-widest px-2 shadow-none bg-muted/40">
+                            {color.name}
+                          </Badge>
+                        </div>
+                        <code className="text-[11px] sm:text-xs font-mono font-bold text-muted-foreground bg-muted/20 px-2.5 py-1 rounded-md border border-border/50">
+                          {color.hex}
+                        </code>
+                      </div>
+                      <p className="text-sm sm:text-base text-muted-foreground leading-relaxed">
                         {color.description}
                       </p>
-
                     </div>
                   </div>
                 ))}
@@ -699,7 +720,7 @@ export function StyleGuide({
             <div className="flex items-center gap-5 relative z-10">
 
               <div>
-                <h3 className="text-2xl sm:text-3xl font-heading font-black text-foreground tracking-tight flex items-center gap-3">
+                <h3 className="text-2xl sm:text-3xl font-heading font-bold text-foreground tracking-tight flex items-center gap-3">
                   {activeScale.title}
                 </h3>
                 <div className="flex flex-wrap items-center gap-2 sm:gap-3 mt-2 sm:mt-3">
@@ -958,7 +979,7 @@ export function StyleGuide({
         icon={Layers}
         description="Sistema de sombras semánticas para establecer jerarquía y crear sensación de volumen real."
       >
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+        <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
           {[
             {
               level: "xs",
@@ -981,34 +1002,38 @@ export function StyleGuide({
               desc: "Modales, popovers destacados",
             },
           ].map((shadow) => (
-            <div key={shadow.level} className="flex flex-col group">
-              <div className="h-64 flex items-center justify-center p-6 relative bg-white dark:bg-neutral-950 rounded-[2rem] border border-border/40 mb-6 transition-all duration-300">
+            <div
+              key={shadow.level}
+              className="flex flex-col sm:flex-row items-center gap-6 p-6 sm:p-8 rounded-[2rem] border border-border/40 shadow-sm bg-surface/30 hover:bg-surface hover:shadow-md hover:border-border/80 transition-all duration-300 group"
+            >
+              {/* Swatch */}
+              <div className="w-full h-32 sm:w-32 sm:h-32 shrink-0 flex items-center justify-center p-2 rounded-3xl bg-white dark:bg-neutral-950 border border-border/20 shadow-inner">
                 <div
                   className={cn(
-                    "w-36 h-36 bg-surface border border-border/30 rounded-2xl flex flex-col items-center justify-center relative z-10 transition-transform duration-500 group-hover:-translate-y-2",
-                    shadow.class,
+                    "w-full h-full bg-surface border border-border/30 rounded-2xl flex items-center justify-center transition-transform duration-500 group-hover:-translate-y-1.5 relative overflow-hidden",
+                    shadow.class
                   )}
                 >
-                  <span className="text-3xl font-heading font-bold text-foreground">
+                  <span className="text-2xl font-heading font-bold text-foreground">
                     {shadow.level.toUpperCase()}
                   </span>
+                  <div className="absolute inset-0 bg-gradient-to-br from-white/20 to-transparent opacity-50 pointer-events-none" />
                 </div>
               </div>
-              <div className="flex flex-col px-2">
-                <div className="flex items-center gap-3 mb-2">
-                  <span className="font-heading text-xl font-bold text-foreground uppercase">
-                    {shadow.level}
-                  </span>
-                  <Badge
-                    tone="neutral"
-                    appearance="soft"
-                    size="sm"
-                    className="font-mono pointer-events-none"
-                  >
+
+              {/* Info */}
+              <div className="flex flex-col gap-3 flex-1 w-full">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between w-full gap-2">
+                  <div className="flex items-center gap-3">
+                    <h3 className="text-xl sm:text-2xl font-heading font-bold text-foreground tracking-tight uppercase">
+                      {shadow.level}
+                    </h3>
+                  </div>
+                  <code className="text-[11px] sm:text-xs font-mono font-bold text-muted-foreground bg-muted/20 px-2.5 py-1 rounded-md border border-border/50">
                     var(--elevation-{shadow.level})
-                  </Badge>
+                  </code>
                 </div>
-                <p className="text-sm text-muted-foreground leading-relaxed">
+                <p className="text-sm sm:text-base text-muted-foreground leading-relaxed">
                   {shadow.desc}
                 </p>
               </div>
@@ -1025,7 +1050,7 @@ export function StyleGuide({
         icon={SquareDashed}
         description="Redondez base del sistema (0.75rem) aplicada proporcionalmente a los elementos."
       >
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-6">
+        <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
           {[
             {
               level: "sm",
@@ -1058,34 +1083,38 @@ export function StyleGuide({
               desc: "Botones principales y avatares",
             },
           ].map((radius) => (
-            <div key={radius.level} className="flex flex-col group">
-              <div className="h-64 flex items-center justify-center p-6 relative bg-white dark:bg-neutral-950 rounded-[2rem] border border-border/40 mb-6 transition-all duration-300">
+            <div
+              key={radius.level}
+              className="flex flex-col sm:flex-row items-center gap-6 p-6 sm:p-8 rounded-[2rem] border border-border/40 shadow-sm bg-surface/30 hover:bg-surface hover:shadow-md hover:border-border/80 transition-all duration-300 group"
+            >
+              {/* Swatch */}
+              <div className="w-full h-32 sm:w-32 sm:h-32 shrink-0 flex items-center justify-center p-2 rounded-3xl bg-white dark:bg-neutral-950 border border-border/20 shadow-inner">
                 <div
                   className={cn(
-                    "w-36 h-36 bg-surface border-2 border-border/60 flex flex-col items-center justify-center relative z-10 transition-transform duration-500 group-hover:scale-105 shadow-sm",
-                    radius.class,
+                    "w-full h-full bg-surface border-2 border-border/60 flex items-center justify-center transition-transform duration-500 group-hover:scale-105 relative overflow-hidden",
+                    radius.class
                   )}
                 >
-                  <span className="font-mono text-xl font-bold text-foreground tracking-tight">
+                  <span className="font-mono text-lg font-bold text-foreground tracking-tight">
                     {radius.px}
                   </span>
+                  <div className="absolute inset-0 bg-gradient-to-br from-white/20 to-transparent opacity-50 pointer-events-none" />
                 </div>
               </div>
-              <div className="flex flex-col px-2">
-                <div className="flex items-center gap-3 mb-2">
-                  <span className="font-heading text-xl font-bold text-foreground uppercase">
-                    {radius.level}
-                  </span>
-                  <Badge
-                    tone="neutral"
-                    appearance="soft"
-                    size="sm"
-                    className="font-mono pointer-events-none"
-                  >
+
+              {/* Info */}
+              <div className="flex flex-col gap-3 flex-1 w-full">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between w-full gap-2">
+                  <div className="flex items-center gap-3">
+                    <h3 className="text-xl sm:text-2xl font-heading font-bold text-foreground tracking-tight uppercase">
+                      {radius.level}
+                    </h3>
+                  </div>
+                  <code className="text-[11px] sm:text-xs font-mono font-bold text-muted-foreground bg-muted/20 px-2.5 py-1 rounded-md border border-border/50">
                     var(--radius-{radius.level})
-                  </Badge>
+                  </code>
                 </div>
-                <p className="text-sm text-muted-foreground leading-relaxed">
+                <p className="text-sm sm:text-base text-muted-foreground leading-relaxed">
                   {radius.desc}
                 </p>
               </div>
@@ -1104,7 +1133,7 @@ export function StyleGuide({
       >
         <div className="flex flex-col gap-6">
           <p className="text-sm text-muted-foreground">
-            GRisk utiliza la escala de espaciado definida por el sistema. Se
+            DINARP utiliza la escala de espaciado definida por el sistema. Se
             recomienda evitar valores arbitrarios fuera de esta escala.
           </p>
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
@@ -1149,19 +1178,19 @@ export function StyleGuide({
         registerSection={registerSection}
         title="Grid y Layout"
         icon={LayoutGrid}
-        description="Estructura utilizada para organizar y alinear el contenido en las diferentes resoluciones de GRisk."
+        description="Estructura utilizada para organizar y alinear el contenido en las diferentes resoluciones de DINARP."
       >
         <div className="flex flex-col gap-12">
           {/* Grid visual */}
           <div className="flex flex-col gap-6">
-            <h4 className="text-xl font-heading font-black text-foreground">
+            <h4 className="text-xl font-heading font-bold text-foreground">
               Grid Responsivo
             </h4>
 
             <div className="flex flex-col gap-4 text-muted-foreground text-sm leading-relaxed max-w-4xl mb-2">
               <p>
                 <strong className="text-foreground">¿Para qué usamos un grid?</strong><br />
-                El grid crea una estructura invisible que divide el espacio disponible en columnas. Estas columnas sirven como referencia para ubicar y dimensionar los componentes de una pantalla, manteniendo alineación, proporción y consistencia entre los diferentes módulos de GRisk.
+                El grid crea una estructura invisible que divide el espacio disponible en columnas. Estas columnas sirven como referencia para ubicar y dimensionar los componentes de una pantalla, manteniendo alineación, proporción y consistencia entre los diferentes módulos de DINARP.
               </p>
 
               <ul className="flex flex-col gap-2 mt-1 list-disc pl-5">
@@ -1268,7 +1297,7 @@ export function StyleGuide({
         registerSection={registerSection}
         title="Accesibilidad"
         icon={Accessibility}
-        description="Principios básicos para mantener interfaces claras, legibles y fáciles de utilizar dentro de GRisk."
+        description="Principios básicos para mantener interfaces claras, legibles y fáciles de utilizar dentro de DINARP."
       >
         <AccessibilityAudit />
       </SubSection>
@@ -1576,7 +1605,7 @@ export function StyleGuide({
                     <ComboboxContent>
                       <ComboboxList>
                         {[
-                          "Nunito",
+                          "Poppins",
                           "Montserrat",
                           "Roboto",
                           "Inter",
@@ -1796,3 +1825,6 @@ export function StyleGuide({
     </div>
   );
 }
+
+
+

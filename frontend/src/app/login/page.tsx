@@ -95,7 +95,7 @@ export default function DesignSystemLoginPage() {
                   Recursos de Diseño
                 </Badge>
                 <h1 className="font-heading font-bold text-4xl xl:text-5xl text-foreground leading-[1.1] tracking-tight mb-5">
-                  Design System <br/><span className="text-primary">GRisk</span>
+                  Design System <br/><span className="text-primary">DINARP</span>
                 </h1>
                 <p className="text-muted-foreground text-base xl:text-lg leading-relaxed">
                   Sistema de diseño institucional para construir interfaces consistentes, accesibles y reutilizables.
@@ -157,8 +157,8 @@ export default function DesignSystemLoginPage() {
                 
                 <div className="mb-4 flex flex-col items-center justify-center">
                     <div className="flex items-center justify-center mb-4">
-                      <img src="/logo-negro.svg" alt="Logo GRisk" className="h-14 w-auto dark:hidden object-contain" />
-                      <img src="/logo-blanco.svg" alt="Logo GRisk" className="h-14 w-auto hidden dark:block object-contain" />
+                      <img src="/logotipo.png" alt="Logo DINARP" className="h-14 w-auto dark:hidden object-contain" />
+                      <img src="/logotipo.png" alt="Logo DINARP" className="h-14 w-auto hidden dark:block object-contain" />
                     </div>
                   <h3 className="font-heading font-bold text-xl text-primary dark:text-foreground text-center">Acceso al Design System</h3>
                 </div>

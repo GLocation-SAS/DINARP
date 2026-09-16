@@ -46,7 +46,7 @@ export function DialogShowcase({ registerSection }: { registerSection?: (id: str
                   </DialogDescription>
                 </DialogHeader>
                 <div className="py-2">
-                  <p className="text-sm text-center">Se detectaron 45 registros nuevos listos para ser procesados en el nodo central.</p>
+                  <p className="text-sm text-left">Se detectaron 45 registros nuevos listos para ser procesados en el nodo central.</p>
                 </div>
                 <DialogFooter showCloseButton={true}>
                   <Button variant="primary">Sincronizar</Button>
@@ -67,7 +67,11 @@ export function DialogShowcase({ registerSection }: { registerSection?: (id: str
                   </DialogDescription>
                 </DialogHeader>
                 <div className="py-4">
-                  <p className="text-sm text-center">Todos los servicios de geolocalización estarán en modo lectura durante la ventana de mantenimiento.</p>
+                  <div className="bg-primary/5 border border-primary/20 rounded-xl p-4 mt-2">
+                    <p className="text-sm text-left text-foreground">
+                      <strong className="font-bold text-primary">Nota:</strong> Todos los servicios de geolocalización estarán en modo lectura durante la ventana de mantenimiento. Asegúrese de guardar los cambios antes de que inicie el proceso.
+                    </p>
+                  </div>
                 </div>
                 <DialogFooter showCloseButton={false}>
                   <Button variant="primary">Entendido</Button>
