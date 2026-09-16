@@ -56,10 +56,10 @@ export function WireframeDashboardLayout({
     {
       title: "INTEROPERABILIDAD",
       items: [
-        { id: "intercambio", label: "Intercambio uno a uno", icon: ArrowLeftRight, href: "/wireframes/solicitudes" },
+        { id: "servicios", label: "Servicios habilitados", icon: ArrowLeftRight, href: "/wireframes/interoperabilidad/servicios" },
         { id: "batch", label: "Batch / Excepcionalidades", icon: Server, href: "/wireframes/solicitudes" },
         { id: "catalogo", label: "Catálogo de fuentes", icon: Database, href: "/wireframes/catalogo-fuentes" },
-        { id: "trazabilidad", label: "Trazabilidad", icon: Network, href: "/wireframes/solicitudes" },
+        { id: "trazabilidad", label: "Trazabilidad", icon: Network, href: "/wireframes/interoperabilidad/servicios/consulta-identidad/historial" },
       ],
     },
     {

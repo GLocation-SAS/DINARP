@@ -244,6 +244,54 @@ export default function WireframesPage() {
           </Link>
 
           <Link
+            href="/wireframes/interoperabilidad/servicios"
+            className="group flex flex-col p-5 rounded-2xl border border-border bg-surface hover:border-foreground/30 hover:shadow-sm transition-all"
+          >
+            <div className="flex items-center justify-between mb-2">
+              <Badge tone="primary" appearance="soft" size="sm">Paso 6</Badge>
+              <ArrowRight className="size-4 text-muted-foreground group-hover:translate-x-1 transition-transform" />
+            </div>
+            <h3 className="font-heading font-bold text-base text-foreground">Interoperabilidad / Servicios</h3>
+            <p className="text-xs text-muted-foreground mt-1">/wireframes/interoperabilidad/servicios</p>
+          </Link>
+
+          <Link
+            href="/wireframes/interoperabilidad/servicios/consulta-identidad"
+            className="group flex flex-col p-5 rounded-2xl border border-border bg-surface hover:border-foreground/30 hover:shadow-sm transition-all"
+          >
+            <div className="flex items-center justify-between mb-2">
+              <Badge tone="primary" appearance="soft" size="sm">Paso 6.1</Badge>
+              <ArrowRight className="size-4 text-muted-foreground group-hover:translate-x-1 transition-transform" />
+            </div>
+            <h3 className="font-heading font-bold text-base text-foreground">Detalle del Servicio</h3>
+            <p className="text-xs text-muted-foreground mt-1">/wireframes/interoperabilidad/servicios/consulta-identidad</p>
+          </Link>
+
+          <Link
+            href="/wireframes/interoperabilidad/servicios/consulta-identidad/historial"
+            className="group flex flex-col p-5 rounded-2xl border border-border bg-surface hover:border-foreground/30 hover:shadow-sm transition-all"
+          >
+            <div className="flex items-center justify-between mb-2">
+              <Badge tone="primary" appearance="soft" size="sm">Paso 6.2</Badge>
+              <ArrowRight className="size-4 text-muted-foreground group-hover:translate-x-1 transition-transform" />
+            </div>
+            <h3 className="font-heading font-bold text-base text-foreground">Historial / Trazabilidad</h3>
+            <p className="text-xs text-muted-foreground mt-1">/wireframes/interoperabilidad/servicios/consulta-identidad/historial</p>
+          </Link>
+
+          <Link
+            href="/wireframes/interoperabilidad/servicios/consulta-identidad/configuracion"
+            className="group flex flex-col p-5 rounded-2xl border border-border bg-surface hover:border-foreground/30 hover:shadow-sm transition-all"
+          >
+            <div className="flex items-center justify-between mb-2">
+              <Badge tone="primary" appearance="soft" size="sm">Paso 6.3</Badge>
+              <ArrowRight className="size-4 text-muted-foreground group-hover:translate-x-1 transition-transform" />
+            </div>
+            <h3 className="font-heading font-bold text-base text-foreground">Configuración del Servicio</h3>
+            <p className="text-xs text-muted-foreground mt-1">/wireframes/interoperabilidad/servicios/consulta-identidad/configuracion</p>
+          </Link>
+
+          <Link
             href="/wireframes/recuperar-acceso"
             className="group flex flex-col p-5 rounded-2xl border border-border bg-surface hover:border-foreground/30 hover:shadow-sm transition-all"
           >
