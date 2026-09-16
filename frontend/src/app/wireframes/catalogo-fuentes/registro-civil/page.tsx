@@ -291,10 +291,10 @@ export default function WireframeRegistroCivilPage() {
                       className="border-b border-border/40 hover:bg-muted/20 transition-colors cursor-pointer"
                       onClick={() => router.push(serv.href)}
                     >
-                      <TableCell className="py-4 px-4 text-xs font-bold text-foreground max-w-[200px]">
+                      <TableCell className="py-4 px-4 text-xs font-bold text-foreground">
                         {serv.nombre}
                       </TableCell>
-                      <TableCell className="py-4 px-4 text-xs text-muted-foreground max-w-[360px] leading-relaxed">
+                      <TableCell className="py-4 px-4 text-xs text-muted-foreground max-w-[250px] sm:max-w-[400px] text-wrap break-words">
                         {serv.descripcion}
                       </TableCell>
                       <TableCell className="py-4 px-4 text-xs whitespace-nowrap">

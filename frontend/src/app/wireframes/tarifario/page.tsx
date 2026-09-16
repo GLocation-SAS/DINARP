@@ -458,35 +458,35 @@ export default function WireframeTarifarioCotizacionPage() {
 
             <div className="flex justify-end pt-2">
               <Pagination className="mx-0 w-auto justify-end">
-                <PaginationContent className="gap-1">
+                <PaginationContent className="gap-1.5">
                   <PaginationItem>
-                    <PaginationPrevious href="#" className="size-8 rounded-lg border border-border" />
+                    <PaginationPrevious href="#" />
                   </PaginationItem>
                   <PaginationItem>
-                    <PaginationLink href="#" isActive className="size-8 rounded-lg text-xs">
+                    <PaginationLink href="#" isActive>
                       1
                     </PaginationLink>
                   </PaginationItem>
                   <PaginationItem>
-                    <PaginationLink href="#" className="size-8 rounded-lg text-xs">
+                    <PaginationLink href="#">
                       2
                     </PaginationLink>
                   </PaginationItem>
                   <PaginationItem>
-                    <PaginationLink href="#" className="size-8 rounded-lg text-xs">
+                    <PaginationLink href="#">
                       3
                     </PaginationLink>
                   </PaginationItem>
                   <PaginationItem>
-                    <PaginationEllipsis className="size-8" />
+                    <PaginationEllipsis />
                   </PaginationItem>
                   <PaginationItem>
-                    <PaginationLink href="#" className="size-8 rounded-lg text-xs">
+                    <PaginationLink href="#">
                       10
                     </PaginationLink>
                   </PaginationItem>
                   <PaginationItem>
-                    <PaginationNext href="#" className="size-8 rounded-lg border border-border" />
+                    <PaginationNext href="#" />
                   </PaginationItem>
                 </PaginationContent>
               </Pagination>
@@ -849,6 +849,27 @@ export default function WireframeTarifarioCotizacionPage() {
                   ))}
                 </TableBody>
               </Table>
+            </div>
+
+            <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-4">
+              <p className="text-xs text-muted-foreground font-medium">
+                Mostrando 1 a {misCotizaciones.length} de {misCotizaciones.length} cotizaciones
+              </p>
+              <Pagination className="mx-0 w-auto justify-end">
+                <PaginationContent className="gap-1.5">
+                  <PaginationItem>
+                    <PaginationPrevious href="#" />
+                  </PaginationItem>
+                  <PaginationItem>
+                    <PaginationLink href="#" isActive>
+                      1
+                    </PaginationLink>
+                  </PaginationItem>
+                  <PaginationItem>
+                    <PaginationNext href="#" />
+                  </PaginationItem>
+                </PaginationContent>
+              </Pagination>
             </div>
           </TabsContent>
         </Tabs>

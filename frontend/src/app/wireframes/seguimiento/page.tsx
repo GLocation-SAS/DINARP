@@ -399,7 +399,7 @@ export default function WireframeListadoSeguimientoPage() {
           </p>
 
           <Pagination className="mx-0 w-auto justify-end">
-            <PaginationContent className="gap-1">
+            <PaginationContent className="gap-1.5">
               <PaginationItem>
                 <PaginationPrevious
                   href="#"
@@ -407,11 +407,10 @@ export default function WireframeListadoSeguimientoPage() {
                     e.preventDefault();
                     if (currentPage > 1) setCurrentPage((p) => p - 1);
                   }}
-                  className="size-8 rounded-lg border border-border"
                 />
               </PaginationItem>
               <PaginationItem>
-                <PaginationLink href="#" isActive className="size-8 rounded-lg text-xs">
+                <PaginationLink href="#" isActive>
                   1
                 </PaginationLink>
               </PaginationItem>
@@ -421,7 +420,6 @@ export default function WireframeListadoSeguimientoPage() {
                   onClick={(e) => {
                     e.preventDefault();
                   }}
-                  className="size-8 rounded-lg border border-border"
                 />
               </PaginationItem>
             </PaginationContent>

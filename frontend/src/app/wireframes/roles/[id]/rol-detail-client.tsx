@@ -68,6 +68,14 @@ import {
   TableRow,
   TableCell,
 } from "@/components/ui/table";
+import {
+  Pagination,
+  PaginationContent,
+  PaginationItem,
+  PaginationLink,
+  PaginationPrevious,
+  PaginationNext,
+} from "@/components/ui/pagination";
 import { WireframeDashboardLayout } from "../../components/wireframe-dashboard-layout";
 import { RolModal, type RolData } from "../components/rol-modal";
 
@@ -325,6 +333,27 @@ export function RolDetailClient({ id }: RolDetailClientProps) {
                 ))}
               </TableBody>
             </Table>
+
+            <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-2">
+              <p className="text-xs text-muted-foreground font-medium">
+                Mostrando 1 a {ASSIGNED_USERS_MOCK.length} de {ASSIGNED_USERS_MOCK.length} usuarios
+              </p>
+              <Pagination className="mx-0 w-auto justify-end">
+                <PaginationContent className="gap-1.5">
+                  <PaginationItem>
+                    <PaginationPrevious href="#" />
+                  </PaginationItem>
+                  <PaginationItem>
+                    <PaginationLink href="#" isActive>
+                      1
+                    </PaginationLink>
+                  </PaginationItem>
+                  <PaginationItem>
+                    <PaginationNext href="#" />
+                  </PaginationItem>
+                </PaginationContent>
+              </Pagination>
+            </div>
           </TabsContent>
         </Tabs>
       </main>

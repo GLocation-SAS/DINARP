@@ -55,6 +55,15 @@ import {
   TableCell,
 } from "@/components/ui/table";
 import {
+  Pagination,
+  PaginationContent,
+  PaginationItem,
+  PaginationLink,
+  PaginationPrevious,
+  PaginationNext,
+  PaginationEllipsis,
+} from "@/components/ui/pagination";
+import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
@@ -782,7 +791,7 @@ export default function WireframeReportesPage() {
                   </TableCell>
                   <TableCell className="whitespace-nowrap">
                     <Badge
-                      tone={tx.estado === "Exitosa" ? "success" : "danger"}
+                      tone="neutral"
                       appearance="soft"
                       size="sm"
                       className="font-medium text-xs"
@@ -816,6 +825,46 @@ export default function WireframeReportesPage() {
               ))}
             </TableBody>
           </Table>
+        </div>
+
+        {/* ── Paginación Estandarizada UI Kit ── */}
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-2">
+          <p className="text-xs text-muted-foreground font-medium">
+            Mostrando 1 a {TRANSACCIONES_MOCK.length} de {TRANSACCIONES_MOCK.length} transacciones
+          </p>
+          <Pagination className="mx-0 w-auto justify-end">
+            <PaginationContent className="gap-1.5">
+              <PaginationItem>
+                <PaginationPrevious href="#" />
+              </PaginationItem>
+              <PaginationItem>
+                <PaginationLink href="#" isActive>
+                  1
+                </PaginationLink>
+              </PaginationItem>
+              <PaginationItem>
+                <PaginationLink href="#">
+                  2
+                </PaginationLink>
+              </PaginationItem>
+              <PaginationItem>
+                <PaginationLink href="#">
+                  3
+                </PaginationLink>
+              </PaginationItem>
+              <PaginationItem>
+                <PaginationEllipsis />
+              </PaginationItem>
+              <PaginationItem>
+                <PaginationLink href="#">
+                  12
+                </PaginationLink>
+              </PaginationItem>
+              <PaginationItem>
+                <PaginationNext href="#" />
+              </PaginationItem>
+            </PaginationContent>
+          </Pagination>
         </div>
 
         {/* ── Modal Detalle de Transacción ── */}

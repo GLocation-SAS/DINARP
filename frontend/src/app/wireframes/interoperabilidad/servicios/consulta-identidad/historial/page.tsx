@@ -34,6 +34,14 @@ import {
   TableCell,
 } from "@/components/ui/table";
 import {
+  Pagination,
+  PaginationContent,
+  PaginationItem,
+  PaginationLink,
+  PaginationPrevious,
+  PaginationNext,
+} from "@/components/ui/pagination";
+import {
   Breadcrumb,
   BreadcrumbList,
   BreadcrumbItem,
@@ -233,6 +241,28 @@ export default function WireframeHistorialServicioPage() {
               ))}
             </TableBody>
           </Table>
+        </div>
+
+        {/* ── Paginación Estandarizada UI Kit ── */}
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-2">
+          <p className="text-xs text-muted-foreground font-medium">
+            Mostrando 1 a {HISTORIAL_DATA.length} de {HISTORIAL_DATA.length} eventos de auditoría
+          </p>
+          <Pagination className="mx-0 w-auto justify-end">
+            <PaginationContent className="gap-1.5">
+              <PaginationItem>
+                <PaginationPrevious href="#" />
+              </PaginationItem>
+              <PaginationItem>
+                <PaginationLink href="#" isActive>
+                  1
+                </PaginationLink>
+              </PaginationItem>
+              <PaginationItem>
+                <PaginationNext href="#" />
+              </PaginationItem>
+            </PaginationContent>
+          </Pagination>
         </div>
       </main>
     </WireframeDashboardLayout>

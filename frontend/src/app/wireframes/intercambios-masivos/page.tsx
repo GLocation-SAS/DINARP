@@ -496,7 +496,7 @@ export default function WireframeIntercambiosMasivosPage() {
                 />
               </PaginationItem>
               <PaginationItem>
-                <PaginationLink href="#" isActive className="size-9">
+                <PaginationLink href="#" isActive>
                   1
                 </PaginationLink>
               </PaginationItem>

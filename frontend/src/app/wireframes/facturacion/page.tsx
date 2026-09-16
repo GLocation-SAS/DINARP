@@ -422,22 +422,22 @@ export default function WireframeListadoFacturacionPage() {
                 />
               </PaginationItem>
               <PaginationItem>
-                <PaginationLink href="#" isActive className="size-9">
+                <PaginationLink href="#" isActive>
                   1
                 </PaginationLink>
               </PaginationItem>
               <PaginationItem>
-                <PaginationLink href="#" className="size-9">
+                <PaginationLink href="#">
                   2
                 </PaginationLink>
               </PaginationItem>
               <PaginationItem>
-                <PaginationLink href="#" className="size-9">
+                <PaginationLink href="#">
                   3
                 </PaginationLink>
               </PaginationItem>
               <PaginationItem>
-                <PaginationLink href="#" className="size-9">
+                <PaginationLink href="#">
                   4
                 </PaginationLink>
               </PaginationItem>
