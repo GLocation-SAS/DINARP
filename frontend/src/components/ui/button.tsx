@@ -42,11 +42,11 @@ const buttonVariants = cva(
       variant: {
         primary: [
           "border-primary",
-          "text-white",
+          "text-primary-foreground",
           "bg-primary",
           "[--radial-bg:var(--primitive-primary-600)] dark:[--radial-bg:var(--primitive-primary-600)]",
           "[--glow:var(--primitive-primary-600)]",
-          "hover:text-white/90",
+          "hover:text-primary-foreground/90",
         ].join(" "),
 
         secondary: [
@@ -64,38 +64,38 @@ const buttonVariants = cva(
 
         success: [
           "border-success",
-          "text-white",
+          "text-success-foreground",
           "bg-success",
           "[--radial-bg:var(--primitive-success-600)] dark:[--radial-bg:var(--primitive-success-600)]",
           "[--glow:var(--primitive-success-600)]",
-          "hover:text-white/90",
+          "hover:text-success-foreground/90",
         ].join(" "),
 
         warning: [
           "border-warning",
-          "text-white",
+          "text-warning-foreground",
           "bg-warning",
           "[--radial-bg:var(--primitive-warning-600)] dark:[--radial-bg:var(--primitive-warning-600)]",
           "[--glow:var(--primitive-warning-600)]",
-          "hover:text-white/90",
+          "hover:text-warning-foreground/90",
         ].join(" "),
 
         danger: [
           "border-danger",
-          "text-white",
+          "text-danger-foreground",
           "bg-danger",
           "[--radial-bg:var(--primitive-danger-600)] dark:[--radial-bg:var(--primitive-danger-600)]",
           "[--glow:var(--primitive-danger-600)]",
-          "hover:text-white/90",
+          "hover:text-danger-foreground/90",
         ].join(" "),
 
         info: [
           "border-info",
-          "text-white",
+          "text-info-foreground",
           "bg-info",
           "[--radial-bg:var(--primitive-info-600)] dark:[--radial-bg:var(--primitive-info-600)]",
           "[--glow:var(--primitive-info-600)]",
-          "hover:text-white/90",
+          "hover:text-info-foreground/90",
         ].join(" "),
 
         ghost: [
