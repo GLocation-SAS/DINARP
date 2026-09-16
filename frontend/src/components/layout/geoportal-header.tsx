@@ -178,81 +178,88 @@ function DropdownNav({ item, isActive, isChildActive }: { item: NavItem; isActiv
     >
       <button
         className={cn(
-          "relative flex items-center gap-1 px-3 py-2 text-body-sm font-semibold whitespace-nowrap",
-          "transition-colors duration-200 outline-none rounded-md",
+          "relative flex items-center gap-1.5 px-3.5 py-1.5 text-body-sm font-semibold whitespace-nowrap",
+          "transition-all duration-200 outline-none rounded-full cursor-pointer",
           "focus-visible:ring-2 focus-visible:ring-ring",
-          "hover:text-foreground",
           isActive || open
-            ? "text-secondary"
-            : "text-primary/80 dark:text-foreground/80"
+            ? "text-primary-500 dark:text-primary-400 font-bold bg-primary-500/10 shadow-xs border border-primary-500/20"
+            : "text-foreground hover:text-primary-300 dark:hover:text-primary-300 hover:bg-primary-300/10"
         )}
         onClick={() => setOpen(!open)}
         aria-expanded={open}
         aria-haspopup="true"
       >
-        {item.label}
+        <span>{item.label}</span>
         <ChevronDown
           className={cn(
-            "size-3.5 transition-transform duration-200",
+            "size-3.5 transition-all duration-200",
+            isActive || open ? "text-primary-500 dark:text-primary-400" : "text-muted-foreground group-hover:text-primary-300",
             open && "rotate-180"
           )}
         />
+        {isActive && (
+          <span className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-4 h-0.5 bg-primary-500 rounded-full shadow-[0_0_6px_rgba(var(--primary-rgb),0.6)]" />
+        )}
       </button>
 
       {/* Dropdown panel */}
       <div
         className={cn(
           "absolute top-full left-1/2 -translate-x-1/2 mt-2 w-80",
-          "bg-surface border border-border rounded-xl shadow-lg",
-          "transition-all duration-200 origin-top z-50",
+          "bg-surface border border-border rounded-2xl shadow-xl",
+          "transition-all duration-200 origin-top z-50 overflow-hidden",
           open
             ? "opacity-100 scale-100 pointer-events-auto"
             : "opacity-0 scale-95 pointer-events-none"
         )}
       >
         {/* Flecha indicadora */}
-        <div className="absolute -top-1.5 left-1/2 -translate-x-1/2 size-3 rotate-45 bg-surface border-l border-t border-border rounded-sm" />
+        <div className="absolute -top-1.5 left-1/2 -translate-x-1/2 size-3 rotate-45 bg-surface border-l border-t border-border rounded-xs" />
 
-        <div className="relative py-2 px-2">
-          {item.children?.map((child) => (
-            <Link
-              key={child.href}
-              href={child.href}
-              className={cn(
-                "group flex gap-3 px-3 py-3 rounded-lg",
-                child.description ? "items-start" : "items-center",
-                "transition-colors duration-150",
-                "hover:bg-primary/5",
-                isChildActive(child.href) && "bg-primary/5"
-              )}
-            >
-              <div
+        <div className="relative py-2 px-2 flex flex-col gap-1">
+          {item.children?.map((child) => {
+            const isChildCurrent = isChildActive(child.href);
+            return (
+              <Link
+                key={child.href}
+                href={child.href}
                 className={cn(
-                  "flex items-center justify-center size-9 rounded-lg shrink-0",
-                  child.description && "mt-0.5",
-                  "transition-colors duration-150",
-                  child.iconBg || "bg-muted",
-                  child.iconColor || "text-muted-foreground",
-                  "group-hover:bg-primary/20 group-hover:text-primary"
+                  "group flex gap-3 px-3 py-2.5 rounded-xl",
+                  child.description ? "items-start" : "items-center",
+                  "transition-all duration-150",
+                  isChildCurrent
+                    ? "bg-primary-500/10 text-primary-500 font-bold border-l-2 border-primary-500"
+                    : "text-foreground hover:text-primary-300 hover:bg-primary-300/10"
                 )}
               >
-                <child.icon className="size-4" />
-              </div>
-              <div className="flex flex-col gap-0.5 min-w-0">
-                <span className={cn(
-                  "text-body-sm font-semibold transition-colors",
-                  isChildActive(child.href) ? "text-secondary" : "text-foreground group-hover:text-primary"
-                )}>
-                  {child.label}
-                </span>
-                {child.description && (
-                  <span className="text-caption text-muted-foreground line-clamp-2 group-hover:text-primary/80 transition-colors">
-                    {child.description}
+                <div
+                  className={cn(
+                    "flex items-center justify-center size-8 rounded-lg shrink-0",
+                    child.description && "mt-0.5",
+                    "transition-colors duration-150",
+                    isChildCurrent
+                      ? "bg-primary-500/20 text-primary-500"
+                      : "bg-muted text-muted-foreground group-hover:bg-primary-300/20 group-hover:text-primary-300"
+                  )}
+                >
+                  <child.icon className="size-4" />
+                </div>
+                <div className="flex flex-col gap-0.5 min-w-0">
+                  <span className={cn(
+                    "text-body-sm transition-colors",
+                    isChildCurrent ? "text-primary-500 font-bold" : "text-foreground group-hover:text-primary-300 font-semibold"
+                  )}>
+                    {child.label}
                   </span>
-                )}
-              </div>
-            </Link>
-          ))}
+                  {child.description && (
+                    <span className="text-caption text-muted-foreground line-clamp-2 group-hover:text-primary-300/80 transition-colors">
+                      {child.description}
+                    </span>
+                  )}
+                </div>
+              </Link>
+            );
+          })}
         </div>
       </div>
     </div>
@@ -502,36 +509,29 @@ export function GeoportalHeader({
         className={cn(
           isStatic
             ? "relative w-full flex flex-col"
-            : "fixed left-1/2 -translate-x-1/2 z-50 w-[calc(100%-2rem)] max-w-7xl flex flex-col transition-all duration-300",
-          !isStatic && (scrolled ? "top-2" : "top-4"),
+            : "fixed left-1/2 -translate-x-1/2 z-50 w-[calc(100%-1.25rem)] sm:w-[calc(100%-2rem)] max-w-7xl flex flex-col transition-all duration-300",
+          !isStatic && (scrolled ? "top-2" : "top-3 sm:top-4"),
           className
         )}
       >
         <div className="w-full bg-surface/90 backdrop-blur-md rounded-xl shadow-lg border border-border">
-          <div className="w-full px-4 md:px-6">
-            <div className="relative flex items-center justify-between h-16">
+          <div className="w-full px-3 sm:px-6">
+            <div className="relative flex items-center justify-between h-14 sm:h-16">
               {/* ── Logo oficial de la marca ── */}
               {variant !== "user-actions" ? (
                 <Link
                   href="/"
                   className={cn(
-                    "flex items-center gap-3 shrink-0 group",
+                    "flex items-center gap-2 sm:gap-3 shrink-0 group",
                     "focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none rounded-md"
                   )}
                 >
                   {headerConfig.showLogo && (
-                    <>
-                      <img
-                        src={headerConfig.logoUrlLight}
-                        alt="Logo DINARP GEOportal"
-                        className="h-10 w-auto object-contain dark:hidden"
-                      />
-                      <img
-                        src={headerConfig.logoUrlDark}
-                        alt="Logo DINARP GEOportal"
-                        className="h-10 w-auto object-contain hidden dark:block"
-                      />
-                    </>
+                    <img
+                      src={headerConfig.logoUrlLight || "/logotipo.png"}
+                      alt="Logo DINARP GEOportal"
+                      className="h-8 sm:h-10 w-auto object-contain"
+                    />
                   )}
                   {headerConfig.title && (
                     <span className="font-bold text-lg text-foreground ml-2 hidden sm:inline-block">
@@ -562,16 +562,18 @@ export function GeoportalHeader({
                         key={item.href}
                         href={item.href}
                         className={cn(
-                          "relative flex items-center gap-1 px-3 py-2 text-body-sm font-semibold whitespace-nowrap",
-                          "transition-colors duration-200 outline-none rounded-md",
+                          "relative flex items-center gap-1.5 px-3.5 py-1.5 text-body-sm font-semibold whitespace-nowrap",
+                          "transition-all duration-200 outline-none rounded-full cursor-pointer",
                           "focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none",
-                          "hover:text-foreground",
                           isActive(item.href)
-                            ? "text-secondary"
-                            : "text-primary/80 dark:text-foreground/80"
+                            ? "text-primary-500 dark:text-primary-400 font-bold bg-primary-500/10 shadow-xs border border-primary-500/20"
+                            : "text-foreground hover:text-primary-300 dark:hover:text-primary-300 hover:bg-primary-300/10"
                         )}
                       >
-                        {item.label}
+                        <span>{item.label}</span>
+                        {isActive(item.href) && (
+                          <span className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-4 h-0.5 bg-primary-500 rounded-full shadow-[0_0_6px_rgba(var(--primary-rgb),0.6)]" />
+                        )}
                       </Link>
                     )
                   )}
@@ -642,18 +644,11 @@ export function GeoportalHeader({
                         <div className="flex items-center justify-between px-5 py-3 border-b border-border">
                           <div className="flex items-center gap-3">
                             {headerConfig.showLogo && (
-                              <>
-                                <img
-                                  src={headerConfig.logoUrlLight}
-                                  alt="Logo DINARP GEOportal"
-                                  className="h-9 w-auto object-contain dark:hidden"
-                                />
-                                <img
-                                  src={headerConfig.logoUrlDark}
-                                  alt="Logo DINARP GEOportal"
-                                  className="h-9 w-auto object-contain hidden dark:block"
-                                />
-                              </>
+                              <img
+                                src={headerConfig.logoUrlLight || "/logotipo.png"}
+                                alt="Logo DINARP GEOportal"
+                                className="h-9 w-auto object-contain"
+                              />
                             )}
                             {headerConfig.title && (
                               <span className="font-bold text-lg text-foreground ml-2">
@@ -752,24 +747,24 @@ function MobileNavItem({
         <button
           onClick={() => setExpanded(!expanded)}
           className={cn(
-            "flex items-center justify-between w-full px-6 py-6 h-auto outline-none",
+            "flex items-center justify-between w-full px-5 py-4 h-auto outline-none cursor-pointer",
             "transition-colors duration-150",
-            isActive ? "bg-accent/30" : "hover:bg-accent/20"
+            isActive ? "bg-primary-500/10 border-l-4 border-primary-500 text-primary-500" : "hover:bg-primary-300/10 text-foreground"
           )}
           aria-expanded={expanded}
         >
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-3.5">
             <item.icon
               className={cn(
-                "size-5 shrink-0",
-                isActive ? "text-primary" : "text-primary"
+                "size-5 shrink-0 transition-colors",
+                isActive ? "text-primary-500" : "text-muted-foreground group-hover:text-primary-300"
               )}
               strokeWidth={1.75}
             />
             <span
               className={cn(
                 "text-body font-semibold transition-colors",
-                isActive ? "text-secondary-500" : "text-foreground hover:text-primary-400"
+                isActive ? "text-primary-500 font-bold" : "text-foreground hover:text-primary-300"
               )}
             >
               {item.label}
@@ -777,7 +772,8 @@ function MobileNavItem({
           </div>
           <ChevronDown
             className={cn(
-              "size-5 text-primary transition-transform duration-200",
+              "size-4.5 transition-transform duration-200",
+              isActive ? "text-primary-500" : "text-muted-foreground",
               expanded && "rotate-180"
             )}
             strokeWidth={2}
@@ -791,33 +787,32 @@ function MobileNavItem({
             expanded ? "max-h-[500px]" : "max-h-0"
           )}
         >
-          <div className="pb-3 px-4">
+          <div className="pb-3 px-3 flex flex-col gap-1">
             {item.children.map((child) => (
               <Link
                 key={child.href}
                 href={child.href}
                 onClick={() => onNavigate()}
                 className={cn(
-                  "group flex items-start gap-3 px-4 py-3 rounded-lg",
+                  "group flex items-start gap-3 px-3 py-2.5 rounded-xl",
                   "transition-colors duration-150",
-                  "hover:bg-accent/40"
+                  "hover:bg-primary-300/10"
                 )}
               >
                 <div
                   className={cn(
                     "flex items-center justify-center size-8 rounded-lg shrink-0 mt-0.5",
-                    child.iconBg || "bg-primary/10",
-                    child.iconColor || "text-primary"
+                    "bg-muted text-muted-foreground group-hover:bg-primary-300/20 group-hover:text-primary-300 transition-colors"
                   )}
                 >
                   <child.icon className="size-4" />
                 </div>
                 <div className="flex flex-col gap-0.5 min-w-0">
-                  <span className="text-body-sm font-semibold text-foreground group-hover:text-primary-400 transition-colors">
+                  <span className="text-body-sm font-semibold text-foreground group-hover:text-primary-300 transition-colors">
                     {child.label}
                   </span>
                   {child.description && (
-                    <span className="text-caption text-muted-foreground leading-snug group-hover:text-primary-400 dark:group-hover:text-primary-200 dark:group-hover:text-primary-200 transition-colors">
+                    <span className="text-caption text-muted-foreground leading-snug group-hover:text-primary-300/80 transition-colors">
                       {child.description}
                     </span>
                   )}
@@ -835,28 +830,34 @@ function MobileNavItem({
       href={item.href}
       onClick={() => onNavigate()}
       className={cn(
-        "flex items-center justify-between px-6 py-5",
+        "flex items-center justify-between px-5 py-4",
         "transition-colors duration-150",
         "focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-ring focus-visible:outline-none",
-        isActive ? "bg-accent/30" : "hover:bg-accent/20"
+        isActive ? "bg-primary-500/10 border-l-4 border-primary-500 text-primary-500" : "hover:bg-primary-300/10 text-foreground hover:text-primary-300"
       )}
     >
-      <div className="flex items-center gap-4">
+      <div className="flex items-center gap-3.5">
         <item.icon
-          className="size-5 shrink-0 text-primary"
+          className={cn(
+            "size-5 shrink-0 transition-colors",
+            isActive ? "text-primary-500" : "text-muted-foreground"
+          )}
           strokeWidth={1.75}
         />
         <span
           className={cn(
             "text-body font-semibold transition-colors",
-            isActive ? "text-secondary-500" : "text-foreground hover:text-primary-400"
+            isActive ? "text-primary-500 font-bold" : "text-foreground hover:text-primary-300"
           )}
         >
           {item.label}
         </span>
       </div>
       <ChevronRight
-        className="size-5 text-primary"
+        className={cn(
+          "size-4.5 transition-colors",
+          isActive ? "text-primary-500" : "text-muted-foreground"
+        )}
         strokeWidth={2}
       />
     </Link>

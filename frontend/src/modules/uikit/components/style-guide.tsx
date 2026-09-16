@@ -533,11 +533,11 @@ export function StyleGuide({
         icon={ImageIcon}
       >
         <div className="grid grid-cols-1 xl:grid-cols-2 gap-8 w-full">
-          {/* Card 1: Horizontal (was previously sin lema) */}
+          {/* Card 1: Horizontal */}
           <LogoManagerCard
             slot="horizontal"
             title="Logotipo Horizontal"
-            description="Versión principal del logotipo. Recomendada para encabezados, páginas web, documentos y espacios horizontales."
+            description="Versión principal del logotipo con lema. Recomendada para encabezados, páginas web, documentos y espacios horizontales."
             badge1="HORIZONTAL"
             badge2="PRINCIPAL"
             defaultLightImg="/logotipo.png"
@@ -550,26 +550,26 @@ export function StyleGuide({
           <LogoManagerCard
             slot="vertical"
             title="Logotipo Vertical"
-            description="Versión alternativa para espacios más estrechos o composiciones verticales, donde el logotipo horizontal no se adapta correctamente."
+            description="Versión vertical del logotipo. Diseñada para composiciones verticales y banners donde el espacio horizontal es reducido."
             badge1="VERTICAL"
             badge2="SECUNDARIO"
-            defaultLightImg="/Logo-vertical.svg"
-            defaultDarkImg="/Logo-vertical-alternativo.svg"
-            monoLightImg="/Logo-vertical-negro.svg"
-            monoDarkImg="/Logo-vertical-blanco.svg"
-            isMissing
+            defaultLightImg="/logotipo.png"
+            defaultDarkImg="/logotipo.png"
+            monoLightImg="/logotipo.png"
+            monoDarkImg="/logotipo.png"
           />
 
-          {/* Card 3: Favicon */}
+          {/* Card 3: Símbolo / Compacto */}
           <LogoManagerCard
-            slot="favicon"
-            title="Favicon"
-            description="Versión simplificada del símbolo que identifica el sitio en la pestaña del navegador y en espacios digitales de tamaño muy pequeño."
-            badge1="FAVICON"
-            badge2="MÍNIMO"
-            defaultLightImg="/favicon.ico"
-            defaultDarkImg="/favicon.ico"
-            isMissing
+            slot="sin-lema"
+            title="Logotipo Compacto / Símbolo"
+            description="Versión condensada del logotipo sin texto descriptivo inferior. Ideal para sidebars, botones y elementos compactos."
+            badge1="COMPACTO"
+            badge2="SÍMBOLO"
+            defaultLightImg="/logotipo.png"
+            defaultDarkImg="/logotipo.png"
+            monoLightImg="/logotipo.png"
+            monoDarkImg="/logotipo.png"
           />
 
           {/* Card 4: Placeholder Escudo Nacional */}
@@ -591,30 +591,6 @@ export function StyleGuide({
                 <h3 className="text-foreground/70 font-bold text-lg">Escudo Nacional / Institucional</h3>
                 <p className="text-muted-foreground/60 text-sm leading-relaxed">
                   Versión formal del escudo para documentos oficiales. Pendiente de cargar al repositorio de activos.
-                </p>
-              </div>
-            </div>
-          </div>
-
-          {/* Card 5: Placeholder Sin Lema */}
-          <div className="flex flex-col rounded-3xl border border-dashed border-border/60 bg-surface/50 overflow-hidden shadow-sm group">
-            <div className="h-48 w-full bg-muted/20 flex flex-col items-center justify-center p-6 text-center border-b border-dashed border-border/60">
-              <div className="size-12 rounded-full bg-muted/50 flex items-center justify-center mb-3">
-                <ImageOff className="size-5 text-muted-foreground/50" />
-              </div>
-              <span className="text-sm font-medium text-muted-foreground">Recurso faltante</span>
-              <span className="text-xs text-muted-foreground/60 mt-1 max-w-[200px]">falta el recurso oficial del manual de marca</span>
-            </div>
-            <div className="p-6 flex flex-col flex-1 bg-surface/50">
-              <div className="flex gap-2 mb-4">
-                <Badge tone="neutral" appearance="soft" size="sm" className="font-bold uppercase tracking-wider text-[10px] px-2.5 py-1 opacity-50">
-                  VERTICAL VACÍO
-                </Badge>
-              </div>
-              <div className="flex flex-col gap-2">
-                <h3 className="text-foreground/70 font-bold text-lg">Logotipo vertical vacío</h3>
-                <p className="text-muted-foreground/60 text-sm leading-relaxed">
-                  Variante limpia sin el texto inferior para usos reducidos. Pendiente de cargar al repositorio de activos.
                 </p>
               </div>
             </div>
@@ -1330,31 +1306,35 @@ export function StyleGuide({
               Grid Responsivo
             </h4>
 
-            <div className="flex flex-col gap-4 text-muted-foreground text-sm leading-relaxed max-w-4xl mb-2">
-              <p>
-                <strong className="text-foreground">¿Para qué usamos un grid?</strong><br />
-                El grid crea una estructura invisible que divide el espacio disponible en columnas. Estas columnas sirven como referencia para ubicar y dimensionar los componentes de una pantalla, manteniendo alineación, proporción y consistencia entre los diferentes módulos de DINARP.
-              </p>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm max-w-5xl mb-2">
+              <div className="p-4 rounded-xl border border-border/60 bg-surface flex flex-col gap-1.5 shadow-xs">
+                <span className="font-bold text-foreground flex items-center gap-2 text-xs uppercase tracking-wider">
+                  <div className="size-1.5 rounded-full bg-primary" />
+                  Estructura Base
+                </span>
+                <p className="text-xs text-muted-foreground leading-relaxed">
+                  Divide el lienzo en <strong className="text-foreground">columnas</strong>, <strong className="text-foreground">gutters</strong> y <strong className="text-foreground">márgenes</strong> para asegurar orden y proporción uniforme en todos los módulos.
+                </p>
+              </div>
 
-              <ul className="flex flex-col gap-2 mt-1 list-disc pl-5">
-                <li><strong className="text-foreground">Columnas:</strong> divisiones verticales que sirven como guía para definir cuánto espacio ocupa cada componente. Un elemento puede ocupar una o varias columnas.</li>
-                <li><strong className="text-foreground">Gutter:</strong> espacio existente entre una columna y otra. Evita que los elementos queden demasiado juntos.</li>
-                <li><strong className="text-foreground">Margin:</strong> espacio de seguridad entre el grid y los bordes de la pantalla.</li>
-              </ul>
+              <div className="p-4 rounded-xl border border-border/60 bg-surface flex flex-col gap-1.5 shadow-xs">
+                <span className="font-bold text-foreground flex items-center gap-2 text-xs uppercase tracking-wider">
+                  <div className="size-1.5 rounded-full bg-primary" />
+                  Breakpoints
+                </span>
+                <p className="text-xs text-muted-foreground leading-relaxed">
+                  <strong className="text-foreground">Desktop:</strong> 12 col · <strong className="text-foreground">Tablet:</strong> 8 col · <strong className="text-foreground">Mobile:</strong> 4 col con apilamiento fluido y prioridad visual.
+                </p>
+              </div>
 
-              <p className="mt-2">
-                <strong className="text-foreground">Adaptabilidad según dispositivo</strong><br />
-                La cantidad de columnas cambia para ajustarse al espacio disponible sin perder el orden:
-              </p>
-              <ul className="flex flex-col gap-2 mt-1 list-disc pl-5">
-                <li><strong className="text-foreground">Desktop (12 columnas):</strong> permite mayor flexibilidad para distribuir tablas, formularios, cards, filtros y contenidos complejos.</li>
-                <li><strong className="text-foreground">Tablet (8 columnas):</strong> reduce la cantidad de divisiones para adaptarse al menor espacio disponible manteniendo la estructura.</li>
-                <li><strong className="text-foreground">Mobile (4 columnas):</strong> simplifica la distribución para priorizar lectura, jerarquía y componentes principalmente apilados.</li>
-              </ul>
-
-              <div className="p-4 bg-surface border border-border/60 rounded-xl mt-2 text-sm shadow-sm">
-                <strong className="text-foreground font-bold">Ejemplo de uso:</strong><br />
-                En desktop, un formulario puede ocupar 8 de las 12 columnas y un panel lateral 4 columnas. En mobile, ambos elementos pueden pasar a ocupar las 4 columnas disponibles y mostrarse uno debajo del otro.
+              <div className="p-4 rounded-xl border border-border/60 bg-surface flex flex-col gap-1.5 shadow-xs">
+                <span className="font-bold text-foreground flex items-center gap-2 text-xs uppercase tracking-wider">
+                  <div className="size-1.5 rounded-full bg-primary" />
+                  Comportamiento
+                </span>
+                <p className="text-xs text-muted-foreground leading-relaxed">
+                  Distribuciones complejas (ej. 8 col formulario + 4 col panel) se transforman en flujos apilados de ancho completo en móvil.
+                </p>
               </div>
             </div>
 

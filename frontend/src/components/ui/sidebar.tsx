@@ -539,15 +539,14 @@ function SidebarMenuButton({
         sidebarMenuButtonVariants({ variant, size }),
         "relative overflow-hidden rounded-md",
         isActive && [
-          "bg-gradient-to-r from-muted/30 via-primary/20 to-primary/80 dark:from-white/[0.04] dark:via-primary/30 dark:to-primary/90",
+          "bg-gradient-to-r from-white via-primary/10 to-primary/20 dark:from-white/[0.06] dark:via-primary/20 dark:to-primary/30",
           "text-primary dark:text-white font-semibold shadow-xs",
           "before:absolute before:left-0 before:top-1/2 before:-translate-y-1/2 before:w-1 before:h-5 before:bg-primary dark:before:bg-white before:rounded-r-full",
-          "after:absolute after:right-1.5 after:top-1/2 after:-translate-y-1/2 after:w-1 after:h-4 after:bg-primary-300 after:dark:bg-white after:rounded-full after:shadow-[0_0_8px_var(--primary)] group-data-[collapsible=icon]:after:hidden",
-          "hover:from-muted/40 hover:via-primary/30 hover:to-primary/90"
+          "hover:from-white hover:via-primary/15 hover:to-primary/25 dark:hover:from-white/[0.08] dark:hover:via-primary/25 dark:hover:to-primary/35"
         ],
         !isActive && [
-          "hover:bg-gradient-to-r hover:from-transparent hover:via-muted/20 hover:to-muted/40",
-          "text-sidebar-foreground hover:text-primary dark:hover:text-primary-300"
+          "hover:bg-primary-300/10",
+          "text-sidebar-foreground hover:text-primary-300 dark:hover:text-primary-300"
         ],
         "group-data-[collapsible=icon]:justify-center",
         className
@@ -714,15 +713,13 @@ function SidebarMenuSubButton({
       className={cn(
         "relative overflow-hidden flex h-7 min-w-0 -translate-x-px items-center gap-2 rounded-md px-3 text-sidebar-foreground ring-sidebar-ring outline-hidden group-data-[collapsible=icon]:hidden focus-visible:ring-2 disabled:pointer-events-none disabled:opacity-50 aria-disabled:pointer-events-none aria-disabled:opacity-50 data-[size=md]:text-sm data-[size=sm]:text-xs [&>span:last-child]:truncate [&>svg]:size-4 [&>svg]:shrink-0 transition-all duration-200",
         isActive && [
-          "bg-gradient-to-r from-muted/30 via-primary/20 to-primary/70 dark:from-white/[0.04] dark:via-primary/25 dark:to-primary/80",
+          "bg-gradient-to-r from-white via-primary/8 to-primary/15 dark:from-white/[0.05] dark:via-primary/15 dark:to-primary/25",
           "text-primary dark:text-white font-medium shadow-xs",
-          "before:absolute before:left-0 before:top-1/2 before:-translate-y-1/2 before:w-0.5 before:h-4 before:bg-primary dark:before:bg-white before:rounded-r-full",
-          "after:absolute after:right-1 after:top-1/2 after:-translate-y-1/2 after:w-1 after:h-3 after:bg-primary-300 after:dark:bg-white after:rounded-full after:shadow-[0_0_6px_var(--primary)]"
+          "before:absolute before:left-0 before:top-1/2 before:-translate-y-1/2 before:w-0.5 before:h-4 before:bg-primary dark:before:bg-white before:rounded-r-full"
         ],
-        !isActive && "text-muted-foreground hover:text-primary dark:hover:text-primary-300 hover:bg-muted/40",
+        !isActive && "text-muted-foreground hover:text-primary-300 dark:hover:text-primary-300 hover:bg-primary-300/10",
         className
       )}
-      {...props}
     />
   )
 }

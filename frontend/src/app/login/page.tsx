@@ -9,11 +9,11 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/comp
 import { Input } from '@/components/ui/input';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Link } from '@/components/ui/link';
-import { 
-  Palette, 
-  Component, 
-  LayoutTemplate, 
-  Accessibility, 
+import {
+  Palette,
+  Component,
+  LayoutTemplate,
+  Accessibility,
   ArrowLeft,
   Lock,
   ArrowRight,
@@ -34,7 +34,7 @@ export default function DesignSystemLoginPage() {
   const [emailState, setEmailState] = React.useState<'default' | 'success' | 'error'>('default');
   const [hasErrored, setHasErrored] = React.useState(false);
   const [showPassword, setShowPassword] = React.useState(false);
-  
+
   const isFormValid = email.trim() !== '' && password.trim() !== '';
 
   React.useEffect(() => {
@@ -77,15 +77,15 @@ export default function DesignSystemLoginPage() {
 
   return (
     <div className="min-h-screen w-full flex items-center justify-center p-0 sm:p-8 lg:p-12 relative overflow-hidden bg-background">
-      
+
       {/* Background Layer */}
       <div className="absolute inset-0 z-0 bg-background/20 backdrop-blur-sm sm:backdrop-blur-none sm:bg-transparent" />
 
       {/* Main Container */}
       <div className="w-full max-w-[1400px] h-[100dvh] sm:h-[85vh] sm:max-h-[840px] sm:min-h-[700px] bg-background/70 backdrop-blur-xl sm:rounded-[2rem] sm:shadow-2xl sm:border border-border/60 flex overflow-hidden z-10 relative">
-        
+
         <div className="hidden lg:flex w-[50%] relative flex-col border-r border-border p-10 xl:p-14 bg-surface/30 justify-center items-center">
-          
+
           <div className="w-full max-w-xl flex flex-col">
             <div className="flex flex-col mb-10 xl:mb-14">
               {/* Header Text */}
@@ -95,7 +95,7 @@ export default function DesignSystemLoginPage() {
                   Recursos de Diseño
                 </Badge>
                 <h1 className="font-heading font-bold text-4xl xl:text-5xl text-foreground leading-[1.1] tracking-tight mb-5">
-                  Design System <br/><span className="text-primary">DINARP</span>
+                  Design System <br /><span className="text-primary">DINARP</span>
                 </h1>
                 <p className="text-muted-foreground text-base xl:text-lg leading-relaxed">
                   Sistema de diseño institucional para construir interfaces consistentes, accesibles y reutilizables.
@@ -105,25 +105,25 @@ export default function DesignSystemLoginPage() {
 
             {/* Cards of benefits */}
             <div className="grid grid-cols-2 gap-3">
-              <CapacityCard 
+              <CapacityCard
                 title="Componentes"
                 description="Bloques de construcción listos para usar en tus proyectos."
                 icon={Component}
                 color="primary"
               />
-              <CapacityCard 
+              <CapacityCard
                 title="Fundamentos y estilos"
                 description="Colores, tipografías, sombras y espaciados estandarizados."
                 icon={Palette}
                 color="success"
               />
-              <CapacityCard 
+              <CapacityCard
                 title="Patrones consistentes"
                 description="Composiciones y flujos visuales para una mejor UX."
                 icon={LayoutTemplate}
                 color="info"
               />
-              <CapacityCard 
+              <CapacityCard
                 title="Accesibilidad"
                 description="Interfaces diseñadas para que todos puedan interactuar con ellas."
                 icon={Accessibility}
@@ -135,9 +135,9 @@ export default function DesignSystemLoginPage() {
 
         {/* ─── LADO DERECHO: Acceso Formulario ─── */}
         <div className="w-full lg:w-[50%] flex flex-col sm:bg-transparent relative overflow-hidden">
-          
+
           <div className="flex-1 bg-background sm:rounded-none sm:mt-0 relative z-20 px-6 py-6 sm:p-8 xl:p-14 flex flex-col justify-between overflow-hidden">
-          
+
             {/* Top Bar */}
             <div className="w-full flex items-center justify-end mb-8">
               <div className="flex items-center gap-2 z-50">
@@ -147,19 +147,18 @@ export default function DesignSystemLoginPage() {
 
             {/* Login Card */}
             <div className="w-full max-w-[480px] mx-auto flex flex-col items-center justify-start flex-1 pt-6 sm:pt-4 pb-4">
-              <Card 
+              <Card
                 className="capacity-card w-full shadow-sm border-border/80 hover:border-transparent px-3 py-6 sm:px-6 sm:py-5 flex flex-col items-center text-center relative transition-all duration-500 sm:-mt-8"
-                style={{ 
-                  '--card-accent': 'var(--color-primary-500)', 
-                  '--card-glow': 'rgba(var(--primitive-primary-500), 0.18)' 
+                style={{
+                  '--card-accent': 'var(--color-primary-500)',
+                  '--card-glow': 'rgba(var(--primitive-primary-500), 0.18)'
                 } as React.CSSProperties}
               >
-                
+
                 <div className="mb-4 flex flex-col items-center justify-center">
-                    <div className="flex items-center justify-center mb-4">
-                      <img src="/logotipo.png" alt="Logo DINARP" className="h-14 w-auto dark:hidden object-contain" />
-                      <img src="/logotipo.png" alt="Logo DINARP" className="h-14 w-auto hidden dark:block object-contain" />
-                    </div>
+                  <div className="flex items-center justify-center mb-4">
+                    <img src="/logotipo.png" alt="Logo DINARP" className="h-14 w-auto object-contain" />
+                  </div>
                   <h3 className="font-heading font-bold text-xl text-primary dark:text-foreground text-center">Acceso al Design System</h3>
                 </div>
 
@@ -167,8 +166,8 @@ export default function DesignSystemLoginPage() {
                   <div className="flex flex-col gap-2 text-left">
                     <label className="text-sm font-medium text-foreground">Correo electrónico</label>
                     <InputGroup state={emailState} leftIcon={<Mail className="size-4" />}>
-                      <InputGroupInput 
-                        type="email" 
+                      <InputGroupInput
+                        type="email"
                         placeholder="ejemplo@gmail.com"
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
@@ -186,9 +185,9 @@ export default function DesignSystemLoginPage() {
                   <div className="flex flex-col gap-2 text-left">
                     <label className="text-sm font-medium text-foreground">Contraseña</label>
                     <InputGroup leftIcon={<Lock className="size-4" />}>
-                      <InputGroupInput 
-                        type={showPassword ? "text" : "password"} 
-                        placeholder="••••••••" 
+                      <InputGroupInput
+                        type={showPassword ? "text" : "password"}
+                        placeholder="••••••••"
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
                         required
@@ -200,27 +199,27 @@ export default function DesignSystemLoginPage() {
                   </div>
 
                   <div className="flex flex-col gap-3 mt-3 w-full">
-                      <TooltipProvider>
-                        <Tooltip>
-                          <TooltipTrigger asChild>
-                            <span className="w-full block" tabIndex={!isFormValid ? 0 : -1}>
-                              <Button 
-                                variant="primary" 
-                                type="submit"
-                                className="w-full h-12 flex items-center justify-center gap-2 text-sm font-semibold"
-                                disabled={!isFormValid}
-                              >
-                                Ingresar al UI Kit
-                              </Button>
-                            </span>
-                          </TooltipTrigger>
-                          {!isFormValid && (
-                            <TooltipContent variant="info" side="top" sideOffset={10}>
-                              Faltan campos por completar
-                            </TooltipContent>
-                          )}
-                        </Tooltip>
-                      </TooltipProvider>
+                    <TooltipProvider>
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <span className="w-full block" tabIndex={!isFormValid ? 0 : -1}>
+                            <Button
+                              variant="primary"
+                              type="submit"
+                              className="w-full h-12 flex items-center justify-center gap-2 text-sm font-semibold"
+                              disabled={!isFormValid}
+                            >
+                              Ingresar al UI Kit
+                            </Button>
+                          </span>
+                        </TooltipTrigger>
+                        {!isFormValid && (
+                          <TooltipContent variant="info" side="top" sideOffset={10}>
+                            Faltan campos por completar
+                          </TooltipContent>
+                        )}
+                      </Tooltip>
+                    </TooltipProvider>
 
                     <div className="relative flex items-center justify-center -my-1 w-full">
                       <div className="w-16 border-t border-border/60"></div>
@@ -228,8 +227,8 @@ export default function DesignSystemLoginPage() {
                       <div className="w-16 border-t border-border/60"></div>
                     </div>
 
-                    <Button 
-                      variant="neutral" 
+                    <Button
+                      variant="neutral"
                       type="button"
                       className="w-full h-12 bg-surface flex items-center justify-center gap-2 whitespace-nowrap text-sm font-semibold"
                       onClick={() => toast.info("Función no disponible", { description: "Por ahora solo se permite el ingreso con usuario y contraseña, ya que es una versión demo." })}
@@ -246,14 +245,14 @@ export default function DesignSystemLoginPage() {
                 </form>
               </Card>
             </div>
-            
+
             {/* Footer */}
             <div className="w-full flex items-end justify-between mt-auto pt-4">
               <div className="text-left text-xs text-muted-foreground/70 flex flex-col gap-1">
                 <p>&copy; {new Date().getFullYear()} Ministerio de Educación.</p>
                 <p>Sistema de gestión de riesgos.</p>
               </div>
-              
+
               <TooltipProvider>
                 <Tooltip>
                   <TooltipTrigger asChild>

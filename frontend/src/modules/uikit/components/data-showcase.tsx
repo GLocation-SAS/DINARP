@@ -107,6 +107,7 @@ export function DataShowcase({ registerSection }: { registerSection?: (id: strin
             subtitle="Nacional"
             description="PDF · Generado 31/07/2026"
             icon={<BarChart3 className="size-5" />}
+            decorativeIcon={<BarChart3 className="size-full" />}
             disabled
           />
         </div>

@@ -23,20 +23,20 @@ const Toaster = ({ ...props }: ToasterProps) => {
       offset={80}
       icons={{
         success: (
-          <div className="flex items-center justify-center shrink-0 size-10 rounded-full bg-success/15 text-success"><CircleCheckIcon className="size-5 stroke-[2.5px]" /></div>
+          <div className="flex items-center justify-center shrink-0 size-8 rounded-full bg-success/15 text-success mr-2.5"><CircleCheckIcon className="size-4 stroke-[2.5px]" /></div>
         ),
         info: (
-          <div className="flex items-center justify-center shrink-0 size-10 rounded-full bg-info/15 text-info"><InfoIcon className="size-5 stroke-[2.5px]" /></div>
+          <div className="flex items-center justify-center shrink-0 size-8 rounded-full bg-info/15 text-info mr-2.5"><InfoIcon className="size-4 stroke-[2.5px]" /></div>
         ),
         warning: (
-          <div className="flex items-center justify-center shrink-0 size-10 rounded-full bg-warning/15 text-warning"><TriangleAlertIcon className="size-5 stroke-[2.5px]" /></div>
+          <div className="flex items-center justify-center shrink-0 size-8 rounded-full bg-warning/15 text-warning mr-2.5"><TriangleAlertIcon className="size-4 stroke-[2.5px]" /></div>
         ),
         error: (
-          <div className="flex items-center justify-center shrink-0 size-10 rounded-full bg-danger/15 text-danger"><OctagonXIcon className="size-5 stroke-[2.5px]" /></div>
+          <div className="flex items-center justify-center shrink-0 size-8 rounded-full bg-danger/15 text-danger mr-2.5"><OctagonXIcon className="size-4 stroke-[2.5px]" /></div>
         ),
         loading: (
-          <div className="flex items-center justify-center shrink-0 size-10 rounded-full bg-primary/15 text-primary">
-            <Loader2Icon className="size-5 animate-spin stroke-[2.5px]" />
+          <div className="flex items-center justify-center shrink-0 size-8 rounded-full bg-primary/15 text-primary mr-2.5">
+            <Loader2Icon className="size-4 animate-spin stroke-[2.5px]" />
           </div>
         ),
       }}
@@ -51,8 +51,8 @@ const Toaster = ({ ...props }: ToasterProps) => {
             !shadow-xl shadow-black/5
             backdrop-blur-2xl
             transition-all duration-300
-            !gap-5
-            !py-3.5 !px-6
+            !gap-3.5
+            !py-3 !px-5
             !flex-row
             !items-center
             !justify-start
@@ -83,6 +83,7 @@ const Toaster = ({ ...props }: ToasterProps) => {
               text-left
               w-full
               !m-0
+              !pl-1
               line-clamp-2
             `,
 
@@ -97,6 +98,7 @@ const Toaster = ({ ...props }: ToasterProps) => {
             !items-center
             !justify-center
             !m-0
+            !mr-2
             !self-center
           `,
 
@@ -107,6 +109,7 @@ const Toaster = ({ ...props }: ToasterProps) => {
             !items-center
             !justify-center
             !m-0
+            !mr-2
             !self-center
           `,
 
@@ -116,6 +119,7 @@ const Toaster = ({ ...props }: ToasterProps) => {
             !flex-1
             !justify-center
             overflow-hidden
+            !pl-1.5
           `,
 
           actionButton: badgeVariants({ tone: "neutral", appearance: "solid", className: "hover:opacity-80 cursor-pointer px-4 py-2" }),

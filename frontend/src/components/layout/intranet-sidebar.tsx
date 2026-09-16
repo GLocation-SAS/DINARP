@@ -132,36 +132,19 @@ export function IntranetSidebar({ activeItem = "home" }: IntranetSidebarProps) {
       <SidebarHeader className="relative px-3 pt-4 pb-3">
         <div className="flex items-center justify-between gap-2 overflow-hidden">
           <div className="flex items-center shrink-0">
-            {/* Expanded Logos */}
             <Image
-              src="/Logotipo.svg"
-              alt="GLocation Logo"
+              src="/logotipo.png"
+              alt="Logo DINARP"
               width={150}
               height={35}
-              className="h-[35px] w-auto dark:hidden group-data-[state=collapsed]:hidden animate-in fade-in duration-300"
+              className="h-[35px] w-auto group-data-[state=collapsed]:hidden animate-in fade-in duration-300 object-contain"
             />
             <Image
-              src="/LogotipoVersionNegativo.svg"
-              alt="GLocation Logo"
-              width={150}
-              height={35}
-              className="h-[35px] w-auto hidden dark:group-data-[state=expanded]:block group-data-[state=collapsed]:hidden animate-in fade-in duration-300"
-            />
-
-            {/* Collapsed Icons */}
-            <Image
-              src="/icon.svg"
-              alt="GLocation Icon"
+              src="/logotipo.png"
+              alt="Logo DINARP"
               width={27}
               height={27}
-              className="h-[27px] w-auto dark:hidden group-data-[state=expanded]:hidden animate-in zoom-in-75 duration-300"
-            />
-            <Image
-              src="/iconBlanco.svg"
-              alt="GLocation Icon"
-              width={27}
-              height={27}
-              className="h-[27px] w-auto hidden dark:group-data-[state=collapsed]:block group-data-[state=expanded]:hidden animate-in zoom-in-75 duration-300"
+              className="h-[27px] w-auto group-data-[state=expanded]:hidden animate-in zoom-in-75 duration-300 object-contain"
             />
           </div>
         </div>

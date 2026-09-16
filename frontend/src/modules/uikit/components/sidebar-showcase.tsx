@@ -75,12 +75,12 @@ function SidebarNavItem({
                 "group relative overflow-hidden flex items-center transition-all duration-150 outline-none",
                 collapsed ? "w-10 h-10 mx-auto justify-center rounded-md" : "w-full gap-2.5 px-3 py-2 rounded-md text-sm font-medium text-left",
                 item.active
-                  ? "bg-gradient-to-r from-muted/30 via-primary/20 to-primary/80 dark:from-white/[0.04] dark:via-primary/30 dark:to-primary/90 text-primary dark:text-white font-semibold shadow-xs before:absolute before:left-0 before:top-1/2 before:-translate-y-1/2 before:w-1 before:h-5 before:bg-primary dark:before:bg-white before:rounded-r-full after:absolute after:right-1.5 after:top-1/2 after:-translate-y-1/2 after:w-1 after:h-4 after:bg-primary-300 after:dark:bg-white after:rounded-full after:shadow-[0_0_8px_var(--primary)] group-data-[collapsible=icon]:after:hidden"
-                  : "text-foreground/70 hover:bg-gradient-to-r hover:from-transparent hover:via-muted/20 hover:to-muted/40 hover:text-primary dark:hover:text-primary-300"
+                  ? "bg-gradient-to-r from-white via-primary/10 to-primary/20 dark:from-white/[0.06] dark:via-primary/20 dark:to-primary/30 text-primary dark:text-white font-semibold shadow-xs before:absolute before:left-0 before:top-1/2 before:-translate-y-1/2 before:w-1 before:h-5 before:bg-primary dark:before:bg-white before:rounded-r-full"
+                  : "text-foreground/70 hover:bg-primary-300/10 hover:text-primary-300 dark:hover:text-primary-300"
               )}
             >
               <div className="relative flex items-center justify-center">
-                <Icon className={cn("size-4 shrink-0 transition-colors", item.active ? "text-primary dark:text-white" : "group-hover:text-primary dark:group-hover:text-primary-300")} />
+                <Icon className={cn("size-4 shrink-0 transition-colors", item.active ? "text-primary dark:text-white" : "group-hover:text-primary-300 dark:group-hover:text-primary-300")} />
               </div>
               {!collapsed && (
                 <>
@@ -89,7 +89,7 @@ function SidebarNavItem({
                     <ChevronRight
                       className={cn(
                         "size-3.5 shrink-0 transition-all duration-200",
-                        item.active ? "text-primary dark:text-white" : "text-muted-foreground group-hover:text-primary dark:group-hover:text-primary-300",
+                        item.active ? "text-primary dark:text-white" : "text-muted-foreground group-hover:text-primary-300 dark:group-hover:text-primary-300",
                         open && "rotate-90"
                       )}
                     />
@@ -129,11 +129,11 @@ function SidebarNavItem({
                             ? "w-8 h-8 mx-auto justify-center opacity-60 hover:opacity-100 hover:bg-muted/50" // Lower hierarchy, centered icon
                             : "w-full gap-2 px-3 py-1.5 text-xs font-medium text-left",
                           child.active && collapsed ? "bg-primary/20 text-primary dark:bg-primary/40 dark:text-white opacity-100" : "",
-                          child.active && !collapsed ? "bg-gradient-to-r from-muted/30 via-primary/20 to-primary/70 dark:from-white/[0.04] dark:via-primary/25 dark:to-primary/80 text-primary dark:text-white font-medium shadow-xs before:absolute before:left-0 before:top-1/2 before:-translate-y-1/2 before:w-0.5 before:h-4 before:bg-primary dark:before:bg-white before:rounded-r-full after:absolute after:right-1 after:top-1/2 after:-translate-y-1/2 after:w-1 after:h-3 after:bg-primary-300 after:dark:bg-white after:rounded-full after:shadow-[0_0_6px_var(--primary)]" : "",
-                          !child.active && !collapsed ? "text-foreground/60 hover:text-primary dark:hover:text-primary-300 hover:bg-muted/50" : ""
+                          child.active && !collapsed ? "bg-gradient-to-r from-white via-primary/8 to-primary/15 dark:from-white/[0.05] dark:via-primary/15 dark:to-primary/25 text-primary dark:text-white font-medium shadow-xs before:absolute before:left-0 before:top-1/2 before:-translate-y-1/2 before:w-0.5 before:h-4 before:bg-primary dark:before:bg-white before:rounded-r-full" : "",
+                          !child.active && !collapsed ? "text-foreground/60 hover:text-primary-300 dark:hover:text-primary-300 hover:bg-primary-300/10" : ""
                         )}
                       >
-                        <ChildIcon className={cn("shrink-0 transition-colors", child.active ? "text-primary dark:text-white" : "group-hover:text-primary dark:group-hover:text-primary-300", collapsed ? "size-4" : "size-3.5")} />
+                        <ChildIcon className={cn("shrink-0 transition-colors", child.active ? "text-primary dark:text-white" : "group-hover:text-primary-300 dark:group-hover:text-primary-300", collapsed ? "size-4" : "size-3.5")} />
                         {!collapsed && <span className="truncate">{child.label}</span>}
                       </button>
                     </TooltipTrigger>
@@ -148,8 +148,9 @@ function SidebarNavItem({
             );
           })}
         </ul>
-      )}
-    </li>
+      )
+      }
+    </li >
   );
 }
 
@@ -183,31 +184,17 @@ function SidebarPreview({ collapsed, variant = "full", navItems = NAV_ITEMS, con
           {/* ── Logo row ── */}
           <div className={cn("flex items-center gap-2.5 px-3 py-3 border-b border-border shrink-0", collapsed ? "justify-center" : "justify-start")}>
             {collapsed ? (
-              <>
-                <img
-                  src="/Favicon.svg"
-                  alt="Símbolo Icon"
-                  className="h-7 w-auto object-contain mx-auto dark:hidden"
-                />
-                <img
-                  src="/Favicon alternativo.svg"
-                  alt="Símbolo Icon"
-                  className="h-7 w-auto object-contain mx-auto hidden dark:block"
-                />
-              </>
+              <img
+                src="/logotipo.png"
+                alt="Logo DINARP Símbolo"
+                className="h-7 w-auto object-contain mx-auto"
+              />
             ) : (
-              <>
-                <img
-                  src="/logotipo.png"
-                  alt="Logo DINARP GEOportal"
-                  className="h-9 w-auto object-contain dark:hidden"
-                />
-                <img
-                  src="/logotipo.png"
-                  alt="Logo DINARP GEOportal"
-                  className="h-9 w-auto object-contain hidden dark:block"
-                />
-              </>
+              <img
+                src="/logotipo.png"
+                alt="Logo DINARP"
+                className="h-9 w-auto object-contain"
+              />
             )}
           </div>
         </>

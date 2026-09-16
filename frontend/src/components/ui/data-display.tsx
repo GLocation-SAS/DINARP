@@ -64,7 +64,7 @@ export function BaseCard({
           {cover}
         </div>
       )}
-      
+
       <div className={cn("p-6 flex-1 flex flex-col", centered ? "items-center text-center" : "")}>
         {(title || menu) && (
           <div className={cn("flex w-full mb-1 gap-2", centered ? "justify-center relative items-center" : "items-start justify-between")}>
@@ -72,17 +72,17 @@ export function BaseCard({
             {menu && <div className={cn("shrink-0", centered ? "absolute right-0 top-0" : "")}>{menu}</div>}
           </div>
         )}
-        
+
         {description && (
           <p className={cn("text-xs text-muted-foreground mb-5", centered ? "max-w-[90%]" : "")}>{description}</p>
         )}
-        
+
         {children && <div className="w-full mb-1">{children}</div>}
       </div>
-      
+
       {(footer || action) && (
         <div className={cn(
-          "px-6 py-4 flex items-center", 
+          "px-6 py-4 flex items-center",
           centered ? "justify-center pb-6 pt-0" : "justify-between border-t border-border mt-auto"
         )}>
           {footer && <span className="text-xs text-muted-foreground shrink-0">{footer}</span>}
@@ -135,14 +135,14 @@ const INTERACTIVE_TITLE_COLORS: Record<string, string> = {
 }
 
 const INTERACTIVE_ICON_COLORS: Record<string, string> = {
-  default: "text-foreground opacity-10 group-hover:opacity-20",
-  primary: "text-primary opacity-20 group-hover:opacity-30",
-  secondary: "text-secondary opacity-20 group-hover:opacity-30",
-  info: "text-info opacity-20 group-hover:opacity-30",
-  warning: "text-warning opacity-20 group-hover:opacity-30",
-  success: "text-success opacity-20 group-hover:opacity-30",
-  danger: "text-danger opacity-20 group-hover:opacity-30",
-  purple: "text-purple-500 opacity-20 group-hover:opacity-30",
+  default: "text-foreground/25 group-hover:text-foreground/35 dark:text-foreground/35",
+  primary: "text-primary/30 group-hover:text-primary/40",
+  secondary: "text-secondary/30 group-hover:text-secondary/40",
+  info: "text-info/30 group-hover:text-info/40",
+  warning: "text-warning/30 group-hover:text-warning/40",
+  success: "text-success/30 group-hover:text-success/40",
+  danger: "text-danger/30 group-hover:text-danger/40",
+  purple: "text-purple-500/30 group-hover:text-purple-500/40",
 }
 
 export function InteractiveCard({
@@ -151,6 +151,7 @@ export function InteractiveCard({
   const colorClass = INTERACTIVE_COLORS[color] || INTERACTIVE_COLORS.default;
   const titleColorClass = INTERACTIVE_TITLE_COLORS[color] || INTERACTIVE_TITLE_COLORS.default;
   const iconColorClass = INTERACTIVE_ICON_COLORS[color] || INTERACTIVE_ICON_COLORS.default;
+  const activeDecorative = decorativeIcon || (icon && React.isValidElement(icon) ? React.cloneElement(icon as React.ReactElement<{ className?: string }>, { className: "size-full" }) : icon);
 
   return (
     <button
@@ -161,7 +162,7 @@ export function InteractiveCard({
         "group relative w-full text-left rounded-xl border shadow-sm transition-all duration-300 outline-none overflow-hidden min-h-[160px] p-5 flex flex-col items-start",
         "hover:shadow-md hover:-translate-y-0.5",
         "focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
-        disabled && "opacity-50 cursor-not-allowed hover:shadow-sm hover:translate-y-0",
+        disabled && "opacity-60 cursor-not-allowed hover:shadow-sm hover:translate-y-0",
         colorClass,
         className
       )}
@@ -173,12 +174,12 @@ export function InteractiveCard({
       )}
 
       {/* Decorative Icon */}
-      {decorativeIcon && (
+      {activeDecorative && (
         <div className={cn("absolute -bottom-8 -right-8 size-40 pointer-events-none transition-all duration-500 z-0", iconColorClass)}>
-          {decorativeIcon}
+          {activeDecorative}
         </div>
       )}
-      
+
       <div className="mt-auto relative z-10 w-full flex flex-col gap-1">
         <h3 className={cn("text-sm font-bold leading-tight transition-colors duration-300", titleColorClass)}>{title}</h3>
         {description && <p className="text-xs text-foreground/70">{description}</p>}
@@ -188,7 +189,7 @@ export function InteractiveCard({
   )
 }
 
-  // 3. KPI CARD
+// 3. KPI CARD
 // ─────────────────────────────────────────────────────────────────────────────
 
 export type KpiTrend = "up" | "down" | "neutral" | "warning"
@@ -210,22 +211,22 @@ export interface KpiCardProps {
 }
 
 const TREND_CONFIG: Record<KpiTrend, { icon: React.ReactNode; colorClass: string }> = {
-  up:      { icon: <TrendingUp className="size-3.5" />,   colorClass: "text-success" },
-  down:    { icon: <TrendingDown className="size-3.5" />, colorClass: "text-danger" },
-  neutral: { icon: <Minus className="size-3.5" />,        colorClass: "text-muted-foreground" },
-  warning: { icon: <TrendingUp className="size-3.5" />,   colorClass: "text-warning" },
+  up: { icon: <TrendingUp className="size-3.5" />, colorClass: "text-success" },
+  down: { icon: <TrendingDown className="size-3.5" />, colorClass: "text-danger" },
+  neutral: { icon: <Minus className="size-3.5" />, colorClass: "text-muted-foreground" },
+  warning: { icon: <TrendingUp className="size-3.5" />, colorClass: "text-warning" },
 }
 
-export function KpiCard({ 
-  label, value, trend, change, comparison, updatedAt, icon, 
-  prefixText, highlightedText, actionLabel, onAction, menuActions, className 
+export function KpiCard({
+  label, value, trend, change, comparison, updatedAt, icon,
+  prefixText, highlightedText, actionLabel, onAction, menuActions, className
 }: KpiCardProps) {
   const trendCfg = trend ? TREND_CONFIG[trend] : null
   const isNarrative = prefixText || highlightedText
 
   return (
     <div className={cn(
-      "rounded-2xl border border-border/50 bg-gradient-to-br from-primary/5 via-surface to-secondary/10 dark:from-primary/10 dark:via-background dark:to-secondary/15 shadow-sm p-6 flex flex-col justify-between w-full min-h-[160px]", 
+      "rounded-2xl border border-border/50 bg-gradient-to-br from-primary/5 via-surface to-secondary/10 dark:from-primary/10 dark:via-background dark:to-secondary/15 shadow-sm p-6 flex flex-col justify-between w-full min-h-[160px]",
       className
     )}>
       <div className="flex items-start justify-between gap-2 mb-4">
@@ -272,8 +273,8 @@ export function KpiCard({
 
         {actionLabel && (
           <div className="mt-2 flex items-center justify-between">
-            <button 
-              type="button" 
+            <button
+              type="button"
               onClick={onAction}
               className="h-8 px-4 inline-flex items-center justify-center text-[11px] font-bold bg-surface border border-border shadow-sm rounded-full hover:bg-muted transition-colors text-foreground"
             >
@@ -313,9 +314,9 @@ export interface InstitutionCardProps {
 }
 
 const INST_STATUS: Record<string, { label: string; dotColor: string; bgBorder: string }> = {
-  active:   { label: "ACTIVA",      dotColor: "bg-success",   bgBorder: "bg-success/10 border-success/20 text-success" },
-  inactive: { label: "INACTIVA",    dotColor: "bg-danger",    bgBorder: "bg-danger/10 border-danger/20 text-danger" },
-  review:   { label: "EN REVISIÓN", dotColor: "bg-warning",   bgBorder: "bg-warning/10 border-warning/20 text-warning" },
+  active: { label: "ACTIVA", dotColor: "bg-success", bgBorder: "bg-success/10 border-success/20 text-success" },
+  inactive: { label: "INACTIVA", dotColor: "bg-danger", bgBorder: "bg-danger/10 border-danger/20 text-danger" },
+  review: { label: "EN REVISIÓN", dotColor: "bg-warning", bgBorder: "bg-warning/10 border-warning/20 text-warning" },
 }
 
 export function InstitutionCard({
@@ -357,13 +358,13 @@ export function InstitutionCard({
           </div>
 
           <h3 className="text-base font-bold text-foreground mt-1.5 leading-tight tracking-tight truncate">{name}</h3>
-          
+
           {amie && (
             <div className="flex items-center gap-1.5 mt-1 text-xs text-muted-foreground">
               <span>Código AMIE: {amie}</span>
-              <button 
-                type="button" 
-                onClick={onCopyAmie} 
+              <button
+                type="button"
+                onClick={onCopyAmie}
                 className="hover:text-foreground transition-colors p-0.5"
                 title="Copiar Código AMIE"
               >
@@ -462,7 +463,7 @@ export function InstitutionCard({
             )}
 
             {onViewProfile && (
-              <Button 
+              <Button
                 onClick={onViewProfile}
                 variant="primary"
                 className="shrink-0 rounded-xl px-5 h-10 text-xs"
@@ -497,8 +498,8 @@ export interface LayerCardProps {
 
 const LAYER_STATUS: Record<string, { label: string; bgBorder: string }> = {
   published: { label: "PUBLICADA", bgBorder: "bg-success/10 border-success/20 text-success" },
-  draft:     { label: "BORRADOR",  bgBorder: "bg-warning/10 border-warning/20 text-warning" },
-  archived:  { label: "ARCHIVADA", bgBorder: "bg-neutral/10 border-neutral/20 text-muted-foreground" },
+  draft: { label: "BORRADOR", bgBorder: "bg-warning/10 border-warning/20 text-warning" },
+  archived: { label: "ARCHIVADA", bgBorder: "bg-neutral/10 border-neutral/20 text-muted-foreground" },
 }
 
 export function LayerCard({
@@ -616,21 +617,21 @@ export interface DocumentCardProps {
 function getDocIcon(filename: string): { icon: React.ReactNode; variant: "error" | "success" | "info" | "warning" | "primary" | "neutral"; label: string } {
   const ext = filename.split(".").pop()?.toLowerCase() ?? ""
   const map: Record<string, { icon: React.ReactNode; variant: "error" | "success" | "info" | "warning" | "primary" | "neutral"; label: string }> = {
-    pdf:     { icon: <FileText className="size-6" />,       variant: "error",   label: "PDF" },
-    doc:     { icon: <FileText className="size-6" />,       variant: "info",    label: "Word" },
-    docx:    { icon: <FileText className="size-6" />,       variant: "info",    label: "Word" },
-    xls:     { icon: <FileSpreadsheet className="size-6" />, variant: "success", label: "Excel" },
-    xlsx:    { icon: <FileSpreadsheet className="size-6" />, variant: "success", label: "Excel" },
-    csv:     { icon: <FileSpreadsheet className="size-6" />, variant: "success", label: "CSV" },
-    ppt:     { icon: <FileText className="size-6" />,        variant: "warning", label: "PPT" },
-    pptx:    { icon: <FileText className="size-6" />,        variant: "warning", label: "PPT" },
-    zip:     { icon: <FileArchive className="size-6" />,     variant: "warning", label: "ZIP" },
-    geojson: { icon: <Globe className="size-6" />,           variant: "success", label: "GeoJSON" },
-    shp:     { icon: <Map className="size-6" />,             variant: "success", label: "SHP" },
-    kml:     { icon: <Map className="size-6" />,             variant: "info",    label: "KML" },
-    kmz:     { icon: <Map className="size-6" />,             variant: "info",    label: "KMZ" },
-    json:    { icon: <FileCode className="size-6" />,        variant: "primary", label: "JSON" },
-    txt:     { icon: <FileText className="size-6" />,        variant: "neutral", label: "TXT" },
+    pdf: { icon: <FileText className="size-6" />, variant: "error", label: "PDF" },
+    doc: { icon: <FileText className="size-6" />, variant: "info", label: "Word" },
+    docx: { icon: <FileText className="size-6" />, variant: "info", label: "Word" },
+    xls: { icon: <FileSpreadsheet className="size-6" />, variant: "success", label: "Excel" },
+    xlsx: { icon: <FileSpreadsheet className="size-6" />, variant: "success", label: "Excel" },
+    csv: { icon: <FileSpreadsheet className="size-6" />, variant: "success", label: "CSV" },
+    ppt: { icon: <FileText className="size-6" />, variant: "warning", label: "PPT" },
+    pptx: { icon: <FileText className="size-6" />, variant: "warning", label: "PPT" },
+    zip: { icon: <FileArchive className="size-6" />, variant: "warning", label: "ZIP" },
+    geojson: { icon: <Globe className="size-6" />, variant: "success", label: "GeoJSON" },
+    shp: { icon: <Map className="size-6" />, variant: "success", label: "SHP" },
+    kml: { icon: <Map className="size-6" />, variant: "info", label: "KML" },
+    kmz: { icon: <Map className="size-6" />, variant: "info", label: "KMZ" },
+    json: { icon: <FileCode className="size-6" />, variant: "primary", label: "JSON" },
+    txt: { icon: <FileText className="size-6" />, variant: "neutral", label: "TXT" },
   }
   return map[ext] ?? { icon: <File className="size-6" />, variant: "neutral", label: ext.toUpperCase() || "File" }
 }
@@ -643,9 +644,9 @@ export function DocumentCard({ filename, sizeLabel, uploadedAt, onPreview, onDow
         <div className="flex items-start gap-3 mb-4">
           <div className={cn(
             "size-12 rounded-xl flex items-center justify-center shrink-0",
-            variant === "error"   && "bg-danger/10 text-danger",
+            variant === "error" && "bg-danger/10 text-danger",
             variant === "success" && "bg-success/10 text-success",
-            variant === "info"    && "bg-info/10 text-info",
+            variant === "info" && "bg-info/10 text-info",
             variant === "warning" && "bg-warning/10 text-warning",
             variant === "primary" && "bg-primary/10 text-primary",
             variant === "neutral" && "bg-muted text-muted-foreground",
@@ -719,10 +720,10 @@ export interface ReportCardProps {
 }
 
 const REPORT_STATUS: Record<ReportStatus, { label: string; variant: "success" | "info" | "error" | "neutral" }> = {
-  generated:  { label: "Generado",   variant: "success" },
+  generated: { label: "Generado", variant: "success" },
   processing: { label: "Procesando", variant: "info" },
-  error:      { label: "Error",      variant: "error" },
-  scheduled:  { label: "Programado", variant: "neutral" },
+  error: { label: "Error", variant: "error" },
+  scheduled: { label: "Programado", variant: "neutral" },
 }
 
 export function ReportCard({ title, period, territory, generatedAt, status = "generated", formats = [], onView, onDownload, className }: ReportCardProps) {
@@ -921,13 +922,13 @@ const STATUS_CONFIG: Record<StatusType, {
   icon?: React.ReactNode
   pulse?: boolean
 }> = {
-  online:     { dot: "bg-success",          text: "text-success",  label: "En línea",      pulse: true },
-  processing: { dot: "bg-info",             text: "text-info",     label: "Procesando",    pulse: true,  icon: <Loader2 className="size-3 animate-spin" /> },
-  warning:    { dot: "bg-warning",          text: "text-warning",  label: "Advertencia" },
-  critical:   { dot: "bg-danger",           text: "text-danger",   label: "Crítico",       pulse: true },
-  offline:    { dot: "bg-muted-foreground", text: "text-muted-foreground", label: "Fuera de línea" },
-  inactive:   { dot: "bg-border",          text: "text-muted-foreground", label: "Inactivo" },
-  completed:  { dot: "bg-success",          text: "text-success",  label: "Completado",    icon: <CheckCircle2 className="size-3" /> },
+  online: { dot: "bg-success", text: "text-success", label: "En línea", pulse: true },
+  processing: { dot: "bg-info", text: "text-info", label: "Procesando", pulse: true, icon: <Loader2 className="size-3 animate-spin" /> },
+  warning: { dot: "bg-warning", text: "text-warning", label: "Advertencia" },
+  critical: { dot: "bg-danger", text: "text-danger", label: "Crítico", pulse: true },
+  offline: { dot: "bg-muted-foreground", text: "text-muted-foreground", label: "Fuera de línea" },
+  inactive: { dot: "bg-border", text: "text-muted-foreground", label: "Inactivo" },
+  completed: { dot: "bg-success", text: "text-success", label: "Completado", icon: <CheckCircle2 className="size-3" /> },
 }
 
 export function StatusIndicator({ status, label, description, size = "md", className }: StatusIndicatorProps) {
@@ -1065,14 +1066,14 @@ export function Spinner({
   const sizes = { sm: "size-4", md: "size-6", lg: "size-8" }
   return (
     <div role="status" aria-label={ariaLabel} className="inline-flex items-center justify-center shrink-0">
-      <Loader2 
+      <Loader2
         className={cn(
           "text-primary",
           "animate-[spin_0.9s_linear_infinite]",
           "motion-reduce:animate-none motion-reduce:opacity-70",
-          sizes[size], 
+          sizes[size],
           className
-        )} 
+        )}
       />
     </div>
   )

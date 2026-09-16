@@ -42,7 +42,7 @@ const inputGroupVariants = cva(
           "hover:border-primary/50",
           "focus-within:border-primary/40",
           "focus-within:shadow-[0_0_20px_-12px_var(--primary)]",
-          "focus-within:border-primary focus-within:ring-4 focus-within:ring-primary/20",
+          "focus-within:border-primary focus-within:ring-2 focus-within:ring-primary/20",
           "focus-within:shadow-[0_0_20px_-10px_var(--primary)]",
         ].join(" "),
 
@@ -53,7 +53,7 @@ const inputGroupVariants = cva(
           "[--input-radial:color-mix(in_srgb,var(--color-success)_12%,transparent)]",
           "[--input-state-color:var(--success)]",
 
-          "focus-within:border-success focus-within:ring-4 focus-within:ring-success/20",
+          "focus-within:border-success focus-within:ring-2 focus-within:ring-success/20",
           "focus-within:shadow-[0_0_20px_-10px_var(--success)]",
         ].join(" "),
 
@@ -64,7 +64,7 @@ const inputGroupVariants = cva(
           "[--input-radial:color-mix(in_srgb,var(--color-danger)_12%,transparent)]",
           "[--input-state-color:var(--danger)]",
 
-          "focus-within:border-danger focus-within:ring-4 focus-within:ring-danger/20",
+          "focus-within:border-danger focus-within:ring-2 focus-within:ring-danger/20",
           "focus-within:shadow-[0_0_20px_-10px_var(--danger)]",
         ].join(" "),
       },

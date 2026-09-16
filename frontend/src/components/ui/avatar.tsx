@@ -98,7 +98,6 @@ function AvatarFallback({
   const selectedVariant = computedVariant || "00";
   const numVariant = parseInt(selectedVariant, 10);
 
-
   // Variables CSS base
   const bgVar = `var(--avatar-${numVariant}-bg)`;
   const textVar = `var(--avatar-${numVariant}-text)`;
@@ -111,16 +110,11 @@ function AvatarFallback({
 
   switch (appearance) {
     case "filled":
-      appearanceStyle.backgroundColor = textVar;
-      appearanceStyle.color = bgVar;
       if (!hasCustomBg) appearanceStyle.backgroundColor = textVar;
       if (!hasCustomText) appearanceStyle.color = bgVar;
       appearanceClasses = "border-transparent";
       break;
     case "outline":
-      appearanceStyle.backgroundColor = "transparent";
-      appearanceStyle.color = textVar;
-      appearanceStyle.borderColor = textVar;
       if (!hasCustomBg) appearanceStyle.backgroundColor = "transparent";
       if (!hasCustomText) {
         appearanceStyle.color = textVar;
@@ -130,8 +124,6 @@ function AvatarFallback({
       break;
     case "soft":
     default:
-      appearanceStyle.backgroundColor = bgVar;
-      appearanceStyle.color = textVar;
       if (!hasCustomBg) appearanceStyle.backgroundColor = bgVar;
       if (!hasCustomText) appearanceStyle.color = textVar;
       appearanceClasses = "border-transparent";

@@ -45,39 +45,34 @@ export function Footer() {
   }, []);
 
   return (
-    <footer className="relative w-[calc(100%-2rem)] md:w-[calc(100%-3rem)] max-w-7xl mx-auto bg-surface border border-border mt-12 mb-6 md:mb-8 rounded-[32px] shadow-sm text-foreground overflow-hidden">
+    <footer className="relative w-[calc(100%-1.25rem)] sm:w-[calc(100%-2rem)] md:w-[calc(100%-3rem)] max-w-7xl mx-auto bg-surface border border-border mt-8 sm:mt-12 mb-6 md:mb-8 rounded-[24px] sm:rounded-[32px] shadow-sm text-foreground overflow-hidden">
       {/* Top ambient glow */}
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-3/4 h-[1px] bg-gradient-to-r from-transparent via-primary/30 to-transparent" />
 
-      <div className="max-w-7xl mx-auto px-6 md:px-12 pt-16 pb-12">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 lg:gap-8">
+      <div className="max-w-7xl mx-auto px-5 sm:px-8 md:px-12 pt-10 sm:pt-14 md:pt-16 pb-8 md:pb-12">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 sm:gap-10 lg:gap-8">
 
           {/* Column 1: Logo & Info */}
           <div className="flex flex-col items-start text-left lg:pr-8">
-            <Link href="/" className="mb-6 inline-block focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-md">
+            <Link href="/" className="mb-4 sm:mb-6 inline-block focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-md">
               <img
                 src="/logotipo.png"
                 alt="DINARP Logo"
-                className="h-12 w-auto object-contain block dark:hidden"
-              />
-              <img
-                src="/logotipo.png"
-                alt="DINARP Logo"
-                className="h-12 w-auto object-contain hidden dark:block"
+                className="h-9 sm:h-12 w-auto object-contain"
               />
             </Link>
-            <p className="text-body-sm text-muted-foreground/80 leading-relaxed mb-6">
+            <p className="text-body-sm text-muted-foreground/80 leading-relaxed mb-4 sm:mb-6">
               Plataforma integral para centralizar, monitorear y gestionar riesgos, incidentes y emergencias, facilitando la coordinación, trazabilidad y toma de decisiones.
             </p>
           </div>
 
-          
+
           {/* Column 2: Plataforma */}
           <div className="flex flex-col items-start text-left">
-            <h3 className="text-xs font-bold text-foreground uppercase tracking-widest font-heading mb-6 flex items-center gap-2">
+            <h3 className="text-xs font-bold text-foreground uppercase tracking-widest font-heading mb-4 sm:mb-6 flex items-center gap-2">
               Plataforma
             </h3>
-            <ul className="flex flex-col items-start font-sans text-body-sm text-muted-foreground gap-3.5">
+            <ul className="flex flex-col items-start font-sans text-body-sm text-muted-foreground gap-3 sm:gap-3.5">
               <li><Link href="/" className="hover:text-primary transition-colors duration-200">Inicio</Link></li>
               <li><Link href="#" className="hover:text-primary transition-colors duration-200">Interoperabilidad</Link></li>
               <li><Link href="#" className="hover:text-primary transition-colors duration-200">Solicitudes</Link></li>
@@ -87,10 +82,10 @@ export function Footer() {
 
           {/* Column 3: Información */}
           <div className="flex flex-col items-start text-left">
-            <h3 className="text-xs font-bold text-foreground uppercase tracking-widest font-heading mb-6 flex items-center gap-2">
+            <h3 className="text-xs font-bold text-foreground uppercase tracking-widest font-heading mb-4 sm:mb-6 flex items-center gap-2">
               Información
             </h3>
-            <ul className="flex flex-col items-start font-sans text-body-sm text-muted-foreground gap-3.5">
+            <ul className="flex flex-col items-start font-sans text-body-sm text-muted-foreground gap-3 sm:gap-3.5">
               <li><Link href="#" className="hover:text-primary transition-colors duration-200">Acerca de DINARP</Link></li>
               <li><Link href="#" className="hover:text-primary transition-colors duration-200">Documentación</Link></li>
               <li><Link href="#" className="hover:text-primary transition-colors duration-200">Contacto</Link></li>
@@ -99,10 +94,10 @@ export function Footer() {
 
           {/* Column 4: Legal */}
           <div className="flex flex-col items-start text-left">
-            <h3 className="text-xs font-bold text-foreground uppercase tracking-widest font-heading mb-6 flex items-center gap-2">
+            <h3 className="text-xs font-bold text-foreground uppercase tracking-widest font-heading mb-4 sm:mb-6 flex items-center gap-2">
               Legal
             </h3>
-            <ul className="flex flex-col items-start font-sans text-body-sm text-muted-foreground gap-3.5">
+            <ul className="flex flex-col items-start font-sans text-body-sm text-muted-foreground gap-3 sm:gap-3.5">
               <li><Link href="#" className="hover:text-primary transition-colors duration-200">Política de privacidad</Link></li>
               <li><Link href="#" className="hover:text-primary transition-colors duration-200">Términos y condiciones</Link></li>
               <li><Link href="#" className="hover:text-primary transition-colors duration-200">Tratamiento de datos</Link></li>
@@ -113,6 +108,16 @@ export function Footer() {
       </div>
 
       {/* Bottom Bar: Copyright & Socials */}
+      <div className="w-full border-t border-border/60 bg-surface">
+        <div className="max-w-7xl mx-auto px-5 sm:px-8 md:px-12 py-5 sm:py-6 flex flex-col-reverse sm:flex-row items-center justify-between gap-4 sm:gap-6">
+          <div className="text-[10px] text-muted-foreground uppercase tracking-widest font-sans text-center sm:text-left">
+            © 2026 DINARP. Todos los derechos reservados.
+          </div>
+
+          <TooltipProvider delayDuration={200}>
+            <div className="flex items-center gap-2.5">
+              {config.socials.facebook.enabled && (
+                <Tooltip>
                   <TooltipTrigger asChild>
                     <a href="#" onClick={(e) => e.preventDefault()} className="size-8 rounded-full bg-surface-subtle border border-border flex items-center justify-center transition-all hover:bg-primary/10 hover:text-primary hover:border-primary/30 text-muted-foreground">
                       <svg className="size-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z" /></svg>

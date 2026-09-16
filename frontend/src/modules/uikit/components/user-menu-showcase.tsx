@@ -136,24 +136,20 @@ export function UserMenuShowcase({ registerSection }: { registerSection?: (id: s
         >
           {/* Live component preview */}
           <div className="w-full bg-background min-h-[460px] flex flex-col">
-            <header className="w-full border-b border-border bg-surface px-6 py-4 flex items-center justify-between shadow-sm">
-              <div className="flex items-center gap-3">
-                <span className="font-heading font-bold text-lg text-foreground">DINARP GEOportal</span>
+            <header className="w-full border-b border-border bg-surface px-6 py-4 flex items-center justify-end shadow-sm">
+              <div className="flex items-center gap-2">
+                <UserMenu />
               </div>
-              <header className="w-full border-b border-border bg-surface px-6 py-4 flex items-center justify-end shadow-sm">
-                <div className="flex items-center gap-2">
-                  <UserMenu />
-                </div>
-              </header>
-              <main className="flex-1 p-8 flex flex-col items-center justify-center text-center text-muted-foreground bg-muted/10">
-                <div className="max-w-md p-6 rounded-2xl border border-border bg-surface shadow-sm">
-                  <UserCircle className="size-8 text-primary mx-auto mb-2" />
-                  <h4 className="text-base font-bold text-foreground">Menú de Usuario</h4>
-                  <p className="text-xs text-muted-foreground mt-2">
-                    Haz clic en el avatar / usuario en la esquina superior derecha para desplegar y probar las opciones de perfil y configuración.
-                  </p>
-                </div>
-              </main>
+            </header>
+            <main className="flex-1 p-8 flex flex-col items-center justify-center text-center text-muted-foreground bg-muted/10">
+              <div className="max-w-md p-6 rounded-2xl border border-border bg-surface shadow-sm">
+                <UserCircle className="size-8 text-primary mx-auto mb-2" />
+                <h4 className="text-base font-bold text-foreground">Menú de Usuario</h4>
+                <p className="text-xs text-muted-foreground mt-2">
+                  Haz clic en el avatar / usuario en la esquina superior derecha para desplegar y probar las opciones de perfil y configuración.
+                </p>
+              </div>
+            </main>
           </div>
 
           {/* ── Drag handle derecho ── */}

@@ -62,7 +62,7 @@ export function UserMenu() {
           <SheetTitle className="sr-only">Menú de usuario</SheetTitle>
 
           {/* Header Móvil */}
-          <div className="flex items-center justify-between px-4 py-4 border-b border-border/40 shrink-0 mt-4">
+          <div className="flex items-center justify-between px-4 py-3 sm:py-4 border-b border-border/40 shrink-0">
             <Button
               variant="ghost"
               size="icon"
@@ -72,31 +72,32 @@ export function UserMenu() {
             >
               <ChevronLeft className="size-6" strokeWidth={2} />
             </Button>
-            <div className="size-10" />
+            <span className="text-[11px] sm:text-xs font-heading font-bold uppercase tracking-widest text-muted-foreground">Cuenta</span>
+            <div className="size-8" />
           </div>
 
-          <div className="px-6 pb-8 pt-6 overflow-y-auto max-h-[85vh]">
+          <div className="px-4 sm:px-6 pb-6 sm:pb-8 pt-4 sm:pt-6 overflow-y-auto max-h-[85vh]">
             {/* User Info Header */}
-            <div className="flex items-center gap-4 mb-6 px-2">
-              <Avatar className="size-16">
-                <AvatarFallback className="bg-gradient-to-tr from-primary to-primary-600 text-white text-xl font-bold shadow-sm">PR</AvatarFallback>
+            <div className="flex items-center gap-3 sm:gap-4 mb-4 sm:mb-6 px-1 sm:px-2">
+              <Avatar className="size-12 sm:size-16 shrink-0">
+                <AvatarFallback className="bg-gradient-to-tr from-primary to-primary-600 text-white text-base sm:text-xl font-bold shadow-sm">PR</AvatarFallback>
               </Avatar>
-              <div className="flex flex-col">
-                <span className="text-body font-bold text-foreground">Paula Rozo</span>
+              <div className="flex flex-col min-w-0">
+                <span className="text-sm sm:text-base font-bold text-foreground truncate">Paula Rozo</span>
                 <span className="text-xs font-semibold text-primary mt-0.5 flex items-center gap-1.5"><div className="size-1.5 rounded-full bg-primary shrink-0" />Super Admin</span>
-                <span className="text-[10px] text-muted-foreground mt-0.5">paula.rozo@geoportal.gob.ec</span>
+                <span className="text-[11px] sm:text-xs text-muted-foreground mt-0.5 truncate">paula.rozo@geoportal.gob.ec</span>
               </div>
             </div>
 
-            <div className="h-px bg-border/60 mx-2 mb-6" />
+            <div className="h-px bg-border/60 mx-1 sm:mx-2 mb-4 sm:mb-6" />
 
-            <div className="flex flex-col gap-2">
+            <div className="flex flex-col gap-1 sm:gap-2">
               <MobileMenuItem icon={User} label="Perfil" onClick={() => setOpen(false)} />
               <MobileMenuItem icon={Diamond} label="Suscripción" onClick={() => setOpen(false)} />
               <MobileMenuItem icon={Sparkles} label="Inspiraciones" isActive onClick={() => setOpen(false)} />
               <MobileMenuItem icon={Settings} label="Ajustes" onClick={() => setOpen(false)} />
 
-              <div className="h-px bg-border my-2 mx-2" />
+              <div className="h-px bg-border my-2 mx-1 sm:mx-2" />
 
               <MobileMenuItem icon={Bell} label="Actualizaciones" badge="Nuevo" onClick={() => setOpen(false)} />
               <MobileMenuItem icon={LogOut} label="Cerrar sesión" isWarning onClick={() => setOpen(false)} />
@@ -117,7 +118,7 @@ export function UserMenu() {
         align="end"
         sideOffset={8}
         className={cn(
-          "w-[280px] rounded-xl border border-border bg-surface p-1.5 shadow-lg",
+          "w-[calc(100vw-1.5rem)] sm:w-[280px] max-w-[280px] rounded-xl border border-border bg-surface p-1.5 shadow-lg",
           "data-[state=open]:animate-in data-[state=closed]:animate-out",
           "data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0",
           "data-[state=closed]:zoom-out-[0.98] data-[state=open]:zoom-in-[0.98]",

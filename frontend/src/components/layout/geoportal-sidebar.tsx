@@ -204,27 +204,17 @@ export function GeoportalSidebar({
             {/* Logo del GEOportal */}
             <div className="flex items-center justify-between px-4 py-3 lg:px-4 lg:py-4 group-data-[collapsible=icon]:px-2 group-data-[collapsible=icon]:py-4 border-b-2 border-primary-300 lg:border-b-0 lg:border-none">
               <Link href="/" className="flex items-center gap-3 shrink-0 group focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none rounded-md overflow-hidden w-full justify-start">
-                {/* Expanded logos */}
+                {/* Expanded logo */}
                 <img
                   src="/logotipo.png"
                   alt="Logo DINARP GEOportal"
-                  className="h-9 lg:h-10 w-auto object-contain transition-transform group-hover:scale-105 group-data-[collapsible=icon]:hidden dark:hidden"
+                  className="h-9 lg:h-10 w-auto object-contain transition-transform group-hover:scale-105 group-data-[collapsible=icon]:hidden"
                 />
+                {/* Collapsed logo */}
                 <img
                   src="/logotipo.png"
-                  alt="Logo DINARP GEOportal"
-                  className="h-9 lg:h-10 w-auto object-contain transition-transform group-hover:scale-105 group-data-[collapsible=icon]:hidden hidden dark:block"
-                />
-                {/* Collapsed logos (symbol) */}
-                <img
-                  src="/Favicon.svg"
-                  alt="Símbolo Icon"
-                  className="h-8 w-auto object-contain transition-transform group-hover:scale-105 hidden group-data-[collapsible=icon]:block mx-auto dark:hidden"
-                />
-                <img
-                  src="/Favicon alternativo.svg"
-                  alt="Símbolo Icon"
-                  className="h-8 w-auto object-contain transition-transform group-hover:scale-105 hidden group-data-[collapsible=icon]:hidden dark:group-data-[collapsible=icon]:block mx-auto"
+                  alt="Logo DINARP Símbolo"
+                  className="h-8 w-auto object-contain transition-transform group-hover:scale-105 hidden group-data-[collapsible=icon]:block mx-auto"
                 />
               </Link>
               {isMobile && (

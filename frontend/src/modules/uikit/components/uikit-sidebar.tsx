@@ -314,29 +314,22 @@ export function UIKitSidebar({ activeSection, onNavigate }: UIKitSidebarProps) {
         <div className="flex items-center justify-between gap-2 overflow-hidden">
           {/* Logo */}
           <div className="flex items-center shrink-0">
-            {/* Expanded Logos */}
+            {/* Expanded Logo */}
             <Image
               src="/logotipo.png"
-              alt="GLocation Logo"
+              alt="Logo DINARP"
               width={150}
               height={35}
-              className="h-[35px] w-auto group-data-[state=collapsed]:hidden animate-in fade-in duration-300 dark:hidden"
-            />
-            <Image
-              src="/logotipo.png"
-              alt="GLocation Logo Dark"
-              width={150}
-              height={35}
-              className="h-[35px] w-auto group-data-[state=collapsed]:hidden animate-in fade-in duration-300 hidden dark:block"
+              className="h-[35px] w-auto group-data-[state=collapsed]:hidden animate-in fade-in duration-300 object-contain"
             />
 
-            {/* Collapsed Icons */}
+            {/* Collapsed Icon */}
             <Image
-              src="/Logo vertical.webp"
-              alt="GLocation Icon"
+              src="/logotipo.png"
+              alt="Logo DINARP"
               width={27}
               height={27}
-              className="h-[27px] w-auto group-data-[state=expanded]:hidden animate-in zoom-in-75 duration-300"
+              className="h-[27px] w-auto group-data-[state=expanded]:hidden animate-in zoom-in-75 duration-300 object-contain"
             />
           </div>
         </div>
