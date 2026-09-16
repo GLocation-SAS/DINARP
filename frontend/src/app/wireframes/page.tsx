@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -14,6 +15,7 @@ import {
   FileCode2,
   Palette,
   ShieldCheck,
+  ArrowRight,
 } from "lucide-react";
 
 export default function WireframesPage() {
@@ -89,6 +91,50 @@ export default function WireframesPage() {
             </CardDescription>
           </CardHeader>
         </Card>
+      </section>
+
+      {/* Auth Wireframes Flow */}
+      <section className="flex flex-col gap-4">
+        <h2 className="font-heading text-lg font-bold text-foreground">
+          Flujo de Autenticación Wireframe
+        </h2>
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          <Link
+            href="/wireframes/login"
+            className="group flex flex-col p-5 rounded-2xl border border-border bg-surface hover:border-foreground/30 hover:shadow-sm transition-all"
+          >
+            <div className="flex items-center justify-between mb-2">
+              <Badge tone="neutral" appearance="soft" size="sm">Paso 1</Badge>
+              <ArrowRight className="size-4 text-muted-foreground group-hover:translate-x-1 transition-transform" />
+            </div>
+            <h3 className="font-heading font-bold text-base text-foreground">Acceso al sistema</h3>
+            <p className="text-xs text-muted-foreground mt-1">/wireframes/login</p>
+          </Link>
+
+          <Link
+            href="/wireframes/recuperar-acceso"
+            className="group flex flex-col p-5 rounded-2xl border border-border bg-surface hover:border-foreground/30 hover:shadow-sm transition-all"
+          >
+            <div className="flex items-center justify-between mb-2">
+              <Badge tone="neutral" appearance="soft" size="sm">Paso 2</Badge>
+              <ArrowRight className="size-4 text-muted-foreground group-hover:translate-x-1 transition-transform" />
+            </div>
+            <h3 className="font-heading font-bold text-base text-foreground">Recuperar acceso</h3>
+            <p className="text-xs text-muted-foreground mt-1">/wireframes/recuperar-acceso</p>
+          </Link>
+
+          <Link
+            href="/wireframes/restablecer-contrasena"
+            className="group flex flex-col p-5 rounded-2xl border border-border bg-surface hover:border-foreground/30 hover:shadow-sm transition-all"
+          >
+            <div className="flex items-center justify-between mb-2">
+              <Badge tone="neutral" appearance="soft" size="sm">Paso 3</Badge>
+              <ArrowRight className="size-4 text-muted-foreground group-hover:translate-x-1 transition-transform" />
+            </div>
+            <h3 className="font-heading font-bold text-base text-foreground">Restablecer contraseña</h3>
+            <p className="text-xs text-muted-foreground mt-1">/wireframes/restablecer-contrasena</p>
+          </Link>
+        </div>
       </section>
 
       {/* Status Panel */}
