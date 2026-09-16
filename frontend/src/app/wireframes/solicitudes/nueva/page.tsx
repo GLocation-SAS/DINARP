@@ -56,6 +56,7 @@ import {
 } from "@/components/ui/dialog";
 import { Stepper, Step } from "@/components/ui/stepper";
 import { DetailList } from "@/components/ui/detail-list";
+import { FileUpload as AdvancedFileUpload, type FileItemData } from "@/components/ui/file-input";
 import { WireframeDashboardLayout } from "../../components/wireframe-dashboard-layout";
 
 const FORM_STEPS: Step[] = [
@@ -93,6 +94,66 @@ function NuevaSolicitudContent() {
   const [baseLegal, setBaseLegal] = useState("Ley Orgánica del Sistema Nacional de Registro de Datos Públicos (Art. 14, 18).");
   const [terminosAceptados, setTerminosAceptados] = useState(true);
   const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false);
+
+  // Advanced File Upload state
+  const [uploadedFiles, setUploadedFiles] = useState<FileItemData[]>([
+    {
+      id: "doc-1",
+      file: new File(["mock"], "Terminos_de_Referencia_2026.pdf", { type: "application/pdf" }),
+      status: "success",
+      errorType: null,
+      progress: 100,
+    },
+    {
+      id: "doc-2",
+      file: new File(["mock"], "Acuerdo_Confidencialidad_DIGERCIC.pdf", { type: "application/pdf" }),
+      status: "success",
+      errorType: null,
+      progress: 100,
+    },
+  ]);
+
+  const handleFileSelect = (files: File[]) => {
+    const newItems: FileItemData[] = files.map((f, idx) => ({
+      id: `file-${Date.now()}-${idx}`,
+      file: f,
+      status: "uploading",
+      errorType: null,
+      progress: 35,
+    }));
+    setUploadedFiles((prev) => [...prev, ...newItems]);
+
+    setTimeout(() => {
+      setUploadedFiles((prev) =>
+        prev.map((item) =>
+          newItems.some((n) => n.id === item.id)
+            ? { ...item, status: "success", progress: 100 }
+            : item
+        )
+      );
+    }, 700);
+  };
+
+  const handleRemoveFile = (id: string) => {
+    setUploadedFiles((prev) => prev.filter((i) => i.id !== id));
+  };
+
+  const handleRetryFile = (id: string) => {
+    setUploadedFiles((prev) =>
+      prev.map((i) => (i.id === id ? { ...i, status: "uploading", progress: 40 } : i))
+    );
+    setTimeout(() => {
+      setUploadedFiles((prev) =>
+        prev.map((i) => (i.id === id ? { ...i, status: "success", progress: 100 } : i))
+      );
+    }, 600);
+  };
+
+  const handleCancelFile = (id: string) => {
+    setUploadedFiles((prev) =>
+      prev.map((i) => (i.id === id ? { ...i, status: "cancelled" } : i))
+    );
+  };
 
   const camposSeleccionadosMock = [
     "Número de identificación",
@@ -386,18 +447,22 @@ function NuevaSolicitudContent() {
                       </InputGroup>
                     </div>
 
-                    <div className="space-y-1.5 pt-2">
-                      <Label className="text-xs font-semibold text-foreground">Documentos de Respaldo (TDRs, Acuerdos)</Label>
-                      <div className="p-6 rounded-2xl border-2 border-dashed border-border/80 bg-muted/10 text-center space-y-2">
-                        <Upload className="size-6 text-muted-foreground mx-auto" />
-                        <p className="text-xs font-medium text-foreground">
-                          Arrastra aquí los términos de referencia o acuerdos de confidencialidad
-                        </p>
-                        <p className="text-[11px] text-muted-foreground">Archivos PDF hasta 10 MB</p>
-                        <Button type="button" variant="outline" size="sm" className="h-8 text-xs font-semibold">
-                          Explorar archivos
-                        </Button>
-                      </div>
+                    <div className="space-y-2 pt-2 text-left">
+                      <Label className="text-xs font-semibold text-foreground block">
+                        Documentos de Respaldo (TDRs, Acuerdos de Confidencialidad)
+                      </Label>
+                      <AdvancedFileUpload
+                        allowedFormats="PDF, Word (.docx), Excel (.xlsx) y archivos ZIP hasta 25 MB"
+                        accept=".pdf,.docx,.doc,.xlsx,.zip"
+                        maxSizeMB={25}
+                        maxFiles={5}
+                        multiple
+                        items={uploadedFiles}
+                        onFileSelect={handleFileSelect}
+                        onRemove={handleRemoveFile}
+                        onRetry={handleRetryFile}
+                        onCancel={handleCancelFile}
+                      />
                     </div>
                   </CardContent>
 
@@ -487,6 +552,24 @@ function NuevaSolicitudContent() {
                           label: "Base Legal",
                           colSpan: 2,
                           value: <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed">{baseLegal}</p>,
+                        },
+                        {
+                          label: "Documentos Adjuntos",
+                          colSpan: 2,
+                          value: (
+                            <div className="flex flex-wrap gap-2">
+                              {uploadedFiles.length > 0 ? (
+                                uploadedFiles.map((doc) => (
+                                  <Badge key={doc.id} tone="neutral" appearance="soft" size="sm" className="gap-1.5 py-1 px-2.5 font-mono">
+                                    <FileText className="size-3 text-muted-foreground" />
+                                    <span>{doc.file.name}</span>
+                                  </Badge>
+                                ))
+                              ) : (
+                                <span className="text-xs text-muted-foreground italic">Sin documentos adjuntos</span>
+                              )}
+                            </div>
+                          ),
                         },
                       ]}
                     />

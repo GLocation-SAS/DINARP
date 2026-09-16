@@ -9,10 +9,13 @@ import {
   Mail,
   Key,
   Lock,
+  Unlock,
   Clock,
   Shield,
   ShieldCheck,
+  AlertTriangle,
 } from "lucide-react";
+import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -40,6 +43,14 @@ import {
   DropdownMenuItem,
   DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogFooter,
+} from "@/components/ui/dialog";
 import { DetailList } from "@/components/ui/detail-list";
 import { WireframeDashboardLayout } from "../../components/wireframe-dashboard-layout";
 import { UsuarioModal, type UsuarioData } from "../components/usuario-modal";
@@ -52,6 +63,7 @@ export function UsuarioDetailClient({ id }: UsuarioDetailClientProps) {
   const router = useRouter();
   const [activeTab, setActiveTab] = useState("informacion");
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [isDeactivateOpen, setIsDeactivateOpen] = useState(false);
 
   // Editable user data state
   const [userData, setUserData] = useState<UsuarioData>({
@@ -68,6 +80,19 @@ export function UsuarioDetailClient({ id }: UsuarioDetailClientProps) {
 
   const handleSaveUser = (updated: UsuarioData) => {
     setUserData(updated);
+  };
+
+  const handleConfirmDeactivate = () => {
+    const newStatus = userData.estado === "Activo" ? "Inactivo" : "Activo";
+    setUserData((prev) => ({ ...prev, estado: newStatus }));
+
+    if (newStatus === "Inactivo") {
+      toast.warning(`Usuario ${userData.nombre} desactivado.`);
+    } else {
+      toast.success(`Usuario ${userData.nombre} reactivado.`);
+    }
+
+    setIsDeactivateOpen(false);
   };
 
   const nameParts = userData.nombre.split(" ");
@@ -155,7 +180,7 @@ export function UsuarioDetailClient({ id }: UsuarioDetailClientProps) {
                     <MoreVertical className="size-4" />
                   </Button>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent align="end" className="w-48">
+                <DropdownMenuContent align="end" className="w-52">
                   <DropdownMenuItem onClick={() => setIsEditModalOpen(true)}>
                     <Pencil className="size-3.5 mr-2 text-muted-foreground" />
                     <span>Editar usuario</span>
@@ -169,10 +194,23 @@ export function UsuarioDetailClient({ id }: UsuarioDetailClientProps) {
                     <span>Reenviar bienvenida</span>
                   </DropdownMenuItem>
                   <DropdownMenuSeparator />
-                  <DropdownMenuItem className="text-destructive focus:text-destructive">
-                    <Lock className="size-3.5 mr-2" />
-                    <span>Suspender usuario</span>
-                  </DropdownMenuItem>
+                  {userData.estado === "Activo" ? (
+                    <DropdownMenuItem
+                      className="text-warning focus:text-warning"
+                      onClick={() => setIsDeactivateOpen(true)}
+                    >
+                      <Lock className="size-3.5 mr-2" />
+                      <span>Desactivar usuario</span>
+                    </DropdownMenuItem>
+                  ) : (
+                    <DropdownMenuItem
+                      className="text-success focus:text-success"
+                      onClick={() => setIsDeactivateOpen(true)}
+                    >
+                      <Unlock className="size-3.5 mr-2" />
+                      <span>Reactivar usuario</span>
+                    </DropdownMenuItem>
+                  )}
                 </DropdownMenuContent>
               </DropdownMenu>
             </div>
@@ -305,6 +343,50 @@ export function UsuarioDetailClient({ id }: UsuarioDetailClientProps) {
         initialData={userData}
         onSave={handleSaveUser}
       />
+
+      {/* ── Dialog Warning: Desactivar / Reactivar Usuario ── */}
+      <Dialog open={isDeactivateOpen} onOpenChange={setIsDeactivateOpen}>
+        <DialogContent variant="warning" size="default">
+          <DialogHeader>
+            <DialogTitle>
+              {userData.estado === "Activo"
+                ? "¿Desactivar usuario?"
+                : "¿Reactivar usuario?"}
+            </DialogTitle>
+            <DialogDescription>
+              {userData.estado === "Activo" ? (
+                <>
+                  Estás a punto de suspender el acceso de{" "}
+                  <strong className="text-foreground font-semibold">
+                    {userData.nombre}
+                  </strong>
+                  . El usuario no podrá iniciar sesión en la plataforma hasta que sea reactivado.
+                </>
+              ) : (
+                <>
+                  ¿Deseas restaurar el acceso al sistema para{" "}
+                  <strong className="text-foreground font-semibold">
+                    {userData.nombre}
+                  </strong>
+                  ?
+                </>
+              )}
+            </DialogDescription>
+          </DialogHeader>
+
+          <DialogFooter showCloseButton={true} stacked={true}>
+            <Button
+              type="button"
+              variant={userData.estado === "Activo" ? "warning" : "success"}
+              onClick={handleConfirmDeactivate}
+            >
+              {userData.estado === "Activo"
+                ? "Desactivar usuario"
+                : "Reactivar usuario"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </WireframeDashboardLayout>
   );
 }

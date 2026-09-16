@@ -54,6 +54,15 @@ import {
   PaginationPrevious,
   PaginationNext,
 } from "@/components/ui/pagination";
+import { toast } from "sonner";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogFooter,
+} from "@/components/ui/dialog";
 import { WireframeDashboardLayout } from "../components/wireframe-dashboard-layout";
 
 interface RolItem {
@@ -66,7 +75,7 @@ interface RolItem {
   fechaActualizacion: string;
 }
 
-const ROLES_DATA: RolItem[] = [
+const INITIAL_ROLES_DATA: RolItem[] = [
   {
     id: "ROL-001",
     iniciales: "AG",
@@ -117,12 +126,51 @@ const ROLES_DATA: RolItem[] = [
 export default function WireframeListadoRolesPage() {
   const router = useRouter();
 
+  const [rolesList, setRolesList] = useState<RolItem[]>(INITIAL_ROLES_DATA);
   const [searchQuery, setSearchQuery] = useState("");
   const [filterEstado, setFilterEstado] = useState("Todos");
   const [currentPage, setCurrentPage] = useState(1);
 
+  // Dialog de confirmación (Desactivar / Eliminar)
+  const [selectedRol, setSelectedRol] = useState<RolItem | null>(null);
+  const [actionType, setActionType] = useState<"toggle" | "delete" | null>(null);
+
+  const handleToggleEstado = (rol: RolItem, e?: React.MouseEvent) => {
+    e?.stopPropagation();
+    const newStatus = rol.estado === "Activo" ? "Inactivo" : "Activo";
+    setRolesList((prev) =>
+      prev.map((r) => (r.id === rol.id ? { ...r, estado: newStatus, fechaActualizacion: "Hoy, recién" } : r))
+    );
+    if (newStatus === "Inactivo") {
+      toast.warning(`Rol "${rol.nombre}" desactivado.`);
+    } else {
+      toast.success(`Rol "${rol.nombre}" activado.`);
+    }
+  };
+
+  const handleDuplicate = (rol: RolItem, e?: React.MouseEvent) => {
+    e?.stopPropagation();
+    const newRol: RolItem = {
+      ...rol,
+      id: `ROL-00${rolesList.length + 1}`,
+      nombre: `${rol.nombre} (Copia)`,
+      usuariosAsignados: 0,
+      fechaActualizacion: "Hoy, recién",
+    };
+    setRolesList((prev) => [newRol, ...prev]);
+    toast.success(`Rol duplicado como "${newRol.nombre}".`);
+  };
+
+  const handleDeleteConfirm = () => {
+    if (!selectedRol) return;
+    setRolesList((prev) => prev.filter((r) => r.id !== selectedRol.id));
+    toast.success(`Rol "${selectedRol.nombre}" eliminado correctamente.`);
+    setSelectedRol(null);
+    setActionType(null);
+  };
+
   const filteredData = useMemo(() => {
-    return ROLES_DATA.filter((item) => {
+    return rolesList.filter((item) => {
       const matchesSearch =
         searchQuery === "" ||
         item.nombre.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -132,7 +180,7 @@ export default function WireframeListadoRolesPage() {
 
       return matchesSearch && matchesEstado;
     });
-  }, [searchQuery, filterEstado]);
+  }, [rolesList, searchQuery, filterEstado]);
 
   return (
     <WireframeDashboardLayout activeMenu="roles">
@@ -329,13 +377,28 @@ export default function WireframeListadoRolesPage() {
                           </TooltipTrigger>
                           <TooltipContent>Más opciones</TooltipContent>
                         </Tooltip>
-                        <DropdownMenuContent align="end" className="w-40">
+                        <DropdownMenuContent align="end" className="w-48">
                           <DropdownMenuItem onClick={() => router.push(`/wireframes/usuarios`)}>
                             <Users className="size-3.5 mr-2" />
-                            <span>Ver usuarios</span>
+                            <span>Ver usuarios ({row.usuariosAsignados})</span>
+                          </DropdownMenuItem>
+                          <DropdownMenuItem onClick={(e) => handleToggleEstado(row, e)}>
+                            <Lock className="size-3.5 mr-2" />
+                            <span>{row.estado === "Activo" ? "Desactivar rol" : "Activar rol"}</span>
+                          </DropdownMenuItem>
+                          <DropdownMenuItem onClick={(e) => handleDuplicate(row, e)}>
+                            <ShieldCheck className="size-3.5 mr-2" />
+                            <span>Duplicar rol</span>
                           </DropdownMenuItem>
                           <DropdownMenuSeparator />
-                          <DropdownMenuItem className="text-destructive focus:text-destructive">
+                          <DropdownMenuItem
+                            className="text-destructive focus:text-destructive"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setSelectedRol(row);
+                              setActionType("delete");
+                            }}
+                          >
                             <Trash2 className="size-3.5 mr-2" />
                             <span>Eliminar rol</span>
                           </DropdownMenuItem>
@@ -352,7 +415,7 @@ export default function WireframeListadoRolesPage() {
         {/* ── 4. Paginación ── */}
         <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-4">
           <p className="text-xs text-muted-foreground font-medium">
-            Mostrando 1 a {filteredData.length} de 12 roles
+            Mostrando 1 a {filteredData.length} de {rolesList.length} roles
           </p>
 
           <Pagination className="mx-0 w-auto justify-end">
@@ -392,6 +455,39 @@ export default function WireframeListadoRolesPage() {
             </PaginationContent>
           </Pagination>
         </div>
+
+        {/* Modal de confirmación de eliminación */}
+        <Dialog open={actionType === "delete" && !!selectedRol} onOpenChange={(open) => !open && setActionType(null)}>
+          <DialogContent className="max-w-[420px] rounded-3xl p-6 bg-background border-border shadow-2xl">
+            <DialogHeader className="space-y-2">
+              <DialogTitle className="font-heading font-bold text-lg text-foreground">
+                ¿Eliminar rol "{selectedRol?.nombre}"?
+              </DialogTitle>
+              <DialogDescription className="text-xs text-muted-foreground leading-relaxed">
+                Esta acción revocará los permisos asignados a los {selectedRol?.usuariosAsignados} usuarios vinculados.
+              </DialogDescription>
+            </DialogHeader>
+            <DialogFooter className="flex items-center justify-end gap-2 pt-4">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => {
+                  setSelectedRol(null);
+                  setActionType(null);
+                }}
+              >
+                Cancelar
+              </Button>
+              <Button
+                variant="destructive"
+                size="sm"
+                onClick={handleDeleteConfirm}
+              >
+                Eliminar definitivamente
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
       </main>
     </WireframeDashboardLayout>
   );
