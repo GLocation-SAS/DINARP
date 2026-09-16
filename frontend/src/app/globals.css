@@ -1,21 +1,21 @@
 /*
-  DINARP ├óÔé¼ÔÇØ GEOportal | Design tokens globales
+  DINARP â€” GEOportal | Design tokens globales
   ------------------------------------------------------------
   Este archivo centraliza la identidad visual y los estilos base.
 
   ESTRUCTURA DEL SISTEMA:
   1. Primitivos: valores crudos, por ejemplo #20295c.
-  2. Sem├â┬ínticos: explican la funci├â┬│n, por ejemplo --primary.
+  2. SemÃ¡nticos: explican la funciÃ³n, por ejemplo --primary.
   3. Tailwind: expone los tokens como clases, por ejemplo bg-primary.
-  4. Componentes: consumen clases sem├â┬ínticas y no colores hexadecimales.
+  4. Componentes: consumen clases semÃ¡nticas y no colores hexadecimales.
 
   REGLA PRINCIPAL:
-  En los componentes usa preferentemente tokens sem├â┬ínticos:
+  En los componentes usa preferentemente tokens semÃ¡nticos:
     bg-background, bg-card, text-foreground, border-border,
     bg-primary, text-primary-foreground, bg-risk-high, etc.
 
-  Evita usar directamente primary-500, neutral-200 o c├â┬│digos HEX,
-  salvo cuando est├â┬®s documentando la paleta o construyendo una escala.
+  Evita usar directamente primary-500, neutral-200 o cÃ³digos HEX,
+  salvo cuando estÃ©s documentando la paleta o construyendo una escala.
 */
 
 /* Tailwind CSS: genera las utilidades del proyecto. */
@@ -29,17 +29,17 @@
 
 
 /* ============================================================
-   1. CONEXI├âÔÇ£N ENTRE LOS TOKENS CSS Y TAILWIND
+   1. CONEXIÃ“N ENTRE LOS TOKENS CSS Y TAILWIND
    ============================================================
    @theme inline convierte las variables CSS en clases de Tailwind.
 
    Ejemplos:
-   --color-primary ├óÔÇáÔÇÖ bg-primary, text-primary, border-primary
-   --color-card    ├óÔÇáÔÇÖ bg-card, text-card
-   --text-h1       ├óÔÇáÔÇÖ text-h1
-   --radius-lg     ├óÔÇáÔÇÖ rounded-lg
+   --color-primary â†’ bg-primary, text-primary, border-primary
+   --color-card    â†’ bg-card, text-card
+   --text-h1       â†’ text-h1
+   --radius-lg     â†’ rounded-lg
 
-   Esta secci├â┬│n no define el color final: solamente crea el puente.
+   Esta secciÃ³n no define el color final: solamente crea el puente.
    Los valores reales se asignan en :root y [data-theme="dark"].
 */
 
@@ -51,11 +51,11 @@
   --color-secondary: var(--secondary);
 
   /*
-    TIPOGRAF├â AS
+    TIPOGRAFÃ AS
     ------------------------------------------------------------
-    heading: Nunito para t├â┬¡tulos y encabezados.
-    sans: Montserrat para textos, formularios, tablas y navegaci├â┬│n.
-    mono: c├â┬│digo, coordenadas, identificadores o datos t├â┬®cnicos.
+    heading: Nunito para tÃ­tulos y encabezados.
+    sans: Montserrat para textos, formularios, tablas y navegaciÃ³n.
+    mono: cÃ³digo, coordenadas, identificadores o datos tÃ©cnicos.
 
     Uso:
     className="font-heading text-h1"
@@ -68,12 +68,12 @@
   --font-mono: var(--font-montserrat);
 
   /*
-  PESOS TIPOGR├â┬üFICOS
+  PESOS TIPOGRÃFICOS
   ------------------------------------------------------------
   regular: textos y contenido general.
-  medium: botones, navegaci├â┬│n y etiquetas destacadas.
-  semibold: subt├â┬¡tulos y encabezados secundarios.
-  bold: t├â┬¡tulos principales y datos destacados.
+  medium: botones, navegaciÃ³n y etiquetas destacadas.
+  semibold: subtÃ­tulos y encabezados secundarios.
+  bold: tÃ­tulos principales y datos destacados.
 
   Uso:
   className="font-sans font-regular"
@@ -90,13 +90,13 @@
     ------------------------------------------------------------
     Permiten clases como bg-primary-500 o text-neutral-700.
 
-    ├â┼ísalas principalmente para:
-    - documentaci├â┬│n del Design System;
-    - estados hover/pressed muy espec├â┬¡ficos;
-    - gr├â┬íficos o visualizaciones que requieren una intensidad exacta.
+    Ãšsalas principalmente para:
+    - documentaciÃ³n del Design System;
+    - estados hover/pressed muy especÃ­ficos;
+    - grÃ¡ficos o visualizaciones que requieren una intensidad exacta.
 
     Para botones, tarjetas, textos y formularios comunes usa mejor
-    las clases sem├â┬ínticas: bg-primary, bg-card, text-foreground, etc.
+    las clases semÃ¡nticas: bg-primary, bg-card, text-foreground, etc.
   */
   --color-primary-50: var(--primitive-primary-50);
   --color-primary-100: var(--primitive-primary-100);
@@ -183,19 +183,19 @@
   --color-footer-icon-bg: var(--footer-icon-bg);
 
   /*
-    TOKENS SEM├â┬üNTICOS EXPUESTOS A TAILWIND
+    TOKENS SEMÃNTICOS EXPUESTOS A TAILWIND
     ------------------------------------------------------------
     Son los tokens recomendados para construir componentes.
 
     Ejemplos frecuentes:
-    P├â┬ígina:       bg-background text-foreground
+    PÃ¡gina:       bg-background text-foreground
     Tarjeta:      bg-card text-card-foreground border-border
-    Bot├â┬│n:        bg-primary text-primary-foreground
+    BotÃ³n:        bg-primary text-primary-foreground
     Texto apoyo:  text-muted-foreground
     Foco:         focus-visible:ring-ring
 
     Al cambiar a modo oscuro, estas clases conservan su nombre y
-    reciben autom├â┬íticamente otro valor desde [data-theme="dark"].
+    reciben automÃ¡ticamente otro valor desde [data-theme="dark"].
   */
   --color-background: var(--background);
   --color-foreground: var(--foreground);
@@ -247,30 +247,30 @@
   /*
     ACENTOS INSTITUCIONALES
     ------------------------------------------------------------
-    Representan amarillo y rojo de identidad pa├â┬¡s/institucional.
+    Representan amarillo y rojo de identidad paÃ­s/institucional.
 
     Uso recomendado:
     - franjas institucionales;
     - detalles de marca;
     - elementos editoriales o decorativos.
 
-    No usar brand-red como sustituto autom├â┬ítico de danger, ni
-    brand-yellow como sustituto autom├â┬ítico de warning.
+    No usar brand-red como sustituto automÃ¡tico de danger, ni
+    brand-yellow como sustituto automÃ¡tico de warning.
   */
   --color-brand-yellow: var(--primitive-brand-yellow);
   --color-brand-red: var(--primitive-brand-red);
 
   /*
-    VISUALIZACI├âÔÇ£N DE DATOS
+    VISUALIZACIÃ“N DE DATOS
     ------------------------------------------------------------
-    Colores categ├â┬│ricos para barras, l├â┬¡neas, donuts y comparaciones.
+    Colores categÃ³ricos para barras, lÃ­neas, donuts y comparaciones.
 
     Uso:
     className="bg-chart-1"
     stroke="var(--chart-2)"
     fill="var(--chart-3)"
 
-    No asignan significado de riesgo por s├â┬¡ solos. Para niveles de
+    No asignan significado de riesgo por sÃ­ solos. Para niveles de
     riesgo utiliza risk-low, risk-medium, risk-high o risk-critical.
   */
   --color-chart-1: var(--chart-1);
@@ -289,9 +289,9 @@
     Bajo:      bg-risk-low
     Medio:     bg-risk-medium
     Alto:      bg-risk-high
-    Cr├â┬¡tico:   bg-risk-critical
+    CrÃ­tico:   bg-risk-critical
 
-    Mantener la misma asociaci├â┬│n sem├â┬íntica en mapas, leyendas,
+    Mantener la misma asociaciÃ³n semÃ¡ntica en mapas, leyendas,
     tablas, badges, fichas corporativas y dashboards.
   */
   --color-risk-low: var(--risk-low);
@@ -303,10 +303,10 @@
     SIDEBAR DE SHADCN
     ------------------------------------------------------------
     Variables requeridas por el componente Sidebar.
-    Permiten fondo, texto, selecci├â┬│n, bordes y foco consistentes.
+    Permiten fondo, texto, selecciÃ³n, bordes y foco consistentes.
 
     Evita reemplazarlas con colores directos dentro del componente;
-    modifica aqu├â┬¡ el comportamiento global de la barra lateral.
+    modifica aquÃ­ el comportamiento global de la barra lateral.
   */
   --color-sidebar: var(--sidebar);
   --color-sidebar-foreground: var(--sidebar-foreground);
@@ -318,17 +318,17 @@
   --color-sidebar-ring: var(--sidebar-ring);
 
   /*
-    ESCALA TIPOGR├â┬üFICA
+    ESCALA TIPOGRÃFICA
     ------------------------------------------------------------
     Uso recomendado:
-    display: portadas o m├â┬®tricas hero muy destacadas.
-    h1: t├â┬¡tulo principal de la pantalla.
-    h2: t├â┬¡tulo de secci├â┬│n.
-    h3: t├â┬¡tulo de tarjeta o subsecci├â┬│n.
+    display: portadas o mÃ©tricas hero muy destacadas.
+    h1: tÃ­tulo principal de la pantalla.
+    h2: tÃ­tulo de secciÃ³n.
+    h3: tÃ­tulo de tarjeta o subsecciÃ³n.
     body-lg: introducciones o texto destacado.
     body: contenido general y formularios.
     body-sm: tablas, ayudas y metadatos.
-    caption: etiquetas peque├â┬▒as y fuentes de informaci├â┬│n.
+    caption: etiquetas pequeÃ±as y fuentes de informaciÃ³n.
 
     Ejemplo: className="font-heading text-h2 font-semibold"
   */
@@ -366,10 +366,10 @@
   --radius-xl: calc(var(--radius) * 1.4);
 
   /*
-    ESPACIADO Y SOMBRAS (ELEVACI├âÔÇ£N)
+    ESPACIADO Y SOMBRAS (ELEVACIÃ“N)
     ------------------------------------------------------------
-    --spacing ajusta la escala base a m├â┬║ltiplos de 4px (0.25rem).
-    --shadow expone las variables de elevaci├â┬│n sem├â┬íntica para Tailwind.
+    --spacing ajusta la escala base a mÃºltiplos de 4px (0.25rem).
+    --shadow expone las variables de elevaciÃ³n semÃ¡ntica para Tailwind.
   */
   --spacing: 0.25rem;
 
@@ -425,18 +425,18 @@
   <html data-theme="dark">...</html>
   className="bg-card dark:shadow-none"
 */
-@variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
+@custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
 
 /*
-  GU├â┬ìA R├â┬üPIDA DE USO EN COMPONENTES
+  GUÃA RÃPIDA DE USO EN COMPONENTES
   ------------------------------------------------------------
-  Contenedor de p├â┬ígina:
+  Contenedor de pÃ¡gina:
     className="min-h-screen bg-background text-foreground"
 
   Tarjeta:
     className="rounded-lg border border-border bg-card p-4 text-card-foreground"
 
-  Bot├â┬│n principal:
+  BotÃ³n principal:
     className="bg-primary text-primary-foreground hover:bg-primary-600"
 
   Campo de formulario:
@@ -445,12 +445,12 @@
   Badge de riesgo:
     className="bg-risk-high text-white"
 
-  Gr├â┬ífica:
+  GrÃ¡fica:
     stroke="var(--chart-1)" o className="bg-chart-1"
 
   IMPORTANTE:
-  Los primitives definen valores; los sem├â┬ínticos definen intenci├â┬│n.
-  Un componente debe expresar intenci├â┬│n siempre que sea posible.
+  Los primitives definen valores; los semÃ¡nticos definen intenciÃ³n.
+  Un componente debe expresar intenciÃ³n siempre que sea posible.
 */
 
 :root {
@@ -461,18 +461,18 @@
     Son la materia prima del sistema. No describen componentes;
     solamente almacenan valores de color reutilizables.
 
-    Convenci├â┬│n de escala:
-    50  = tono m├â┬ís claro
+    ConvenciÃ³n de escala:
+    50  = tono mÃ¡s claro
     500 = tono base
-    900 = tono m├â┬ís oscuro
+    900 = tono mÃ¡s oscuro
 
     Para cambiar la identidad visual global se actualizan estos
     valores, sin buscar colores manualmente en cada componente.
   */
 
   /*
-    PRIMARY ├óÔé¼ÔÇØ azul institucional profundo (Azul Gubernamental)
-    Uso base: navegaci├â┬│n, acciones principales, encabezados y foco.
+    PRIMARY â€” azul institucional profundo (Azul Gubernamental)
+    Uso base: navegaciÃ³n, acciones principales, encabezados y foco.
   */
   --primitive-primary-50: #F7F7F8;
   --primitive-primary-100: #E9E7EC;
@@ -486,8 +486,8 @@
   --primitive-primary-900: #14082B;
 
   /*
-    SECONDARY ├óÔé¼ÔÇØ morado secundario (Morado Gubernamental)
-    Uso base: acciones complementarias, informaci├â┬│n cartogr├â┬ífica,
+    SECONDARY â€” morado secundario (Morado Gubernamental)
+    Uso base: acciones complementarias, informaciÃ³n cartogrÃ¡fica,
     iconos de apoyo y elementos secundarios.
   */
   --primitive-secondary-50: #F6F6F8;
@@ -502,10 +502,10 @@
   --primitive-secondary-900: #07072C;
 
   /*
-    SUCCESS ├óÔé¼ÔÇØ confirmaci├â┬│n positiva
+    SUCCESS â€” confirmaciÃ³n positiva
     Uso: cargas completadas, validaciones correctas y estados activos.
-    No representa autom├â┬íticamente el nivel de riesgo bajo; ese
-    significado se asigna despu├â┬®s mediante --risk-low.
+    No representa automÃ¡ticamente el nivel de riesgo bajo; ese
+    significado se asigna despuÃ©s mediante --risk-low.
   */
   --primitive-success-50: #E6F0F0;
   --primitive-success-100: #CCE2E1;
@@ -519,8 +519,8 @@
   --primitive-success-900: #001615;
 
   /*
-    WARNING ├óÔé¼ÔÇØ advertencia preventiva
-    Uso: informaci├â┬│n pendiente, validaciones parciales o precauci├â┬│n.
+    WARNING â€” advertencia preventiva
+    Uso: informaciÃ³n pendiente, validaciones parciales o precauciÃ³n.
     Se combina con texto oscuro para mantener contraste.
   */
   --primitive-warning-50: #FFF6EB;
@@ -535,8 +535,8 @@
   --primitive-warning-900: #33210A;
 
   /*
-    DANGER ├óÔé¼ÔÇØ error y acciones destructivas
-    Uso: eliminaci├â┬│n, fallos, errores cr├â┬¡ticos y alertas negativas.
+    DANGER â€” error y acciones destructivas
+    Uso: eliminaciÃ³n, fallos, errores crÃ­ticos y alertas negativas.
   */
   --primitive-danger-50: #FAF3F5;
   --primitive-danger-100: #F5E7EB;
@@ -550,7 +550,7 @@
   --primitive-danger-900: #20040B;
 
   /*
-    INFO ├óÔé¼ÔÇØ comunicaci├â┬│n informativa (Azul oscuro Gubernamental)
+    INFO â€” comunicaciÃ³n informativa (Azul oscuro Gubernamental)
     Uso: banners, ayudas, estados neutrales y mensajes explicativos.
   */
   --primitive-info-50: #F7F7F8;
@@ -567,17 +567,17 @@
   /*
     ACENTOS DE MARCA INSTITUCIONAL
     ------------------------------------------------------------
-    Se mantienen separados de warning y danger porque su funci├â┬│n
-    principal es representar identidad, no retroalimentaci├â┬│n.
+    Se mantienen separados de warning y danger porque su funciÃ³n
+    principal es representar identidad, no retroalimentaciÃ³n.
   */
   --primitive-brand-yellow: #fcd116;
   --primitive-brand-red: #d52b1e;
 
   /*
-    PALETA CATEG├âÔÇ£RICA PARA DATOS
+    PALETA CATEGÃ“RICA PARA DATOS
     ------------------------------------------------------------
-    ├â┼ísala para diferenciar series sin asignarles estados de sistema.
-    Mant├â┬®n el mismo orden de series entre gr├â┬íficas relacionadas.
+    Ãšsala para diferenciar series sin asignarles estados de sistema.
+    MantÃ©n el mismo orden de series entre grÃ¡ficas relacionadas.
   */
   --primitive-data-1: #2563eb;
   --primitive-data-2: #0891b2;
@@ -612,7 +612,7 @@
   /*
     NEUTRALES
     ------------------------------------------------------------
-    Construyen fondos, superficies, bordes y jerarqu├â┬¡as de texto.
+    Construyen fondos, superficies, bordes y jerarquÃ­as de texto.
     Se conserva neutral-50 como blanco para no romper las clases
     existentes del proyecto.
   */
@@ -632,10 +632,10 @@
 
   /*
     ============================================================
-    3. TOKENS SEM├â┬üNTICOS ├óÔé¼ÔÇØ MODO CLARO
+    3. TOKENS SEMÃNTICOS â€” MODO CLARO
     ============================================================
-    Aqu├â┬¡ los primitivos reciben una funci├â┬│n de interfaz.
-    Estos son los tokens que deber├â┬¡an consumir los componentes.
+    AquÃ­ los primitivos reciben una funciÃ³n de interfaz.
+    Estos son los tokens que deberÃ­an consumir los componentes.
   */
   --background: var(--primitive-neutral-100);
   --foreground: var(--primitive-neutral-900);
@@ -643,12 +643,12 @@
   /*
     FONDOS Y SUPERFICIES
     ------------------------------------------------------------
-    background: fondo general de la aplicaci├â┬│n.
+    background: fondo general de la aplicaciÃ³n.
     surface: paneles principales y contenedores.
     surface-raised: superficies visualmente elevadas.
-    surface-subtle: ├â┬íreas secundarias o fondos suaves.
-    card: tarjeta est├â┬índar de Shadcn.
-    popover: men├â┬║s flotantes, dropdowns y tooltips amplios.
+    surface-subtle: Ã¡reas secundarias o fondos suaves.
+    card: tarjeta estÃ¡ndar de Shadcn.
+    popover: menÃºs flotantes, dropdowns y tooltips amplios.
 
     Ejemplo de tarjeta:
     className="bg-card text-card-foreground border border-border"
@@ -667,10 +667,10 @@
   /*
     ACCIONES PRINCIPALES Y SECUNDARIAS
     ------------------------------------------------------------
-    primary: acci├â┬│n prioritaria de la pantalla (Definido arriba en UI BRAND TOKENS).
-    secondary: acci├â┬│n complementaria o alternativa (Definido arriba en UI BRAND TOKENS).
-    primary: acci├│n prioritaria de la pantalla (Definido arriba en UI BRAND TOKENS).
-    secondary: acci├│n complementaria o alternativa (Definido arriba en UI BRAND TOKENS).
+    primary: acciÃ³n prioritaria de la pantalla (Definido arriba en UI BRAND TOKENS).
+    secondary: acciÃ³n complementaria o alternativa (Definido arriba en UI BRAND TOKENS).
+    primary: acción prioritaria de la pantalla (Definido arriba en UI BRAND TOKENS).
+    secondary: acción complementaria o alternativa (Definido arriba en UI BRAND TOKENS).
     foreground: color del texto/icono colocado sobre cada fondo.
 
     Ejemplo:
@@ -685,8 +685,8 @@
   /*
     ESTADOS DE APOYO
     ------------------------------------------------------------
-    muted: ├â┬íreas de baja jerarqu├â┬¡a, deshabilitadas o discretas.
-    accent: selecci├â┬│n suave, hover o ├â┬®nfasis no destructivo.
+    muted: Ã¡reas de baja jerarquÃ­a, deshabilitadas o discretas.
+    accent: selecciÃ³n suave, hover o Ã©nfasis no destructivo.
 
     Ejemplo:
     className="text-muted-foreground"
@@ -698,13 +698,13 @@
   --accent-foreground: var(--primitive-primary-700);
 
   /*
-    RETROALIMENTACI├âÔÇ£N DEL SISTEMA
+    RETROALIMENTACIÃ“N DEL SISTEMA
     ------------------------------------------------------------
-    success: operaci├â┬│n correcta.
+    success: operaciÃ³n correcta.
     info: mensaje explicativo.
     warning: advertencia preventiva.
     danger: error o alerta negativa.
-    destructive: acci├â┬│n irreversible, como eliminar una capa.
+    destructive: acciÃ³n irreversible, como eliminar una capa.
 
     Siempre combina fondo y foreground del mismo estado.
     Ejemplo: bg-warning text-warning-foreground
@@ -728,11 +728,11 @@
     BORDES, INPUTS Y FOCO
     ------------------------------------------------------------
     border: divisores y contornos normales.
-    border-strong: separaci├â┬│n con mayor jerarqu├â┬¡a.
+    border-strong: separaciÃ³n con mayor jerarquÃ­a.
     input: borde o fondo de controles de formulario.
-    ring: foco visible para navegaci├â┬│n por teclado.
+    ring: foco visible para navegaciÃ³n por teclado.
 
-    No elimines el ring sin implementar otra se├â┬▒al accesible de foco.
+    No elimines el ring sin implementar otra seÃ±al accesible de foco.
   */
   --border: var(--primitive-neutral-200);
   --border-strong: var(--primitive-neutral-300);
@@ -754,7 +754,7 @@
   --risk-critical: var(--primitive-danger-900);
 
   /*
-    SIDEBAR ├óÔé¼ÔÇØ MODO CLARO
+    SIDEBAR â€” MODO CLARO
     ------------------------------------------------------------
     Usa una superficie blanca semitransparente para integrarse con
     el mapa o el contenido sin perder legibilidad.
@@ -771,7 +771,7 @@
   /*
     RADIO BASE DEL SISTEMA
     0.75rem mantiene una apariencia moderna e institucional sin
-    redondear excesivamente tablas, filtros y paneles cartogr├â┬íficos.
+    redondear excesivamente tablas, filtros y paneles cartogrÃ¡ficos.
   */
   --radius: 0.75rem;
 
@@ -779,7 +779,7 @@
     FOOTER
     ------------------------------------------------------------
     Se mantiene oscuro tanto en modo claro como en modo oscuro para
-    asegurar contraste institucional y una terminaci├â┬│n consistente.
+    asegurar contraste institucional y una terminaciÃ³n consistente.
   */
   --footer-bg: var(--primitive-neutral-950);
   --footer-foreground: var(--primitive-neutral-400);
@@ -790,7 +790,7 @@
   /*
     LAYOUT Y GRID
     ------------------------------------------------------------
-    Tokens para controlar el ancho m├â┬íximo, padding y espaciado de cuadr├â┬¡culas.
+    Tokens para controlar el ancho mÃ¡ximo, padding y espaciado de cuadrÃ­culas.
   */
   --layout-max-width: 80rem;
 
@@ -803,9 +803,9 @@
   --grid-gutter-desktop: 1.5rem;
 
   /*
-    SOMBRAS SEM├â┬üNTICAS (MODO CLARO)
+    SOMBRAS SEMÃNTICAS (MODO CLARO)
     ------------------------------------------------------------
-    Definen la elevaci├â┬│n de los componentes seg├â┬║n la jerarqu├â┬¡a visual.
+    Definen la elevaciÃ³n de los componentes segÃºn la jerarquÃ­a visual.
   */
   --elevation-xs:
     0 1px 2px rgb(18 20 22 / 0.06);
@@ -862,10 +862,10 @@
 .dark {
   /*
     ============================================================
-    4. TOKENS SEM├â┬üNTICOS ├óÔé¼ÔÇØ MODO OSCURO
+    4. TOKENS SEMÃNTICOS â€” MODO OSCURO
     ============================================================
     Conservan los mismos nombres del modo claro y solo cambian sus
-    valores. As├â┬¡ los componentes no necesitan estilos duplicados.
+    valores. AsÃ­ los componentes no necesitan estilos duplicados.
   */
   --background: var(--primitive-neutral-950);
   --foreground: var(--primitive-neutral-50);
@@ -931,7 +931,7 @@
   --risk-critical: var(--primitive-danger-300);
 
   /*
-    SIDEBAR ├óÔé¼ÔÇØ MODO OSCURO
+    SIDEBAR â€” MODO OSCURO
     ------------------------------------------------------------
     El fondo conserva transparencia moderada y los textos utilizan
     tonos claros para mantener contraste sobre mapas oscuros.
@@ -946,9 +946,9 @@
   --sidebar-ring: var(--primitive-primary-400);
 
   /*
-    SOMBRAS SEM├â┬üNTICAS (MODO OSCURO)
+    SOMBRAS SEMÃNTICAS (MODO OSCURO)
     ------------------------------------------------------------
-    Definen la elevaci├â┬│n de los componentes. Los valores de opacidad
+    Definen la elevaciÃ³n de los componentes. Los valores de opacidad
     son mayores debido al contraste necesario en fondos oscuros.
   */
   --elevation-xs:
@@ -1004,9 +1004,9 @@
 [data-theme="wireframe"] {
   /*
     ============================================================
-    TOKENS SEM├üNTICOS ÔÇö TEMA WIREFRAME (NEUTRAL / GRAYSCALE)
+    TOKENS SEMÁNTICOS — TEMA WIREFRAME (NEUTRAL / GRAYSCALE)
     ============================================================
-    Provee una paleta estrictamente neutral para maquetaci├│n y prototipado
+    Provee una paleta estrictamente neutral para maquetación y prototipado
     sin colores de marca ni colores de estado saturados.
   */
   --background: var(--primitive-neutral-100);
@@ -1181,7 +1181,7 @@
   ============================================================
   5. ESTILOS BASE GLOBALES
   ============================================================
-  Aplican los tokens sem├â┬ínticos al documento completo.
+  Aplican los tokens semÃ¡nticos al documento completo.
   Todos los elementos heredan border-border y un outline basado en
   ring para conservar consistencia y accesibilidad.
 */
@@ -1212,7 +1212,7 @@
 
   /*
     CONTENEDOR DE PANTALLA
-    Controla el ancho m├â┬íximo y el padding seguro en los bordes de
+    Controla el ancho mÃ¡ximo y el padding seguro en los bordes de
     la pantalla dependiendo del dispositivo.
   */
   .layout-container {
@@ -1235,8 +1235,8 @@
   }
 
   /*
-    GRILLA RESPONSIVE DE DISE├âÔÇÿO
-    Cuadr├â┬¡cula de 4, 8 y 12 columnas con espaciado ajustable.
+    GRILLA RESPONSIVE DE DISEÃ‘O
+    CuadrÃ­cula de 4, 8 y 12 columnas con espaciado ajustable.
   */
   .layout-grid {
     display: grid;
@@ -1273,7 +1273,7 @@ a {
 /*
   SCROLLBAR
   ------------------------------------------------------------
-  Barra discreta que usa los tokens sem├â┬ínticos. Se adapta a ambos
+  Barra discreta que usa los tokens semÃ¡nticos. Se adapta a ambos
   temas porque --border y --muted-foreground cambian por modo.
 */
 ::-webkit-scrollbar {
@@ -1299,7 +1299,7 @@ a {
   6. ANIMACIONES PERSONALIZADAS
   ============================================================
   Estas animaciones apoyan elementos visuales del producto.
-  Evita aplicarlas a informaci├â┬│n esencial o interacciones cr├â┬¡ticas.
+  Evita aplicarlas a informaciÃ³n esencial o interacciones crÃ­ticas.
   Al final del archivo se desactivan casi por completo cuando el
   usuario tiene activa la preferencia reduced motion.
 */
@@ -1371,7 +1371,7 @@ a {
   ANIMACIONES DE VISUALIZACIONES ESPECIALES
   ------------------------------------------------------------
   Mantienen los nombres existentes para no romper componentes.
-  Utilizan tokens sem├â┬ínticos como --primary y --color-info, por lo
+  Utilizan tokens semÃ¡nticos como --primary y --color-info, por lo
   que se adaptan a la identidad y al modo oscuro.
 */
 @keyframes orbit-ring {
@@ -1651,7 +1651,7 @@ a {
   AUTOCOMPLETADO DEL NAVEGADOR
   ------------------------------------------------------------
   Evita que Chrome aplique un fondo amarillo o azul ajeno al sistema.
-  Conserva el texto y el cursor seg├â┬║n los tokens del tema activo.
+  Conserva el texto y el cursor segÃºn los tokens del tema activo.
 */
 input:-webkit-autofill,
 input:-webkit-autofill:hover,
@@ -1670,7 +1670,7 @@ select:-webkit-autofill:focus {
 }
 
 /*
-  AUTOCOMPLETADO ├óÔé¼ÔÇØ MODO OSCURO
+  AUTOCOMPLETADO â€” MODO OSCURO
   ------------------------------------------------------------
   Repite el ajuste con el selector del tema oscuro para evitar que
   el navegador cambie el contraste de inputs, textarea y select.
@@ -1692,10 +1692,10 @@ select:-webkit-autofill:focus {
 }
 
 /*
-  ACCESIBILIDAD: REDUCCI├âÔÇ£N DE MOVIMIENTO
+  ACCESIBILIDAD: REDUCCIÃ“N DE MOVIMIENTO
   ------------------------------------------------------------
-  Si el usuario configur├â┬│ "reducir movimiento" en su sistema,
-  minimiza animaciones y transiciones para evitar mareo o distracci├â┬│n.
+  Si el usuario configurÃ³ "reducir movimiento" en su sistema,
+  minimiza animaciones y transiciones para evitar mareo o distracciÃ³n.
   No borres este bloque al agregar nuevas animaciones.
 */
 @media (prefers-reduced-motion: reduce) {
@@ -1843,7 +1843,7 @@ select:-webkit-autofill:focus {
   AUTOCOMPLETADO DEL NAVEGADOR
   ------------------------------------------------------------
   Evita que Chrome aplique un fondo amarillo o azul ajeno al sistema.
-  Conserva el texto y el cursor seg├â┬║n los tokens del tema activo.
+  Conserva el texto y el cursor segÃºn los tokens del tema activo.
 */
 input:-webkit-autofill,
 input:-webkit-autofill:hover,
@@ -1862,7 +1862,7 @@ select:-webkit-autofill:focus {
 }
 
 /*
-  AUTOCOMPLETADO ├óÔé¼ÔÇØ MODO OSCURO
+  AUTOCOMPLETADO â€” MODO OSCURO
   ------------------------------------------------------------
   Repite el ajuste con el selector del tema oscuro para evitar que
   el navegador cambie el contraste de inputs, textarea y select.
@@ -1884,10 +1884,10 @@ select:-webkit-autofill:focus {
 }
 
 /*
-  ACCESIBILIDAD: REDUCCI├âÔÇ£N DE MOVIMIENTO
+  ACCESIBILIDAD: REDUCCIÃ“N DE MOVIMIENTO
   ------------------------------------------------------------
-  Si el usuario configur├â┬│ "reducir movimiento" en su sistema,
-  minimiza animaciones y transiciones para evitar mareo o distracci├â┬│n.
+  Si el usuario configurÃ³ "reducir movimiento" en su sistema,
+  minimiza animaciones y transiciones para evitar mareo o distracciÃ³n.
   No borres este bloque al agregar nuevas animaciones.
 */
 @media (prefers-reduced-motion: reduce) {
@@ -1901,7 +1901,7 @@ select:-webkit-autofill:focus {
     transition-duration: 0.01ms !important;
   }
 
-  /* Excepci├â┬│n para indicadores de carga esenciales (WCAG) */
+  /* ExcepciÃ³n para indicadores de carga esenciales (WCAG) */
   .DINARP-spinner__ring,
   .animate-spin,
   .animate-spin-slow,
@@ -2066,65 +2066,3 @@ input:-webkit-autofill:active {
   background-size: 300% 300%;
   animation: gradient-border-flow 3s ease infinite;
 }
-
-/* WIREFRAME MODE OVERRIDES */
-[data-theme="wireframe"] {
-  --primitive-primary-50: #F8F9FA;
-  --primitive-primary-100: #F1F3F5;
-  --primitive-primary-200: #E9ECEF;
-  --primitive-primary-300: #DEE2E6;
-  --primitive-primary-400: #CED4DA;
-  --primitive-primary-500: #495057;
-  --primitive-primary-600: #343A40;
-  --primitive-primary-700: #212529;
-  --primitive-primary-800: #18181B;
-  --primitive-primary-900: #121416;
-
-  --primitive-secondary-50: #F8F9FA;
-  --primitive-secondary-100: #F1F3F5;
-  --primitive-secondary-200: #E9ECEF;
-  --primitive-secondary-300: #DEE2E6;
-  --primitive-secondary-400: #CED4DA;
-  --primitive-secondary-500: #495057;
-  --primitive-secondary-600: #343A40;
-  --primitive-secondary-700: #212529;
-  --primitive-secondary-800: #18181B;
-  --primitive-secondary-900: #121416;
-
-  --primary: var(--primitive-neutral-900);
-  --primary-foreground: var(--primitive-neutral-50);
-  --secondary: var(--primitive-neutral-800);
-  --secondary-foreground: var(--primitive-neutral-50);
-
-  --accent: var(--primitive-neutral-200);
-  --accent-foreground: var(--primitive-neutral-900);
-  
-  --ring: var(--primitive-neutral-900);
-  
-  --sidebar-primary: var(--primitive-neutral-900);
-  --sidebar-accent: var(--primitive-neutral-100);
-  --sidebar-accent-foreground: var(--primitive-neutral-900);
-  --sidebar-ring: var(--primitive-neutral-900);
-}
-
-.dark [data-theme="wireframe"] {
-  --primary: var(--primitive-neutral-50);
-  --primary-foreground: var(--primitive-neutral-950);
-  --secondary: var(--primitive-neutral-200);
-  --secondary-foreground: var(--primitive-neutral-900);
-
-  --accent: var(--primitive-neutral-800);
-  --accent-foreground: var(--primitive-neutral-50);
-
-  --ring: var(--primitive-neutral-400);
-
-  --chart-2: var(--primitive-neutral-300);
-  --chart-3: var(--primitive-neutral-400);
-
-  --sidebar-primary: var(--primitive-neutral-50);
-  --sidebar-primary-foreground: var(--primitive-neutral-950);
-  --sidebar-accent: var(--primitive-neutral-800);
-  --sidebar-accent-foreground: var(--primitive-neutral-50);
-  --sidebar-ring: var(--primitive-neutral-400);
-}
-

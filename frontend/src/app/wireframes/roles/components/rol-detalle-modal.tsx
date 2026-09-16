@@ -166,8 +166,6 @@ export function RolDetalleModal({
                   <TableRow>
                     <TableHead>NOMBRE</TableHead>
                     <TableHead>CORREO</TableHead>
-                    <TableHead>CARGO</TableHead>
-                    <TableHead>ESTADO</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -179,14 +177,6 @@ export function RolDetalleModal({
                       </TableCell>
                       <TableCell className="text-muted-foreground font-mono text-[11px]">
                         {u.email}
-                      </TableCell>
-                      <TableCell className="text-muted-foreground text-xs">
-                        {u.cargo}
-                      </TableCell>
-                      <TableCell>
-                        <Badge tone="neutral" appearance="soft" size="sm" className="text-[10px]">
-                          {u.estado}
-                        </Badge>
                       </TableCell>
                     </TableRow>
                   ))}
