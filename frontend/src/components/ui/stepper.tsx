@@ -8,6 +8,7 @@ import { Check } from "lucide-react";
 export interface Step {
   id: string;
   title: string;
+  description?: string;
   icon: React.ComponentType<{ className?: string }>;
 }
 
@@ -18,6 +19,9 @@ export interface StepperProps {
   onStepClick?: (index: number) => void;
   orientation?: "horizontal" | "vertical";
   stepPrefix?: string;
+  size?: "default" | "sm";
+  showBadge?: boolean;
+  className?: string;
 }
 
 export function Stepper({ 
@@ -26,15 +30,19 @@ export function Stepper({
   completedSteps = [], 
   onStepClick,
   orientation = "horizontal",
-  stepPrefix = "Paso"
+  stepPrefix = "Paso",
+  size = "default",
+  showBadge = true,
+  className,
 }: StepperProps) {
   const isVertical = orientation === "vertical";
+  const isSmall = size === "sm";
 
   return (
-    <div className="w-full">
+    <div className={cn("w-full", className)}>
       <ol className={cn(
         "flex w-full relative",
-        isVertical ? "flex-col items-start gap-8" : "flex-row items-start justify-between"
+        isVertical ? "flex-col items-start gap-6" : "flex-row items-start justify-between"
       )}>
         {steps.map((step, index) => {
           const isCompleted = completedSteps.includes(index) || index < activeStep;
@@ -58,12 +66,16 @@ export function Stepper({
                 <div className={cn(
                   "absolute bg-border z-0",
                   isVertical 
-                    ? "left-[19px] top-[40px] bottom-[-32px] w-[2px]" // Vertical line
-                    : "top-[19px] left-[50%] right-[-50%] h-[2px]" // Horizontal line
+                    ? isSmall
+                      ? "left-[14px] top-[28px] bottom-[-24px] w-[2px]"
+                      : "left-[19px] top-[40px] bottom-[-32px] w-[2px]"
+                    : isSmall
+                      ? "top-[14px] left-[50%] right-[-50%] h-[2px]"
+                      : "top-[19px] left-[50%] right-[-50%] h-[2px]"
                 )}>
                   <motion.div
                     className={cn(
-                      "bg-success origin-top-left",
+                      "bg-primary origin-top-left",
                       isVertical ? "w-full h-full" : "h-full w-full"
                     )}
                     initial={isVertical ? { scaleY: 0 } : { scaleX: 0 }}
@@ -78,7 +90,7 @@ export function Stepper({
               )}
 
               {/* Icon Node */}
-              <div className={cn("relative z-10", isVertical ? "mr-4" : "mb-3")}>
+              <div className={cn("relative z-10", isVertical ? "mr-3" : isSmall ? "mb-1.5" : "mb-3")}>
                 <motion.button
                   type="button"
                   onClick={() => onStepClick?.(index)}
@@ -89,13 +101,14 @@ export function Stepper({
                   }
                   transition={{ duration: 0.18, ease: "easeInOut" }}
                   className={cn(
-                    "size-10 rounded-full flex items-center justify-center transition-all duration-300 outline-none",
+                    "rounded-full flex items-center justify-center transition-all duration-300 outline-none",
+                    isSmall ? "size-7" : "size-10",
                     isActive ? "ring-4 ring-primary/20 dark:ring-primary/40 ring-offset-0" : "focus-visible:ring-2 focus-visible:ring-ring",
                     isCompleted 
-                      ? "bg-success text-success-foreground border-2 border-success shadow-md shadow-success/20"
+                      ? "bg-foreground text-background border-2 border-foreground shadow-xs"
                       : isActive 
-                        ? "bg-primary text-primary-foreground border-2 border-primary shadow-md shadow-primary/20"
-                        : "bg-background border-2 border-dashed border-border text-muted-foreground",
+                        ? "bg-primary text-primary-foreground border-2 border-primary shadow-xs"
+                        : "bg-surface border-2 border-dashed border-border text-muted-foreground",
                     isPending || !onStepClick ? (isPending ? "cursor-not-allowed" : "cursor-default") : "cursor-pointer hover:opacity-80"
                   )}
                 >
@@ -108,7 +121,7 @@ export function Stepper({
                       transition={{ duration: 0.2 }}
                       className="flex items-center justify-center"
                     >
-                      <Icon className={cn("size-4", isCompleted ? "stroke-[3px]" : "stroke-[2px]")} />
+                      <Icon className={cn(isSmall ? "size-3.5" : "size-4", isCompleted ? "stroke-[3px]" : "stroke-[2px]")} />
                     </motion.div>
                   </AnimatePresence>
                 </motion.button>
@@ -119,27 +132,33 @@ export function Stepper({
                 "flex flex-col z-10",
                 isVertical ? "items-start text-left mt-[-2px]" : "items-center text-center w-full"
               )}>
-                <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest mb-0.5">
+                <span className={cn(
+                  "font-bold text-muted-foreground uppercase tracking-widest",
+                  isSmall ? "text-[9px] mb-0.5" : "text-[10px] mb-0.5"
+                )}>
                   {stepPrefix} {index + 1}
                 </span>
                 <span className={cn(
-                  "text-sm font-semibold mb-1.5 transition-colors duration-300 whitespace-nowrap",
-                  isActive ? "text-foreground" : isCompleted ? "text-foreground" : "text-muted-foreground"
+                  "font-semibold transition-colors duration-300 whitespace-nowrap",
+                  isSmall ? "text-xs mb-0.5" : "text-sm mb-1.5",
+                  isActive ? "text-foreground font-bold" : isCompleted ? "text-foreground" : "text-muted-foreground"
                 )}>
                   {step.title}
                 </span>
                 
                 {/* Status Badge */}
-                <span className={cn(
-                  "text-[9px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full transition-colors",
-                  isCompleted 
-                    ? "bg-success/10 text-success" 
-                    : isActive 
-                      ? "bg-primary/10 text-primary" 
-                      : "bg-surface-subtle text-muted-foreground border border-border"
-                )}>
-                  {isCompleted ? "Completado" : isActive ? "En curso" : "Pendiente"}
-                </span>
+                {showBadge && (
+                  <span className={cn(
+                    "text-[9px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full transition-colors",
+                    isCompleted 
+                      ? "bg-muted text-foreground font-semibold" 
+                      : isActive 
+                        ? "bg-primary/10 text-primary" 
+                        : "bg-muted/40 text-muted-foreground border border-border"
+                  )}>
+                    {isCompleted ? "Completado" : isActive ? "En curso" : "Pendiente"}
+                  </span>
+                )}
               </div>
             </li>
           );

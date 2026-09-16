@@ -23,7 +23,7 @@ import {
 } from "@/components/ui/tooltip";
 
 const dialogVariants = cva(
-  "fixed top-1/2 left-1/2 z-50 flex flex-col w-[calc(100%-2rem)] -translate-x-1/2 -translate-y-1/2 gap-6 rounded-[2.5rem] border border-border/40 bg-background duration-300 outline-none data-open:animate-in data-open:fade-in-0 data-open:zoom-in-95 data-closed:animate-out data-closed:fade-out-0 data-closed:zoom-out-95 shadow-2xl",
+  "fixed top-1/2 left-1/2 z-50 flex flex-col w-[calc(100%-2rem)] -translate-x-1/2 -translate-y-1/2 gap-6 rounded-[2.5rem] border border-border/40 bg-muted duration-300 outline-none data-open:animate-in data-open:fade-in-0 data-open:zoom-in-95 data-closed:animate-out data-closed:fade-out-0 data-closed:zoom-out-95 shadow-2xl",
   {
     variants: {
       variant: {

@@ -15,6 +15,7 @@ import {
   ChevronDown,
   Check,
   Sparkles,
+  ShieldCheck,
 } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
@@ -22,6 +23,7 @@ import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Badge } from "@/components/ui/badge";
 import { Textarea } from "@/components/ui/textarea";
+import { Stepper, type Step } from "@/components/ui/stepper";
 import {
   Dialog,
   DialogContent,
@@ -30,12 +32,6 @@ import {
   DialogDescription,
   DialogFooter,
 } from "@/components/ui/dialog";
-import {
-  Tabs,
-  TabsList,
-  TabsTrigger,
-  TabsContent,
-} from "@/components/ui/tabs";
 import {
   InputGroup,
   InputGroupInput,
@@ -292,6 +288,24 @@ export function RolModal({
     onOpenChange(false);
   };
 
+  const activeStep = activeTab === "general" ? 0 : 1;
+  const completedSteps = activeTab === "permisos" ? [0] : [];
+
+  const rolSteps: Step[] = [
+    {
+      id: "general",
+      title: "Información básica",
+      description: "Datos generales del rol",
+      icon: FileText,
+    },
+    {
+      id: "permisos",
+      title: `Matriz de permisos (${totalSelectedCount})`,
+      description: "Facultades y accesos",
+      icon: ShieldCheck,
+    },
+  ];
+
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent variant="standard" size="2xl" className="sm:max-w-2xl max-h-[90vh] flex flex-col p-0 overflow-hidden">
@@ -313,17 +327,18 @@ export function RolModal({
             </DialogDescription>
           </DialogHeader>
 
-          {/* Navigation Tabs */}
-          <Tabs value={activeTab} onValueChange={setActiveTab} className="mt-4">
-            <TabsList className="bg-muted/40 p-1 rounded-xl border border-border h-10 w-full grid grid-cols-2">
-              <TabsTrigger value="general" className="rounded-lg text-xs font-semibold">
-                1. Información básica
-              </TabsTrigger>
-              <TabsTrigger value="permisos" className="rounded-lg text-xs font-semibold">
-                2. Matriz de permisos ({totalSelectedCount})
-              </TabsTrigger>
-            </TabsList>
-          </Tabs>
+          {/* Stepper Navigation */}
+          <div className="mt-5 pt-1 px-4 sm:px-8">
+            <Stepper
+              steps={rolSteps}
+              activeStep={activeStep}
+              completedSteps={completedSteps}
+              onStepClick={(index) => setActiveTab(index === 0 ? "general" : "permisos")}
+              size="sm"
+              showBadge={true}
+              stepPrefix="Paso"
+            />
+          </div>
         </div>
 
         {/* Scrollable Form Body */}
