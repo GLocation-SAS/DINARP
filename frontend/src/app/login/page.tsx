@@ -28,6 +28,7 @@ import {
 import { ThemeToggle } from '@/components/theme-toggle';
 import { CapacityCard } from '@/components/ui/capacity-card';
 import { InputGroup, InputGroupInput, InputGroupButton } from '@/components/ui/input-group';
+import { getAssetPath } from '@/lib/utils';
 
 export default function DesignSystemLoginPage() {
   const router = useRouter();
@@ -159,7 +160,7 @@ export default function DesignSystemLoginPage() {
 
                 <div className="mb-4 flex flex-col items-center justify-center">
                   <div className="flex items-center justify-center mb-4">
-                    <img src="/logotipo.png" alt="Logo DINARP" className="h-14 w-auto object-contain" />
+                    <img src={getAssetPath("/logotipo.png")} alt="Logo DINARP" className="h-14 w-auto object-contain" />
                   </div>
                   <h3 className="font-heading font-bold text-xl text-primary dark:text-foreground text-center">Acceso al Design System</h3>
                 </div>

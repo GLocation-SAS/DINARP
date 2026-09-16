@@ -11,6 +11,9 @@ const nextConfig: NextConfig = {
   output: isGithubActions ? "export" : "standalone",
   basePath: isGithubActions ? "/DINARP" : "",
   trailingSlash: true,
+  env: {
+    NEXT_PUBLIC_BASE_PATH: isGithubActions ? "/DINARP" : "",
+  },
   turbopack: {
     root: process.cwd(),
   },

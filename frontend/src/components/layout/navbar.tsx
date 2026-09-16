@@ -16,7 +16,7 @@ import {
 } from "lucide-react";
 import { useIntersectionObserver } from "@/hooks/useIntersectionObserver";
 
-import { cn } from "@/lib/utils";
+import { cn, getAssetPath } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/theme-toggle";
 import {
@@ -121,7 +121,7 @@ export function Navbar() {
             <div className="relative h-16 flex items-center justify-center px-2">
               <div className="absolute inset-0 bg-primary/10 rounded-xl blur-lg group-hover:bg-primary/20 transition-colors" />
               <Image
-                src="/logotipo.png"
+                src={getAssetPath("/logotipo.png")}
                 alt="Logo DINARP"
                 width={240}
                 height={64}
@@ -185,7 +185,7 @@ export function Navbar() {
                   <div className="flex items-center gap-2">
                     <SheetTitle className="sr-only">DINARP</SheetTitle>
                     <Image
-                      src="/logotipo.png"
+                      src={getAssetPath("/logotipo.png")}
                       alt="Logo DINARP"
                       width={180}
                       height={48}

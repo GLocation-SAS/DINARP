@@ -1,5 +1,5 @@
 import React from "react";
-import { cn } from "@/lib/utils";
+import { cn, getAssetPath } from "@/lib/utils";
 
 export type DINARPSpinnerProps = {
   size?: "sm" | "md" | "lg";
@@ -43,19 +43,8 @@ export function DINARPSpinner({
         <div className="DINARP-spinner__ring" aria-hidden="true" />
 
         <img
-          className="DINARP-spinner__shield dark:hidden"
-          src="/Favicon.svg"
-          alt="Cargando"
-          aria-hidden="true"
-          style={{
-            width: logoSize,
-            height: logoSize,
-          }}
-        />
-        
-        <img
-          className="DINARP-spinner__shield hidden dark:block"
-          src="/Favicon%20alternativo.svg"
+          className="DINARP-spinner__shield object-contain"
+          src={getAssetPath("/logotipo.png")}
           alt="Cargando"
           aria-hidden="true"
           style={{

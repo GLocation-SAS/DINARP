@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { MapPin, Phone, Globe, Compass, ExternalLink } from "lucide-react";
+import { cn, getAssetPath } from "@/lib/utils";
 import {
   Tooltip,
   TooltipContent,
@@ -56,7 +57,7 @@ export function Footer() {
           <div className="flex flex-col items-start text-left lg:pr-8">
             <Link href="/" className="mb-4 sm:mb-6 inline-block focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-md">
               <img
-                src="/logotipo.png"
+                src={getAssetPath("/logotipo.png")}
                 alt="DINARP Logo"
                 className="h-9 sm:h-12 w-auto object-contain"
               />

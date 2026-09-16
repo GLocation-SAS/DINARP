@@ -41,13 +41,15 @@ const poppins = Poppins({
   display: "swap",
 });
 
+const basePath = process.env.NEXT_PUBLIC_BASE_PATH || (process.env.GITHUB_ACTIONS ? "/DINARP" : "");
+
 export const metadata = {
   title: "DINARP KIT UX / UI",
   description: "Base frontend y sistema de diseño de DINARP.",
   icons: [
     {
-      url: "/logotipo.png",
-      href: "/logotipo.png",
+      url: `${basePath}/logotipo.png`,
+      href: `${basePath}/logotipo.png`,
     }
   ],
 };
@@ -59,11 +61,6 @@ interface RootLayoutProps {
 export default async function RootLayout({
   children,
 }: RootLayoutProps) {
-  /*
-    Tema por defecto para renderizado estático.
-    El script en el <head> se encarga de aplicar el tema correcto 
-    desde localStorage o las preferencias del sistema.
-  */
   const theme = "light";
 
   return (
@@ -71,15 +68,8 @@ export default async function RootLayout({
       lang="es"
       data-theme={theme}
       className={cn(
-        /*
-          Se registran las dos variables tipográficas en el documento.
-        */
         montserrat.variable,
         poppins.variable,
-
-        /*
-          Montserrat será la fuente predeterminada del proyecto.
-        */
         "font-sans"
       )}
       suppressHydrationWarning
@@ -120,4 +110,3 @@ export default async function RootLayout({
     </html>
   );
 }
-

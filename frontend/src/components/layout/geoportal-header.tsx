@@ -25,7 +25,7 @@ import {
   Shield,
 } from "lucide-react";
 
-import { cn } from "@/lib/utils";
+import { cn, getAssetPath } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
@@ -528,7 +528,7 @@ export function GeoportalHeader({
                 >
                   {headerConfig.showLogo && (
                     <img
-                      src={headerConfig.logoUrlLight || "/logotipo.png"}
+                      src={getAssetPath(headerConfig.logoUrlLight || "/logotipo.png")}
                       alt="Logo DINARP GEOportal"
                       className="h-8 sm:h-10 w-auto object-contain"
                     />
@@ -645,7 +645,7 @@ export function GeoportalHeader({
                           <div className="flex items-center gap-3">
                             {headerConfig.showLogo && (
                               <img
-                                src={headerConfig.logoUrlLight || "/logotipo.png"}
+                                src={getAssetPath(headerConfig.logoUrlLight || "/logotipo.png")}
                                 alt="Logo DINARP GEOportal"
                                 className="h-9 w-auto object-contain"
                               />

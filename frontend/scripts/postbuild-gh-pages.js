@@ -24,3 +24,4 @@ if (fs.existsSync(outDir)) {
     console.log('✓ Copied out/_not-found/index.html -> out/404.html');
   }
 }
+

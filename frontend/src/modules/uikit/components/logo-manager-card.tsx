@@ -4,7 +4,7 @@ import * as React from "react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Download, ImageOff } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { cn, getAssetPath } from "@/lib/utils";
 
 interface LogoManagerCardProps {
   slot?: "horizontal" | "vertical" | "escudo" | "favicon" | "sin-lema";
@@ -74,14 +74,14 @@ export function LogoManagerCard({
           )}
           {activeLightImg && (
             <img
-              src={activeLightImg}
+              src={getAssetPath(activeLightImg)}
               alt={`${title} Light`}
               className={`dark:hidden ${maxHeightClass} w-auto object-contain transition-transform group-hover:scale-105`}
             />
           )}
           {activeDarkImg && (
             <img
-              src={activeDarkImg}
+              src={getAssetPath(activeDarkImg)}
               alt={`${title} Dark`}
               className={`hidden dark:block ${maxHeightClass} w-auto object-contain transition-transform group-hover:scale-105 drop-shadow-md`}
             />

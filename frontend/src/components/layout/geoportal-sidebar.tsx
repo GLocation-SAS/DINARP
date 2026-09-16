@@ -30,6 +30,7 @@ import {
   useSidebar,
 } from "@/components/ui/sidebar";
 import { applyTheme, getStoredTheme, type Theme } from "@/lib/theme";
+import { getAssetPath } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import {
   LogOut,
@@ -206,13 +207,13 @@ export function GeoportalSidebar({
               <Link href="/" className="flex items-center gap-3 shrink-0 group focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none rounded-md overflow-hidden w-full justify-start">
                 {/* Expanded logo */}
                 <img
-                  src="/logotipo.png"
+                  src={getAssetPath("/logotipo.png")}
                   alt="Logo DINARP GEOportal"
                   className="h-9 lg:h-10 w-auto object-contain transition-transform group-hover:scale-105 group-data-[collapsible=icon]:hidden"
                 />
                 {/* Collapsed logo */}
                 <img
-                  src="/logotipo.png"
+                  src={getAssetPath("/logotipo.png")}
                   alt="Logo DINARP Símbolo"
                   className="h-8 w-auto object-contain transition-transform group-hover:scale-105 hidden group-data-[collapsible=icon]:block mx-auto"
                 />

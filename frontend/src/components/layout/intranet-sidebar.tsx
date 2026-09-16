@@ -17,6 +17,7 @@ import {
   useSidebar,
 } from "@/components/ui/sidebar";
 import { applyTheme, getStoredTheme, type Theme } from "@/lib/theme";
+import { getAssetPath } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import {
   LayoutDashboard,
@@ -133,14 +134,14 @@ export function IntranetSidebar({ activeItem = "home" }: IntranetSidebarProps) {
         <div className="flex items-center justify-between gap-2 overflow-hidden">
           <div className="flex items-center shrink-0">
             <Image
-              src="/logotipo.png"
+              src={getAssetPath("/logotipo.png")}
               alt="Logo DINARP"
               width={150}
               height={35}
               className="h-[35px] w-auto group-data-[state=collapsed]:hidden animate-in fade-in duration-300 object-contain"
             />
             <Image
-              src="/logotipo.png"
+              src={getAssetPath("/logotipo.png")}
               alt="Logo DINARP"
               width={27}
               height={27}

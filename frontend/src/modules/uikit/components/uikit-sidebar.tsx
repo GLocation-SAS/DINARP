@@ -20,7 +20,7 @@ import {
   useSidebar,
 } from "@/components/ui/sidebar";
 import { Button } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
+import { cn, getAssetPath } from "@/lib/utils";
 import { applyTheme, getStoredTheme, type Theme } from "@/lib/theme";
 import {
   MousePointerClick,
@@ -316,7 +316,7 @@ export function UIKitSidebar({ activeSection, onNavigate }: UIKitSidebarProps) {
           <div className="flex items-center shrink-0">
             {/* Expanded Logo */}
             <Image
-              src="/logotipo.png"
+              src={getAssetPath("/logotipo.png")}
               alt="Logo DINARP"
               width={150}
               height={35}
@@ -325,7 +325,7 @@ export function UIKitSidebar({ activeSection, onNavigate }: UIKitSidebarProps) {
 
             {/* Collapsed Icon */}
             <Image
-              src="/logotipo.png"
+              src={getAssetPath("/logotipo.png")}
               alt="Logo DINARP"
               width={27}
               height={27}

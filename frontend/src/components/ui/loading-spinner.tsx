@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { cn } from "@/lib/utils";
+import { cn, getAssetPath } from "@/lib/utils";
 
 interface LoadingSpinnerProps extends React.HTMLAttributes<HTMLDivElement> {
   size?: "sm" | "md" | "lg";
@@ -50,16 +50,10 @@ const LoadingSpinner = React.forwardRef<HTMLDivElement, LoadingSpinnerProps>(
           </svg>
 
           <img
-            src="/escudo-light.svg"
+            src={getAssetPath("/logotipo.png")}
             alt=""
             aria-hidden="true"
-            className={cn("absolute inset-0 m-auto object-contain dark:hidden pointer-events-none", shieldClasses[size])}
-          />
-          <img
-            src="/escudo-dark.svg"
-            alt=""
-            aria-hidden="true"
-            className={cn("absolute inset-0 m-auto hidden object-contain dark:block pointer-events-none", shieldClasses[size])}
+            className={cn("absolute inset-0 m-auto object-contain pointer-events-none", shieldClasses[size])}
           />
         </div>
         

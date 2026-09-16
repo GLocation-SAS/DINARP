@@ -24,7 +24,7 @@ import {
   PanelLeft,
   Bell,
 } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { cn, getAssetPath } from "@/lib/utils";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { Switch } from "@/components/ui/switch";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
@@ -185,13 +185,13 @@ function SidebarPreview({ collapsed, variant = "full", navItems = NAV_ITEMS, con
           <div className={cn("flex items-center gap-2.5 px-3 py-3 border-b border-border shrink-0", collapsed ? "justify-center" : "justify-start")}>
             {collapsed ? (
               <img
-                src="/logotipo.png"
+                src={getAssetPath("/logotipo.png")}
                 alt="Logo DINARP Símbolo"
                 className="h-7 w-auto object-contain mx-auto"
               />
             ) : (
               <img
-                src="/logotipo.png"
+                src={getAssetPath("/logotipo.png")}
                 alt="Logo DINARP"
                 className="h-9 w-auto object-contain"
               />
