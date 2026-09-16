@@ -17,12 +17,13 @@ import {
   InputGroupInput,
 } from "@/components/ui/input-group";
 import {
-  DropdownMenu,
-  DropdownMenuTrigger,
-  DropdownMenuContent,
-  DropdownMenuRadioGroup,
-  DropdownMenuRadioItem,
-} from "@/components/ui/dropdown-menu";
+  Combobox,
+  ComboboxInput,
+  ComboboxContent,
+  ComboboxList,
+  ComboboxItem,
+  ComboboxEmpty,
+} from "@/components/ui/combobox";
 import {
   Dialog,
   DialogContent,
@@ -54,9 +55,12 @@ export function UsuarioEditClient({ id }: UsuarioEditClientProps) {
   const [correo, setCorreo] = useState("maria.cuenca@registrocivil.gob.ec");
   const [telefono, setTelefono] = useState("099 587 6543");
   const [institucion, setInstitucion] = useState("Registro Civil");
+  const [institucionSearch, setInstitucionSearch] = useState("");
   const [cargo, setCargo] = useState("Analista de Interoperabilidad");
   const [rol, setRol] = useState("Administrador");
+  const [rolSearch, setRolSearch] = useState("");
   const [estado, setEstado] = useState("Activo");
+  const [estadoSearch, setEstadoSearch] = useState("");
 
   const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false);
 
@@ -64,6 +68,14 @@ export function UsuarioEditClient({ id }: UsuarioEditClientProps) {
     e.preventDefault();
     setIsSuccessModalOpen(true);
   };
+
+  const INSTITUCIONES = ["Registro Civil", "SRI", "Ministerio de Educación", "DINARP", "Ministerio de Salud", "Agencia Nacional de Tránsito (ANT)", "IESS"];
+  const ROLES = ["Administrador", "Analista", "Consultor", "Revisor"];
+  const ESTADOS = ["Activo", "Inactivo"];
+
+  const filteredInstituciones = INSTITUCIONES.filter(i => i.toLowerCase().includes(institucionSearch.toLowerCase()));
+  const filteredRoles = ROLES.filter(r => r.toLowerCase().includes(rolSearch.toLowerCase()));
+  const filteredEstados = ESTADOS.filter(e => e.toLowerCase().includes(estadoSearch.toLowerCase()));
 
   return (
     <WireframeDashboardLayout activeMenu="usuarios">
@@ -175,28 +187,32 @@ export function UsuarioEditClient({ id }: UsuarioEditClientProps) {
                   <label className="text-xs font-semibold text-foreground">
                     Institución <span className="text-destructive">*</span>
                   </label>
-                  <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                      <Button
-                        variant="outline"
-                        className="h-10 px-3 flex items-center justify-between bg-surface border-border text-left w-full text-xs font-normal"
-                      >
-                        <span className="text-foreground truncate">{institucion}</span>
-                        <ChevronDown className="size-3.5 text-muted-foreground shrink-0" />
-                      </Button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent align="start" className="w-64">
-                      <DropdownMenuRadioGroup value={institucion} onValueChange={setInstitucion}>
-                        <DropdownMenuRadioItem value="Registro Civil">Registro Civil</DropdownMenuRadioItem>
-                        <DropdownMenuRadioItem value="SRI">SRI</DropdownMenuRadioItem>
-                        <DropdownMenuRadioItem value="Ministerio de Educación">Ministerio de Educación</DropdownMenuRadioItem>
-                        <DropdownMenuRadioItem value="DINARP">DINARP</DropdownMenuRadioItem>
-                        <DropdownMenuRadioItem value="Ministerio de Salud">Ministerio de Salud</DropdownMenuRadioItem>
-                        <DropdownMenuRadioItem value="Agencia Nacional de Tránsito (ANT)">Agencia Nacional de Tránsito (ANT)</DropdownMenuRadioItem>
-                        <DropdownMenuRadioItem value="IESS">IESS</DropdownMenuRadioItem>
-                      </DropdownMenuRadioGroup>
-                    </DropdownMenuContent>
-                  </DropdownMenu>
+                  <Combobox
+                    value={institucion === "Selecciona una institución" ? null : institucion}
+                    onValueChange={(val) => {
+                      setInstitucion(val || "Selecciona una institución");
+                      if (val) setInstitucionSearch(val);
+                      else setInstitucionSearch("");
+                    }}
+                    inputValue={institucionSearch}
+                    onInputValueChange={(newSearch) => {
+                      setInstitucionSearch(newSearch);
+                    }}
+                  >
+                    <ComboboxInput placeholder="Selecciona una institución" showClear={true} className="w-full bg-surface" />
+                    <ComboboxContent align="start" className="w-64">
+                      <ComboboxList>
+                        {filteredInstituciones.map((inst) => (
+                          <ComboboxItem key={inst} value={inst}>
+                            {inst}
+                          </ComboboxItem>
+                        ))}
+                        {filteredInstituciones.length === 0 && (
+                          <ComboboxEmpty>No se encontraron resultados</ComboboxEmpty>
+                        )}
+                      </ComboboxList>
+                    </ComboboxContent>
+                  </Combobox>
                 </div>
 
                 {/* Cargo */}
@@ -227,25 +243,32 @@ export function UsuarioEditClient({ id }: UsuarioEditClientProps) {
                   <label className="text-xs font-semibold text-foreground">
                     Rol <span className="text-destructive">*</span>
                   </label>
-                  <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                      <Button
-                        variant="outline"
-                        className="h-10 px-3 flex items-center justify-between bg-surface border-border text-left w-full text-xs font-normal"
-                      >
-                        <span className="text-foreground truncate">{rol}</span>
-                        <ChevronDown className="size-3.5 text-muted-foreground shrink-0" />
-                      </Button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent align="start" className="w-56">
-                      <DropdownMenuRadioGroup value={rol} onValueChange={setRol}>
-                        <DropdownMenuRadioItem value="Administrador">Administrador</DropdownMenuRadioItem>
-                        <DropdownMenuRadioItem value="Analista">Analista</DropdownMenuRadioItem>
-                        <DropdownMenuRadioItem value="Consultor">Consultor</DropdownMenuRadioItem>
-                        <DropdownMenuRadioItem value="Revisor">Revisor</DropdownMenuRadioItem>
-                      </DropdownMenuRadioGroup>
-                    </DropdownMenuContent>
-                  </DropdownMenu>
+                  <Combobox
+                    value={rol === "Selecciona un rol" ? null : rol}
+                    onValueChange={(val) => {
+                      setRol(val || "Selecciona un rol");
+                      if (val) setRolSearch(val);
+                      else setRolSearch("");
+                    }}
+                    inputValue={rolSearch}
+                    onInputValueChange={(newSearch) => {
+                      setRolSearch(newSearch);
+                    }}
+                  >
+                    <ComboboxInput placeholder="Selecciona un rol" showClear={true} className="w-full bg-surface" />
+                    <ComboboxContent align="start" className="w-56">
+                      <ComboboxList>
+                        {filteredRoles.map((r) => (
+                          <ComboboxItem key={r} value={r}>
+                            {r}
+                          </ComboboxItem>
+                        ))}
+                        {filteredRoles.length === 0 && (
+                          <ComboboxEmpty>No se encontraron resultados</ComboboxEmpty>
+                        )}
+                      </ComboboxList>
+                    </ComboboxContent>
+                  </Combobox>
                 </div>
 
                 {/* Estado */}
@@ -253,23 +276,32 @@ export function UsuarioEditClient({ id }: UsuarioEditClientProps) {
                   <label className="text-xs font-semibold text-foreground">
                     Estado <span className="text-destructive">*</span>
                   </label>
-                  <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                      <Button
-                        variant="outline"
-                        className="h-10 px-3 flex items-center justify-between bg-surface border-border text-left w-full text-xs font-normal"
-                      >
-                        <span className="text-foreground truncate">{estado}</span>
-                        <ChevronDown className="size-3.5 text-muted-foreground shrink-0" />
-                      </Button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent align="start" className="w-44">
-                      <DropdownMenuRadioGroup value={estado} onValueChange={setEstado}>
-                        <DropdownMenuRadioItem value="Activo">Activo</DropdownMenuRadioItem>
-                        <DropdownMenuRadioItem value="Inactivo">Inactivo</DropdownMenuRadioItem>
-                      </DropdownMenuRadioGroup>
-                    </DropdownMenuContent>
-                  </DropdownMenu>
+                  <Combobox
+                    value={estado === "Selecciona un estado" ? null : estado}
+                    onValueChange={(val) => {
+                      setEstado(val || "Selecciona un estado");
+                      if (val) setEstadoSearch(val);
+                      else setEstadoSearch("");
+                    }}
+                    inputValue={estadoSearch}
+                    onInputValueChange={(newSearch) => {
+                      setEstadoSearch(newSearch);
+                    }}
+                  >
+                    <ComboboxInput placeholder="Selecciona un estado" showClear={true} className="w-full bg-surface" />
+                    <ComboboxContent align="start" className="w-44">
+                      <ComboboxList>
+                        {filteredEstados.map((e) => (
+                          <ComboboxItem key={e} value={e}>
+                            {e}
+                          </ComboboxItem>
+                        ))}
+                        {filteredEstados.length === 0 && (
+                          <ComboboxEmpty>No se encontraron resultados</ComboboxEmpty>
+                        )}
+                      </ComboboxList>
+                    </ComboboxContent>
+                  </Combobox>
                 </div>
               </div>
             </div>

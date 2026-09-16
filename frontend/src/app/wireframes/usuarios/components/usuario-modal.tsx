@@ -27,13 +27,13 @@ import {
   InputGroupText,
 } from "@/components/ui/input-group";
 import {
-  DropdownMenu,
-  DropdownMenuTrigger,
-  DropdownMenuContent,
-  DropdownMenuRadioGroup,
-  DropdownMenuRadioItem,
-  DropdownMenuLabel,
-} from "@/components/ui/dropdown-menu";
+  Combobox,
+  ComboboxInput,
+  ComboboxContent,
+  ComboboxList,
+  ComboboxItem,
+  ComboboxEmpty,
+} from "@/components/ui/combobox";
 
 export interface UsuarioData {
   id?: string;
@@ -69,8 +69,16 @@ export function UsuarioModal({
   const [institucion, setInstitucion] = useState("");
   const [cargo, setCargo] = useState("");
   const [rol, setRol] = useState<"Administrador" | "Analista" | "Consultor" | "Revisor">("Analista");
+  const [rolSearch, setRolSearch] = useState("");
   const [estado, setEstado] = useState<"Activo" | "Inactivo">("Activo");
+  const [estadoSearch, setEstadoSearch] = useState("");
   const [enviarCorreo, setEnviarCorreo] = useState(true);
+
+  const ROLES = ["Administrador", "Analista", "Consultor", "Revisor"];
+  const ESTADOS = ["Activo", "Inactivo"];
+
+  const filteredRoles = ROLES.filter(r => r.toLowerCase().includes(rolSearch.toLowerCase()));
+  const filteredEstados = ESTADOS.filter(e => e.toLowerCase().includes(estadoSearch.toLowerCase()));
 
   useEffect(() => {
     if (open) {
@@ -244,30 +252,36 @@ export function UsuarioModal({
               <Label className="text-xs font-semibold text-foreground">
                 Rol asignado
               </Label>
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button
-                    type="button"
-                    variant="outline"
-                    className="h-11 w-full justify-between px-3.5 rounded-full border-border/80 bg-background font-normal text-left shadow-none"
-                  >
-                    <div className="flex items-center gap-2 truncate">
-                      <Shield className="size-4 text-muted-foreground shrink-0" />
-                      <span className="truncate text-foreground text-sm font-medium">{rol}</span>
-                    </div>
-                    <ChevronDown className="size-4 text-muted-foreground shrink-0 ml-2" />
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="start" className="w-56">
-                  <DropdownMenuLabel className="text-xs">Seleccionar Rol</DropdownMenuLabel>
-                  <DropdownMenuRadioGroup value={rol} onValueChange={(val) => setRol(val as any)}>
-                    <DropdownMenuRadioItem value="Administrador">Administrador</DropdownMenuRadioItem>
-                    <DropdownMenuRadioItem value="Analista">Analista</DropdownMenuRadioItem>
-                    <DropdownMenuRadioItem value="Consultor">Consultor</DropdownMenuRadioItem>
-                    <DropdownMenuRadioItem value="Revisor">Revisor</DropdownMenuRadioItem>
-                  </DropdownMenuRadioGroup>
-                </DropdownMenuContent>
-              </DropdownMenu>
+              <Combobox
+                value={rol}
+                onValueChange={(val) => {
+                  if (val) {
+                    setRol(val as any);
+                    setRolSearch(val);
+                  } else {
+                    setRol("Analista");
+                    setRolSearch("");
+                  }
+                }}
+                inputValue={rolSearch}
+                onInputValueChange={(newSearch) => {
+                  setRolSearch(newSearch);
+                }}
+              >
+                <ComboboxInput placeholder="Selecciona un rol" showClear={true} className="w-full bg-surface" />
+                <ComboboxContent align="start" className="w-56">
+                  <ComboboxList>
+                    {filteredRoles.map((r) => (
+                      <ComboboxItem key={r} value={r}>
+                        {r}
+                      </ComboboxItem>
+                    ))}
+                    {filteredRoles.length === 0 && (
+                      <ComboboxEmpty>No se encontraron resultados</ComboboxEmpty>
+                    )}
+                  </ComboboxList>
+                </ComboboxContent>
+              </Combobox>
             </div>
 
             {/* Dropdown Estado */}
@@ -275,31 +289,36 @@ export function UsuarioModal({
               <Label className="text-xs font-semibold text-foreground">
                 Estado
               </Label>
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button
-                    type="button"
-                    variant="outline"
-                    className="h-11 w-full justify-between px-3.5 rounded-full border-border/80 bg-background font-normal text-left shadow-none"
-                  >
-                    <div className="flex items-center gap-2 truncate">
-                      <span
-                        className={`size-2 rounded-full shrink-0 ${estado === "Activo" ? "bg-foreground" : "bg-foreground"
-                          }`}
-                      />
-                      <span className="truncate text-foreground text-sm font-medium">{estado}</span>
-                    </div>
-                    <ChevronDown className="size-4 text-muted-foreground shrink-0 ml-2" />
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="start" className="w-48">
-                  <DropdownMenuLabel className="text-xs">Seleccionar Estado</DropdownMenuLabel>
-                  <DropdownMenuRadioGroup value={estado} onValueChange={(val) => setEstado(val as any)}>
-                    <DropdownMenuRadioItem value="Activo">Activo</DropdownMenuRadioItem>
-                    <DropdownMenuRadioItem value="Inactivo">Inactivo</DropdownMenuRadioItem>
-                  </DropdownMenuRadioGroup>
-                </DropdownMenuContent>
-              </DropdownMenu>
+              <Combobox
+                value={estado}
+                onValueChange={(val) => {
+                  if (val) {
+                    setEstado(val as any);
+                    setEstadoSearch(val);
+                  } else {
+                    setEstado("Activo");
+                    setEstadoSearch("");
+                  }
+                }}
+                inputValue={estadoSearch}
+                onInputValueChange={(newSearch) => {
+                  setEstadoSearch(newSearch);
+                }}
+              >
+                <ComboboxInput placeholder="Seleccionar Estado" showClear={true} className="w-full bg-surface" />
+                <ComboboxContent align="start" className="w-48">
+                  <ComboboxList>
+                    {filteredEstados.map((e) => (
+                      <ComboboxItem key={e} value={e}>
+                        {e}
+                      </ComboboxItem>
+                    ))}
+                    {filteredEstados.length === 0 && (
+                      <ComboboxEmpty>No se encontraron resultados</ComboboxEmpty>
+                    )}
+                  </ComboboxList>
+                </ComboboxContent>
+              </Combobox>
             </div>
           </div>
 
