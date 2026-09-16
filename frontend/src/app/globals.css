@@ -2068,7 +2068,7 @@ input:-webkit-autofill:active {
   animation: gradient-border-flow 3s ease infinite;
 }
 /* WIREFRAME MODE OVERRIDES */
-:root[data-theme-variant="wireframe"] {
+[data-theme="wireframe"] {
   --primitive-primary-50: #F8F9FA;
   --primitive-primary-100: #F1F3F5;
   --primitive-primary-200: #E9ECEF;
@@ -2107,7 +2107,7 @@ input:-webkit-autofill:active {
   --sidebar-ring: var(--primitive-neutral-900);
 }
 
-.dark[data-theme-variant="wireframe"] {
+.dark [data-theme="wireframe"] {
   --primary: var(--primitive-neutral-50);
   --primary-foreground: var(--primitive-neutral-950);
   --secondary: var(--primitive-neutral-200);
