@@ -16,7 +16,7 @@ const buttonVariants = cva(
     "justify-center",
 
     "overflow-hidden",
-    "rounded-full",
+    "!rounded-full",
     "border-2",
 
     "font-semibold",
@@ -193,7 +193,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
             "z-[1]",
             "h-64",
             "w-64",
-            "rounded-full",
+            "!rounded-full",
             "bg-[var(--radial-bg)]",
             "transform-gpu",
             "will-change-transform"
@@ -218,7 +218,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
             "w-40",
             "-translate-x-1/2",
             "-translate-y-1/2",
-            "rounded-full",
+            "!rounded-full",
             "bg-[var(--glow)]",
             "blur-[40px]"
           )}
