@@ -412,6 +412,30 @@ export default function WireframesPage() {
           </Link>
 
           <Link
+            href="/wireframes/facturacion"
+            className="group flex flex-col p-5 rounded-2xl border border-border bg-surface hover:border-foreground/30 hover:shadow-sm transition-all"
+          >
+            <div className="flex items-center justify-between mb-2">
+              <Badge tone="primary" appearance="soft" size="sm">Paso 11</Badge>
+              <ArrowRight className="size-4 text-muted-foreground group-hover:translate-x-1 transition-transform" />
+            </div>
+            <h3 className="font-heading font-bold text-base text-foreground">Facturación</h3>
+            <p className="text-xs text-muted-foreground mt-1">/wireframes/facturacion</p>
+          </Link>
+
+          <Link
+            href="/wireframes/facturacion/F-2026-00125"
+            className="group flex flex-col p-5 rounded-2xl border border-border bg-surface hover:border-foreground/30 hover:shadow-sm transition-all"
+          >
+            <div className="flex items-center justify-between mb-2">
+              <Badge tone="primary" appearance="soft" size="sm">Paso 11.1</Badge>
+              <ArrowRight className="size-4 text-muted-foreground group-hover:translate-x-1 transition-transform" />
+            </div>
+            <h3 className="font-heading font-bold text-base text-foreground">Detalle de Factura (F-2026-00125)</h3>
+            <p className="text-xs text-muted-foreground mt-1">/wireframes/facturacion/F-2026-00125</p>
+          </Link>
+
+          <Link
             href="/wireframes/recuperar-acceso"
             className="group flex flex-col p-5 rounded-2xl border border-border bg-surface hover:border-foreground/30 hover:shadow-sm transition-all"
           >

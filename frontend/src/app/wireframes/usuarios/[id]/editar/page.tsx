@@ -19,3 +19,4 @@ export default async function WireframeEditarUsuarioPage({ params }: PageProps) 
   const resolvedParams = await params;
   return <UsuarioEditClient id={resolvedParams.id} />;
 }
+

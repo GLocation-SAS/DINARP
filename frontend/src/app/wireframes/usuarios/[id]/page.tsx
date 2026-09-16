@@ -19,3 +19,4 @@ export default async function WireframeDetalleUsuarioPage({ params }: PageProps)
   const resolvedParams = await params;
   return <UsuarioDetailClient id={resolvedParams.id} />;
 }
+

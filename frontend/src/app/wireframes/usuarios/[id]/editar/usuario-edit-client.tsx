@@ -326,3 +326,4 @@ export function UsuarioEditClient({ id }: UsuarioEditClientProps) {
     </WireframeDashboardLayout>
   );
 }
+

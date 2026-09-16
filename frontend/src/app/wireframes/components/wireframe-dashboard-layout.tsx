@@ -12,6 +12,7 @@ import {
   Database,
   Network,
   Receipt,
+  CreditCard,
   BarChart2,
   Users,
   ShieldCheck,
@@ -66,6 +67,7 @@ export function WireframeDashboardLayout({
       title: "GESTIÓN",
       items: [
         { id: "cotizacion", label: "Cotización / Tarifario", icon: Receipt, href: "/wireframes/tarifario" },
+        { id: "facturacion", label: "Facturación", icon: CreditCard, href: "/wireframes/facturacion" },
         { id: "reportes", label: "Reportes", icon: BarChart2, href: "/wireframes/solicitudes" },
       ],
     },

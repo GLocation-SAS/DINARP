@@ -418,3 +418,4 @@ export default function WireframeListadoUsuariosPage() {
     </WireframeDashboardLayout>
   );
 }
+
