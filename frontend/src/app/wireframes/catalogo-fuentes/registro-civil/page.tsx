@@ -258,67 +258,65 @@ export default function WireframeRegistroCivilPage() {
             </div>
 
             {/* Tabla de servicios */}
-            <Card className="rounded-2xl border-border bg-surface overflow-hidden shadow-xs">
-              <CardContent className="p-0 overflow-x-auto">
-                <Table className="w-full border-spacing-0">
-                  <TableHeader>
-                    <TableRow className="border-b border-border/80 bg-muted/30 hover:bg-muted/30">
-                      <TableHead className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider py-3.5 px-4 text-left">
-                        NOMBRE DEL SERVICIO
-                      </TableHead>
-                      <TableHead className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider py-3.5 px-4 text-left">
-                        DESCRIPCIÓN
-                      </TableHead>
-                      <TableHead className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider py-3.5 px-4 text-left">
-                        TIPO
-                      </TableHead>
-                      <TableHead className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider py-3.5 px-4 text-left">
-                        ÚLTIMA ACTUALIZACIÓN
-                      </TableHead>
-                      <TableHead className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider py-3.5 px-4 text-right">
-                        ACCIONES
-                      </TableHead>
+            <div className="overflow-x-auto rounded-2xl border border-border bg-surface shadow-xs">
+              <Table className="w-full border-spacing-0">
+                <TableHeader>
+                  <TableRow className="border-b border-border/80 bg-muted/30 hover:bg-muted/30">
+                    <TableHead className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider py-3.5 px-4 text-left">
+                      SERVICIO
+                    </TableHead>
+                    <TableHead className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider py-3.5 px-4 text-left">
+                      DESCRIPCIÓN
+                    </TableHead>
+                    <TableHead className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider py-3.5 px-4 text-left">
+                      TIPO
+                    </TableHead>
+                    <TableHead className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider py-3.5 px-4 text-left">
+                      ÚLTIMA ACTUALIZACIÓN
+                    </TableHead>
+                    <TableHead className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider py-3.5 px-4 text-right">
+                      ACCIONES
+                    </TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {filteredServicios.map((serv) => (
+                    <TableRow
+                      key={serv.id}
+                      className="border-b border-border/40 hover:bg-muted/20 transition-colors cursor-pointer"
+                      onClick={() => router.push(serv.href)}
+                    >
+                      <TableCell className="py-4 px-4 text-xs font-bold text-foreground max-w-[200px]">
+                        {serv.nombre}
+                      </TableCell>
+                      <TableCell className="py-4 px-4 text-xs text-muted-foreground max-w-[360px] leading-relaxed">
+                        {serv.descripcion}
+                      </TableCell>
+                      <TableCell className="py-4 px-4 text-xs whitespace-nowrap">
+                        <Badge tone="neutral" appearance="outline" size="sm" className="font-mono text-[11px]">
+                          {serv.tipo}
+                        </Badge>
+                      </TableCell>
+                      <TableCell className="py-4 px-4 text-xs text-muted-foreground whitespace-nowrap">
+                        {serv.ultimaActualizacion}
+                      </TableCell>
+                      <TableCell className="py-4 px-4 text-right whitespace-nowrap" onClick={(e) => e.stopPropagation()}>
+                        <Button
+                          type="button"
+                          variant="outline"
+                          size="sm"
+                          onClick={() => router.push(serv.href)}
+                          className="h-8 px-3 rounded-lg text-xs font-semibold gap-1.5 border-border"
+                        >
+                          <Eye className="size-3.5" />
+                          <span>Ver detalle</span>
+                        </Button>
+                      </TableCell>
                     </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {filteredServicios.map((serv) => (
-                      <TableRow
-                        key={serv.id}
-                        className="border-b border-border/40 hover:bg-muted/20 transition-colors cursor-pointer"
-                        onClick={() => router.push(serv.href)}
-                      >
-                        <TableCell className="py-4 px-4 text-xs font-bold text-foreground max-w-[200px]">
-                          {serv.nombre}
-                        </TableCell>
-                        <TableCell className="py-4 px-4 text-xs text-muted-foreground max-w-[360px] leading-relaxed">
-                          {serv.descripcion}
-                        </TableCell>
-                        <TableCell className="py-4 px-4 text-xs whitespace-nowrap">
-                          <Badge tone="neutral" appearance="outline" size="sm" className="font-mono text-[11px]">
-                            {serv.tipo}
-                          </Badge>
-                        </TableCell>
-                        <TableCell className="py-4 px-4 text-xs text-muted-foreground whitespace-nowrap">
-                          {serv.ultimaActualizacion}
-                        </TableCell>
-                        <TableCell className="py-4 px-4 text-right whitespace-nowrap" onClick={(e) => e.stopPropagation()}>
-                          <Button
-                            type="button"
-                            variant="outline"
-                            size="sm"
-                            onClick={() => router.push(serv.href)}
-                            className="h-8 px-3 rounded-lg text-xs font-semibold gap-1.5 border-border"
-                          >
-                            <Eye className="size-3.5" />
-                            <span>Ver detalle</span>
-                          </Button>
-                        </TableCell>
-                      </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
-              </CardContent>
-            </Card>
+                  ))}
+                </TableBody>
+              </Table>
+            </div>
           </TabsContent>
 
           {/* TAB 2: INFORMACIÓN GENERAL */}

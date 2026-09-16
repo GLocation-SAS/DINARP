@@ -192,51 +192,49 @@ export function RolDetailClient({ id }: RolDetailClientProps) {
 
           {/* ── Tab: Permisos ── */}
           <TabsContent value="permisos" className="space-y-6 m-0">
-            <Card className="rounded-2xl border-border bg-surface p-6 sm:p-7 space-y-5 shadow-xs">
-              <div className="space-y-0.5">
-                <h2 className="text-sm font-bold text-foreground">
-                  Permisos asignados
-                </h2>
-                <p className="text-xs text-muted-foreground">
-                  Lista de permisos que tiene este rol por cada módulo.
-                </p>
-              </div>
+            <div className="space-y-0.5">
+              <h2 className="text-sm font-bold text-foreground">
+                Permisos asignados
+              </h2>
+              <p className="text-xs text-muted-foreground">
+                Lista de permisos que tiene este rol por cada módulo.
+              </p>
+            </div>
 
-              <div className="overflow-x-auto">
-                <Table className="w-full border-spacing-0">
-                  <TableHeader>
-                    <TableRow className="border-b border-border/80 bg-muted/30 hover:bg-muted/30">
-                      <TableHead className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider py-3 px-4 text-left w-1/3">
-                        MÓDULO
-                      </TableHead>
-                      <TableHead className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider py-3 px-4 text-left">
-                        PERMISOS CONCEDIDOS
-                      </TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {MODULE_PERMISSIONS_LIST.map((item) => {
-                      const Icon = item.icon;
-                      return (
-                        <TableRow key={item.module} className="border-b border-border/40 hover:bg-muted/20">
-                          <TableCell className="py-3 px-4 whitespace-nowrap">
-                            <div className="flex items-center gap-2.5">
-                              <Icon className="size-4 text-muted-foreground shrink-0" />
-                              <span className="text-xs font-bold text-foreground">
-                                {item.module}
-                              </span>
-                            </div>
-                          </TableCell>
-                          <TableCell className="py-3 px-4 text-xs text-foreground font-medium">
-                            {item.permissions}
-                          </TableCell>
-                        </TableRow>
-                      );
-                    })}
-                  </TableBody>
-                </Table>
-              </div>
-            </Card>
+            <div className="overflow-x-auto rounded-2xl border border-border bg-surface shadow-xs">
+              <Table className="w-full border-spacing-0">
+                <TableHeader>
+                  <TableRow className="border-b border-border/80 bg-muted/30 hover:bg-muted/30">
+                    <TableHead className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider py-3 px-4 text-left w-1/3">
+                      MÓDULO
+                    </TableHead>
+                    <TableHead className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider py-3 px-4 text-left">
+                      PERMISOS CONCEDIDOS
+                    </TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {MODULE_PERMISSIONS_LIST.map((item) => {
+                    const Icon = item.icon;
+                    return (
+                      <TableRow key={item.module} className="border-b border-border/40 hover:bg-muted/20">
+                        <TableCell className="py-3 px-4 whitespace-nowrap">
+                          <div className="flex items-center gap-2.5">
+                            <Icon className="size-4 text-muted-foreground shrink-0" />
+                            <span className="text-xs font-bold text-foreground">
+                              {item.module}
+                            </span>
+                          </div>
+                        </TableCell>
+                        <TableCell className="py-3 px-4 text-xs text-foreground font-medium">
+                          {item.permissions}
+                        </TableCell>
+                      </TableRow>
+                    );
+                  })}
+                </TableBody>
+              </Table>
+            </div>
 
             {/* Bottom Card: Usuarios Asignados */}
             <Card className="rounded-2xl border-border bg-surface p-5 sm:p-6 shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-4">
@@ -299,72 +297,69 @@ export function RolDetailClient({ id }: RolDetailClientProps) {
 
           {/* ── Tab: Usuarios Asignados ── */}
           <TabsContent value="usuarios" className="space-y-6 m-0">
-            <Card className="rounded-2xl border-border bg-surface p-6 sm:p-7 space-y-5 shadow-xs">
-              <div className="flex items-center justify-between">
-                <div className="space-y-0.5">
-                  <h2 className="text-sm font-bold text-foreground">
-                    Lista de usuarios con este rol
-                  </h2>
-                  <p className="text-xs text-muted-foreground">
-                    Total: 5 usuarios visibles de 8 registrados
-                  </p>
-                </div>
-
-                <Button
-                  type="button"
-                  variant="primary"
-                  onClick={() => router.push("/wireframes/usuarios/nuevo")}
-                  className="h-9 px-3.5 rounded-xl text-xs font-semibold"
-                >
-                  Asignar usuario
-                </Button>
+            <div className="flex items-center justify-between">
+              <div className="space-y-0.5">
+                <h2 className="text-sm font-bold text-foreground">
+                  Lista de usuarios con este rol
+                </h2>
+                <p className="text-xs text-muted-foreground">
+                  Total: 5 usuarios visibles de 8 registrados
+                </p>
               </div>
 
-              <div className="overflow-x-auto">
-                <Table className="w-full border-spacing-0">
-                  <TableHeader>
-                    <TableRow className="border-b border-border/80 bg-muted/30 hover:bg-muted/30">
-                      <TableHead className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider py-3 px-4 text-left">
-                        NOMBRE
-                      </TableHead>
-                      <TableHead className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider py-3 px-4 text-left">
-                        CORREO ELECTRÓNICO
-                      </TableHead>
-                      <TableHead className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider py-3 px-4 text-left">
-                        CARGO
-                      </TableHead>
-                      <TableHead className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider py-3 px-4 text-left">
-                        ESTADO
-                      </TableHead>
+              <Button
+                type="button"
+                variant="primary"
+                onClick={() => router.push("/wireframes/usuarios/nuevo")}
+                className="h-9 px-3.5 rounded-xl text-xs font-semibold"
+              >
+                Asignar usuario
+              </Button>
+            </div>
+
+            <div className="overflow-x-auto rounded-2xl border border-border bg-surface shadow-xs">
+              <Table className="w-full border-spacing-0">
+                <TableHeader>
+                  <TableRow className="border-b border-border/80 bg-muted/30 hover:bg-muted/30">
+                    <TableHead className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider py-3 px-4 text-left">
+                      NOMBRE
+                    </TableHead>
+                    <TableHead className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider py-3 px-4 text-left">
+                      CORREO ELECTRÓNICO
+                    </TableHead>
+                    <TableHead className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider py-3 px-4 text-left">
+                      CARGO
+                    </TableHead>
+                    <TableHead className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider py-3 px-4 text-left">
+                      ESTADO
+                    </TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {ASSIGNED_USERS_MOCK.map((u) => (
+                    <TableRow key={u.email} className="border-b border-border/40 hover:bg-muted/20">
+                      <TableCell className="py-3 px-4 text-xs font-bold text-foreground whitespace-nowrap">
+                        {u.name}
+                      </TableCell>
+                      <TableCell className="py-3 px-4 text-xs text-muted-foreground whitespace-nowrap">
+                        {u.email}
+                      </TableCell>
+                      <TableCell className="py-3 px-4 text-xs text-muted-foreground whitespace-nowrap">
+                        {u.cargo}
+                      </TableCell>
+                      <TableCell className="py-3 px-4 whitespace-nowrap">
+                        <Badge tone="success" appearance="soft" size="sm" className="text-xs">
+                          {u.estado}
+                        </Badge>
+                      </TableCell>
                     </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {ASSIGNED_USERS_MOCK.map((u) => (
-                      <TableRow key={u.email} className="border-b border-border/40 hover:bg-muted/20">
-                        <TableCell className="py-3 px-4 text-xs font-bold text-foreground whitespace-nowrap">
-                          {u.name}
-                        </TableCell>
-                        <TableCell className="py-3 px-4 text-xs text-muted-foreground whitespace-nowrap">
-                          {u.email}
-                        </TableCell>
-                        <TableCell className="py-3 px-4 text-xs text-muted-foreground whitespace-nowrap">
-                          {u.cargo}
-                        </TableCell>
-                        <TableCell className="py-3 px-4 whitespace-nowrap">
-                          <Badge tone="success" appearance="soft" size="sm" className="text-xs">
-                            {u.estado}
-                          </Badge>
-                        </TableCell>
-                      </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
-              </div>
-            </Card>
+                  ))}
+                </TableBody>
+              </Table>
+            </div>
           </TabsContent>
         </Tabs>
       </main>
     </WireframeDashboardLayout>
   );
 }
-

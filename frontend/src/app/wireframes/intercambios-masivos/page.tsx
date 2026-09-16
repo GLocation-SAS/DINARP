@@ -327,9 +327,8 @@ export default function WireframeIntercambiosMasivosPage() {
         </div>
 
         {/* ── 4. Tabla de Intercambios Masivos ── */}
-        <Card className="rounded-2xl border-border bg-surface overflow-hidden shadow-xs">
-          <CardContent className="p-0 overflow-x-auto">
-            <Table className="w-full border-spacing-0">
+        <div className="overflow-x-auto rounded-2xl border border-border bg-surface shadow-xs">
+          <Table className="w-full border-spacing-0">
               <TableHeader>
                 <TableRow className="border-b border-border/80 bg-muted/30 hover:bg-muted/30">
                   <TableHead className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider py-3.5 px-4 text-left">
@@ -433,8 +432,7 @@ export default function WireframeIntercambiosMasivosPage() {
                 )}
               </TableBody>
             </Table>
-          </CardContent>
-        </Card>
+        </div>
 
         {/* ── 5. Paginación ── */}
         <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-2">

@@ -330,9 +330,8 @@ export default function WireframeDatosIdentidadPage() {
             </div>
 
             {/* Tabla con Checkbox */}
-            <Card className="rounded-2xl border-border bg-surface overflow-hidden shadow-xs">
-              <CardContent className="p-0 overflow-x-auto">
-                <Table className="w-full border-spacing-0">
+            <div className="overflow-x-auto rounded-2xl border border-border bg-surface shadow-xs">
+              <Table className="w-full border-spacing-0">
                   <TableHeader>
                     <TableRow className="border-b border-border/80 bg-muted/30 hover:bg-muted/30">
                       <TableHead className="w-12 py-3.5 px-4 text-center">
@@ -434,8 +433,7 @@ export default function WireframeDatosIdentidadPage() {
                     })}
                   </TableBody>
                 </Table>
-              </CardContent>
-            </Card>
+            </div>
 
             {/* Barra Inferior Flotante / Acciones */}
             <div className="p-4 rounded-2xl border border-border bg-surface flex flex-col sm:flex-row items-center justify-between gap-3 shadow-xs">

@@ -673,7 +673,7 @@ export default function WireframeReportesPage() {
         </div>
 
         {/* ── 5. Detalle de Transacciones ── */}
-        <Card className="rounded-2xl border-border bg-surface p-6 space-y-5 shadow-xs">
+        <div className="space-y-4">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <h2 className="text-sm font-bold text-foreground">
               Detalle de transacciones
@@ -702,7 +702,7 @@ export default function WireframeReportesPage() {
             </div>
           </div>
 
-          <div className="overflow-x-auto">
+          <div className="overflow-x-auto rounded-2xl border border-border bg-surface shadow-xs">
             <Table className="w-full border-spacing-0">
               <TableHeader>
                 <TableRow className="border-b border-border/80 bg-muted/30 hover:bg-muted/30">
@@ -777,7 +777,7 @@ export default function WireframeReportesPage() {
               </TableBody>
             </Table>
           </div>
-        </Card>
+        </div>
 
         {/* ── Modal Detalle de Transacción ── */}
         <Dialog open={!!selectedTx} onOpenChange={(open) => !open && setSelectedTx(null)}>
@@ -884,3 +884,4 @@ export default function WireframeReportesPage() {
     </WireframeDashboardLayout>
   );
 }
+

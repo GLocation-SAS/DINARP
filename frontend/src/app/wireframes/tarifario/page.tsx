@@ -340,113 +340,110 @@ export default function WireframeTarifarioCotizacionPage() {
           {/* TAB 1: TARIFARIO DE SERVICIOS                                     */}
           {/* ══════════════════════════════════════════════════════════════════ */}
           <TabsContent value="tarifario" className="space-y-6">
-            <Card className="rounded-2xl border-border bg-surface shadow-xs">
-              <CardHeader className="p-6 pb-4">
-                <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-                  <div className="space-y-1">
-                    <CardTitle className="font-heading font-bold text-lg text-foreground">
-                      1. Tarifario de servicios
-                    </CardTitle>
-                    <CardDescription className="text-xs text-muted-foreground max-w-xl">
-                      Consulta las tarifas vigentes por fuente y servicio. Los valores pueden variar según el tipo de uso y volumen.
-                    </CardDescription>
-                  </div>
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+              <div className="space-y-1">
+                <h2 className="font-heading font-bold text-lg text-foreground">
+                  1. Tarifario de servicios
+                </h2>
+                <p className="text-xs text-muted-foreground max-w-xl">
+                  Consulta las tarifas vigentes por fuente y servicio. Los valores pueden variar según el tipo de uso y volumen.
+                </p>
+              </div>
 
-                  {/* Buscador y Filtro por Estado */}
-                  <div className="flex flex-col sm:flex-row items-center gap-3">
-                    <InputGroup
-                      size="default"
-                      leftIcon={<Search className="size-4 text-muted-foreground" />}
-                      className="bg-surface h-10 w-full sm:w-64 rounded-xl border-border"
+              {/* Buscador y Filtro por Estado */}
+              <div className="flex flex-col sm:flex-row items-center gap-3">
+                <InputGroup
+                  size="default"
+                  leftIcon={<Search className="size-4 text-muted-foreground" />}
+                  className="bg-surface h-10 w-full sm:w-64 rounded-xl border-border"
+                >
+                  <InputGroupInput
+                    placeholder="Buscar fuente, servicio o dato..."
+                    value={searchTarifario}
+                    onChange={(e) => setSearchTarifario(e.target.value)}
+                    className="text-xs"
+                  />
+                </InputGroup>
+
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button
+                      variant="outline"
+                      className="h-10 px-3 flex items-center justify-between bg-surface border-border rounded-xl text-left w-full sm:w-44 text-xs font-medium"
                     >
-                      <InputGroupInput
-                        placeholder="Buscar fuente, servicio o dato..."
-                        value={searchTarifario}
-                        onChange={(e) => setSearchTarifario(e.target.value)}
-                        className="text-xs"
-                      />
-                    </InputGroup>
+                      <span className="truncate">{filterEstadoTarifario}</span>
+                      <ChevronDown className="size-3.5 text-muted-foreground shrink-0" />
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end" className="w-44">
+                    <DropdownMenuRadioGroup
+                      value={filterEstadoTarifario}
+                      onValueChange={setFilterEstadoTarifario}
+                    >
+                      <DropdownMenuRadioItem value="Todos los estados">Todos los estados</DropdownMenuRadioItem>
+                      <DropdownMenuRadioItem value="Vigente">Vigente</DropdownMenuRadioItem>
+                      <DropdownMenuRadioItem value="En revisión">En revisión</DropdownMenuRadioItem>
+                      <DropdownMenuRadioItem value="No vigente">No vigente</DropdownMenuRadioItem>
+                    </DropdownMenuRadioGroup>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              </div>
+            </div>
 
-                    <DropdownMenu>
-                      <DropdownMenuTrigger asChild>
-                        <Button
-                          variant="outline"
-                          className="h-10 px-3 flex items-center justify-between bg-surface border-border rounded-xl text-left w-full sm:w-44 text-xs font-medium"
-                        >
-                          <span className="truncate">{filterEstadoTarifario}</span>
-                          <ChevronDown className="size-3.5 text-muted-foreground shrink-0" />
-                        </Button>
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent align="end" className="w-44">
-                        <DropdownMenuRadioGroup
-                          value={filterEstadoTarifario}
-                          onValueChange={setFilterEstadoTarifario}
-                        >
-                          <DropdownMenuRadioItem value="Todos los estados">Todos los estados</DropdownMenuRadioItem>
-                          <DropdownMenuRadioItem value="Vigente">Vigente</DropdownMenuRadioItem>
-                          <DropdownMenuRadioItem value="En revisión">En revisión</DropdownMenuRadioItem>
-                          <DropdownMenuRadioItem value="No vigente">No vigente</DropdownMenuRadioItem>
-                        </DropdownMenuRadioGroup>
-                      </DropdownMenuContent>
-                    </DropdownMenu>
-                  </div>
-                </div>
-              </CardHeader>
-
-              <CardContent className="p-0 overflow-x-auto border-t border-border/80">
-                <Table className="w-full border-spacing-0">
-                  <TableHeader>
-                    <TableRow className="border-b border-border/80 bg-muted/30">
-                      <TableHead className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider py-3.5 px-6 text-left">
-                        FUENTE
-                      </TableHead>
-                      <TableHead className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider py-3.5 px-6 text-left">
-                        SERVICIO / DATO
-                      </TableHead>
-                      <TableHead className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider py-3.5 px-6 text-left">
-                        DESCRIPCIÓN
-                      </TableHead>
-                      <TableHead className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider py-3.5 px-6 text-left">
-                        UNIDAD DE COBRO
-                      </TableHead>
-                      <TableHead className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider py-3.5 px-6 text-left">
-                        TARIFA (USD)
-                      </TableHead>
-                      <TableHead className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider py-3.5 px-6 text-left">
-                        ESTADO
-                      </TableHead>
+            <div className="overflow-x-auto rounded-2xl border border-border bg-surface shadow-xs">
+              <Table className="w-full border-spacing-0">
+                <TableHeader>
+                  <TableRow className="border-b border-border/80 bg-muted/30">
+                    <TableHead className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider py-3.5 px-6 text-left">
+                      FUENTE
+                    </TableHead>
+                    <TableHead className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider py-3.5 px-6 text-left">
+                      SERVICIO / DATO
+                    </TableHead>
+                    <TableHead className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider py-3.5 px-6 text-left">
+                      DESCRIPCIÓN
+                    </TableHead>
+                    <TableHead className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider py-3.5 px-6 text-left">
+                      UNIDAD DE COBRO
+                    </TableHead>
+                    <TableHead className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider py-3.5 px-6 text-left">
+                      TARIFA (USD)
+                    </TableHead>
+                    <TableHead className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider py-3.5 px-6 text-left">
+                      ESTADO
+                    </TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {filteredTarifario.map((row, idx) => (
+                    <TableRow key={idx} className="border-b border-border/40 hover:bg-muted/10 transition-colors">
+                      <TableCell className="py-4 px-6 text-xs font-semibold text-foreground whitespace-nowrap">
+                        {row.fuente}
+                      </TableCell>
+                      <TableCell className="py-4 px-6 text-xs font-medium text-foreground whitespace-nowrap">
+                        {row.servicio}
+                      </TableCell>
+                      <TableCell className="py-4 px-6 text-xs text-muted-foreground max-w-[280px]">
+                        {row.descripcion}
+                      </TableCell>
+                      <TableCell className="py-4 px-6 text-xs text-muted-foreground whitespace-nowrap">
+                        {row.unidad}
+                      </TableCell>
+                      <TableCell className="py-4 px-6 text-xs font-mono font-bold text-foreground whitespace-nowrap">
+                        {row.tarifa.toFixed(2).replace(".", ",")}
+                      </TableCell>
+                      <TableCell className="py-4 px-6 whitespace-nowrap">
+                        <Badge tone="success" appearance="soft" size="sm" className="font-semibold text-xs">
+                          {row.estado}
+                        </Badge>
+                      </TableCell>
                     </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {filteredTarifario.map((row, idx) => (
-                      <TableRow key={idx} className="border-b border-border/40 hover:bg-muted/10 transition-colors">
-                        <TableCell className="py-4 px-6 text-xs font-semibold text-foreground whitespace-nowrap">
-                          {row.fuente}
-                        </TableCell>
-                        <TableCell className="py-4 px-6 text-xs font-medium text-foreground whitespace-nowrap">
-                          {row.servicio}
-                        </TableCell>
-                        <TableCell className="py-4 px-6 text-xs text-muted-foreground max-w-[280px]">
-                          {row.descripcion}
-                        </TableCell>
-                        <TableCell className="py-4 px-6 text-xs text-muted-foreground whitespace-nowrap">
-                          {row.unidad}
-                        </TableCell>
-                        <TableCell className="py-4 px-6 text-xs font-mono font-bold text-foreground whitespace-nowrap">
-                          {row.tarifa.toFixed(2).replace(".", ",")}
-                        </TableCell>
-                        <TableCell className="py-4 px-6 whitespace-nowrap">
-                          <Badge tone="success" appearance="soft" size="sm" className="font-semibold text-xs">
-                            {row.estado}
-                          </Badge>
-                        </TableCell>
-                      </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
-              </CardContent>
+                  ))}
+                </TableBody>
+              </Table>
+            </div>
 
-              <CardFooter className="p-4 border-t border-border/80 flex justify-end">
+            <div className="flex justify-end pt-2">
                 <Pagination className="mx-0 w-auto justify-end">
                   <PaginationContent className="gap-1">
                     <PaginationItem>
@@ -480,8 +477,7 @@ export default function WireframeTarifarioCotizacionPage() {
                     </PaginationItem>
                   </PaginationContent>
                 </Pagination>
-              </CardFooter>
-            </Card>
+            </div>
           </TabsContent>
 
           {/* ══════════════════════════════════════════════════════════════════ */}
@@ -737,106 +733,104 @@ export default function WireframeTarifarioCotizacionPage() {
           {/* TAB 3: MIS COTIZACIONES                                           */}
           {/* ══════════════════════════════════════════════════════════════════ */}
           <TabsContent value="mis-cotizaciones" className="space-y-6">
-            <Card className="rounded-2xl border-border bg-surface shadow-xs">
-              <CardHeader className="p-6 pb-4">
-                <CardTitle className="font-heading font-bold text-lg text-foreground">
-                  3. Mis cotizaciones
-                </CardTitle>
-                <CardDescription className="text-xs text-muted-foreground">
-                  Revisa el historial de cotizaciones generadas y solicita su aprobación formal.
-                </CardDescription>
-              </CardHeader>
+            <div className="space-y-1">
+              <h2 className="font-heading font-bold text-lg text-foreground">
+                3. Mis cotizaciones
+              </h2>
+              <p className="text-xs text-muted-foreground">
+                Revisa el historial de cotizaciones generadas y solicita su aprobación formal.
+              </p>
+            </div>
 
-              <CardContent className="p-0 overflow-x-auto border-t border-border/80">
-                <Table className="w-full border-spacing-0">
-                  <TableHeader>
-                    <TableRow className="border-b border-border/80 bg-muted/30">
-                      <TableHead className="text-[11px] font-bold text-muted-foreground uppercase py-3.5 px-6 text-left">
-                        CÓDIGO
-                      </TableHead>
-                      <TableHead className="text-[11px] font-bold text-muted-foreground uppercase py-3.5 px-6 text-left">
-                        PROYECTO / SOLICITUD
-                      </TableHead>
-                      <TableHead className="text-[11px] font-bold text-muted-foreground uppercase py-3.5 px-6 text-left">
-                        FECHA
-                      </TableHead>
-                      <TableHead className="text-[11px] font-bold text-muted-foreground uppercase py-3.5 px-6 text-left">
-                        TOTAL
-                      </TableHead>
-                      <TableHead className="text-[11px] font-bold text-muted-foreground uppercase py-3.5 px-6 text-left">
-                        ESTADO
-                      </TableHead>
-                      <TableHead className="text-[11px] font-bold text-muted-foreground uppercase py-3.5 px-6 text-right">
-                        ACCIONES
-                      </TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {misCotizaciones.map((cot) => (
-                      <TableRow key={cot.codigo} className="border-b border-border/40 hover:bg-muted/10">
-                        <TableCell className="py-4 px-6 text-xs font-mono font-bold text-foreground whitespace-nowrap">
-                          {cot.codigo}
-                        </TableCell>
-                        <TableCell className="py-4 px-6 text-xs font-semibold text-foreground">
-                          {cot.proyecto}
-                        </TableCell>
-                        <TableCell className="py-4 px-6 text-xs text-muted-foreground whitespace-nowrap">
-                          {cot.fecha}
-                        </TableCell>
-                        <TableCell className="py-4 px-6 text-xs font-mono font-bold text-foreground whitespace-nowrap">
-                          ${cot.total.toFixed(2)}
-                        </TableCell>
-                        <TableCell className="py-4 px-6 whitespace-nowrap">
-                          <Badge
-                            tone={cot.estado === "Aprobada" ? "success" : cot.estado === "En revisión" ? "warning" : "neutral"}
-                            appearance="soft"
+            <div className="overflow-x-auto rounded-2xl border border-border bg-surface shadow-xs">
+              <Table className="w-full border-spacing-0">
+                <TableHeader>
+                  <TableRow className="border-b border-border/80 bg-muted/30">
+                    <TableHead className="text-[11px] font-bold text-muted-foreground uppercase py-3.5 px-6 text-left">
+                      CÓDIGO
+                    </TableHead>
+                    <TableHead className="text-[11px] font-bold text-muted-foreground uppercase py-3.5 px-6 text-left">
+                      PROYECTO / SOLICITUD
+                    </TableHead>
+                    <TableHead className="text-[11px] font-bold text-muted-foreground uppercase py-3.5 px-6 text-left">
+                      FECHA
+                    </TableHead>
+                    <TableHead className="text-[11px] font-bold text-muted-foreground uppercase py-3.5 px-6 text-left">
+                      TOTAL
+                    </TableHead>
+                    <TableHead className="text-[11px] font-bold text-muted-foreground uppercase py-3.5 px-6 text-left">
+                      ESTADO
+                    </TableHead>
+                    <TableHead className="text-[11px] font-bold text-muted-foreground uppercase py-3.5 px-6 text-right">
+                      ACCIONES
+                    </TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {misCotizaciones.map((cot) => (
+                    <TableRow key={cot.codigo} className="border-b border-border/40 hover:bg-muted/10">
+                      <TableCell className="py-4 px-6 text-xs font-mono font-bold text-foreground whitespace-nowrap">
+                        {cot.codigo}
+                      </TableCell>
+                      <TableCell className="py-4 px-6 text-xs font-semibold text-foreground">
+                        {cot.proyecto}
+                      </TableCell>
+                      <TableCell className="py-4 px-6 text-xs text-muted-foreground whitespace-nowrap">
+                        {cot.fecha}
+                      </TableCell>
+                      <TableCell className="py-4 px-6 text-xs font-mono font-bold text-foreground whitespace-nowrap">
+                        ${cot.total.toFixed(2)}
+                      </TableCell>
+                      <TableCell className="py-4 px-6 whitespace-nowrap">
+                        <Badge
+                          tone={cot.estado === "Aprobada" ? "success" : cot.estado === "En revisión" ? "warning" : "neutral"}
+                          appearance="soft"
+                          size="sm"
+                          className="text-xs font-medium"
+                        >
+                          {cot.estado}
+                        </Badge>
+                      </TableCell>
+                      <TableCell className="py-4 px-6 text-right whitespace-nowrap">
+                        <div className="flex items-center justify-end gap-2">
+                          <Button
+                            type="button"
+                            variant="outline"
                             size="sm"
-                            className="text-xs font-medium"
+                            onClick={() => setSelectedCotizacionDetalle(cot)}
+                            className="h-8 px-3 rounded-lg text-xs font-semibold gap-1 border-border"
                           >
-                            {cot.estado}
-                          </Badge>
-                        </TableCell>
-                        <TableCell className="py-4 px-6 text-right whitespace-nowrap">
-                          <div className="flex items-center justify-end gap-2">
-                            <Button
-                              type="button"
-                              variant="outline"
-                              size="sm"
-                              onClick={() => setSelectedCotizacionDetalle(cot)}
-                              className="h-8 px-3 rounded-lg text-xs font-semibold gap-1 border-border"
-                            >
-                              <Eye className="size-3.5" />
-                              <span>Ver detalle</span>
-                            </Button>
+                            <Eye className="size-3.5" />
+                            <span>Ver detalle</span>
+                          </Button>
 
-                            <Button
-                              type="button"
-                              variant="ghost"
-                              size="icon-sm"
-                              title="Descargar PDF"
-                              className="text-muted-foreground hover:text-foreground size-8"
-                            >
-                              <Download className="size-3.5" />
-                            </Button>
+                          <Button
+                            type="button"
+                            variant="ghost"
+                            size="icon-sm"
+                            title="Descargar PDF"
+                            className="text-muted-foreground hover:text-foreground size-8"
+                          >
+                            <Download className="size-3.5" />
+                          </Button>
 
-                            <Button
-                              type="button"
-                              variant="ghost"
-                              size="icon-sm"
-                              onClick={() => setActiveTab("calcular")}
-                              title="Volver a calcular"
-                              className="text-muted-foreground hover:text-foreground size-8"
-                            >
-                              <RefreshCw className="size-3.5" />
-                            </Button>
-                          </div>
-                        </TableCell>
-                      </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
-              </CardContent>
-            </Card>
+                          <Button
+                            type="button"
+                            variant="ghost"
+                            size="icon-sm"
+                            onClick={() => setActiveTab("calcular")}
+                            title="Volver a calcular"
+                            className="text-muted-foreground hover:text-foreground size-8"
+                          >
+                            <RefreshCw className="size-3.5" />
+                          </Button>
+                        </div>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </div>
           </TabsContent>
         </Tabs>
 
