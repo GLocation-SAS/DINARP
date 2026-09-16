@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { Lock, Eye, EyeOff, ArrowRight, Check } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
+import { Label } from "@/components/ui/label";
 import {
   InputGroup,
   InputGroupInput,
@@ -48,12 +49,12 @@ export default function WireframeRestablecerContrasenaPage() {
       <form onSubmit={handleSubmit} className="flex flex-col gap-5">
         {/* Nueva contraseña */}
         <div className="flex flex-col gap-2 text-left">
-          <label
+          <Label
             htmlFor="new-password"
-            className="text-xs sm:text-sm font-semibold text-foreground"
+            className="text-xs sm:text-sm font-semibold text-foreground cursor-pointer"
           >
             Nueva contraseña
-          </label>
+          </Label>
           <InputGroup
             size="default"
             leftIcon={<Lock className="size-4 text-muted-foreground" />}
@@ -87,12 +88,12 @@ export default function WireframeRestablecerContrasenaPage() {
 
         {/* Confirmar contraseña */}
         <div className="flex flex-col gap-2 text-left">
-          <label
+          <Label
             htmlFor="confirm-password"
-            className="text-xs sm:text-sm font-semibold text-foreground"
+            className="text-xs sm:text-sm font-semibold text-foreground cursor-pointer"
           >
             Confirmar contraseña
-          </label>
+          </Label>
           <InputGroup
             size="default"
             leftIcon={<Lock className="size-4 text-muted-foreground" />}
@@ -165,13 +166,12 @@ export default function WireframeRestablecerContrasenaPage() {
             <DialogTitle className="font-heading font-bold text-2xl sm:text-3xl text-foreground text-center">
               Contraseña actualizada
             </DialogTitle>
-            <DialogDescription className="text-sm text-foreground/80 text-center leading-relaxed max-w-xs">
-              Tu contraseña se ha cambiado correctamente. <br />
-              Ahora puedes iniciar sesión en el sistema con tu nueva contraseña.
+            <DialogDescription className="text-sm text-foreground/80 text-center leading-relaxed">
+              Tu contraseña ha sido restablecida correctamente. Ya puedes iniciar sesión con tus nuevas credenciales.
             </DialogDescription>
           </DialogHeader>
 
-          <div className="flex flex-col gap-3 w-full mt-6">
+          <div className="mt-8 w-full">
             <Button
               type="button"
               variant="primary"
@@ -190,4 +190,3 @@ export default function WireframeRestablecerContrasenaPage() {
     </WireframeAuthLayout>
   );
 }
-

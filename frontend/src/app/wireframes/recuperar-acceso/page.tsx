@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { Mail, ArrowRight, Check } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
+import { Label } from "@/components/ui/label";
 import {
   InputGroup,
   InputGroupInput,
@@ -52,12 +53,12 @@ export default function WireframeRecuperarAccesoPage() {
       <form onSubmit={handleSubmit} className="flex flex-col gap-6">
         {/* Campo Correo institucional */}
         <div className="flex flex-col gap-2 text-left">
-          <label
+          <Label
             htmlFor="recovery-email"
-            className="text-xs sm:text-sm font-semibold text-foreground"
+            className="text-xs sm:text-sm font-semibold text-foreground cursor-pointer"
           >
             Correo institucional
-          </label>
+          </Label>
           <InputGroup
             size="default"
             leftIcon={<Mail className="size-4 text-muted-foreground" />}
@@ -152,4 +153,3 @@ export default function WireframeRecuperarAccesoPage() {
     </WireframeAuthLayout>
   );
 }
-

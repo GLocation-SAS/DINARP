@@ -2,7 +2,6 @@
 
 import React, { useState } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import {
   Home,
   FileText,
@@ -17,8 +16,6 @@ import {
   Users,
   ShieldCheck,
   Settings,
-  Bell,
-  ChevronDown,
   Sun,
   Moon,
   Menu,
@@ -26,6 +23,9 @@ import {
 } from "lucide-react";
 
 import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
+import { UserMenu } from "@/components/shared/user-menu";
+import { NotificationsMenu } from "@/components/shared/notifications-menu";
 
 interface WireframeDashboardLayoutProps {
   activeMenu?: string;
@@ -36,7 +36,6 @@ export function WireframeDashboardLayout({
   activeMenu = "inicio",
   children,
 }: WireframeDashboardLayoutProps) {
-  const router = useRouter();
   const [themeMode, setThemeMode] = useState<"claro" | "oscuro">("claro");
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
@@ -50,32 +49,32 @@ export function WireframeDashboardLayout({
       title: "SOLICITUDES",
       items: [
         { id: "solicitudes", label: "Solicitudes", icon: FileText, href: "/wireframes/solicitudes" },
-        { id: "aprobaciones", label: "Aprobaciones", icon: CheckSquare, href: "/wireframes" },
-        { id: "proyectos", label: "Proyectos", icon: Folder, href: "/wireframes" },
+        { id: "aprobaciones", label: "Aprobaciones", icon: CheckSquare, href: "/wireframes/solicitudes" },
+        { id: "proyectos", label: "Proyectos", icon: Folder, href: "/wireframes/solicitudes" },
       ],
     },
     {
       title: "INTEROPERABILIDAD",
       items: [
-        { id: "intercambio", label: "Intercambio uno a uno", icon: ArrowLeftRight, href: "/wireframes" },
-        { id: "batch", label: "Batch / Excepcionalidades", icon: Server, href: "/wireframes" },
-        { id: "catalogo", label: "Catálogo de fuentes", icon: Database, href: "/wireframes" },
-        { id: "trazabilidad", label: "Trazabilidad", icon: Network, href: "/wireframes" },
+        { id: "intercambio", label: "Intercambio uno a uno", icon: ArrowLeftRight, href: "/wireframes/solicitudes" },
+        { id: "batch", label: "Batch / Excepcionalidades", icon: Server, href: "/wireframes/solicitudes" },
+        { id: "catalogo", label: "Catálogo de fuentes", icon: Database, href: "/wireframes/solicitudes" },
+        { id: "trazabilidad", label: "Trazabilidad", icon: Network, href: "/wireframes/solicitudes" },
       ],
     },
     {
       title: "GESTIÓN",
       items: [
-        { id: "cotizacion", label: "Cotización / Tarifario", icon: Receipt, href: "/wireframes" },
-        { id: "reportes", label: "Reportes", icon: BarChart2, href: "/wireframes" },
+        { id: "cotizacion", label: "Cotización / Tarifario", icon: Receipt, href: "/wireframes/solicitudes" },
+        { id: "reportes", label: "Reportes", icon: BarChart2, href: "/wireframes/solicitudes" },
       ],
     },
     {
       title: "ADMINISTRACIÓN",
       items: [
-        { id: "usuarios", label: "Usuarios", icon: Users, href: "/wireframes" },
-        { id: "roles", label: "Roles y permisos", icon: ShieldCheck, href: "/wireframes" },
-        { id: "configuracion", label: "Configuración", icon: Settings, href: "/wireframes" },
+        { id: "usuarios", label: "Usuarios", icon: Users, href: "/wireframes/solicitudes" },
+        { id: "roles", label: "Roles y permisos", icon: ShieldCheck, href: "/wireframes/solicitudes" },
+        { id: "configuracion", label: "Configuración", icon: Settings, href: "/wireframes/solicitudes" },
       ],
     },
   ];
@@ -110,14 +109,16 @@ export function WireframeDashboardLayout({
             </span>
           </Link>
 
-          <button
+          <Button
             type="button"
-            className="lg:hidden p-1.5 rounded-lg text-muted-foreground hover:bg-muted/50"
+            variant="ghost"
+            size="icon-sm"
+            className="lg:hidden text-muted-foreground hover:bg-muted/50"
             onClick={() => setMobileMenuOpen(false)}
             aria-label="Cerrar menú"
           >
             <X className="size-5" />
-          </button>
+          </Button>
         </div>
 
         {/* Sidebar Navigation */}
@@ -156,33 +157,33 @@ export function WireframeDashboardLayout({
         {/* Theme Toggle Footer */}
         <div className="p-4 border-t border-border/40 shrink-0">
           <div className="flex items-center bg-muted/40 p-1 rounded-2xl border border-border/60">
-            <button
+            <Button
               type="button"
+              variant={themeMode === "claro" ? "neutral" : "ghost"}
+              size="sm"
               onClick={() => setThemeMode("claro")}
               className={cn(
-                "flex-1 flex items-center justify-center gap-1.5 py-1.5 rounded-xl text-xs font-medium transition-all",
-                themeMode === "claro"
-                  ? "bg-surface text-foreground shadow-xs"
-                  : "text-muted-foreground hover:text-foreground"
+                "flex-1 h-8 rounded-xl text-xs font-medium gap-1.5",
+                themeMode === "claro" && "bg-surface shadow-xs text-foreground"
               )}
             >
               <Sun className="size-3.5" />
               <span>Claro</span>
-            </button>
+            </Button>
             <div className="h-4 w-px bg-border/60 mx-1" />
-            <button
+            <Button
               type="button"
+              variant={themeMode === "oscuro" ? "neutral" : "ghost"}
+              size="sm"
               onClick={() => setThemeMode("oscuro")}
               className={cn(
-                "flex-1 flex items-center justify-center gap-1.5 py-1.5 rounded-xl text-xs font-medium transition-all",
-                themeMode === "oscuro"
-                  ? "bg-surface text-foreground shadow-xs"
-                  : "text-muted-foreground hover:text-foreground"
+                "flex-1 h-8 rounded-xl text-xs font-medium gap-1.5",
+                themeMode === "oscuro" && "bg-surface shadow-xs text-foreground"
               )}
             >
               <Moon className="size-3.5" />
               <span>Oscuro</span>
-            </button>
+            </Button>
           </div>
         </div>
       </aside>
@@ -194,42 +195,23 @@ export function WireframeDashboardLayout({
         {/* Top Header */}
         <header className="h-16 px-4 sm:px-8 flex items-center justify-between border-b border-border/40 bg-surface/50 backdrop-blur-xs shrink-0">
           {/* Mobile Burger */}
-          <button
+          <Button
             type="button"
-            className="lg:hidden p-2 rounded-lg text-muted-foreground hover:bg-muted/50"
+            variant="ghost"
+            size="icon"
+            className="lg:hidden text-muted-foreground hover:bg-muted/50"
             onClick={() => setMobileMenuOpen(true)}
             aria-label="Abrir menú"
           >
             <Menu className="size-5" />
-          </button>
+          </Button>
 
           <div className="hidden lg:block" />
 
-          {/* User Profile & Notifications */}
-          <div className="flex items-center gap-4 sm:gap-6 ml-auto">
-            <button
-              type="button"
-              className="relative p-2 rounded-full text-muted-foreground hover:text-foreground hover:bg-muted/40 transition-colors"
-              aria-label="Notificaciones"
-            >
-              <Bell className="size-4" />
-              <span className="absolute top-1.5 right-1.5 size-2 rounded-full bg-foreground" />
-            </button>
-
-            <div className="flex items-center gap-3 pl-2 border-l border-border/60">
-              <div className="size-8 rounded-full bg-muted/80 border border-border flex items-center justify-center text-xs font-bold text-foreground">
-                PN
-              </div>
-              <div className="hidden sm:flex flex-col text-left">
-                <span className="text-xs font-bold text-foreground leading-tight">
-                  Paula Rozo
-                </span>
-                <span className="text-[10px] text-muted-foreground font-medium leading-tight">
-                  Analista
-                </span>
-              </div>
-              <ChevronDown className="size-3.5 text-muted-foreground" />
-            </div>
+          {/* User Profile & Notifications from shared components */}
+          <div className="flex items-center gap-3 sm:gap-4 ml-auto">
+            <NotificationsMenu />
+            <UserMenu />
           </div>
         </header>
 

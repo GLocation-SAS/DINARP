@@ -13,6 +13,7 @@ import {
 
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
+import { Label } from "@/components/ui/label";
 import {
   InputGroup,
   InputGroupInput,
@@ -48,12 +49,12 @@ export default function WireframeLoginPage() {
       <form onSubmit={handleSubmit} className="flex flex-col gap-5">
         {/* Correo institucional */}
         <div className="flex flex-col gap-2 text-left">
-          <label
+          <Label
             htmlFor="institutional-email"
-            className="text-xs sm:text-sm font-semibold text-foreground"
+            className="text-xs sm:text-sm font-semibold text-foreground cursor-pointer"
           >
             Correo institucional
-          </label>
+          </Label>
           <InputGroup
             size="default"
             leftIcon={<Mail className="size-4 text-muted-foreground" />}
@@ -72,12 +73,12 @@ export default function WireframeLoginPage() {
 
         {/* Contraseña */}
         <div className="flex flex-col gap-2 text-left">
-          <label
+          <Label
             htmlFor="institutional-password"
-            className="text-xs sm:text-sm font-semibold text-foreground"
+            className="text-xs sm:text-sm font-semibold text-foreground cursor-pointer"
           >
             Contraseña
-          </label>
+          </Label>
           <InputGroup
             size="default"
             leftIcon={<Lock className="size-4 text-muted-foreground" />}
@@ -116,12 +117,12 @@ export default function WireframeLoginPage() {
               checked={rememberMe}
               onCheckedChange={(checked) => setRememberMe(!!checked)}
             />
-            <label
+            <Label
               htmlFor="remember-me"
-              className="font-medium text-foreground cursor-pointer select-none"
+              className="font-medium text-foreground cursor-pointer select-none text-xs sm:text-sm"
             >
               Recordarme
-            </label>
+            </Label>
           </div>
 
           <Link
