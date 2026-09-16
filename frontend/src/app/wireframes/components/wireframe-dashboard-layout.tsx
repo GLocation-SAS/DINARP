@@ -15,6 +15,7 @@ import {
   BarChart2,
   Users,
   ShieldCheck,
+  Clock,
   Settings,
   Sun,
   Moon,
