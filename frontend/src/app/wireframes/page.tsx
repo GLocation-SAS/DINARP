@@ -292,6 +292,42 @@ export default function WireframesPage() {
           </Link>
 
           <Link
+            href="/wireframes/intercambios-masivos"
+            className="group flex flex-col p-5 rounded-2xl border border-border bg-surface hover:border-foreground/30 hover:shadow-sm transition-all"
+          >
+            <div className="flex items-center justify-between mb-2">
+              <Badge tone="primary" appearance="soft" size="sm">Paso 7</Badge>
+              <ArrowRight className="size-4 text-muted-foreground group-hover:translate-x-1 transition-transform" />
+            </div>
+            <h3 className="font-heading font-bold text-base text-foreground">Intercambios Masivos / Excepcionalidades</h3>
+            <p className="text-xs text-muted-foreground mt-1">/wireframes/intercambios-masivos</p>
+          </Link>
+
+          <Link
+            href="/wireframes/intercambios-masivos/nueva"
+            className="group flex flex-col p-5 rounded-2xl border border-border bg-surface hover:border-foreground/30 hover:shadow-sm transition-all"
+          >
+            <div className="flex items-center justify-between mb-2">
+              <Badge tone="primary" appearance="soft" size="sm">Paso 7.1</Badge>
+              <ArrowRight className="size-4 text-muted-foreground group-hover:translate-x-1 transition-transform" />
+            </div>
+            <h3 className="font-heading font-bold text-base text-foreground">Nueva Solicitud Masiva (Stepper)</h3>
+            <p className="text-xs text-muted-foreground mt-1">/wireframes/intercambios-masivos/nueva</p>
+          </Link>
+
+          <Link
+            href="/wireframes/intercambios-masivos/BATCH-001"
+            className="group flex flex-col p-5 rounded-2xl border border-border bg-surface hover:border-foreground/30 hover:shadow-sm transition-all"
+          >
+            <div className="flex items-center justify-between mb-2">
+              <Badge tone="primary" appearance="soft" size="sm">Paso 7.2</Badge>
+              <ArrowRight className="size-4 text-muted-foreground group-hover:translate-x-1 transition-transform" />
+            </div>
+            <h3 className="font-heading font-bold text-base text-foreground">Detalle de Intercambio (BATCH-001)</h3>
+            <p className="text-xs text-muted-foreground mt-1">/wireframes/intercambios-masivos/BATCH-001</p>
+          </Link>
+
+          <Link
             href="/wireframes/recuperar-acceso"
             className="group flex flex-col p-5 rounded-2xl border border-border bg-surface hover:border-foreground/30 hover:shadow-sm transition-all"
           >

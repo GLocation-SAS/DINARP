@@ -5,14 +5,12 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import {
   Search,
+  Plus,
   ChevronDown,
   RotateCcw,
-  Download,
   Eye,
-  ArrowRight,
-  Layers,
-  ArrowLeftRight,
   Server,
+  Calendar,
   Filter,
 } from "lucide-react";
 
@@ -59,89 +57,81 @@ import {
   PaginationPrevious,
   PaginationNext,
 } from "@/components/ui/pagination";
-import { WireframeDashboardLayout } from "../../components/wireframe-dashboard-layout";
+import { WireframeDashboardLayout } from "../components/wireframe-dashboard-layout";
 
-interface ServicioHabilitado {
-  id: string;
-  servicio: string;
+interface BatchItem {
+  codigo: string;
+  proyecto: string;
   fuente: string;
   consumidor: string;
-  estado: "Activo" | "Inactivo" | "Suspendido" | "En revisión";
-  vigencia: string;
-  ultimaActualizacion: string;
+  tipoInformacion: string;
+  estado: "En revisión" | "Aprobado" | "Finalizado" | "Rechazado";
+  fechaCreacion: string;
   href: string;
 }
 
-const SERVICIOS_DATA: ServicioHabilitado[] = [
+const BATCH_DATA: BatchItem[] = [
   {
-    id: "consulta-identidad",
-    servicio: "Consulta de identidad",
+    codigo: "BATCH-001",
+    proyecto: "Cruce poblacional para subsidios de vivienda",
     fuente: "Registro Civil",
-    consumidor: "Ministerio de Gobierno",
-    estado: "Activo",
-    vigencia: "01/01/26 - 31/12/26",
-    ultimaActualizacion: "15/09/26",
-    href: "/wireframes/interoperabilidad/servicios/consulta-identidad",
-  },
-  {
-    id: "validacion-ruc",
-    servicio: "Validación de RUC",
-    fuente: "SRI",
-    consumidor: "Ministerio de Economía",
-    estado: "Activo",
-    vigencia: "15/02/26 - 15/02/27",
-    ultimaActualizacion: "14/09/26",
-    href: "/wireframes/interoperabilidad/servicios/consulta-identidad",
-  },
-  {
-    id: "titulos-bachiller",
-    servicio: "Títulos de bachiller",
-    fuente: "MINEDUC",
-    consumidor: "Senescyt",
-    estado: "Activo",
-    vigencia: "01/03/26 - 01/03/27",
-    ultimaActualizacion: "12/09/26",
-    href: "/wireframes/interoperabilidad/servicios/consulta-identidad",
-  },
-  {
-    id: "historial-aportes",
-    servicio: "Historial de aportes",
-    fuente: "IESS",
-    consumidor: "MIES",
-    estado: "Suspendido",
-    vigencia: "01/01/26 - 30/06/26",
-    ultimaActualizacion: "10/09/26",
-    href: "/wireframes/interoperabilidad/servicios/consulta-identidad",
-  },
-  {
-    id: "matriculacion-vehicular",
-    servicio: "Matriculación vehicular",
-    fuente: "ANT",
-    consumidor: "Municipio de Guayaquil",
-    estado: "Activo",
-    vigencia: "01/04/26 - 01/04/27",
-    ultimaActualizacion: "08/09/26",
-    href: "/wireframes/interoperabilidad/servicios/consulta-identidad",
-  },
-  {
-    id: "puntos-licencia",
-    servicio: "Puntos de licencia",
-    fuente: "ANT",
-    consumidor: "Policía Nacional",
+    consumidor: "MIDUVI",
+    tipoInformacion: "Padrón ciudadano / Vínculos familiares",
     estado: "En revisión",
-    vigencia: "15/05/26 - 15/05/27",
-    ultimaActualizacion: "05/09/26",
-    href: "/wireframes/interoperabilidad/servicios/consulta-identidad",
+    fechaCreacion: "16/09/26",
+    href: "/wireframes/intercambios-masivos/BATCH-001",
+  },
+  {
+    codigo: "BATCH-002",
+    proyecto: "Actualización de catastro predial nacional",
+    fuente: "DINARP",
+    consumidor: "INEC",
+    tipoInformacion: "Registro de la propiedad consolidado",
+    estado: "Aprobado",
+    fechaCreacion: "14/09/26",
+    href: "/wireframes/intercambios-masivos/BATCH-001",
+  },
+  {
+    codigo: "BATCH-003",
+    proyecto: "Depuración de beneficiarios Bono de Desarrollo",
+    fuente: "SRI",
+    consumidor: "MIES",
+    tipoInformacion: "RUCs y declaraciones simplificadas",
+    estado: "Finalizado",
+    fechaCreacion: "10/09/26",
+    href: "/wireframes/intercambios-masivos/BATCH-001",
+  },
+  {
+    codigo: "BATCH-004",
+    proyecto: "Matriz nacional de parque automotor escolar",
+    fuente: "ANT",
+    consumidor: "Ministerio de Educación",
+    tipoInformacion: "Títulos habilitantes y transporte escolar",
+    estado: "En revisión",
+    fechaCreacion: "08/09/26",
+    href: "/wireframes/intercambios-masivos/BATCH-001",
+  },
+  {
+    codigo: "BATCH-005",
+    proyecto: "Cruce de aportes y afiliaciones activas",
+    fuente: "IESS",
+    consumidor: "Ministerio de Salud Pública",
+    tipoInformacion: "Base consolidada de asegurados",
+    estado: "Aprobado",
+    fechaCreacion: "05/09/26",
+    href: "/wireframes/intercambios-masivos/BATCH-001",
   },
 ];
 
-export default function WireframeServiciosHabilitadosPage() {
+export default function WireframeIntercambiosMasivosPage() {
   const router = useRouter();
 
   const [searchQuery, setSearchQuery] = useState("");
   const [filterFuente, setFilterFuente] = useState("Todas");
   const [filterConsumidor, setFilterConsumidor] = useState("Todos");
   const [filterEstado, setFilterEstado] = useState("Todos");
+  const [fechaDesde, setFechaDesde] = useState("");
+  const [fechaHasta, setFechaHasta] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
 
   const resetFilters = () => {
@@ -149,15 +139,19 @@ export default function WireframeServiciosHabilitadosPage() {
     setFilterFuente("Todas");
     setFilterConsumidor("Todos");
     setFilterEstado("Todos");
+    setFechaDesde("");
+    setFechaHasta("");
   };
 
-  const filteredServicios = useMemo(() => {
-    return SERVICIOS_DATA.filter((item) => {
+  const filteredData = useMemo(() => {
+    return BATCH_DATA.filter((item) => {
       const matchesSearch =
         searchQuery === "" ||
-        item.servicio.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        item.codigo.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        item.proyecto.toLowerCase().includes(searchQuery.toLowerCase()) ||
         item.fuente.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        item.consumidor.toLowerCase().includes(searchQuery.toLowerCase());
+        item.consumidor.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        item.tipoInformacion.toLowerCase().includes(searchQuery.toLowerCase());
 
       const matchesFuente = filterFuente === "Todas" || item.fuente === filterFuente;
       const matchesConsumidor = filterConsumidor === "Todos" || item.consumidor === filterConsumidor;
@@ -168,7 +162,7 @@ export default function WireframeServiciosHabilitadosPage() {
   }, [searchQuery, filterFuente, filterConsumidor, filterEstado]);
 
   return (
-    <WireframeDashboardLayout activeMenu="servicios">
+    <WireframeDashboardLayout activeMenu="batch">
       <main className="relative p-4 sm:p-8 lg:p-10 max-w-7xl w-full mx-auto space-y-6 sm:space-y-8">
         {/* Background subtle effect */}
         <div className="absolute top-0 right-0 w-96 h-96 bg-radial from-muted/20 to-transparent pointer-events-none -z-10 blur-3xl opacity-60" />
@@ -186,45 +180,46 @@ export default function WireframeServiciosHabilitadosPage() {
             <BreadcrumbSeparator />
             <BreadcrumbItem>
               <BreadcrumbPage className="font-semibold text-foreground">
-                Interoperabilidad / Servicios
+                Intercambios masivos
               </BreadcrumbPage>
             </BreadcrumbItem>
           </BreadcrumbList>
         </Breadcrumb>
 
-        {/* ── 2. Header Title, Description & Export Button ── */}
+        {/* ── 2. Header Title, Description & New Action ── */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2 border-b border-border/80">
           <div className="space-y-1">
             <h1 className="font-heading font-extrabold text-3xl sm:text-4xl tracking-tight text-foreground">
-              Interoperabilidad / Servicios
+              Intercambios masivos / Excepcionalidades
             </h1>
             <p className="text-xs sm:text-sm text-muted-foreground max-w-3xl leading-relaxed font-normal">
-              Consulta, administra y monitorea los servicios de interoperabilidad habilitados y acuerdos de intercambio.
+              Gestiona y consulta solicitudes de intercambio masivo de datos por lote y acuerdos excepcionales.
             </p>
           </div>
 
           <Button
             type="button"
-            variant="outline"
-            className="h-10 px-4 rounded-xl text-xs font-semibold gap-2 border-border shrink-0 shadow-xs"
+            variant="primary"
+            onClick={() => router.push("/wireframes/intercambios-masivos/nueva")}
+            className="h-10 px-4 rounded-xl text-xs font-semibold gap-2 shrink-0 shadow-xs"
           >
-            <Download className="size-4" />
-            <span>Exportar</span>
+            <Plus className="size-4" />
+            <span>Nueva solicitud</span>
           </Button>
         </div>
 
-        {/* ── 3. Buscador & Filtros ── */}
+        {/* ── 3. Buscador y Filtros ── */}
         <div className="space-y-3">
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 items-end">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-3 items-end">
             {/* Buscador */}
-            <div className="lg:col-span-1 min-w-[200px]">
+            <div className="lg:col-span-2 min-w-[200px]">
               <InputGroup
                 size="default"
                 leftIcon={<Search className="size-4 text-muted-foreground" />}
                 className="bg-surface h-11 rounded-xl border-border/80"
               >
                 <InputGroupInput
-                  placeholder="Buscar servicios..."
+                  placeholder="Buscar intercambios masivos..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   className="text-xs sm:text-sm"
@@ -253,9 +248,9 @@ export default function WireframeServiciosHabilitadosPage() {
                   <DropdownMenuRadioItem value="Todas">Todas las fuentes</DropdownMenuRadioItem>
                   <DropdownMenuRadioItem value="Registro Civil">Registro Civil</DropdownMenuRadioItem>
                   <DropdownMenuRadioItem value="SRI">SRI</DropdownMenuRadioItem>
-                  <DropdownMenuRadioItem value="MINEDUC">MINEDUC</DropdownMenuRadioItem>
-                  <DropdownMenuRadioItem value="IESS">IESS</DropdownMenuRadioItem>
+                  <DropdownMenuRadioItem value="DINARP">DINARP</DropdownMenuRadioItem>
                   <DropdownMenuRadioItem value="ANT">ANT</DropdownMenuRadioItem>
+                  <DropdownMenuRadioItem value="IESS">IESS</DropdownMenuRadioItem>
                 </DropdownMenuRadioGroup>
               </DropdownMenuContent>
             </DropdownMenu>
@@ -278,67 +273,70 @@ export default function WireframeServiciosHabilitadosPage() {
                 <DropdownMenuLabel className="text-xs">Entidad consumidora</DropdownMenuLabel>
                 <DropdownMenuSeparator />
                 <DropdownMenuRadioGroup value={filterConsumidor} onValueChange={setFilterConsumidor}>
-                  <DropdownMenuRadioItem value="Todos">Todos los consumidores</DropdownMenuRadioItem>
-                  <DropdownMenuRadioItem value="Ministerio de Gobierno">Ministerio de Gobierno</DropdownMenuRadioItem>
-                  <DropdownMenuRadioItem value="Ministerio de Economía">Ministerio de Economía</DropdownMenuRadioItem>
-                  <DropdownMenuRadioItem value="Senescyt">Senescyt</DropdownMenuRadioItem>
+                  <DropdownMenuRadioItem value="Todos">Todos</DropdownMenuRadioItem>
+                  <DropdownMenuRadioItem value="MIDUVI">MIDUVI</DropdownMenuRadioItem>
+                  <DropdownMenuRadioItem value="INEC">INEC</DropdownMenuRadioItem>
                   <DropdownMenuRadioItem value="MIES">MIES</DropdownMenuRadioItem>
-                  <DropdownMenuRadioItem value="Municipio de Guayaquil">Municipio de Guayaquil</DropdownMenuRadioItem>
-                  <DropdownMenuRadioItem value="Policía Nacional">Policía Nacional</DropdownMenuRadioItem>
+                  <DropdownMenuRadioItem value="Ministerio de Educación">Ministerio de Educación</DropdownMenuRadioItem>
+                  <DropdownMenuRadioItem value="Ministerio de Salud Pública">Ministerio de Salud</DropdownMenuRadioItem>
                 </DropdownMenuRadioGroup>
               </DropdownMenuContent>
             </DropdownMenu>
 
-            {/* Filtro Estado & Botón Limpiar */}
-            <div className="flex items-center gap-2 w-full">
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button
-                    variant="outline"
-                    className="h-11 px-3 py-1.5 flex flex-col items-start justify-center bg-surface border-border/80 rounded-xl text-left flex-1"
-                  >
-                    <span className="text-[10px] font-medium text-muted-foreground leading-none">Estado</span>
-                    <div className="w-full flex items-center justify-between gap-1 mt-0.5">
-                      <span className="text-xs font-semibold text-foreground truncate">{filterEstado}</span>
-                      <ChevronDown className="size-3.5 text-muted-foreground shrink-0" />
-                    </div>
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="start" className="w-40">
-                  <DropdownMenuLabel className="text-xs">Estado</DropdownMenuLabel>
-                  <DropdownMenuSeparator />
-                  <DropdownMenuRadioGroup value={filterEstado} onValueChange={setFilterEstado}>
-                    <DropdownMenuRadioItem value="Todos">Todos</DropdownMenuRadioItem>
-                    <DropdownMenuRadioItem value="Activo">Activo</DropdownMenuRadioItem>
-                    <DropdownMenuRadioItem value="Inactivo">Inactivo</DropdownMenuRadioItem>
-                    <DropdownMenuRadioItem value="Suspendido">Suspendido</DropdownMenuRadioItem>
-                    <DropdownMenuRadioItem value="En revisión">En revisión</DropdownMenuRadioItem>
-                  </DropdownMenuRadioGroup>
-                </DropdownMenuContent>
-              </DropdownMenu>
+            {/* Filtro Estado */}
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button
+                  variant="outline"
+                  className="h-11 px-3 py-1.5 flex flex-col items-start justify-center bg-surface border-border/80 rounded-xl text-left w-full"
+                >
+                  <span className="text-[10px] font-medium text-muted-foreground leading-none">Estado</span>
+                  <div className="w-full flex items-center justify-between gap-1 mt-0.5">
+                    <span className="text-xs font-semibold text-foreground truncate">{filterEstado}</span>
+                    <ChevronDown className="size-3.5 text-muted-foreground shrink-0" />
+                  </div>
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="start" className="w-40">
+                <DropdownMenuLabel className="text-xs">Estado</DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                <DropdownMenuRadioGroup value={filterEstado} onValueChange={setFilterEstado}>
+                  <DropdownMenuRadioItem value="Todos">Todos</DropdownMenuRadioItem>
+                  <DropdownMenuRadioItem value="En revisión">En revisión</DropdownMenuRadioItem>
+                  <DropdownMenuRadioItem value="Aprobado">Aprobado</DropdownMenuRadioItem>
+                  <DropdownMenuRadioItem value="Finalizado">Finalizado</DropdownMenuRadioItem>
+                  <DropdownMenuRadioItem value="Rechazado">Rechazado</DropdownMenuRadioItem>
+                </DropdownMenuRadioGroup>
+              </DropdownMenuContent>
+            </DropdownMenu>
 
+            {/* Acciones de filtro */}
+            <div className="flex items-center gap-2 w-full">
               <Button
                 type="button"
                 variant="outline"
                 onClick={resetFilters}
-                className="h-11 px-3.5 rounded-xl text-xs font-semibold gap-1.5 border-border shrink-0"
+                className="h-11 px-3.5 rounded-xl text-xs font-semibold gap-1.5 border-border w-full justify-center"
                 title="Limpiar filtros"
               >
                 <RotateCcw className="size-3.5" />
-                <span className="hidden sm:inline">Limpiar filtros</span>
+                <span>Limpiar</span>
               </Button>
             </div>
           </div>
         </div>
 
-        {/* ── 4. Tabla de Servicios Habilitados ── */}
+        {/* ── 4. Tabla de Intercambios Masivos ── */}
         <Card className="rounded-2xl border-border bg-surface overflow-hidden shadow-xs">
           <CardContent className="p-0 overflow-x-auto">
             <Table className="w-full border-spacing-0">
               <TableHeader>
                 <TableRow className="border-b border-border/80 bg-muted/30 hover:bg-muted/30">
                   <TableHead className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider py-3.5 px-4 text-left">
-                    SERVICIO
+                    CÓDIGO
+                  </TableHead>
+                  <TableHead className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider py-3.5 px-4 text-left">
+                    SOLICITUD / PROYECTO
                   </TableHead>
                   <TableHead className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider py-3.5 px-4 text-left">
                     FUENTE
@@ -347,13 +345,13 @@ export default function WireframeServiciosHabilitadosPage() {
                     CONSUMIDOR
                   </TableHead>
                   <TableHead className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider py-3.5 px-4 text-left">
+                    TIPO DE INFORMACIÓN
+                  </TableHead>
+                  <TableHead className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider py-3.5 px-4 text-left">
                     ESTADO
                   </TableHead>
                   <TableHead className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider py-3.5 px-4 text-left">
-                    VIGENCIA
-                  </TableHead>
-                  <TableHead className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider py-3.5 px-4 text-left">
-                    ÚLTIMA ACTUALIZACIÓN
+                    FECHA CREACIÓN
                   </TableHead>
                   <TableHead className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider py-3.5 px-4 text-right">
                     ACCIONES
@@ -361,55 +359,60 @@ export default function WireframeServiciosHabilitadosPage() {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {filteredServicios.length === 0 ? (
+                {filteredData.length === 0 ? (
                   <TableRow>
-                    <TableCell colSpan={7} className="text-center py-10 text-muted-foreground text-sm">
-                      No se encontraron servicios habilitados con los criterios de búsqueda.
+                    <TableCell colSpan={8} className="text-center py-10 text-muted-foreground text-sm">
+                      No se encontraron solicitudes de intercambio masivo.
                     </TableCell>
                   </TableRow>
                 ) : (
-                  filteredServicios.map((s) => (
+                  filteredData.map((b) => (
                     <TableRow
-                      key={s.id}
+                      key={b.codigo}
                       className="border-b border-border/40 hover:bg-muted/20 transition-colors cursor-pointer"
-                      onClick={() => router.push(s.href)}
+                      onClick={() => router.push(b.href)}
                     >
-                      {/* Servicio */}
-                      <TableCell className="py-4 px-4 text-xs font-bold text-foreground max-w-[200px]">
-                        {s.servicio}
+                      {/* Código */}
+                      <TableCell className="py-4 px-4 text-xs font-mono font-bold text-foreground whitespace-nowrap">
+                        {b.codigo}
+                      </TableCell>
+
+                      {/* Proyecto */}
+                      <TableCell className="py-4 px-4 text-xs font-semibold text-foreground max-w-[220px]">
+                        {b.proyecto}
                       </TableCell>
 
                       {/* Fuente */}
                       <TableCell className="py-4 px-4 text-xs text-muted-foreground whitespace-nowrap">
-                        {s.fuente}
+                        {b.fuente}
                       </TableCell>
 
                       {/* Consumidor */}
                       <TableCell className="py-4 px-4 text-xs text-muted-foreground whitespace-nowrap">
-                        {s.consumidor}
+                        {b.consumidor}
+                      </TableCell>
+
+                      {/* Tipo de Información */}
+                      <TableCell className="py-4 px-4 text-xs text-muted-foreground max-w-[180px] truncate">
+                        {b.tipoInformacion}
                       </TableCell>
 
                       {/* Estado */}
                       <TableCell className="py-4 px-4 whitespace-nowrap">
                         <Badge
                           tone="neutral"
-                          appearance={s.estado === "Activo" ? "solid" : "outline"}
+                          appearance="soft"
                           size="sm"
                           className="font-medium gap-1.5 text-xs capitalize"
                         >
                           <span className="size-1.5 rounded-full bg-foreground" />
-                          {s.estado}
+                          {b.estado}
                         </Badge>
                       </TableCell>
 
-                      {/* Vigencia */}
-                      <TableCell className="py-4 px-4 text-xs text-muted-foreground whitespace-nowrap font-mono">
-                        {s.vigencia}
-                      </TableCell>
-
-                      {/* Última actualización */}
+                      {/* Fecha de Creación */}
                       <TableCell className="py-4 px-4 text-xs text-muted-foreground whitespace-nowrap">
-                        {s.ultimaActualizacion}
+                        {b.fechaCreacion}
                       </TableCell>
 
                       {/* Acciones */}
@@ -418,7 +421,7 @@ export default function WireframeServiciosHabilitadosPage() {
                           type="button"
                           variant="outline"
                           size="sm"
-                          onClick={() => router.push(s.href)}
+                          onClick={() => router.push(b.href)}
                           className="h-8 px-3 rounded-lg text-xs font-semibold gap-1.5 border-border"
                         >
                           <Eye className="size-3.5" />
@@ -436,7 +439,7 @@ export default function WireframeServiciosHabilitadosPage() {
         {/* ── 5. Paginación ── */}
         <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-2">
           <p className="text-xs text-muted-foreground">
-            Mostrando 1 a {filteredServicios.length} de {SERVICIOS_DATA.length} servicios registrados
+            Mostrando 1 a {filteredData.length} de {BATCH_DATA.length} solicitudes de intercambio masivo
           </p>
 
           <Pagination className="mx-0 w-auto justify-end">
@@ -472,4 +475,3 @@ export default function WireframeServiciosHabilitadosPage() {
     </WireframeDashboardLayout>
   );
 }
-

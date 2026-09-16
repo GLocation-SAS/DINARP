@@ -411,3 +411,4 @@ export default function WireframeConfiguracionServicioPage() {
     </WireframeDashboardLayout>
   );
 }
+
