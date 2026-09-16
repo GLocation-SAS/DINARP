@@ -114,78 +114,90 @@ export default function WireframeDashboardPage() {
            ══════════════════════════════════════════════════ */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5">
           {/* 1. Solicitudes activas */}
-          <Link href="/wireframes/solicitudes">
-            <Card className="h-full border-border bg-surface shadow-xs transition-transform hover:-translate-y-0.5">
-              <CardContent className="p-5 flex items-center gap-4">
-                <div className="size-12 rounded-xl bg-muted/60 flex items-center justify-center text-foreground shrink-0">
-                  <FileText className="size-6 stroke-[1.75]" />
-                </div>
-                <div className="flex flex-col">
-                  <span className="font-heading font-bold text-2xl text-foreground leading-tight">
-                    12
-                  </span>
-                  <span className="text-xs text-muted-foreground font-medium">
-                    Solicitudes activas
-                  </span>
-                </div>
-              </CardContent>
+          <Link href="/wireframes/solicitudes" className="group">
+            <Card
+              size="sm"
+              disableHover
+              className="h-full border-border bg-surface shadow-xs transition-transform hover:-translate-y-0.5"
+              innerClassName="flex-row items-center justify-start text-left gap-4 p-5"
+            >
+              <div className="size-12 rounded-xl bg-muted/60 border border-border/40 flex items-center justify-center text-foreground shrink-0 group-hover:scale-105 transition-transform">
+                <FileText className="size-6 stroke-[1.75]" />
+              </div>
+              <div className="flex flex-col">
+                <span className="font-heading font-bold text-2xl text-foreground leading-tight">
+                  12
+                </span>
+                <span className="text-xs text-muted-foreground font-medium">
+                  Solicitudes activas
+                </span>
+              </div>
             </Card>
           </Link>
 
           {/* 2. Pendientes por aprobación */}
-          <Link href="/wireframes/solicitudes">
-            <Card className="h-full border-border bg-surface shadow-xs transition-transform hover:-translate-y-0.5">
-              <CardContent className="p-5 flex items-center gap-4">
-                <div className="size-12 rounded-xl bg-muted/60 flex items-center justify-center text-foreground shrink-0">
-                  <Clock className="size-6 stroke-[1.75]" />
-                </div>
-                <div className="flex flex-col">
-                  <span className="font-heading font-bold text-2xl text-foreground leading-tight">
-                    4
-                  </span>
-                  <span className="text-xs text-muted-foreground font-medium">
-                    Pendientes por aprobación
-                  </span>
-                </div>
-              </CardContent>
+          <Link href="/wireframes/aprobaciones" className="group">
+            <Card
+              size="sm"
+              disableHover
+              className="h-full border-border bg-surface shadow-xs transition-transform hover:-translate-y-0.5"
+              innerClassName="flex-row items-center justify-start text-left gap-4 p-5"
+            >
+              <div className="size-12 rounded-xl bg-muted/60 border border-border/40 flex items-center justify-center text-foreground shrink-0 group-hover:scale-105 transition-transform">
+                <Clock className="size-6 stroke-[1.75]" />
+              </div>
+              <div className="flex flex-col">
+                <span className="font-heading font-bold text-2xl text-foreground leading-tight">
+                  4
+                </span>
+                <span className="text-xs text-muted-foreground font-medium">
+                  Pendientes por aprobación
+                </span>
+              </div>
             </Card>
           </Link>
 
           {/* 3. Aprobadas este mes */}
-          <Link href="/wireframes/solicitudes">
-            <Card className="h-full border-border bg-surface shadow-xs transition-transform hover:-translate-y-0.5">
-              <CardContent className="p-5 flex items-center gap-4">
-                <div className="size-12 rounded-xl bg-muted/60 flex items-center justify-center text-foreground shrink-0">
-                  <CheckCircle2 className="size-6 stroke-[1.75]" />
-                </div>
-                <div className="flex flex-col">
-                  <span className="font-heading font-bold text-2xl text-foreground leading-tight">
-                    8
-                  </span>
-                  <span className="text-xs text-muted-foreground font-medium">
-                    Aprobadas este mes
-                  </span>
-                </div>
-              </CardContent>
+          <Link href="/wireframes/solicitudes" className="group">
+            <Card
+              size="sm"
+              disableHover
+              className="h-full border-border bg-surface shadow-xs transition-transform hover:-translate-y-0.5"
+              innerClassName="flex-row items-center justify-start text-left gap-4 p-5"
+            >
+              <div className="size-12 rounded-xl bg-muted/60 border border-border/40 flex items-center justify-center text-foreground shrink-0 group-hover:scale-105 transition-transform">
+                <CheckCircle2 className="size-6 stroke-[1.75]" />
+              </div>
+              <div className="flex flex-col">
+                <span className="font-heading font-bold text-2xl text-foreground leading-tight">
+                  8
+                </span>
+                <span className="text-xs text-muted-foreground font-medium">
+                  Aprobadas este mes
+                </span>
+              </div>
             </Card>
           </Link>
 
           {/* 4. Requieren atención */}
-          <Link href="/wireframes/solicitudes">
-            <Card className="h-full border-border bg-surface shadow-xs transition-transform hover:-translate-y-0.5">
-              <CardContent className="p-5 flex items-center gap-4">
-                <div className="size-12 rounded-xl bg-muted/60 flex items-center justify-center text-foreground shrink-0">
-                  <XCircle className="size-6 stroke-[1.75]" />
-                </div>
-                <div className="flex flex-col">
-                  <span className="font-heading font-bold text-2xl text-foreground leading-tight">
-                    2
-                  </span>
-                  <span className="text-xs text-muted-foreground font-medium">
-                    Requieren atención
-                  </span>
-                </div>
-              </CardContent>
+          <Link href="/wireframes/solicitudes" className="group">
+            <Card
+              size="sm"
+              disableHover
+              className="h-full border-border bg-surface shadow-xs transition-transform hover:-translate-y-0.5"
+              innerClassName="flex-row items-center justify-start text-left gap-4 p-5"
+            >
+              <div className="size-12 rounded-xl bg-muted/60 border border-border/40 flex items-center justify-center text-foreground shrink-0 group-hover:scale-105 transition-transform">
+                <XCircle className="size-6 stroke-[1.75]" />
+              </div>
+              <div className="flex flex-col">
+                <span className="font-heading font-bold text-2xl text-foreground leading-tight">
+                  2
+                </span>
+                <span className="text-xs text-muted-foreground font-medium">
+                  Requieren atención
+                </span>
+              </div>
             </Card>
           </Link>
         </div>
@@ -207,20 +219,26 @@ export default function WireframeDashboardPage() {
             {modules.map((mod) => {
               const Icon = mod.icon;
               return (
-                <Link key={mod.id} href={mod.href} className="group">
-                  <Card className="h-full border-border bg-surface hover:border-foreground/30 hover:shadow-md transition-all duration-200">
-                    <CardHeader className="p-6 pb-2">
-                      <div className="size-12 rounded-2xl bg-muted/50 border border-border/50 flex items-center justify-center text-foreground mb-4 group-hover:scale-105 transition-transform">
+                <Link key={mod.id} href={mod.href} className="group flex">
+                  <Card
+                    size="sm"
+                    className="h-full w-full border-border bg-surface hover:border-foreground/30 hover:shadow-md transition-all duration-200"
+                    innerClassName="p-6 items-start text-left gap-4 justify-between h-full"
+                  >
+                    <div className="space-y-3 w-full">
+                      <div className="size-12 rounded-2xl bg-muted/50 border border-border/50 flex items-center justify-center text-foreground group-hover:scale-105 transition-transform">
                         <Icon className="size-6 stroke-[1.75]" />
                       </div>
-                      <CardTitle className="font-heading font-bold text-base text-foreground group-hover:text-foreground transition-colors">
-                        {mod.title}
-                      </CardTitle>
-                      <CardDescription className="text-xs text-muted-foreground mt-1.5 leading-relaxed">
-                        {mod.description}
-                      </CardDescription>
-                    </CardHeader>
-                    <CardContent className="p-6 pt-0 mt-auto flex justify-end">
+                      <div className="space-y-1">
+                        <CardTitle className="font-heading font-bold text-base text-foreground group-hover:text-foreground transition-colors h-auto p-0">
+                          {mod.title}
+                        </CardTitle>
+                        <CardDescription className="text-xs text-muted-foreground mt-1 leading-relaxed">
+                          {mod.description}
+                        </CardDescription>
+                      </div>
+                    </div>
+                    <div className="w-full flex justify-end pt-2">
                       <Button
                         variant="outline"
                         size="icon-sm"
@@ -229,7 +247,7 @@ export default function WireframeDashboardPage() {
                       >
                         <ArrowRight className="size-4" />
                       </Button>
-                    </CardContent>
+                    </div>
                   </Card>
                 </Link>
               );

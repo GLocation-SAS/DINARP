@@ -396,9 +396,14 @@ export default function WireframeReportesPage() {
         {/* ── 3. Indicadores Resumen (4 Cards) ── */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           {/* Card 1: Total Transacciones */}
-          <Card className="rounded-2xl border-border bg-surface p-5 shadow-xs flex items-center gap-4">
-            <div className="size-12 rounded-full bg-blue-50 dark:bg-blue-950/40 text-blue-600 dark:text-blue-400 flex items-center justify-center shrink-0">
-              <ArrowLeftRight className="size-6" />
+          <Card
+            size="sm"
+            disableHover
+            className="rounded-2xl border-border bg-surface shadow-xs"
+            innerClassName="flex-row items-center gap-4 p-5"
+          >
+            <div className="size-12 rounded-xl bg-muted/60 border border-border/40 text-foreground flex items-center justify-center shrink-0">
+              <ArrowLeftRight className="size-6 stroke-[1.75]" />
             </div>
             <div className="space-y-0.5">
               <span className="font-mono font-extrabold text-2xl text-foreground tracking-tight block">
@@ -407,7 +412,7 @@ export default function WireframeReportesPage() {
               <span className="text-[11px] font-medium text-muted-foreground block">
                 Total de transacciones
               </span>
-              <span className="text-[11px] font-bold text-emerald-600 dark:text-emerald-400 flex items-center gap-0.5">
+              <span className="text-[11px] font-medium text-foreground flex items-center gap-0.5">
                 <span>↑ +12%</span>
                 <span className="text-muted-foreground font-normal">vs. mes anterior</span>
               </span>
@@ -415,9 +420,14 @@ export default function WireframeReportesPage() {
           </Card>
 
           {/* Card 2: Exitosas */}
-          <Card className="rounded-2xl border-border bg-surface p-5 shadow-xs flex items-center gap-4">
-            <div className="size-12 rounded-full bg-emerald-50 dark:bg-emerald-950/40 text-emerald-600 dark:text-emerald-400 flex items-center justify-center shrink-0">
-              <CheckCircle2 className="size-6" />
+          <Card
+            size="sm"
+            disableHover
+            className="rounded-2xl border-border bg-surface shadow-xs"
+            innerClassName="flex-row items-center gap-4 p-5"
+          >
+            <div className="size-12 rounded-xl bg-muted/60 border border-border/40 text-foreground flex items-center justify-center shrink-0">
+              <CheckCircle2 className="size-6 stroke-[1.75]" />
             </div>
             <div className="space-y-0.5">
               <span className="font-mono font-extrabold text-2xl text-foreground tracking-tight block">
@@ -426,7 +436,7 @@ export default function WireframeReportesPage() {
               <span className="text-[11px] font-medium text-muted-foreground block">
                 Transacciones exitosas
               </span>
-              <span className="text-[11px] font-bold text-emerald-600 dark:text-emerald-400 flex items-center gap-0.5">
+              <span className="text-[11px] font-medium text-foreground flex items-center gap-0.5">
                 <span>95%</span>
                 <span className="text-muted-foreground font-normal">del total</span>
               </span>
@@ -434,9 +444,14 @@ export default function WireframeReportesPage() {
           </Card>
 
           {/* Card 3: Con Error */}
-          <Card className="rounded-2xl border-border bg-surface p-5 shadow-xs flex items-center gap-4">
-            <div className="size-12 rounded-full bg-red-50 dark:bg-red-950/40 text-red-600 dark:text-red-400 flex items-center justify-center shrink-0">
-              <AlertTriangle className="size-6" />
+          <Card
+            size="sm"
+            disableHover
+            className="rounded-2xl border-border bg-surface shadow-xs"
+            innerClassName="flex-row items-center gap-4 p-5"
+          >
+            <div className="size-12 rounded-xl bg-muted/60 border border-border/40 text-foreground flex items-center justify-center shrink-0">
+              <AlertTriangle className="size-6 stroke-[1.75]" />
             </div>
             <div className="space-y-0.5">
               <span className="font-mono font-extrabold text-2xl text-foreground tracking-tight block">
@@ -445,7 +460,7 @@ export default function WireframeReportesPage() {
               <span className="text-[11px] font-medium text-muted-foreground block">
                 Transacciones con error
               </span>
-              <span className="text-[11px] font-bold text-rose-600 dark:text-rose-400 flex items-center gap-0.5">
+              <span className="text-[11px] font-medium text-foreground flex items-center gap-0.5">
                 <span>5%</span>
                 <span className="text-muted-foreground font-normal">del total</span>
               </span>
@@ -453,9 +468,14 @@ export default function WireframeReportesPage() {
           </Card>
 
           {/* Card 4: Disponibilidad */}
-          <Card className="rounded-2xl border-border bg-surface p-5 shadow-xs flex items-center gap-4">
-            <div className="size-12 rounded-full bg-purple-50 dark:bg-purple-950/40 text-purple-600 dark:text-purple-400 flex items-center justify-center shrink-0">
-              <Clock className="size-6" />
+          <Card
+            size="sm"
+            disableHover
+            className="rounded-2xl border-border bg-surface shadow-xs"
+            innerClassName="flex-row items-center gap-4 p-5"
+          >
+            <div className="size-12 rounded-xl bg-muted/60 border border-border/40 text-foreground flex items-center justify-center shrink-0">
+              <Clock className="size-6 stroke-[1.75]" />
             </div>
             <div className="space-y-0.5">
               <span className="font-mono font-extrabold text-2xl text-foreground tracking-tight block">
@@ -464,7 +484,7 @@ export default function WireframeReportesPage() {
               <span className="text-[11px] font-medium text-muted-foreground block">
                 Disponibilidad de servicios
               </span>
-              <span className="text-[11px] font-bold text-emerald-600 dark:text-emerald-400 flex items-center gap-0.5">
+              <span className="text-[11px] font-medium text-foreground flex items-center gap-0.5">
                 <span>↑ +0,2%</span>
                 <span className="text-muted-foreground font-normal">vs. mes anterior</span>
               </span>
