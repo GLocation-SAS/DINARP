@@ -3,7 +3,7 @@
 import * as React from "react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Download, Edit2, Check, Sun, Moon } from "lucide-react";
+import { Download, Edit2, Check, Sun, Moon, ImageOff } from "lucide-react";
 import {
   Dialog,
   DialogContent,
@@ -259,6 +259,7 @@ export function LogoManagerCard({
           </div>
 
           <div className="mt-auto flex flex-col gap-2">
+            {!isMissing && (
             <a href={lightImg} download className="w-full dark:hidden">
               <Button variant="primary" className="w-full rounded-full" leftIcon={<Download className="size-4" />}>
                 Descargar SVG

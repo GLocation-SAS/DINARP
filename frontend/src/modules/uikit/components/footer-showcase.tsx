@@ -12,6 +12,7 @@ import { InputGroup, InputGroupInput } from "@/components/ui/input-group";
 import { Switch } from "@/components/ui/switch";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter, DialogTrigger } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
+import { Footer } from "@/components/layout/footer";
 import { toast } from "sonner";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ConfirmDialog } from "@/components/ui/confirm-dialog";
@@ -178,18 +179,9 @@ export function FooterShowcase() {
           )}
           style={{ width: `${viewportWidth}px`, maxWidth: "100%" }}
         >
-          <iframe
-            ref={iframeRef}
-            key={theme}
-            src={`/footer-preview?theme=${theme}`}
-            className="w-full h-[800px] border-none bg-background pointer-events-auto"
-            title="Footer Preview"
-            onLoad={() => {
-              if (iframeRef.current?.contentWindow) {
-                iframeRef.current.contentWindow.postMessage({ type: 'UPDATE_FOOTER', payload: config }, '*');
-              }
-            }}
-          />
+          <div className="w-full min-h-[400px] flex flex-col justify-end border-none bg-background pointer-events-auto">
+              <Footer />
+            </div>
 
           <div
             onMouseDown={handleMouseDown}
