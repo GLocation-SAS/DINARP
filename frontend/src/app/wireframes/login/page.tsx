@@ -29,6 +29,7 @@ export default function WireframeLoginPage() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    router.push("/wireframes/dashboard");
   };
 
   return (

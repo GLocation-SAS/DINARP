@@ -96,9 +96,9 @@ export default function WireframesPage() {
       {/* Auth Wireframes Flow */}
       <section className="flex flex-col gap-4">
         <h2 className="font-heading text-lg font-bold text-foreground">
-          Flujo de Autenticación Wireframe
+          Flujo de Autenticación & Dashboard Wireframe
         </h2>
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           <Link
             href="/wireframes/login"
             className="group flex flex-col p-5 rounded-2xl border border-border bg-surface hover:border-foreground/30 hover:shadow-sm transition-all"
@@ -112,11 +112,23 @@ export default function WireframesPage() {
           </Link>
 
           <Link
+            href="/wireframes/dashboard"
+            className="group flex flex-col p-5 rounded-2xl border border-border bg-surface hover:border-foreground/30 hover:shadow-sm transition-all"
+          >
+            <div className="flex items-center justify-between mb-2">
+              <Badge tone="success" appearance="soft" size="sm">Paso 2</Badge>
+              <ArrowRight className="size-4 text-muted-foreground group-hover:translate-x-1 transition-transform" />
+            </div>
+            <h3 className="font-heading font-bold text-base text-foreground">Dashboard Principal</h3>
+            <p className="text-xs text-muted-foreground mt-1">/wireframes/dashboard</p>
+          </Link>
+
+          <Link
             href="/wireframes/recuperar-acceso"
             className="group flex flex-col p-5 rounded-2xl border border-border bg-surface hover:border-foreground/30 hover:shadow-sm transition-all"
           >
             <div className="flex items-center justify-between mb-2">
-              <Badge tone="neutral" appearance="soft" size="sm">Paso 2</Badge>
+              <Badge tone="neutral" appearance="soft" size="sm">Flujo Aux</Badge>
               <ArrowRight className="size-4 text-muted-foreground group-hover:translate-x-1 transition-transform" />
             </div>
             <h3 className="font-heading font-bold text-base text-foreground">Recuperar acceso</h3>
@@ -128,7 +140,7 @@ export default function WireframesPage() {
             className="group flex flex-col p-5 rounded-2xl border border-border bg-surface hover:border-foreground/30 hover:shadow-sm transition-all"
           >
             <div className="flex items-center justify-between mb-2">
-              <Badge tone="neutral" appearance="soft" size="sm">Paso 3</Badge>
+              <Badge tone="neutral" appearance="soft" size="sm">Flujo Aux</Badge>
               <ArrowRight className="size-4 text-muted-foreground group-hover:translate-x-1 transition-transform" />
             </div>
             <h3 className="font-heading font-bold text-base text-foreground">Restablecer contraseña</h3>
