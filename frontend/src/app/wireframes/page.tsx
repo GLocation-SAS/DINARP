@@ -436,6 +436,54 @@ export default function WireframesPage() {
           </Link>
 
           <Link
+            href="/wireframes/roles"
+            className="group flex flex-col p-5 rounded-2xl border border-border bg-surface hover:border-foreground/30 hover:shadow-sm transition-all"
+          >
+            <div className="flex items-center justify-between mb-2">
+              <Badge tone="primary" appearance="soft" size="sm">Paso 12</Badge>
+              <ArrowRight className="size-4 text-muted-foreground group-hover:translate-x-1 transition-transform" />
+            </div>
+            <h3 className="font-heading font-bold text-base text-foreground">Listado de Roles</h3>
+            <p className="text-xs text-muted-foreground mt-1">/wireframes/roles</p>
+          </Link>
+
+          <Link
+            href="/wireframes/roles/nuevo"
+            className="group flex flex-col p-5 rounded-2xl border border-border bg-surface hover:border-foreground/30 hover:shadow-sm transition-all"
+          >
+            <div className="flex items-center justify-between mb-2">
+              <Badge tone="primary" appearance="soft" size="sm">Paso 12.1</Badge>
+              <ArrowRight className="size-4 text-muted-foreground group-hover:translate-x-1 transition-transform" />
+            </div>
+            <h3 className="font-heading font-bold text-base text-foreground">Crear Rol (Formulario + Matriz)</h3>
+            <p className="text-xs text-muted-foreground mt-1">/wireframes/roles/nuevo</p>
+          </Link>
+
+          <Link
+            href="/wireframes/roles/ROL-002"
+            className="group flex flex-col p-5 rounded-2xl border border-border bg-surface hover:border-foreground/30 hover:shadow-sm transition-all"
+          >
+            <div className="flex items-center justify-between mb-2">
+              <Badge tone="primary" appearance="soft" size="sm">Paso 12.2</Badge>
+              <ArrowRight className="size-4 text-muted-foreground group-hover:translate-x-1 transition-transform" />
+            </div>
+            <h3 className="font-heading font-bold text-base text-foreground">Detalle de Rol (ROL-002)</h3>
+            <p className="text-xs text-muted-foreground mt-1">/wireframes/roles/ROL-002</p>
+          </Link>
+
+          <Link
+            href="/wireframes/roles/ROL-002/editar"
+            className="group flex flex-col p-5 rounded-2xl border border-border bg-surface hover:border-foreground/30 hover:shadow-sm transition-all"
+          >
+            <div className="flex items-center justify-between mb-2">
+              <Badge tone="primary" appearance="soft" size="sm">Paso 12.3</Badge>
+              <ArrowRight className="size-4 text-muted-foreground group-hover:translate-x-1 transition-transform" />
+            </div>
+            <h3 className="font-heading font-bold text-base text-foreground">Editar Rol (ROL-002)</h3>
+            <p className="text-xs text-muted-foreground mt-1">/wireframes/roles/ROL-002/editar</p>
+          </Link>
+
+          <Link
             href="/wireframes/recuperar-acceso"
             className="group flex flex-col p-5 rounded-2xl border border-border bg-surface hover:border-foreground/30 hover:shadow-sm transition-all"
           >

@@ -75,7 +75,7 @@ export function WireframeDashboardLayout({
       title: "ADMINISTRACIÓN",
       items: [
         { id: "usuarios", label: "Usuarios", icon: Users, href: "/wireframes/usuarios" },
-        { id: "roles", label: "Roles y permisos", icon: ShieldCheck, href: "/wireframes/solicitudes" },
+        { id: "roles", label: "Roles y permisos", icon: ShieldCheck, href: "/wireframes/roles" },
         { id: "configuracion", label: "Configuración", icon: Settings, href: "/wireframes/solicitudes" },
       ],
     },
