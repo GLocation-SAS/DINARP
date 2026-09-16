@@ -58,7 +58,7 @@ export function WireframeDashboardLayout({
       items: [
         { id: "intercambio", label: "Intercambio uno a uno", icon: ArrowLeftRight, href: "/wireframes/solicitudes" },
         { id: "batch", label: "Batch / Excepcionalidades", icon: Server, href: "/wireframes/solicitudes" },
-        { id: "catalogo", label: "Catálogo de fuentes", icon: Database, href: "/wireframes/solicitudes" },
+        { id: "catalogo", label: "Catálogo de fuentes", icon: Database, href: "/wireframes/catalogo-fuentes" },
         { id: "trazabilidad", label: "Trazabilidad", icon: Network, href: "/wireframes/solicitudes" },
       ],
     },

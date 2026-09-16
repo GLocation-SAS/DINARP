@@ -56,7 +56,7 @@ export default function WireframeDashboardPage() {
       title: "Catálogo de fuentes",
       description: "Explora las instituciones disponibles y sus servicios.",
       icon: Database,
-      href: "/wireframes/solicitudes",
+      href: "/wireframes/catalogo-fuentes",
     },
     {
       id: "intercambio-uno-a-uno",

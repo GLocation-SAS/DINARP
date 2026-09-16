@@ -172,6 +172,54 @@ export default function WireframesPage() {
           </Link>
 
           <Link
+            href="/wireframes/catalogo-fuentes"
+            className="group flex flex-col p-5 rounded-2xl border border-border bg-surface hover:border-foreground/30 hover:shadow-sm transition-all"
+          >
+            <div className="flex items-center justify-between mb-2">
+              <Badge tone="primary" appearance="soft" size="sm">Paso 5</Badge>
+              <ArrowRight className="size-4 text-muted-foreground group-hover:translate-x-1 transition-transform" />
+            </div>
+            <h3 className="font-heading font-bold text-base text-foreground">Catálogo de Fuentes y Datos</h3>
+            <p className="text-xs text-muted-foreground mt-1">/wireframes/catalogo-fuentes</p>
+          </Link>
+
+          <Link
+            href="/wireframes/catalogo-fuentes/registro-civil"
+            className="group flex flex-col p-5 rounded-2xl border border-border bg-surface hover:border-foreground/30 hover:shadow-sm transition-all"
+          >
+            <div className="flex items-center justify-between mb-2">
+              <Badge tone="primary" appearance="soft" size="sm">Paso 5.1</Badge>
+              <ArrowRight className="size-4 text-muted-foreground group-hover:translate-x-1 transition-transform" />
+            </div>
+            <h3 className="font-heading font-bold text-base text-foreground">Detalle de Fuente (Registro Civil)</h3>
+            <p className="text-xs text-muted-foreground mt-1">/wireframes/catalogo-fuentes/registro-civil</p>
+          </Link>
+
+          <Link
+            href="/wireframes/catalogo-fuentes/registro-civil/datos-identidad"
+            className="group flex flex-col p-5 rounded-2xl border border-border bg-surface hover:border-foreground/30 hover:shadow-sm transition-all"
+          >
+            <div className="flex items-center justify-between mb-2">
+              <Badge tone="primary" appearance="soft" size="sm">Paso 5.2</Badge>
+              <ArrowRight className="size-4 text-muted-foreground group-hover:translate-x-1 transition-transform" />
+            </div>
+            <h3 className="font-heading font-bold text-base text-foreground">Detalle de Servicio y Datos</h3>
+            <p className="text-xs text-muted-foreground mt-1">/wireframes/catalogo-fuentes/registro-civil/datos-identidad</p>
+          </Link>
+
+          <Link
+            href="/wireframes/solicitudes/nueva"
+            className="group flex flex-col p-5 rounded-2xl border border-border bg-surface hover:border-foreground/30 hover:shadow-sm transition-all"
+          >
+            <div className="flex items-center justify-between mb-2">
+              <Badge tone="primary" appearance="soft" size="sm">Paso 3.3</Badge>
+              <ArrowRight className="size-4 text-muted-foreground group-hover:translate-x-1 transition-transform" />
+            </div>
+            <h3 className="font-heading font-bold text-base text-foreground">Nueva Solicitud</h3>
+            <p className="text-xs text-muted-foreground mt-1">/wireframes/solicitudes/nueva</p>
+          </Link>
+
+          <Link
             href="/wireframes/recuperar-acceso"
             className="group flex flex-col p-5 rounded-2xl border border-border bg-surface hover:border-foreground/30 hover:shadow-sm transition-all"
           >
