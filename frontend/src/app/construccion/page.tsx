@@ -23,7 +23,9 @@ export default function Construccion() {
         </h2>
         
         <p className="text-base sm:text-lg text-muted-foreground/80 max-w-md mx-auto mb-10 leading-relaxed">
-          Nuestros ingenieros están ensamblando nuevos componentes cartográficos y de gestión para ofrecerte herramientas más potentes en el Geoportal.
+          Estamos preparando nuevas funcionalidades para la plataforma DINARP.
+          <br /><br />
+          Trabajamos para ofrecerte una experiencia más ágil y eficiente en la gestión de los procesos de interoperabilidad.
         </p>
 
         <div className="flex flex-col sm:flex-row items-center justify-center gap-4 w-full sm:w-auto">

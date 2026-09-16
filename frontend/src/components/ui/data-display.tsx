@@ -113,52 +113,44 @@ export interface InteractiveCardProps {
 }
 
 const INTERACTIVE_COLORS: Record<string, string> = {
-  default: "bg-surface border-border hover:border-transparent",
-  primary: "bg-primary/10 border-primary/20 hover:border-transparent",
-  secondary: "bg-secondary/10 border-secondary/20 hover:border-transparent",
-  info: "bg-info/10 border-info/20 hover:border-transparent",
-  warning: "bg-warning/10 border-warning/20 hover:border-transparent",
-  success: "bg-success/10 border-success/20 hover:border-transparent",
-  danger: "bg-danger/10 border-danger/20 hover:border-transparent",
+  default: "bg-surface border-border hover:bg-muted/50",
+  primary: "bg-primary/10 border-primary/20 hover:bg-primary/15",
+  secondary: "bg-secondary/10 border-secondary/20 hover:bg-secondary/15",
+  info: "bg-info/10 border-info/20 hover:bg-info/15",
+  warning: "bg-warning/10 border-warning/20 hover:bg-warning/15",
+  success: "bg-success/10 border-success/20 hover:bg-success/15",
+  danger: "bg-danger/10 border-danger/20 hover:bg-danger/15",
+  purple: "bg-purple-500/10 border-purple-500/20 hover:bg-purple-500/15",
 }
 
-const INTERACTIVE_INNER_BG: Record<string, string> = {
-  default: "bg-surface",
-  primary: "bg-primary-50/80 dark:bg-primary-900/20",
-  secondary: "bg-secondary-50/80 dark:bg-secondary-900/20",
-  info: "bg-info-50/80 dark:bg-info-900/20",
-  warning: "bg-warning-50/80 dark:bg-warning-900/20",
-  success: "bg-success-50/80 dark:bg-success-900/20",
-  danger: "bg-danger-50/80 dark:bg-danger-900/20",
-}
-
-const INTERACTIVE_ICON_COLORS: Record<string, string> = {
-  default: "text-primary",
+const INTERACTIVE_TITLE_COLORS: Record<string, string> = {
+  default: "text-foreground",
   primary: "text-primary",
   secondary: "text-secondary",
   info: "text-info",
   warning: "text-warning",
   success: "text-success",
   danger: "text-danger",
+  purple: "text-purple-600 dark:text-purple-400",
 }
 
-const INTERACTIVE_HOVER_TEXT_COLORS: Record<string, string> = {
-  default: "group-hover:text-primary",
-  primary: "group-hover:text-primary",
-  secondary: "group-hover:text-secondary",
-  info: "group-hover:text-info",
-  warning: "group-hover:text-warning",
-  success: "group-hover:text-success",
-  danger: "group-hover:text-danger",
+const INTERACTIVE_ICON_COLORS: Record<string, string> = {
+  default: "text-foreground opacity-10 group-hover:opacity-20",
+  primary: "text-primary opacity-20 group-hover:opacity-30",
+  secondary: "text-secondary opacity-20 group-hover:opacity-30",
+  info: "text-info opacity-20 group-hover:opacity-30",
+  warning: "text-warning opacity-20 group-hover:opacity-30",
+  success: "text-success opacity-20 group-hover:opacity-30",
+  danger: "text-danger opacity-20 group-hover:opacity-30",
+  purple: "text-purple-500 opacity-20 group-hover:opacity-30",
 }
 
 export function InteractiveCard({
   title, subtitle, description, icon, decorativeIcon, meta, color = "default", onClick, disabled, className, hideChevron
 }: InteractiveCardProps) {
   const colorClass = INTERACTIVE_COLORS[color] || INTERACTIVE_COLORS.default;
-  const innerBgClass = INTERACTIVE_INNER_BG[color] || INTERACTIVE_INNER_BG.default;
+  const titleColorClass = INTERACTIVE_TITLE_COLORS[color] || INTERACTIVE_TITLE_COLORS.default;
   const iconColorClass = INTERACTIVE_ICON_COLORS[color] || INTERACTIVE_ICON_COLORS.default;
-  const hoverTextClass = INTERACTIVE_HOVER_TEXT_COLORS[color] || INTERACTIVE_HOVER_TEXT_COLORS.default;
 
   return (
     <button
@@ -166,64 +158,37 @@ export function InteractiveCard({
       disabled={disabled}
       onClick={onClick}
       className={cn(
-        "group relative w-full text-left rounded-xl border shadow-sm transition-all duration-300 outline-none overflow-hidden p-[1px]",
+        "group relative w-full text-left rounded-xl border shadow-sm transition-all duration-300 outline-none overflow-hidden min-h-[160px] p-5 flex flex-col items-start",
         "hover:shadow-md hover:-translate-y-0.5",
         "focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
-        "active:translate-y-0 active:shadow-sm",
         disabled && "opacity-50 cursor-not-allowed hover:shadow-sm hover:translate-y-0",
         colorClass,
         className
       )}
     >
-      {/* Soft Ambient Glow on Hover (Behind inner mask, bleeds through semi-transparent bg) */}
-      {!disabled && (
-        <div className="absolute inset-0 rounded-xl pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-700 z-0">
-          <div 
-            className={cn(
-              "absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[150%] h-[150%] blur-[40px] opacity-25",
-              iconColorClass
-            )}
-            style={{ background: 'radial-gradient(circle, currentColor 0%, transparent 60%)' }}
-          />
-        </div>
+      {subtitle && (
+        <Badge appearance="soft" tone={color === "default" || color === "purple" ? "neutral" : color} className={`text-[10px] px-2 py-0.5 mb-2 shadow-none border-transparent font-semibold z-10 ${color !== "default" ? "bg-" + color + "/20 text-" + color : "bg-muted-foreground/20 text-foreground"}`}>
+          {subtitle}
+        </Badge>
       )}
 
-      {/* Inner Mask to preserve background color and block the center of spinning gradient */}
-      <div className={cn("absolute inset-[1px] rounded-[10px] pointer-events-none z-0 transition-colors duration-300", innerBgClass)} />
-
-      {/* Decorative Icon (Bottom Right) */}
+      {/* Decorative Icon */}
       {decorativeIcon && (
-        <div className="absolute -bottom-6 -right-6 size-32 opacity-[0.03] pointer-events-none group-hover:opacity-[0.06] group-hover:scale-105 transition-all duration-500 z-10">
+        <div className={cn("absolute -bottom-8 -right-8 size-40 pointer-events-none transition-all duration-500 z-0", iconColorClass)}>
           {decorativeIcon}
         </div>
       )}
       
-      <div className="relative z-10 p-5 flex items-start gap-4">
-        {icon && (
-          <div className={cn("shrink-0 size-11 rounded-full bg-surface shadow-sm border border-border/30 flex items-center justify-center transition-colors", iconColorClass)}>
-            {icon}
-          </div>
-        )}
-        <div className="flex-1 min-w-0">
-          <div className="flex items-center justify-between gap-2">
-            <h3 className={cn("text-sm font-bold text-foreground leading-tight truncate transition-colors duration-300", hoverTextClass)}>{title}</h3>
-            {!hideChevron && <ChevronRight className="size-4 text-foreground/50 shrink-0 transition-transform group-hover:translate-x-0.5" />}
-          </div>
-          {subtitle && (
-            <p className="text-xs text-foreground/70 font-medium mt-0.5 flex items-center gap-1">
-              <MapPin className="size-3 shrink-0" />{subtitle}
-            </p>
-          )}
-          {description && <p className="text-xs text-foreground/60 mt-1">{description}</p>}
-          {meta && <div className="mt-4">{meta}</div>}
-        </div>
+      <div className="mt-auto relative z-10 w-full flex flex-col gap-1">
+        <h3 className={cn("text-sm font-bold leading-tight transition-colors duration-300", titleColorClass)}>{title}</h3>
+        {description && <p className="text-xs text-foreground/70">{description}</p>}
+        {meta && <div className="mt-2">{meta}</div>}
       </div>
     </button>
   )
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
-// 3. KPI CARD
+  // 3. KPI CARD
 // ─────────────────────────────────────────────────────────────────────────────
 
 export type KpiTrend = "up" | "down" | "neutral" | "warning"

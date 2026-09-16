@@ -71,30 +71,29 @@ export function Footer() {
             </p>
           </div>
 
-          {/* Column 2: Producto */}
+          
+          {/* Column 2: Plataforma */}
           <div className="flex flex-col items-start text-left">
             <h3 className="text-xs font-bold text-foreground uppercase tracking-widest font-heading mb-6 flex items-center gap-2">
-              Producto
+              Plataforma
             </h3>
             <ul className="flex flex-col items-start font-sans text-body-sm text-muted-foreground gap-3.5">
               <li><Link href="/" className="hover:text-primary transition-colors duration-200">Inicio</Link></li>
-              <li><Link href="#" className="hover:text-primary transition-colors duration-200">Funcionalidades</Link></li>
-              <li><Link href="#" className="hover:text-primary transition-colors duration-200">Módulos</Link></li>
-              <li><Link href="#" className="hover:text-primary transition-colors duration-200">Geoportal</Link></li>
-              <li><Link href="#" className="hover:text-primary transition-colors duration-200">Reportes</Link></li>
+              <li><Link href="#" className="hover:text-primary transition-colors duration-200">Interoperabilidad</Link></li>
+              <li><Link href="#" className="hover:text-primary transition-colors duration-200">Solicitudes</Link></li>
+              <li><Link href="#" className="hover:text-primary transition-colors duration-200">Centro de ayuda</Link></li>
             </ul>
           </div>
 
-          {/* Column 3: Soporte */}
+          {/* Column 3: Información */}
           <div className="flex flex-col items-start text-left">
             <h3 className="text-xs font-bold text-foreground uppercase tracking-widest font-heading mb-6 flex items-center gap-2">
-              Soporte
+              Información
             </h3>
             <ul className="flex flex-col items-start font-sans text-body-sm text-muted-foreground gap-3.5">
-              <li><Link href="#" className="hover:text-primary transition-colors duration-200">Centro de ayuda</Link></li>
+              <li><Link href="#" className="hover:text-primary transition-colors duration-200">Acerca de DINARP</Link></li>
               <li><Link href="#" className="hover:text-primary transition-colors duration-200">Documentación</Link></li>
-              <li><Link href="#" className="hover:text-primary transition-colors duration-200">Preguntas frecuentes</Link></li>
-              <li><Link href="#" className="hover:text-primary transition-colors duration-200">Contactar soporte</Link></li>
+              <li><Link href="#" className="hover:text-primary transition-colors duration-200">Contacto</Link></li>
             </ul>
           </div>
 
