@@ -24,19 +24,21 @@ export default function Page404() {
           Lo sentimos, la página que buscas no existe, ha sido movida o no está disponible en este momento.
         </p>
 
-        <div className="flex flex-col sm:flex-row items-center justify-center gap-4 w-full sm:w-auto">
-          <Link href="/wireframes/dashboard">
-            <Button variant="primary" size="lg" className="rounded-full px-7 py-5 text-sm sm:text-base font-semibold shadow-md hover:-translate-y-0.5 transition-transform">
-              Ir al Dashboard <ArrowRight className="ml-2 size-4" />
-            </Button>
-          </Link>
+        <div className="flex flex-col sm:flex-row items-center justify-center gap-3 w-full sm:w-auto">
+          <Button
+            variant="primary"
+            asChild
+            rightIcon={<ArrowRight className="size-4" />}
+          >
+            <Link href="/wireframes/dashboard">
+              Ir al Dashboard
+            </Link>
+          </Button>
           <Button
             variant="outline"
-            size="lg"
-            className="rounded-full px-7 py-5 text-sm sm:text-base font-semibold border-border/80 hover:bg-muted/50 transition-colors"
+            leftIcon={<ArrowLeft className="size-4" />}
             onClick={() => window.history.back()}
           >
-            <ArrowLeft className="mr-2 size-4" />
             Regresar
           </Button>
         </div>

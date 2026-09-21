@@ -28,17 +28,20 @@ export default function Wireframe404Page() {
           </p>
 
           <div className="flex flex-col sm:flex-row items-center justify-center gap-3 w-full sm:w-auto">
-            <Link href="/wireframes/dashboard">
-              <Button variant="primary" className="px-6 h-11 text-xs font-semibold">
-                Volver al Dashboard <ArrowRight className="ml-2 size-4" />
-              </Button>
-            </Link>
+            <Button
+              variant="primary"
+              asChild
+              rightIcon={<ArrowRight className="size-4" />}
+            >
+              <Link href="/wireframes/dashboard">
+                Ir al Dashboard
+              </Link>
+            </Button>
             <Button
               variant="outline"
-              className="px-6 h-11 text-xs font-semibold"
+              leftIcon={<ArrowLeft className="size-4" />}
               onClick={() => window.history.back()}
             >
-              <ArrowLeft className="mr-2 size-4" />
               Regresar
             </Button>
           </div>

@@ -36,22 +36,18 @@ export default function Construccion() {
         <div className="flex flex-col sm:flex-row items-center justify-center gap-3 w-full sm:w-auto">
           <Button
             variant="primary"
-            size="default"
             asChild
-            className="px-6 h-10 text-xs font-semibold"
+            rightIcon={<ArrowRight className="size-4" />}
           >
             <Link href="/wireframes/dashboard">
               Ir al Dashboard
-              <ArrowRight className="ml-2 size-4" />
             </Link>
           </Button>
           <Button
             variant="outline"
-            size="default"
-            className="px-6 h-10 text-xs font-semibold border-border"
+            leftIcon={<ArrowLeft className="size-4" />}
             onClick={() => window.history.back()}
           >
-            <ArrowLeft className="mr-2 size-4" />
             Regresar
           </Button>
         </div>
