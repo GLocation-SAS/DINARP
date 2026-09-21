@@ -42,7 +42,7 @@ const buttonVariants = cva(
       variant: {
         primary: [
           "border-primary",
-          "text-primary-foreground",
+          "text-white",
           "bg-primary",
           "[--radial-bg:var(--primary)] dark:[--radial-bg:var(--primary)]",
           "[--glow:var(--primary)]",
@@ -65,7 +65,7 @@ const buttonVariants = cva(
 
         success: [
           "border-success",
-          "text-success-foreground",
+          "text-white",
           "bg-success",
           "[--radial-bg:var(--success)] dark:[--radial-bg:var(--success)]",
           "[--glow:var(--success)]",
@@ -74,7 +74,7 @@ const buttonVariants = cva(
 
         warning: [
           "border-warning",
-          "text-warning-foreground",
+          "text-white",
           "bg-warning",
           "[--radial-bg:var(--warning)] dark:[--radial-bg:var(--warning)]",
           "[--glow:var(--warning)]",
@@ -83,7 +83,7 @@ const buttonVariants = cva(
 
         danger: [
           "border-danger",
-          "text-danger-foreground",
+          "text-white",
           "bg-danger",
           "[--radial-bg:var(--danger)] dark:[--radial-bg:var(--danger)]",
           "[--glow:var(--danger)]",
@@ -92,7 +92,7 @@ const buttonVariants = cva(
 
         info: [
           "border-info",
-          "text-info-foreground",
+          "text-white",
           "bg-info",
           "[--radial-bg:var(--info)] dark:[--radial-bg:var(--info)]",
           "[--glow:var(--info)]",
