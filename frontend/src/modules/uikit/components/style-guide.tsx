@@ -21,7 +21,6 @@ import {
   Edit2,
   Ruler,
   LayoutGrid,
-  Accessibility,
   ShieldCheck,
   Pointer,
   Monitor,
@@ -78,7 +77,6 @@ import {
   ComboboxItem,
 } from "@/components/ui/combobox";
 import { Spinner } from "@/components/ui/data-display";
-import { AccessibilityAudit } from "./accessibility-audit";
 
 const SEMANTIC_COLORS = [
   {
@@ -1442,16 +1440,7 @@ export function StyleGuide({
         </div>
       </SubSection>
 
-      {/* Subsección 8: Accesibilidad */}
-      <SubSection
-        id="foundations-accessibility"
-        registerSection={registerSection}
-        title="Accesibilidad"
-        icon={Accessibility}
-        description="Principios básicos para mantener interfaces claras, legibles y fáciles de utilizar dentro de DINARP."
-      >
-        <AccessibilityAudit />
-      </SubSection>
+
 
       <Dialog
         open={!!editingColor}

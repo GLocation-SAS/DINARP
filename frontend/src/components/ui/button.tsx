@@ -50,13 +50,17 @@ const buttonVariants = cva(
         ].join(" "),
 
         secondary: [
-          "border-border",
-          "text-foreground",
-          "bg-surface",
+          "border-secondary",
+          "text-secondary",
+          "bg-transparent",
           "[--radial-bg:var(--secondary)] dark:[--radial-bg:var(--secondary)]",
           "[--glow:var(--secondary)]",
-          "hover:bg-muted",
-          "hover:text-foreground",
+          "hover:border-secondary",
+          "hover:text-white",
+          "active:text-white",
+          "data-[state=active]:border-secondary",
+          "data-[state=active]:bg-secondary",
+          "data-[state=active]:text-white",
         ].join(" "),
 
         success: [
@@ -264,10 +268,10 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
             className?.includes("justify-between")
               ? "justify-between"
               : className?.includes("justify-start")
-              ? "justify-start"
-              : className?.includes("justify-end")
-              ? "justify-end"
-              : "justify-center"
+                ? "justify-start"
+                : className?.includes("justify-end")
+                  ? "justify-end"
+                  : "justify-center"
           )}
         >
           {leftIcon}
