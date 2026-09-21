@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Lock, Eye, EyeOff, ArrowRight, Check } from "lucide-react";
+import { getAssetPath } from "@/lib/utils";
 
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
@@ -19,6 +20,7 @@ import {
   DialogDescription,
 } from "@/components/ui/dialog";
 import { WireframeAuthLayout } from "../components/wireframe-auth-layout";
+import { ThemeToggle } from "@/components/theme-toggle";
 
 export default function WireframeRestablecerContrasenaPage() {
   const router = useRouter();
@@ -35,13 +37,32 @@ export default function WireframeRestablecerContrasenaPage() {
 
   return (
     <WireframeAuthLayout>
+      {/* ── Cabecera Superior del Formulario: Logo DINARP + Modo Claro/Oscuro ── */}
+      <div className="flex items-center justify-between pb-6 mb-6 border-b border-border/60">
+        <div className="flex items-center gap-3">
+          <img
+            src={getAssetPath("/logotipo.png")}
+            alt="Logo DINARP"
+            className="h-8 w-auto max-w-[150px] object-contain dark:brightness-0 dark:invert"
+          />
+          <div className="h-5 w-px bg-border" />
+          <span className="text-xs font-medium text-muted-foreground leading-tight">
+            Portal Interoperabilidad
+          </span>
+        </div>
+
+        <div className="flex items-center gap-1.5">
+          <ThemeToggle />
+        </div>
+      </div>
+
       {/* Título y subtítulo */}
-      <div className="text-center mb-8 sm:mb-10">
-        <h2 className="font-heading font-bold text-3xl sm:text-4xl tracking-tight text-foreground">
+      <div className="text-left mb-8">
+        <h2 className="font-heading font-extrabold text-3xl sm:text-4xl tracking-tight text-foreground">
           Restablecer contraseña
         </h2>
         <p className="text-sm sm:text-base text-muted-foreground mt-2 font-medium">
-          Crea una nueva contraseña para acceder al sistema
+          Crea una nueva contraseña para acceder al sistema.
         </p>
       </div>
 
@@ -133,7 +154,7 @@ export default function WireframeRestablecerContrasenaPage() {
           type="submit"
           variant="primary"
           size="lg"
-          className="w-full mt-3 font-semibold justify-center gap-2 h-12 text-sm sm:text-base rounded-full"
+          className="w-full mt-2 font-semibold justify-center gap-2 h-12 text-sm sm:text-base rounded-xl"
         >
           <span>Guardar nueva contraseña</span>
           <ArrowRight className="size-4 shrink-0" />
@@ -145,33 +166,33 @@ export default function WireframeRestablecerContrasenaPage() {
           variant="outline"
           size="lg"
           onClick={() => router.push("/wireframes/login")}
-          className="w-full font-semibold justify-center h-12 text-sm sm:text-base rounded-full border-border/80 text-foreground hover:bg-muted/30"
+          className="w-full font-semibold justify-center h-12 text-sm sm:text-base rounded-xl border-border text-foreground hover:bg-muted/30 transition-all"
         >
           Volver al inicio de sesión
         </Button>
       </form>
 
-      {/* ── Modal Semántica de Éxito: Contraseña actualizada ── */}
+      {/* ── Modal Informativa de Éxito: Contraseña actualizada ── */}
       <Dialog open={showSuccessModal} onOpenChange={setShowSuccessModal}>
         <DialogContent
           variant="standard"
-          className="max-w-[440px] rounded-3xl p-8 sm:p-10 flex flex-col items-center text-center bg-surface border-border shadow-xl"
+          className="max-w-[440px] rounded-3xl p-6 sm:p-8 flex flex-col items-center text-center bg-card border-border shadow-xl"
         >
-          {/* Icono de check en círculo gris suave */}
-          <div className="size-16 rounded-full bg-muted/60 flex items-center justify-center text-foreground mb-4">
-            <Check className="size-8 stroke-[2.5]" />
+          {/* Icono de check */}
+          <div className="size-14 rounded-2xl bg-muted border border-border flex items-center justify-center text-foreground mb-3">
+            <Check className="size-7 stroke-[2.5]" />
           </div>
 
-          <DialogHeader className="flex flex-col items-center p-0 space-y-3">
-            <DialogTitle className="font-heading font-bold text-2xl sm:text-3xl text-foreground text-center">
+          <DialogHeader className="flex flex-col items-center p-0 space-y-2">
+            <DialogTitle className="font-heading font-extrabold text-2xl sm:text-3xl text-foreground text-center tracking-tight">
               Contraseña actualizada
             </DialogTitle>
-            <DialogDescription className="text-sm text-foreground/80 text-center leading-relaxed">
+            <DialogDescription className="text-xs sm:text-sm text-muted-foreground text-center leading-relaxed">
               Tu contraseña ha sido restablecida correctamente. Ya puedes iniciar sesión con tus nuevas credenciales.
             </DialogDescription>
           </DialogHeader>
 
-          <div className="mt-8 w-full">
+          <div className="mt-6 w-full">
             <Button
               type="button"
               variant="primary"
@@ -180,7 +201,7 @@ export default function WireframeRestablecerContrasenaPage() {
                 setShowSuccessModal(false);
                 router.push("/wireframes/login");
               }}
-              className="w-full font-semibold justify-center h-12 text-sm rounded-full"
+              className="w-full font-semibold justify-center h-11 text-sm rounded-xl"
             >
               Ir al inicio de sesión
             </Button>

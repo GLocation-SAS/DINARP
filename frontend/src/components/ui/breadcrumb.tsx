@@ -20,7 +20,7 @@ function BreadcrumbList({ className, ...props }: React.ComponentProps<"ol">) {
     <ol
       data-slot="breadcrumb-list"
       className={cn(
-        "flex flex-wrap items-center gap-1.5 break-words text-muted-foreground",
+        "flex flex-wrap items-center gap-1.5 break-words text-xs text-muted-foreground",
         className
       )}
       {...props}
@@ -51,7 +51,7 @@ function BreadcrumbLink({
     <Comp
       data-slot="breadcrumb-link"
       className={cn(
-        "relative flex items-center gap-2 px-3 py-1.5 text-[10px] font-heading font-bold tracking-widest text-muted-foreground hover:bg-surface-subtle hover:text-foreground rounded-full cursor-pointer transition-colors duration-200 uppercase",
+        "relative flex items-center gap-1.5 px-2.5 py-1 text-xs font-medium text-muted-foreground hover:bg-muted/60 hover:text-foreground rounded-md cursor-pointer transition-colors duration-200",
         className
       )}
       {...props}
@@ -67,7 +67,7 @@ function BreadcrumbPage({ className, ...props }: React.ComponentProps<"span">) {
       aria-disabled="true"
       aria-current="page"
       className={cn(
-        "flex items-center gap-2 px-4 py-1.5 bg-primary/10 text-primary-300 rounded-full text-[10px] font-heading font-bold tracking-widest uppercase animate-in fade-in zoom-in-95 duration-500",
+        "flex items-center gap-1.5 px-2.5 py-1 bg-muted text-foreground border border-border/80 rounded-md text-xs font-semibold shadow-2xs",
         className
       )}
       {...props}
@@ -89,7 +89,7 @@ function BreadcrumbSeparator({
       {...props}
     >
       {children ?? (
-        <ChevronRightIcon className="size-3.5 text-muted-foreground" />
+        <ChevronRightIcon className="size-3.5 text-muted-foreground/60" />
       )}
     </li>
   )

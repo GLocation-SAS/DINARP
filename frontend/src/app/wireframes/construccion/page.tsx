@@ -3,35 +3,55 @@
 import React from "react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { ArrowRight, ArrowLeft, Wrench } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+import { ArrowRight, ArrowLeft, Layers } from "lucide-react";
 import { WireframeDashboardLayout } from "../components/wireframe-dashboard-layout";
 
 export default function WireframeConstruccionPage() {
   return (
     <WireframeDashboardLayout>
       <div className="min-h-[75vh] flex flex-col items-center justify-center p-6 sm:p-12 text-center">
-        <div className="max-w-xl w-full flex flex-col items-center">
-          <div className="size-20 rounded-3xl bg-muted/60 flex items-center justify-center text-muted-foreground mb-6">
-            <Wrench className="size-10 text-foreground" strokeWidth={1.5} />
+        <div className="max-w-lg w-full flex flex-col items-center">
+          <div className="size-20 rounded-3xl bg-muted/50 border border-border flex items-center justify-center mb-6">
+            <Layers className="size-10 text-foreground" strokeWidth={1.5} />
           </div>
 
-          <h1 className="text-2xl sm:text-3xl font-bold font-heading text-foreground tracking-tight mb-3">
-            Módulo en construcción
+          <Badge
+            appearance="outline"
+            tone="neutral"
+            className="mb-3 border-border text-xs px-3 py-1 font-semibold"
+          >
+            Etapa de wireframes
+          </Badge>
+
+          <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-foreground mb-2">
+            Función no disponible
           </h1>
 
+          <p className="text-sm font-semibold text-foreground/80 mb-2">
+            Función en evaluación de diseño UX/UI
+          </p>
+
           <p className="text-xs sm:text-sm text-muted-foreground max-w-md mx-auto mb-8 leading-relaxed">
-            Esta sección se encuentra en proceso de especificación y diseño para los wireframes del sistema DINARP.
+            Esta funcionalidad se encuentra en proceso de validación conceptual, técnica y normativa para la sesión de trabajo con DINARP e instituciones participantes.
           </p>
 
           <div className="flex flex-col sm:flex-row items-center justify-center gap-3 w-full sm:w-auto">
-            <Link href="/wireframes/dashboard">
-              <Button variant="primary" className="px-6 h-11 text-xs font-semibold">
-                Volver al Dashboard <ArrowRight className="ml-2 size-4" />
-              </Button>
-            </Link>
+            <Button
+              variant="primary"
+              size="default"
+              asChild
+              className="px-6 h-10 text-xs font-semibold"
+            >
+              <Link href="/wireframes/dashboard">
+                Volver al Dashboard
+                <ArrowRight className="ml-2 size-4" />
+              </Link>
+            </Button>
             <Button
               variant="outline"
-              className="px-6 h-11 text-xs font-semibold"
+              size="default"
+              className="px-6 h-10 text-xs font-semibold border-border"
               onClick={() => window.history.back()}
             >
               <ArrowLeft className="mr-2 size-4" />
@@ -43,4 +63,3 @@ export default function WireframeConstruccionPage() {
     </WireframeDashboardLayout>
   );
 }
-

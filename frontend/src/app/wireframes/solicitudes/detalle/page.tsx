@@ -1,24 +1,27 @@
 "use client";
 
-import React from "react";
+import React, { useState, useEffect, Suspense } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import {
   ArrowLeft,
-  Activity,
-  FileText,
-  Download,
   Building2,
   Database,
-  ShieldAlert,
-  MessageSquare,
-  Paperclip,
-  CheckCircle2,
+  FileText,
   Clock,
+  CheckCircle2,
+  AlertCircle,
+  Pencil,
+  Send,
+  MessageSquare,
+  ShieldCheck,
+  Check,
+  Info,
   Calendar,
   User,
   ExternalLink,
 } from "lucide-react";
+import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -28,6 +31,7 @@ import {
   CardTitle,
   CardDescription,
   CardContent,
+  CardFooter,
 } from "@/components/ui/card";
 import {
   Breadcrumb,
@@ -37,461 +41,493 @@ import {
   BreadcrumbSeparator,
   BreadcrumbPage,
 } from "@/components/ui/breadcrumb";
-import { DetailList } from "@/components/ui/detail-list";
 import { WireframeDashboardLayout } from "../../components/wireframe-dashboard-layout";
+import {
+  getStoredProjects,
+  getProjectById,
+  saveStoredProject,
+  type ProyectoInteroperabilidad,
+} from "../proyectos-store";
 
-export default function WireframeSolicitudDetallePage() {
+function DetalleProyectoContent() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const projectId = searchParams.get("id");
+  const tabParam = searchParams.get("tab");
 
-  // Datos mock de la solicitud detallada
-  const solicitud = {
-    codigo: "SOL-2025-0024",
-    nombre: "Validación de identidad ciudadana",
-    estado: "En revisión",
-    prioridad: "Alta",
-    ultimaActualizacion: "12 abr 2025 10:24",
-    fechaCreacion: "10 abr 2025 08:30",
-    solicitante: {
-      institucion: "Ministerio del Interior",
-      unidad: "Dirección de Tecnologías de la Información y Comunicación",
-      responsable: "Ing. Carlos Mendoza",
-      cargo: "Director de TI",
-      correo: "carlos.mendoza@ministeriodelinterior.gob.ec",
-      proyecto: "Sistema Nacional de Identificación Digital y Control de Salvoconductos",
-    },
-    fuente: {
-      institucion: "Dirección General de Registro Civil, Identificación y Cedulación",
-      servicio: "Servicio Web de Consulta de Cédula y Datos Biográficos",
-      tipoIntercambio: "Uno a uno (Tiempo real - API REST)",
-      protocolo: "HTTPS / REST (JSON) - Autenticación OAuth 2.0 Mutual TLS",
-      frecuencia: "Transaccional (~ 5,000 consultas / día)",
-      datosSolicitados: [
-        "Número de Cédula",
-        "Nombres y Apellidos Completos",
-        "Fecha de Nacimiento",
-        "Estado Civil",
-        "Condición de Ciudadano",
-        "Fotografía Facial (Base64)",
-      ],
-    },
-    finalidad: {
-      proposito:
-        "Validación y verificación de identidad ciudadana en tiempo real para trámites institucionales, control de seguridad en puntos de emisión de salvoconductos y validación de licencias oficiales.",
-      baseLegal:
-        "Ley Orgánica del Sistema Nacional de Registro de Datos Públicos (Art. 14, 18) y Decreto Ejecutivo N° 824 sobre Interoperabilidad Gubernamental.",
-      clasificacion: "Confidencial - Nivel 2 (Datos Personales Regulados)",
-    },
-    observaciones: [
-      {
-        id: 1,
-        autor: "Abg. Lucía Morales (DINARP)",
-        rol: "Analista Jurídico de Interoperabilidad",
-        fecha: "12 abr 2025 10:24",
-        texto:
-          "Se verificó la competencia legal de la institución solicitante. Solicitud admitida a trámite técnico.",
-      },
-      {
-        id: 2,
-        autor: "Ing. Roberto Alarcón (Registro Civil)",
-        rol: "Oficial de Seguridad de la Información",
-        fecha: "11 abr 2025 15:40",
-        texto:
-          "Se requiere adjuntar el certificado de homologación del endpoint de consumo y la IP pública autorizada para la lista blanca del WAF.",
-      },
-    ],
-    documentos: [
-      {
-        id: "doc-1",
-        nombre: "Terminos_de_Referencia_Tecnica_MINTEL.pdf",
-        tamano: "2.4 MB",
-        fecha: "10 abr 2025",
-      },
-      {
-        id: "doc-2",
-        nombre: "Acuerdo_Confidencialidad_NDA_Firmado.pdf",
-        tamano: "1.1 MB",
-        fecha: "10 abr 2025",
-      },
-      {
-        id: "doc-3",
-        nombre: "Arquitectura_Seguridad_Interoperabilidad_v2.pdf",
-        tamano: "3.8 MB",
-        fecha: "10 abr 2025",
-      },
-    ],
+  const [activeTab, setActiveTab] = useState<"resumen" | "fuentes" | "observaciones" | "seguimiento">(
+    tabParam === "seguimiento" ? "seguimiento" : "resumen"
+  );
+
+  const [project, setProject] = useState<ProyectoInteroperabilidad | null>(null);
+  const [isLoaded, setIsLoaded] = useState(false);
+
+  useEffect(() => {
+    const all = getStoredProjects();
+    if (projectId) {
+      const found = getProjectById(projectId);
+      if (found) {
+        setProject(found);
+      } else if (all.length > 0) {
+        setProject(all[0]);
+      }
+    } else if (all.length > 0) {
+      setProject(all[0]);
+    }
+    if (tabParam && ["resumen", "fuentes", "observaciones", "seguimiento"].includes(tabParam)) {
+      setActiveTab(tabParam as "resumen" | "fuentes" | "observaciones" | "seguimiento");
+    }
+    setIsLoaded(true);
+  }, [projectId, tabParam]);
+
+  if (!isLoaded) {
+    return (
+      <WireframeDashboardLayout activeMenu="solicitudes">
+        <div className="py-20 text-center text-sm text-muted-foreground">
+          Cargando detalle del proyecto...
+        </div>
+      </WireframeDashboardLayout>
+    );
+  }
+
+  // Fallback si no hay ningún proyecto creado en la demo
+  if (!project) {
+    return (
+      <WireframeDashboardLayout activeMenu="solicitudes">
+        <div className="flex-1 flex flex-col items-center justify-center p-8 text-center min-h-[60vh]">
+          <Database className="size-12 text-muted-foreground mb-3" />
+          <h2 className="text-xl font-bold">No se encontró ningún proyecto registrado</h2>
+          <p className="text-sm text-muted-foreground mt-1 mb-6 max-w-md">
+            Crea primero un proyecto de interoperabilidad para ver su detalle estructurado y seguimiento.
+          </p>
+          <Button asChild>
+            <Link href="/wireframes/solicitudes/nueva">Crear proyecto</Link>
+          </Button>
+        </div>
+      </WireframeDashboardLayout>
+    );
+  }
+
+  // Simulación de responder observación
+  const handleResponderObservacion = () => {
+    toast.info("Modal de subsanación de observaciones para el taller DINARP");
   };
 
   return (
     <WireframeDashboardLayout activeMenu="solicitudes">
-      <main className="relative p-4 sm:p-6 lg:p-8 w-full space-y-6 sm:space-y-8">
-        {/* Background subtle effect */}
-        <div className="absolute top-0 right-0 w-96 h-96 bg-radial from-muted/20 to-transparent pointer-events-none -z-10 blur-3xl opacity-60" />
+      <div className="flex-1 flex flex-col min-w-0 bg-background text-foreground pb-12">
+        {/* ── Breadcrumb & Encabezado del Detalle ── */}
+        <div className="border-b border-border bg-surface/50 px-6 sm:px-8 py-5">
+          <Breadcrumb className="mb-3">
+            <BreadcrumbList>
+              <BreadcrumbItem>
+                <BreadcrumbLink href="/wireframes/dashboard">Inicio</BreadcrumbLink>
+              </BreadcrumbItem>
+              <BreadcrumbSeparator />
+              <BreadcrumbItem>
+                <BreadcrumbLink href="/wireframes/solicitudes">Proyectos de interoperabilidad</BreadcrumbLink>
+              </BreadcrumbItem>
+              <BreadcrumbSeparator />
+              <BreadcrumbPage>{project.codigo}</BreadcrumbPage>
+            </BreadcrumbList>
+          </Breadcrumb>
 
-        {/* ── 1. Breadcrumbs ── */}
-        <Breadcrumb>
-          <BreadcrumbList className="text-xs">
-            <BreadcrumbItem>
-              <BreadcrumbLink asChild>
-                <Link href="/wireframes/dashboard" className="text-muted-foreground hover:text-foreground">
-                  Inicio
-                </Link>
-              </BreadcrumbLink>
-            </BreadcrumbItem>
-            <BreadcrumbSeparator />
-            <BreadcrumbItem>
-              <BreadcrumbLink asChild>
-                <Link href="/wireframes/solicitudes" className="text-muted-foreground hover:text-foreground">
-                  Solicitudes
-                </Link>
-              </BreadcrumbLink>
-            </BreadcrumbItem>
-            <BreadcrumbSeparator />
-            <BreadcrumbItem>
-              <BreadcrumbPage className="font-semibold text-foreground">
-                Detalle de solicitud
-              </BreadcrumbPage>
-            </BreadcrumbItem>
-          </BreadcrumbList>
-        </Breadcrumb>
+          <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 w-full">
+            <div>
+              <div className="flex flex-wrap items-center gap-2.5 mb-1.5">
+                <span className="font-mono text-xs font-bold px-2.5 py-0.5 rounded-lg bg-muted border border-border text-foreground">
+                  {project.codigo}
+                </span>
 
-        {/* ── 2. Header & Action Controls ── */}
-        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 pb-4 border-b border-border/80">
-          <div className="space-y-2">
-            <div className="flex flex-wrap items-center gap-2.5">
-              <span className="font-mono text-xs font-bold px-2.5 py-1 rounded-md bg-muted/80 text-foreground">
-                {solicitud.codigo}
-              </span>
-              <Badge tone="neutral" appearance="soft" size="sm" className="font-medium gap-1.5">
-                <span className="size-1.5 rounded-full bg-foreground" />
-                {solicitud.estado}
-              </Badge>
-              <span className="inline-flex items-center gap-1.5 text-xs text-muted-foreground font-medium pl-1">
-                <span className="size-1.5 rounded-full bg-muted-foreground" />
-                Prioridad: <strong className="text-foreground">{solicitud.prioridad}</strong>
-              </span>
+                {/* Badge de Estado */}
+                {project.estado === "Borrador" && (
+                  <Badge appearance="outline" tone="neutral" className="border-border bg-muted/50 text-muted-foreground font-medium text-xs">
+                    Borrador
+                  </Badge>
+                )}
+                {project.estado === "En revisión" && (
+                  <Badge appearance="outline" tone="neutral" className="border-foreground/30 bg-muted/80 text-foreground font-semibold text-xs">
+                    En revisión (Propuesta)
+                  </Badge>
+                )}
+                {project.estado === "Observada" && (
+                  <Badge appearance="outline" tone="neutral" className="border-border bg-muted/30 text-foreground font-medium text-xs">
+                    Observada
+                  </Badge>
+                )}
+                {project.estado === "Autorizada" && (
+                  <Badge appearance="outline" tone="neutral" className="border-foreground/40 bg-foreground/10 text-foreground font-bold text-xs">
+                    Autorizada (Administrativo)
+                  </Badge>
+                )}
+                {project.estado === "Servicio habilitado" && (
+                  <Badge appearance="solid" tone="neutral" className="font-bold text-xs bg-foreground text-background">
+                    Servicio habilitado (Técnico)
+                  </Badge>
+                )}
+
+                <span className="text-xs text-muted-foreground">
+                  Actualizado: {project.ultimaActualizacion}
+                </span>
+              </div>
+
+              <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-foreground">
+                {project.nombre}
+              </h1>
+
+              <p className="text-xs sm:text-sm text-muted-foreground mt-1 max-w-3xl">
+                {project.entidadSolicitante}
+              </p>
             </div>
 
-            <h1 className="font-heading font-extrabold text-2xl sm:text-3xl lg:text-4xl tracking-tight text-foreground">
-              {solicitud.nombre}
-            </h1>
+            {/* Acciones Principales Contextuales */}
+            <div className="flex flex-wrap items-center gap-2">
+              <Button
+                variant="outline"
+                size="sm"
+                asChild
+                className="gap-2 border-border"
+              >
+                <Link href="/wireframes/solicitudes">
+                  <ArrowLeft className="size-4" />
+                  Volver al listado
+                </Link>
+              </Button>
 
-            <div className="flex flex-wrap items-center gap-4 text-xs text-muted-foreground">
-              <span className="flex items-center gap-1">
-                <Calendar className="size-3.5" />
-                Radicado: {solicitud.fechaCreacion}
-              </span>
-              <span className="flex items-center gap-1">
-                <Clock className="size-3.5" />
-                Última actualización: {solicitud.ultimaActualizacion}
-              </span>
+              {project.estado === "Borrador" && (
+                <Button size="sm" asChild className="gap-2 font-semibold">
+                  <Link href={`/wireframes/solicitudes/nueva?id=${project.id}`}>
+                    <Pencil className="size-4" />
+                    Continuar edición
+                  </Link>
+                </Button>
+              )}
+
+              {project.estado === "Observada" && (
+                <Button
+                  size="sm"
+                  onClick={handleResponderObservacion}
+                  className="gap-2 font-semibold"
+                >
+                  <MessageSquare className="size-4" />
+                  Responder observación
+                </Button>
+              )}
             </div>
           </div>
+        </div>
 
-          {/* Action buttons */}
-          <div className="flex items-center gap-2.5 shrink-0 pt-2 lg:pt-0">
+        {/* ── Barra de Navegación por Secciones ── */}
+        <div className="border-b border-border bg-background px-6 sm:px-8 w-full">
+          <div className="flex items-center gap-2 sm:gap-4 overflow-x-auto py-2">
             <Button
-              type="button"
-              variant="outline"
-              onClick={() => router.push("/wireframes/solicitudes")}
-              className="h-10 px-4 rounded-xl text-xs font-semibold gap-2 border-border"
+              variant={activeTab === "resumen" ? "neutral" : "ghost"}
+              size="sm"
+              onClick={() => setActiveTab("resumen")}
+              className="text-xs font-semibold rounded-xl h-8"
             >
-              <ArrowLeft className="size-4" />
-              <span>Volver al listado</span>
+              1. Resumen general
             </Button>
             <Button
-              type="button"
-              variant="primary"
-              onClick={() => router.push("/wireframes/solicitudes/seguimiento")}
-              className="h-10 px-5 rounded-xl text-xs font-semibold gap-2 shadow-xs cursor-pointer"
+              variant={activeTab === "fuentes" ? "neutral" : "ghost"}
+              size="sm"
+              onClick={() => setActiveTab("fuentes")}
+              className="text-xs font-semibold rounded-xl h-8 gap-1.5"
             >
-              <Activity className="size-4" />
-              <span>Ver seguimiento</span>
+              2. Fuentes y datos
+              <Badge appearance="outline" tone="neutral" className="text-[10px] py-0 px-1.5 h-4 border-border">
+                {project.fuentes?.length || 0}
+              </Badge>
+            </Button>
+            <Button
+              variant={activeTab === "observaciones" ? "neutral" : "ghost"}
+              size="sm"
+              onClick={() => setActiveTab("observaciones")}
+              className="text-xs font-semibold rounded-xl h-8"
+            >
+              3. Observaciones
+            </Button>
+            <Button
+              variant={activeTab === "seguimiento" ? "neutral" : "ghost"}
+              size="sm"
+              onClick={() => setActiveTab("seguimiento")}
+              className="text-xs font-semibold rounded-xl h-8 gap-1.5"
+            >
+              4. Seguimiento
+              <Clock className="size-3" />
             </Button>
           </div>
         </div>
 
-        {/* ── 3. Contenido Principal en Grid ── */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          {/* Columna Izquierda / Central (2 Columnas) */}
-          <div className="lg:col-span-2 space-y-6">
-            {/* 3.1 Información General del Proyecto y Solicitante */}
-            <Card className="border-border bg-surface shadow-xs" innerClassName="p-0 gap-0">
-              <CardHeader className="p-5 sm:p-6 pb-4 border-b border-border/60">
-                <div className="flex items-center gap-3">
-                  <div className="size-9 rounded-xl bg-muted/60 border border-border/50 flex items-center justify-center text-foreground shrink-0">
-                    <Building2 className="size-4 text-primary" />
-                  </div>
-                  <div className="text-left">
-                    <CardTitle className="text-base font-heading font-bold text-foreground">
-                      Institución Solicitante y Proyecto
-                    </CardTitle>
-                    <CardDescription className="text-xs text-muted-foreground">
-                      Datos institucionales y contextuales de la entidad requirente.
-                    </CardDescription>
-                  </div>
-                </div>
-              </CardHeader>
-              <CardContent className="p-5 sm:p-6">
-                <DetailList
-                  columns={2}
-                  items={[
-                    {
-                      label: "Institución Solicitante",
-                      value: (
-                        <span className="font-semibold text-foreground">
-                          {solicitud.solicitante.institucion}
-                        </span>
-                      ),
-                    },
-                    {
-                      label: "Unidad Responsable",
-                      value: solicitud.solicitante.unidad,
-                    },
-                    {
-                      label: "Responsable Técnico",
-                      value: (
-                        <div className="flex items-center gap-2">
-                          <User className="size-3.5 text-muted-foreground" />
-                          <span>{solicitud.solicitante.responsable}</span>
-                        </div>
-                      ),
-                    },
-                    {
-                      label: "Correo Electrónico",
-                      value: solicitud.solicitante.correo,
-                    },
-                    {
-                      label: "Proyecto Asociado",
-                      colSpan: 2,
-                      value: (
-                        <span className="font-medium text-foreground">
-                          {solicitud.solicitante.proyecto}
-                        </span>
-                      ),
-                    },
-                  ]}
-                />
-              </CardContent>
-            </Card>
+        {/* ── Contenido de las Secciones ── */}
+        <div className="px-6 sm:px-8 py-6 w-full space-y-6">
 
-            {/* 3.2 Institución Fuente, Intercambio y Datos Solicitados */}
-            <Card className="border-border bg-surface shadow-xs" innerClassName="p-0 gap-0">
-              <CardHeader className="p-5 sm:p-6 pb-4 border-b border-border/60">
-                <div className="flex items-center gap-3">
-                  <div className="size-9 rounded-xl bg-muted/60 border border-border/50 flex items-center justify-center text-foreground shrink-0">
-                    <Database className="size-4 text-primary" />
-                  </div>
-                  <div className="text-left">
-                    <CardTitle className="text-base font-heading font-bold text-foreground">
-                      Institución Fuente y Especificación de Datos
-                    </CardTitle>
-                    <CardDescription className="text-xs text-muted-foreground">
-                      Detalle técnico del origen de la información y atributos requeridos.
-                    </CardDescription>
-                  </div>
-                </div>
-              </CardHeader>
-              <CardContent className="p-5 sm:p-6 space-y-5">
-                <DetailList
-                  columns={2}
-                  items={[
-                    {
-                      label: "Institución Custodia (Fuente)",
-                      value: (
-                        <span className="font-semibold text-foreground">
-                          {solicitud.fuente.institucion}
-                        </span>
-                      ),
-                    },
-                    {
-                      label: "Servicio / Catálogo",
-                      value: solicitud.fuente.servicio,
-                    },
-                    {
-                      label: "Modalidad de Intercambio",
-                      value: solicitud.fuente.tipoIntercambio,
-                    },
-                    {
-                      label: "Frecuencia Estimada",
-                      value: solicitud.fuente.frecuencia,
-                    },
-                    {
-                      label: "Protocolo & Seguridad",
-                      colSpan: 2,
-                      value: solicitud.fuente.protocolo,
-                    },
-                  ]}
-                />
+          {/* ══════════════════════════════════════════════════════════
+              SECCIÓN 1: RESUMEN
+             ══════════════════════════════════════════════════════════ */}
+          {activeTab === "resumen" && (
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+              {/* Columna Principal: Objetivo y Justificación */}
+              <div className="lg:col-span-2 space-y-6">
+                <Card className="border-border bg-card shadow-xs">
+                  <CardHeader className="pb-3 border-b border-border/60">
+                    <CardTitle className="text-base font-bold">Objetivo del proyecto</CardTitle>
+                  </CardHeader>
+                  <CardContent className="p-5">
+                    <p className="text-sm text-foreground leading-relaxed">
+                      {project.objetivo || "Sin descripción de objetivo registrada."}
+                    </p>
+                  </CardContent>
+                </Card>
 
-                <div className="pt-4 border-t border-border/50 text-left">
-                  <span className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider block mb-2.5 text-left">
-                    Campos y Atributos Solicitados:
-                  </span>
-                  <div className="flex flex-wrap gap-2 justify-start">
-                    {solicitud.fuente.datosSolicitados.map((campo, idx) => (
-                      <Badge
-                        key={idx}
-                        tone="neutral"
-                        appearance="outline"
-                        size="md"
-                        className="font-mono text-xs normal-case bg-background/50 text-left"
-                      >
-                        {campo}
-                      </Badge>
-                    ))}
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* 3.3 Finalidad de Uso y Clasificación Legal */}
-            <Card className="border-border bg-surface shadow-xs" innerClassName="p-0 gap-0">
-              <CardHeader className="p-5 sm:p-6 pb-4 border-b border-border/60">
-                <div className="flex items-center gap-3">
-                  <div className="size-9 rounded-xl bg-muted/60 border border-border/50 flex items-center justify-center text-foreground shrink-0">
-                    <ShieldAlert className="size-4 text-primary" />
-                  </div>
-                  <div className="text-left">
-                    <CardTitle className="text-base font-heading font-bold text-foreground">
-                      Finalidad de Uso & Marco Regulatorio
-                    </CardTitle>
-                    <CardDescription className="text-xs text-muted-foreground">
-                      Sustento legal y nivel de confidencialidad de la interoperabilidad.
-                    </CardDescription>
-                  </div>
-                </div>
-              </CardHeader>
-              <CardContent className="p-5 sm:p-6">
-                <DetailList
-                  columns={1}
-                  items={[
-                    {
-                      label: "Propósito Institucional",
-                      value: (
-                        <p className="text-sm text-foreground/90 leading-relaxed font-normal text-left">
-                          {solicitud.finalidad.proposito}
-                        </p>
-                      ),
-                    },
-                    {
-                      label: "Base Legal",
-                      value: (
-                        <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed text-left">
-                          {solicitud.finalidad.baseLegal}
-                        </p>
-                      ),
-                    },
-                    {
-                      label: "Clasificación de Seguridad de la Información",
-                      value: (
-                        <Badge tone="neutral" appearance="soft" size="sm" className="font-semibold">
-                          {solicitud.finalidad.clasificacion}
+                {project.justificacion && (
+                  <Card className="border-border bg-card shadow-xs">
+                    <CardHeader className="pb-3 border-b border-border/60">
+                      <div className="flex items-center justify-between">
+                        <CardTitle className="text-base font-bold">Justificación de uso declarada</CardTitle>
+                        <Badge appearance="outline" tone="neutral" className="text-[11px] font-normal border-border">
+                          Opcional en prototipo
                         </Badge>
-                      ),
-                    },
-                  ]}
-                />
-              </CardContent>
-            </Card>
-          </div>
+                      </div>
+                    </CardHeader>
+                    <CardContent className="p-5">
+                      <p className="text-sm text-foreground leading-relaxed">
+                        {project.justificacion}
+                      </p>
+                    </CardContent>
+                  </Card>
+                )}
 
-          {/* Columna Derecha (1 Columna: Observaciones & Documentos) */}
-          <div className="space-y-6">
-            {/* 3.4 Observaciones Registradas */}
-            <Card className="border-border bg-surface shadow-xs" innerClassName="p-0 gap-0">
-              <CardHeader className="p-5 sm:p-6 pb-4 border-b border-border/60">
-                <div className="flex items-center gap-3">
-                  <div className="size-9 rounded-xl bg-muted/60 border border-border/50 flex items-center justify-center text-foreground shrink-0">
-                    <MessageSquare className="size-4 text-primary" />
-                  </div>
-                  <div className="text-left">
-                    <CardTitle className="text-base font-heading font-bold text-foreground">
-                      Observaciones
-                    </CardTitle>
-                    <CardDescription className="text-xs text-muted-foreground">
-                      Registro de notas y dictámenes de revisión.
-                    </CardDescription>
-                  </div>
-                </div>
-              </CardHeader>
-              <CardContent className="p-5 sm:p-6 space-y-4">
-                {solicitud.observaciones.map((obs) => (
-                  <div
-                    key={obs.id}
-                    className="p-3.5 rounded-xl bg-muted/30 border border-border/60 space-y-2 text-left"
-                  >
-                    <div className="flex items-center justify-between gap-2">
-                      <span className="text-xs font-bold text-foreground leading-tight">
-                        {obs.autor}
-                      </span>
-                      <span className="text-[10px] text-muted-foreground whitespace-nowrap">
-                        {obs.fecha}
-                      </span>
-                    </div>
-                    <span className="text-[10px] text-muted-foreground font-medium block leading-none">
-                      {obs.rol}
-                    </span>
-                    <p className="text-xs text-foreground/80 leading-relaxed pt-1 text-left">
-                      {obs.texto}
+                {/* Nota de distinción conceptual de estados */}
+                <div className="p-4 rounded-2xl bg-muted/30 border border-border flex items-start gap-3 text-xs text-muted-foreground">
+                  <Info className="size-4 shrink-0 mt-0.5 text-foreground" />
+                  <div>
+                    <p className="font-bold text-foreground">Distinción de estados para el taller DINARP:</p>
+                    <p className="mt-1 leading-relaxed">
+                      Se propone diferenciar el estado <strong>“Autorizado”</strong> (acuerdo y viabilidad administrativa) del estado <strong>“Servicio habilitado”</strong> (conexión técnica y credenciales operativas listas). Estos términos se validarán formalmente durante la sesión.
                     </p>
                   </div>
-                ))}
-              </CardContent>
-            </Card>
-
-            {/* 3.5 Documentos Adjuntos */}
-            <Card className="border-border bg-surface shadow-xs" innerClassName="p-0 gap-0">
-              <CardHeader className="p-5 sm:p-6 pb-4 border-b border-border/60">
-                <div className="flex items-center gap-3">
-                  <div className="size-9 rounded-xl bg-muted/60 border border-border/50 flex items-center justify-center text-foreground shrink-0">
-                    <Paperclip className="size-4 text-primary" />
-                  </div>
-                  <div className="text-left">
-                    <CardTitle className="text-base font-heading font-bold text-foreground">
-                      Documentos Adjuntos
-                    </CardTitle>
-                    <CardDescription className="text-xs text-muted-foreground">
-                      Archivos respaldatorios y anexos técnicos.
-                    </CardDescription>
-                  </div>
                 </div>
-              </CardHeader>
-              <CardContent className="p-5 space-y-3">
-                {solicitud.documentos.map((doc) => (
-                  <div
-                    key={doc.id}
-                    className="flex items-center justify-between gap-3 p-3 rounded-xl border border-border bg-background/50 hover:bg-muted/20 transition-colors"
-                  >
-                    <div className="flex items-center gap-2.5 min-w-0">
-                      <FileText className="size-4 text-muted-foreground shrink-0" />
-                      <div className="flex flex-col min-w-0">
-                        <span className="text-xs font-semibold text-foreground truncate">
-                          {doc.nombre}
-                        </span>
-                        <span className="text-[10px] text-muted-foreground">
-                          {doc.tamano} • {doc.fecha}
-                        </span>
-                      </div>
+              </div>
+
+              {/* Columna Lateral: Ficha Técnica */}
+              <div className="space-y-6">
+                <Card className="border-border bg-card shadow-xs">
+                  <CardHeader className="pb-3 border-b border-border/60">
+                    <CardTitle className="text-sm font-bold uppercase tracking-wider text-muted-foreground">
+                      Ficha del proyecto
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="p-5 space-y-4 text-xs">
+                    <div>
+                      <p className="text-muted-foreground font-medium">Entidad solicitante:</p>
+                      <p className="text-foreground font-semibold text-sm mt-0.5">{project.entidadSolicitante}</p>
                     </div>
 
-                    <Button
-                      type="button"
-                      variant="ghost"
-                      size="icon-xs"
-                      title="Descargar documento"
-                      aria-label="Descargar documento"
-                      className="text-muted-foreground hover:text-foreground shrink-0"
-                    >
-                      <Download className="size-3.5" />
-                    </Button>
+                    <div className="pt-2 border-t border-border/40">
+                      <p className="text-muted-foreground font-medium">Responsable / Contacto:</p>
+                      <p className="text-foreground font-medium mt-0.5">{project.responsable || "No especificado"}</p>
+                    </div>
+
+                    <div className="pt-2 border-t border-border/40">
+                      <p className="text-muted-foreground font-medium">Fuentes involucradas:</p>
+                      <p className="text-foreground font-bold mt-0.5">{project.fuentes?.length || 0} instituciones fuente</p>
+                    </div>
+
+                    <div className="pt-2 border-t border-border/40">
+                      <p className="text-muted-foreground font-medium">Fecha de creación:</p>
+                      <p className="text-foreground mt-0.5">{project.fechaCreacion}</p>
+                    </div>
+
+                    <div className="pt-2 border-t border-border/40">
+                      <p className="text-muted-foreground font-medium">Estado actual:</p>
+                      <div className="mt-1">{project.estado}</div>
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
+            </div>
+          )}
+
+          {/* ══════════════════════════════════════════════════════════
+              SECCIÓN 2: FUENTES Y DATOS SOLICITADOS
+             ══════════════════════════════════════════════════════════ */}
+          {activeTab === "fuentes" && (
+            <div className="space-y-6">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                <div>
+                  <h2 className="text-lg font-bold">Instituciones fuentes y campos requeridos</h2>
+                  <p className="text-xs text-muted-foreground">
+                    Detalle de los servicios y atributos de datos solicitados para este proyecto.
+                  </p>
+                </div>
+                <Badge appearance="outline" tone="neutral" className="self-start sm:self-auto text-xs border-border">
+                  {project.fuentes?.length || 0} fuentes configuradas
+                </Badge>
+              </div>
+
+              {(!project.fuentes || project.fuentes.length === 0) ? (
+                <div className="p-12 text-center border border-dashed border-border rounded-2xl bg-muted/20">
+                  <Database className="size-8 text-muted-foreground mx-auto mb-2" />
+                  <p className="text-sm font-semibold">No se han registrado fuentes en este proyecto</p>
+                </div>
+              ) : (
+                <div className="grid grid-cols-1 gap-5">
+                  {project.fuentes.map((fuente, idx) => (
+                    <Card key={fuente.id || idx} className="border-border bg-card shadow-xs overflow-hidden">
+                      <CardHeader className="bg-muted/30 pb-4 border-b border-border/60">
+                        <div className="flex items-start justify-between gap-4">
+                          <div className="flex items-center gap-3">
+                            <div className="size-8 rounded-xl bg-muted border border-border flex items-center justify-center font-bold text-xs">
+                              {idx + 1}
+                            </div>
+                            <div>
+                              <h3 className="font-bold text-sm text-foreground">{fuente.institucionNombre}</h3>
+                              <p className="text-xs text-muted-foreground mt-0.5">
+                                Servicio solicitado: <strong className="text-foreground">{fuente.servicioNombre}</strong>
+                              </p>
+                            </div>
+                          </div>
+
+                          <Badge appearance="outline" tone="neutral" className="text-[11px] font-normal border-border bg-background">
+                            {fuente.campos.length} campos
+                          </Badge>
+                        </div>
+                      </CardHeader>
+
+                      <CardContent className="p-5 space-y-3">
+                        <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+                          Campos solicitados por la entidad:
+                        </p>
+
+                        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2">
+                          {fuente.campos.map((campo, cIdx) => (
+                            <div
+                              key={cIdx}
+                              className="flex items-center gap-2 p-2.5 rounded-xl border border-border bg-muted/20 text-xs font-medium text-foreground"
+                            >
+                              <div className="size-1.5 rounded-full bg-foreground shrink-0" />
+                              <span className="truncate">{campo}</span>
+                            </div>
+                          ))}
+                        </div>
+                      </CardContent>
+                    </Card>
+                  ))}
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* ══════════════════════════════════════════════════════════
+              SECCIÓN 3: OBSERVACIONES
+             ══════════════════════════════════════════════════════════ */}
+          {activeTab === "observaciones" && (
+            <div className="space-y-6">
+              <div>
+                <h2 className="text-lg font-bold">Observaciones y acuerdos de revisión</h2>
+                <p className="text-xs text-muted-foreground">
+                  Comentarios registrados durante el análisis técnico o administrativo del proyecto.
+                </p>
+              </div>
+
+              <div className="p-4 rounded-xl bg-muted/30 border border-border text-xs text-muted-foreground">
+                <p className="font-medium text-foreground">Nota de validación para el taller:</p>
+                <p className="mt-0.5">
+                  Las reglas para emitir observaciones, tiempos máximos de respuesta y perfiles facultados para observar se definirán con el equipo de DINARP.
+                </p>
+              </div>
+
+              {project.estado === "Borrador" ? (
+                <div className="p-8 text-center border border-dashed border-border rounded-2xl bg-muted/10 text-xs text-muted-foreground">
+                  Este proyecto se encuentra en estado borrador. Las observaciones se generan una vez enviado a revisión.
+                </div>
+              ) : (
+                <div className="space-y-4">
+                  <div className="p-4 rounded-2xl border border-border bg-card shadow-xs space-y-3">
+                    <div className="flex items-center justify-between text-xs">
+                      <div className="flex items-center gap-2">
+                        <div className="size-6 rounded-full bg-muted border border-border flex items-center justify-center font-bold text-[10px]">
+                          D
+                        </div>
+                        <span className="font-bold text-foreground">Equipo de Interoperabilidad DINARP</span>
+                      </div>
+                      <span className="text-muted-foreground">{project.ultimaActualizacion}</span>
+                    </div>
+                    <p className="text-xs text-foreground bg-muted/20 p-3 rounded-xl border border-border/40">
+                      Proyecto recibido en bandeja de interoperabilidad. Se verifica la solicitud con las instituciones fuentes correspondientes.
+                    </p>
                   </div>
-                ))}
-              </CardContent>
-            </Card>
-          </div>
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* ══════════════════════════════════════════════════════════
+              SECCIÓN 4: SEGUIMIENTO
+             ══════════════════════════════════════════════════════════ */}
+          {activeTab === "seguimiento" && (
+            <div className="space-y-6">
+              <div>
+                <h2 className="text-lg font-bold">Historial de movimientos y seguimiento</h2>
+                <p className="text-xs text-muted-foreground">
+                  Línea de tiempo de los hitos registrados en la gestión del proyecto.
+                </p>
+              </div>
+
+              <div className="relative pl-6 sm:pl-8 space-y-6 before:absolute before:left-2 sm:before:left-3 before:top-2 before:bottom-2 before:w-[2px] before:bg-border">
+                {/* Hito 1: Creación */}
+                <div className="relative">
+                  <div className="absolute -left-6 sm:-left-8 top-0.5 size-4 sm:size-6 rounded-full bg-foreground text-background flex items-center justify-center text-[10px] font-bold">
+                    ✓
+                  </div>
+                  <div className="p-4 rounded-2xl border border-border bg-card shadow-xs space-y-2">
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between text-xs gap-1">
+                      <span className="font-bold text-sm text-foreground">
+                        {project.estado === "Borrador" ? "Borrador inicial registrado" : "Proyecto enviado para revisión"}
+                      </span>
+                      <span className="text-muted-foreground font-mono">{project.fechaCreacion}</span>
+                    </div>
+                    <p className="text-xs text-muted-foreground">
+                      Responsable: <strong className="text-foreground">{project.responsable}</strong> ({project.entidadSolicitante})
+                    </p>
+                    <p className="text-xs text-foreground bg-muted/20 p-2.5 rounded-xl border border-border/40">
+                      {project.estado === "Borrador"
+                        ? "Se creó el borrador con la especificación de fuentes y campos requeridos."
+                        : "Se remitió formalmente la solicitud de interoperabilidad a DINARP para validación interinstitucional."}
+                    </p>
+                  </div>
+                </div>
+
+                {/* Hito 2: Si está en revisión */}
+                {project.estado !== "Borrador" && (
+                  <div className="relative">
+                    <div className="absolute -left-6 sm:-left-8 top-0.5 size-4 sm:size-6 rounded-full bg-muted border-2 border-foreground flex items-center justify-center" />
+                    <div className="p-4 rounded-2xl border border-border bg-muted/20 shadow-xs space-y-2">
+                      <div className="flex flex-col sm:flex-row sm:items-center justify-between text-xs gap-1">
+                        <span className="font-bold text-sm text-foreground">En evaluación por DINARP y Fuentes</span>
+                        <span className="text-muted-foreground italic">En curso</span>
+                      </div>
+                      <p className="text-xs text-muted-foreground">
+                        Coordinación técnica con: {project.fuentes?.map((f) => f.institucionNombre.split("(")[0].trim()).join(", ")}
+                      </p>
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
+
         </div>
-      </main>
+      </div>
     </WireframeDashboardLayout>
   );
 }
 
+export default function WireframeSolicitudDetallePage() {
+  return (
+    <Suspense fallback={<div className="p-8 text-center text-sm">Cargando proyecto...</div>}>
+      <DetalleProyectoContent />
+    </Suspense>
+  );
+}

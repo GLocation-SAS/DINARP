@@ -1,42 +1,50 @@
 "use client";
 
-import React, { useState, useMemo } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { cn } from "@/lib/utils";
 import {
-  FileText,
-  Clock,
-  CheckCircle2,
-  XCircle,
-  FilePlus2,
+  Plus,
+  Search,
+  Filter,
+  Info,
+  Layers,
   ChevronDown,
   Eye,
   Pencil,
-  Download,
-  ArrowDown,
-  Filter,
+  Trash2,
+  ArrowRight,
   RotateCcw,
+  Building2,
+  FileText,
+  Clock,
+  History,
+  MessageSquare,
+  MoreVertical,
+  AlertTriangle,
 } from "lucide-react";
 import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import {
-  Card,
-  CardContent,
-  CardDecorativeIcon,
-} from "@/components/ui/card";
-import { Search } from "@/components/ui/search";
-import {
   DropdownMenu,
   DropdownMenuTrigger,
   DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
   DropdownMenuRadioGroup,
   DropdownMenuRadioItem,
   DropdownMenuLabel,
-  DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogFooter,
+} from "@/components/ui/dialog";
 import {
   Table,
   TableHeader,
@@ -50,119 +58,182 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import {
-  Pagination,
-  PaginationContent,
-  PaginationItem,
-  PaginationLink,
-  PaginationPrevious,
-  PaginationNext,
-} from "@/components/ui/pagination";
 import { WireframeDashboardLayout } from "../components/wireframe-dashboard-layout";
-
-interface Solicitud {
-  codigo: string;
-  solicitud: string;
-  institucionSolicitante: string;
-  institucionFuente: string;
-  estado: "Borrador" | "En revisión" | "Aprobada" | "Observada";
-  prioridad: "Alta" | "Media" | "Baja";
-  ultimaActualizacion: string;
-}
-
-const INITIAL_SOLICITUDES: Solicitud[] = [
-  {
-    codigo: "SOL-2025-0024",
-    solicitud: "Validación de identidad ciudadana",
-    institucionSolicitante: "Ministerio del Interior",
-    institucionFuente: "Registro Civil",
-    estado: "En revisión",
-    prioridad: "Alta",
-    ultimaActualizacion: "12 abr 2025 10:24",
-  },
-  {
-    codigo: "SOL-2025-0023",
-    solicitud: "Consulta de antecedentes penales",
-    institucionSolicitante: "Consejo de la Judicatura",
-    institucionFuente: "Policía Nacional",
-    estado: "Aprobada",
-    prioridad: "Media",
-    ultimaActualizacion: "10 abr 2025 16:12",
-  },
-  {
-    codigo: "SOL-2025-0022",
-    solicitud: "Verificación de RUC",
-    institucionSolicitante: "Servicio de Rentas Internas",
-    institucionFuente: "SRI",
-    estado: "Observada",
-    prioridad: "Alta",
-    ultimaActualizacion: "08 abr 2025 14:30",
-  },
-  {
-    codigo: "SOL-2025-0021",
-    solicitud: "Consulta de información vehicular",
-    institucionSolicitante: "Agencia Nacional de Tránsito",
-    institucionFuente: "ANT",
-    estado: "Borrador",
-    prioridad: "Baja",
-    ultimaActualizacion: "07 abr 2025 11:05",
-  },
-  {
-    codigo: "SOL-2025-0020",
-    solicitud: "Validación de títulos profesionales",
-    institucionSolicitante: "Senescyt",
-    institucionFuente: "DINARP",
-    estado: "Aprobada",
-    prioridad: "Media",
-    ultimaActualizacion: "04 abr 2025 09:18",
-  },
-  {
-    codigo: "SOL-2025-0019",
-    solicitud: "Consulta de catastro",
-    institucionSolicitante: "Municipio de Quito",
-    institucionFuente: "MIDUVI",
-    estado: "En revisión",
-    prioridad: "Media",
-    ultimaActualizacion: "02 abr 2025 17:40",
-  },
-  {
-    codigo: "SOL-2025-0018",
-    solicitud: "Verificación de permisos de construcción",
-    institucionSolicitante: "Municipio de Guayaquil",
-    institucionFuente: "MIDUVI",
-    estado: "Observada",
-    prioridad: "Baja",
-    ultimaActualizacion: "28 mar 2025 15:22",
-  },
-];
+import {
+  getStoredProjects,
+  saveStoredProject,
+  deleteStoredProject,
+  clearProjects,
+  type ProyectoInteroperabilidad,
+} from "./proyectos-store";
 
 export default function WireframeSolicitudesPage() {
   const router = useRouter();
+  const [projects, setProjects] = useState<ProyectoInteroperabilidad[]>([]);
+  const [isLoaded, setIsLoaded] = useState(false);
+
+  // Filtros reactivos
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedEstado, setSelectedEstado] = useState("Todos");
-  const [selectedTipo, setSelectedTipo] = useState("Todos");
-  const [selectedFuente, setSelectedFuente] = useState("Todos");
-  const [currentPage, setCurrentPage] = useState(1);
+  const [selectedEntidad, setSelectedEntidad] = useState("Todas");
 
-  // Filtrado reactivo mock
-  const filteredSolicitudes = useMemo(() => {
-    return INITIAL_SOLICITUDES.filter((item) => {
+  // Estado para modal de confirmación de eliminación de borrador
+  const [projectToDelete, setProjectToDelete] = useState<ProyectoInteroperabilidad | null>(null);
+
+  // Cargar proyectos desde el almacenamiento local
+  useEffect(() => {
+    const loaded = getStoredProjects();
+    setProjects(loaded);
+    setIsLoaded(true);
+  }, []);
+
+  const handleConfirmDelete = () => {
+    if (!projectToDelete) return;
+    deleteStoredProject(projectToDelete.id);
+    setProjects((prev) =>
+      prev.filter((p) => p.id !== projectToDelete.id && p.codigo !== projectToDelete.codigo)
+    );
+    toast.success(`Borrador "${projectToDelete.codigo}" eliminado`);
+    setProjectToDelete(null);
+  };
+
+  // Lista de entidades únicas para el filtro
+  const uniqueEntities = useMemo(() => {
+    const set = new Set<string>();
+    projects.forEach((p) => {
+      if (p.entidadSolicitante) set.add(p.entidadSolicitante);
+    });
+    return Array.from(set);
+  }, [projects]);
+
+  // Filtrado de proyectos
+  const filteredProjects = useMemo(() => {
+    return projects.filter((item) => {
+      const q = searchQuery.toLowerCase().trim();
       const matchesSearch =
-        searchQuery === "" ||
-        item.solicitud.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        item.codigo.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        item.institucionSolicitante.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        item.institucionFuente.toLowerCase().includes(searchQuery.toLowerCase());
+        !q ||
+        item.codigo.toLowerCase().includes(q) ||
+        item.nombre.toLowerCase().includes(q) ||
+        item.entidadSolicitante.toLowerCase().includes(q);
 
       const matchesEstado =
         selectedEstado === "Todos" || item.estado === selectedEstado;
 
-      const matchesFuente =
-        selectedFuente === "Todos" || item.institucionFuente === selectedFuente;
+      const matchesEntidad =
+        selectedEntidad === "Todas" || item.entidadSolicitante === selectedEntidad;
 
-      return matchesSearch && matchesEstado && matchesFuente;
+      return matchesSearch && matchesEstado && matchesEntidad;
     });
-  }, [searchQuery, selectedEstado, selectedFuente]);
+  }, [projects, searchQuery, selectedEstado, selectedEntidad]);
+
+  // Helper para renderizar badge de estado
+  const renderEstadoBadge = (estado: ProyectoInteroperabilidad["estado"]) => {
+    switch (estado) {
+      case "Borrador":
+        return (
+          <Badge appearance="outline" tone="neutral" className="border-border bg-muted/50 text-muted-foreground font-medium text-xs">
+            Borrador
+          </Badge>
+        );
+      case "En revisión":
+        return (
+          <Badge appearance="outline" tone="neutral" className="border-foreground/30 bg-muted/80 text-foreground font-semibold text-xs">
+            En revisión
+          </Badge>
+        );
+      case "Observada":
+        return (
+          <Badge appearance="outline" tone="neutral" className="border-border bg-muted/30 text-foreground font-medium text-xs">
+            Observada
+          </Badge>
+        );
+      case "Autorizada":
+        return (
+          <Badge appearance="outline" tone="neutral" className="border-foreground/40 bg-foreground/10 text-foreground font-bold text-xs">
+            Autorizada
+          </Badge>
+        );
+      case "Servicio habilitado":
+        return (
+          <Badge appearance="solid" tone="neutral" className="font-bold text-xs bg-foreground text-background">
+            Servicio habilitado
+          </Badge>
+        );
+      default:
+        return (
+          <Badge appearance="outline" tone="neutral" className="text-xs">
+            {estado}
+          </Badge>
+        );
+    }
+  };
+
+  // Helper para resumir fuentes solicitadas (máximo 2 visibles + tooltip con el resto)
+  const renderFuentesResumen = (fuentes: ProyectoInteroperabilidad["fuentes"]) => {
+    if (!fuentes || fuentes.length === 0) {
+      return <span className="text-xs text-muted-foreground italic">Sin fuentes</span>;
+    }
+
+    const nombres = fuentes.map((f) => {
+      if (f.institucionId === "digercic") return "Registro Civil";
+      if (f.institucionId === "sri") return "SRI";
+      if (f.institucionId === "ant") return "ANT";
+      if (f.institucionId === "iess") return "IESS";
+      return f.institucionNombre.split("(")[0].trim();
+    });
+
+    const visibles = nombres.slice(0, 2);
+    const extras = nombres.slice(2);
+
+    return (
+      <div className="flex flex-wrap items-center gap-1.5">
+        {visibles.map((s, idx) => (
+          <Badge
+            key={idx}
+            appearance="outline"
+            tone="neutral"
+            className="border-border bg-background text-[11px] font-medium py-0 px-2"
+          >
+            {s}
+          </Badge>
+        ))}
+
+        {extras.length > 0 && (
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Badge
+                appearance="outline"
+                tone="neutral"
+                className="border-border bg-muted/60 text-[11px] font-semibold py-0 px-1.5 cursor-help hover:bg-muted"
+              >
+                +{extras.length} más
+              </Badge>
+            </TooltipTrigger>
+            <TooltipContent className="text-xs max-w-xs space-y-1">
+              <p className="font-semibold text-muted-foreground mb-1">Fuentes adicionales ({extras.length}):</p>
+              {extras.map((extra, i) => (
+                <p key={i}>• {extra}</p>
+              ))}
+            </TooltipContent>
+          </Tooltip>
+        )}
+      </div>
+    );
+  };
+
+  // Helper para fecha breve
+  const formatFechaBreve = (fechaStr: string) => {
+    if (!fechaStr) return "-";
+    if (fechaStr.toLowerCase().includes("hoy")) return "Hoy";
+    return fechaStr.split(",")[0].trim();
+  };
+
+  // Acción de reset para el taller (opcional)
+  const handleResetForDemo = () => {
+    clearProjects();
+    setProjects([]);
+    toast.info("Demostración reiniciada a cero proyectos");
+  };
 
   return (
     <WireframeDashboardLayout activeMenu="solicitudes">
@@ -170,396 +241,541 @@ export default function WireframeSolicitudesPage() {
         {/* Background subtle effect */}
         <div className="absolute top-0 right-0 w-96 h-96 bg-radial from-muted/20 to-transparent pointer-events-none -z-10 blur-3xl opacity-60" />
 
-        {/* ── 1. Header Title, Description & Action ── */}
+        {/* ── 1. Encabezado Principal del Módulo ── */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div className="space-y-1">
             <h1 className="font-heading font-extrabold text-3xl sm:text-4xl tracking-tight text-foreground">
-              Solicitudes
+              Proyectos de interoperabilidad
             </h1>
             <p className="text-xs sm:text-sm text-muted-foreground max-w-3xl leading-relaxed font-normal">
-              Gestiona tus solicitudes de interoperabilidad, revisa su estado y crea nuevas solicitudes.
+              Crea proyectos para solicitar información de otras instituciones y consulta el avance de cada trámite.
             </p>
           </div>
 
-          {/* Botón Nueva Solicitud (CTA alineado a la derecha) */}
-          <Button
-            type="button"
-            variant="primary"
-            onClick={() => router.push("/wireframes/solicitudes/nueva")}
-            className="h-11 px-5 rounded-xl font-semibold flex items-center gap-2 shrink-0 self-start sm:self-auto shadow-xs"
-          >
-            <FilePlus2 className="size-4 stroke-[2]" />
-            <span>Nueva solicitud</span>
-          </Button>
-        </div>
-
-        {/* ── 2. Zona Superior: Búsqueda UI Kit & Selectores DropdownMenu ── */}
-        <div className="flex flex-col lg:flex-row items-stretch lg:items-center gap-3">
-          {/* Input de Búsqueda UI Kit */}
-          <div className="flex-1 min-w-[240px]">
-            <Search
-              placeholder="Buscar por nombre, código o institución..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              onClear={() => setSearchQuery("")}
-              className="bg-surface rounded-xl border-border/80"
-            />
-          </div>
-
-          {/* Botón Filtros Desplegable */}
-          <div className="flex items-center gap-2 w-full sm:w-auto justify-end">
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button
-                  variant="outline"
-                  className="h-11 px-4 text-xs font-semibold gap-2 border-border/80 bg-surface w-full sm:w-auto cursor-pointer"
-                >
-                  <Filter className="size-3.5 text-muted-foreground" />
-                  <span>Filtros</span>
-                  {(selectedEstado !== "Todos" || selectedTipo !== "Todos" || selectedFuente !== "Todos") && (
-                    <span className="size-2 rounded-full bg-foreground" />
-                  )}
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-56">
-                <DropdownMenuLabel className="text-xs font-bold text-foreground">
-                  Filtrar por Estado
-                </DropdownMenuLabel>
-                <DropdownMenuSeparator />
-                <DropdownMenuRadioGroup value={selectedEstado} onValueChange={setSelectedEstado}>
-                  <DropdownMenuRadioItem value="Todos">Todos los estados</DropdownMenuRadioItem>
-                  <DropdownMenuRadioItem value="Borrador">Borrador</DropdownMenuRadioItem>
-                  <DropdownMenuRadioItem value="En revisión">En revisión</DropdownMenuRadioItem>
-                  <DropdownMenuRadioItem value="Aprobada">Aprobada</DropdownMenuRadioItem>
-                  <DropdownMenuRadioItem value="Observada">Observada</DropdownMenuRadioItem>
-                </DropdownMenuRadioGroup>
-
-                <DropdownMenuSeparator />
-                <DropdownMenuLabel className="text-xs font-bold text-foreground">
-                  Tipo de Solicitud
-                </DropdownMenuLabel>
-                <DropdownMenuRadioGroup value={selectedTipo} onValueChange={setSelectedTipo}>
-                  <DropdownMenuRadioItem value="Todos">Todos los tipos</DropdownMenuRadioItem>
-                  <DropdownMenuRadioItem value="Validación">Validación</DropdownMenuRadioItem>
-                  <DropdownMenuRadioItem value="Consulta">Consulta</DropdownMenuRadioItem>
-                  <DropdownMenuRadioItem value="Verificación">Verificación</DropdownMenuRadioItem>
-                </DropdownMenuRadioGroup>
-
-                <DropdownMenuSeparator />
-                <DropdownMenuLabel className="text-xs font-bold text-foreground">
-                  Institución Fuente
-                </DropdownMenuLabel>
-                <DropdownMenuRadioGroup value={selectedFuente} onValueChange={setSelectedFuente}>
-                  <DropdownMenuRadioItem value="Todos">Todas las fuentes</DropdownMenuRadioItem>
-                  <DropdownMenuRadioItem value="Registro Civil">Registro Civil</DropdownMenuRadioItem>
-                  <DropdownMenuRadioItem value="Policía Nacional">Policía Nacional</DropdownMenuRadioItem>
-                  <DropdownMenuRadioItem value="SRI">SRI</DropdownMenuRadioItem>
-                  <DropdownMenuRadioItem value="ANT">ANT</DropdownMenuRadioItem>
-                  <DropdownMenuRadioItem value="DINARP">DINARP</DropdownMenuRadioItem>
-                  <DropdownMenuRadioItem value="MIDUVI">MIDUVI</DropdownMenuRadioItem>
-                </DropdownMenuRadioGroup>
-              </DropdownMenuContent>
-            </DropdownMenu>
-
-            {(searchQuery || selectedEstado !== "Todos" || selectedTipo !== "Todos" || selectedFuente !== "Todos") && (
+          <div className="flex items-center gap-2">
+            {projects.length > 0 && (
               <Button
-                type="button"
                 variant="outline"
-                onClick={() => {
-                  setSearchQuery("");
-                  setSelectedEstado("Todos");
-                  setSelectedTipo("Todos");
-                  setSelectedFuente("Todos");
-                }}
-                className="h-11 px-3 text-xs font-medium text-muted-foreground hover:text-foreground cursor-pointer"
-                title="Restablecer filtros"
+                size="sm"
+                onClick={handleResetForDemo}
+                title="Reiniciar a cero proyectos para taller"
+                className="h-11 px-3 text-xs text-muted-foreground hover:text-foreground gap-1.5 border-border/80 bg-surface"
               >
-                <RotateCcw className="size-3.5 mr-1" />
-                <span>Limpiar</span>
+                <RotateCcw className="size-3.5" />
+                <span>Reiniciar demo</span>
               </Button>
             )}
+
+            <Button
+              asChild
+              className="h-11 px-5 text-xs font-semibold gap-2 shadow-xs shrink-0 bg-foreground text-background hover:bg-foreground/90"
+            >
+              <Link href="/wireframes/solicitudes/nueva" className="flex items-center gap-2 text-background">
+                <Plus className="size-4 text-background" />
+                <span className="text-background font-semibold">Crear proyecto</span>
+              </Link>
+            </Button>
           </div>
         </div>
 
-        {/* ── Cards Resumen de Solicitudes con Featured Cards alineadas a la izquierda ── */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          {/* 1. Borradores */}
-          <Card
-            variant="featured"
-            className="bg-primary/10 hover:bg-primary/15 border border-primary/20 transition-colors"
-            innerClassName="p-5 items-start text-left gap-1"
-          >
-            <span className="font-heading font-extrabold text-3xl sm:text-4xl text-foreground tracking-tight block">
-              4
-            </span>
-            <span className="text-xs font-semibold text-primary block">
-              Borradores
-            </span>
-            <span className="text-[11px] text-muted-foreground font-normal">
-              Solicitudes en edición
-            </span>
-            <CardDecorativeIcon>
-              <FileText className="size-28 text-primary" />
-            </CardDecorativeIcon>
-          </Card>
+        {/* ── 2. Contenido Principal ── */}
+        {!isLoaded ? (
+          <div className="py-20 text-center text-sm text-muted-foreground">
+            Cargando módulo de proyectos...
+          </div>
+        ) : projects.length === 0 ? (
+          /* ══════════════════════════════════════════════════════════
+             ESTADO VACÍO: PRIMERA VISITA (0 PROYECTOS)
+             ══════════════════════════════════════════════════════════ */
+          <div className="py-16 sm:py-24 flex flex-col items-center justify-center text-center max-w-xl mx-auto px-4">
+            <div className="size-16 rounded-3xl bg-muted/60 border border-border flex items-center justify-center text-foreground mb-6 shadow-xs">
+              <Layers className="size-8 stroke-[1.5]" />
+            </div>
 
-          {/* 2. En revisión */}
-          <Card
-            variant="featured"
-            className="bg-foreground/10 hover:bg-foreground/15 border border-border transition-colors"
-            innerClassName="p-5 items-start text-left gap-1"
-          >
-            <span className="font-heading font-extrabold text-3xl sm:text-4xl text-foreground tracking-tight block">
-              5
-            </span>
-            <span className="text-xs font-semibold text-foreground block">
-              En revisión
-            </span>
-            <span className="text-[11px] text-muted-foreground font-normal">
-              Pendientes de dictamen
-            </span>
-            <CardDecorativeIcon>
-              <Clock className="size-28 text-foreground" />
-            </CardDecorativeIcon>
-          </Card>
+            <h2 className="text-xl sm:text-2xl font-bold tracking-tight text-foreground">
+              Aquí verás tus proyectos
+            </h2>
 
-          {/* 3. Aprobadas */}
-          <Card
-            variant="featured"
-            className="bg-foreground/10 hover:bg-foreground/15 border border-border transition-colors"
-            innerClassName="p-5 items-start text-left gap-1"
-          >
-            <span className="font-heading font-extrabold text-3xl sm:text-4xl text-foreground tracking-tight block">
-              12
-            </span>
-            <span className="text-xs font-semibold text-foreground block">
-              Aprobadas
-            </span>
-            <span className="text-[11px] text-muted-foreground font-normal">
-              Listas para interoperar
-            </span>
-            <CardDecorativeIcon>
-              <CheckCircle2 className="size-28 text-foreground" />
-            </CardDecorativeIcon>
-          </Card>
+            <p className="text-sm text-muted-foreground mt-2 mb-8 leading-relaxed">
+              Crea un proyecto para indicar qué información necesitas, de qué instituciones proviene y consultar el avance de tu solicitud.
+            </p>
 
-          {/* 4. Observadas */}
-          <Card
-            variant="featured"
-            className="bg-foreground/10 hover:bg-foreground/15 border border-border transition-colors"
-            innerClassName="p-5 items-start text-left gap-1"
-          >
-            <span className="font-heading font-extrabold text-3xl sm:text-4xl text-foreground tracking-tight block">
-              3
-            </span>
-            <span className="text-xs font-semibold text-foreground block">
-              Observadas
-            </span>
-            <span className="text-[11px] text-muted-foreground font-normal">
-              Requieren subsanación
-            </span>
-            <CardDecorativeIcon>
-              <XCircle className="size-28 text-foreground" />
-            </CardDecorativeIcon>
-          </Card>
-        </div>
+            <Button
+              asChild
+              size="lg"
+              className="gap-2 px-6 font-semibold shadow-sm h-12 bg-foreground text-background hover:bg-foreground/90"
+            >
+              <Link href="/wireframes/solicitudes/nueva" className="flex items-center gap-2 text-background">
+                <Plus className="size-4 text-background" />
+                <span className="text-background font-semibold">Crear mi primer proyecto</span>
+              </Link>
+            </Button>
 
-        {/* ── Tabla de Solicitudes con Table UI Component ── */}
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead>
-                CÓDIGO
-              </TableHead>
-              <TableHead>
-                SOLICITUD
-              </TableHead>
-              <TableHead>
-                INSTITUCIÓN SOLICITANTE
-              </TableHead>
-              <TableHead>
-                INSTITUCIÓN FUENTE
-              </TableHead>
-              <TableHead>
-                ESTADO
-              </TableHead>
-              <TableHead>
-                PRIORIDAD
-              </TableHead>
-              <TableHead>
-                <span className="inline-flex items-center gap-1">
-                  ÚLTIMA ACTUALIZACIÓN
-                  <ArrowDown className="size-3" />
-                </span>
-              </TableHead>
-              <TableHead className="text-right">
-                ACCIONES
-              </TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {filteredSolicitudes.length === 0 ? (
-              <TableRow>
-                <TableCell colSpan={8} className="text-center py-10 text-muted-foreground text-sm">
-                  No se encontraron solicitudes con los filtros aplicados.
-                </TableCell>
-              </TableRow>
-            ) : (
-              filteredSolicitudes.map((item) => (
-                <TableRow key={item.codigo}>
-                  {/* Código */}
-                  <TableCell className="font-mono font-bold text-foreground">
-                    {item.codigo}
-                  </TableCell>
+            <p className="text-[11px] text-muted-foreground mt-6 bg-muted/30 py-1.5 px-3 rounded-full border border-border/60">
+              Propuesta de flujo para validación en el taller DINARP
+            </p>
+          </div>
+        ) : (
+          /* ══════════════════════════════════════════════════════════
+             VISTA CON PROYECTOS: BUSCADOR, FILTROS Y TABLA COMPACTA (5 COLUMNAS)
+             ══════════════════════════════════════════════════════════ */
+          <div className="space-y-6">
+            {/* Barra de Filtros Compacta */}
+            <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
+              {/* Buscador */}
+              <div className="w-full sm:max-w-md">
+                <div className="relative">
+                  <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 size-4 text-muted-foreground pointer-events-none" />
+                  <input
+                    type="text"
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    placeholder="Buscar por código, proyecto o entidad…"
+                    className="w-full h-11 pl-10 pr-4 rounded-xl border border-border/80 bg-surface text-xs text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+                  />
+                </div>
+              </div>
 
-                  {/* Solicitud */}
-                  <TableCell className="font-semibold text-foreground">
-                    {item.solicitud}
-                  </TableCell>
+              {/* Filtros por Estado y Entidad */}
+              <div className="flex flex-wrap sm:flex-nowrap items-center gap-2 shrink-0">
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button
+                      variant="outline"
+                      className="h-11 px-3.5 flex items-center justify-between gap-2 bg-surface border-border/80 text-xs min-w-[130px]"
+                    >
+                      <span className="text-muted-foreground font-normal">Estado:</span>
+                      <span className="font-semibold text-foreground truncate">{selectedEstado}</span>
+                      <ChevronDown className="size-3.5 text-muted-foreground shrink-0 opacity-70" />
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end" className="w-48 rounded-xl">
+                    <DropdownMenuLabel className="text-xs">Filtrar por estado</DropdownMenuLabel>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuRadioGroup value={selectedEstado} onValueChange={setSelectedEstado}>
+                      <DropdownMenuRadioItem value="Todos">Todos</DropdownMenuRadioItem>
+                      <DropdownMenuRadioItem value="Borrador">Borrador</DropdownMenuRadioItem>
+                      <DropdownMenuRadioItem value="En revisión">En revisión</DropdownMenuRadioItem>
+                      <DropdownMenuRadioItem value="Observada">Observada</DropdownMenuRadioItem>
+                      <DropdownMenuRadioItem value="Autorizada">Autorizada</DropdownMenuRadioItem>
+                      <DropdownMenuRadioItem value="Servicio habilitado">Servicio habilitado</DropdownMenuRadioItem>
+                    </DropdownMenuRadioGroup>
+                  </DropdownMenuContent>
+                </DropdownMenu>
 
-                  {/* Institución Solicitante */}
-                  <TableCell className="text-muted-foreground font-medium">
-                    {item.institucionSolicitante}
-                  </TableCell>
+                {uniqueEntities.length > 1 && (
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button
+                        variant="outline"
+                        className="h-11 px-3.5 flex items-center justify-between gap-2 bg-surface border-border/80 text-xs min-w-[140px]"
+                      >
+                        <span className="text-muted-foreground font-normal">Entidad:</span>
+                        <span className="font-semibold text-foreground truncate">{selectedEntidad === "Todas" ? "Todas" : "Filtrada"}</span>
+                        <ChevronDown className="size-3.5 text-muted-foreground shrink-0 opacity-70" />
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end" className="w-56 rounded-xl">
+                      <DropdownMenuLabel className="text-xs">Filtrar por entidad</DropdownMenuLabel>
+                      <DropdownMenuSeparator />
+                      <DropdownMenuRadioGroup value={selectedEntidad} onValueChange={setSelectedEntidad}>
+                        <DropdownMenuRadioItem value="Todas">Todas</DropdownMenuRadioItem>
+                        {uniqueEntities.map((ent) => (
+                          <DropdownMenuRadioItem key={ent} value={ent} className="text-xs truncate">
+                            {ent}
+                          </DropdownMenuRadioItem>
+                        ))}
+                      </DropdownMenuRadioGroup>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                )}
+              </div>
+            </div>
 
-                  {/* Institución Fuente */}
-                  <TableCell className="text-muted-foreground font-medium">
-                    {item.institucionFuente}
-                  </TableCell>
+            {/* ── Tabla Compacta (5 Columnas) ── */}
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  {/* 1. Proyecto (Nombre + Código en 2 líneas) */}
+                  <TableHead className="min-w-[280px]">
+                    PROYECTO
+                  </TableHead>
 
-                  {/* Estado con punto e indicador limpio */}
-                  <TableCell>
-                    <span className="inline-flex items-center gap-1.5 text-xs font-semibold text-foreground">
-                      <span className={cn(
-                        "size-1.5 rounded-full shrink-0",
-                        item.estado === "Aprobada" && "bg-foreground",
-                        item.estado === "En revisión" && "bg-foreground",
-                        item.estado === "Observada" && "bg-foreground",
-                        item.estado === "Borrador" && "bg-muted-foreground"
-                      )} />
-                      {item.estado}
-                    </span>
-                  </TableCell>
-
-                  {/* Prioridad con punto */}
-                  <TableCell>
-                    <span className="inline-flex items-center gap-1.5 text-xs text-muted-foreground font-medium">
-                      <span className="size-1.5 rounded-full bg-muted-foreground/60 shrink-0" />
-                      {item.prioridad}
-                    </span>
-                  </TableCell>
-
-                  {/* Última Actualización */}
-                  <TableCell className="text-muted-foreground font-medium">
-                    {item.ultimaActualizacion}
-                  </TableCell>
-
-                  {/* Acciones con Tooltip UI */}
-                  <TableCell className="text-right">
-                    <div className="inline-flex items-center justify-end gap-1">
+                  {/* 2. Fuentes solicitadas (con icono info) */}
+                  <TableHead className="min-w-[220px]">
+                    <div className="flex items-center gap-1.5">
+                      <span>FUENTES SOLICITADAS</span>
                       <Tooltip>
                         <TooltipTrigger asChild>
-                          <Button
+                          <button
                             type="button"
-                            variant="ghost"
-                            size="icon-sm"
-                            aria-label="Ver detalles"
-                            onClick={() => router.push("/wireframes/solicitudes/detalle")}
-                            className="size-8 text-muted-foreground hover:text-foreground hover:bg-muted/50"
+                            className="inline-flex text-inherit opacity-70 hover:opacity-100 focus:outline-none"
+                            aria-label="Información sobre Fuentes solicitadas"
                           >
-                            <Eye className="size-4" />
-                          </Button>
+                            <Info className="size-3.5" />
+                          </button>
                         </TooltipTrigger>
-                        <TooltipContent>Ver detalles</TooltipContent>
-                      </Tooltip>
-
-                      <Tooltip>
-                        <TooltipTrigger asChild>
-                          <Button
-                            type="button"
-                            variant="ghost"
-                            size="icon-sm"
-                            aria-label="Editar solicitud"
-                            className="size-8 text-muted-foreground hover:text-foreground hover:bg-muted/50"
-                          >
-                            <Pencil className="size-4" />
-                          </Button>
-                        </TooltipTrigger>
-                        <TooltipContent>Editar solicitud</TooltipContent>
-                      </Tooltip>
-
-                      <Tooltip>
-                        <TooltipTrigger asChild>
-                          <Button
-                            type="button"
-                            variant="ghost"
-                            size="icon-sm"
-                            aria-label="Descargar solicitud"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              toast.success(`Descargando solicitud ${item.codigo}...`);
-                            }}
-                            className="size-8 text-muted-foreground hover:text-foreground hover:bg-muted/50"
-                          >
-                            <Download className="size-4" />
-                          </Button>
-                        </TooltipTrigger>
-                        <TooltipContent>Descargar solicitud</TooltipContent>
+                        <TooltipContent className="max-w-xs text-xs">
+                          Instituciones que proveen los datos solicitados en este proyecto.
+                        </TooltipContent>
                       </Tooltip>
                     </div>
-                  </TableCell>
+                  </TableHead>
+
+                  {/* 3. Estado (con icono info) */}
+                  <TableHead className="w-[160px]">
+                    <div className="flex items-center gap-1.5">
+                      <span>ESTADO</span>
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <button
+                            type="button"
+                            className="inline-flex text-inherit opacity-70 hover:opacity-100 focus:outline-none"
+                            aria-label="Información sobre Estado"
+                          >
+                            <Info className="size-3.5" />
+                          </button>
+                        </TooltipTrigger>
+                        <TooltipContent className="max-w-xs text-xs">
+                          Etapa actual de la gestión del proyecto.
+                        </TooltipContent>
+                      </Tooltip>
+                    </div>
+                  </TableHead>
+
+                  {/* 4. Actualización */}
+                  <TableHead className="w-[140px]">
+                    ACTUALIZACIÓN
+                  </TableHead>
+
+                  {/* 5. Acciones */}
+                  <TableHead className="w-[200px] text-right pr-4">
+                    ACCIONES
+                  </TableHead>
                 </TableRow>
-              ))
-            )}
-          </TableBody>
-        </Table>
+              </TableHeader>
 
-        {/* ── Footer: Resultados & Paginación con Pagination UI Component ── */}
-        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-4">
-          <p className="text-xs text-muted-foreground font-medium">
-            Mostrando 1 a 7 de 24 resultados
-          </p>
+              <TableBody>
+                {filteredProjects.length === 0 ? (
+                  <TableRow>
+                    <TableCell colSpan={5} className="h-32 text-center text-xs text-muted-foreground">
+                      No se encontraron proyectos con los filtros seleccionados.
+                    </TableCell>
+                  </TableRow>
+                ) : (
+                  filteredProjects.map((item) => {
+                    return (
+                      <TableRow
+                        key={item.id}
+                        tabIndex={0}
+                        role="button"
+                        onClick={() => router.push(`/wireframes/solicitudes/detalle?id=${item.id}`)}
+                        onKeyDown={(e) => {
+                          if (e.key === "Enter" || e.key === " ") {
+                            e.preventDefault();
+                            router.push(`/wireframes/solicitudes/detalle?id=${item.id}`);
+                          }
+                        }}
+                        className="cursor-pointer group"
+                      >
+                        {/* 1. Proyecto: Nombre en línea 1, Código debajo */}
+                        <TableCell>
+                          <p className="font-bold text-foreground text-sm line-clamp-1 group-hover:underline">
+                            {item.nombre}
+                          </p>
+                          <p className="font-mono text-xs text-muted-foreground mt-0.5">
+                            {item.codigo}
+                          </p>
+                        </TableCell>
 
-          <Pagination className="mx-0 w-auto justify-end">
-            <PaginationContent className="gap-1.5">
-              <PaginationItem>
-                <PaginationPrevious
-                  href="#"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    if (currentPage > 1) setCurrentPage((p) => p - 1);
-                  }}
-                />
-              </PaginationItem>
+                        {/* 2. Fuentes solicitadas: hasta 2 + "+N más" tooltip */}
+                        <TableCell>
+                          {renderFuentesResumen(item.fuentes)}
+                        </TableCell>
 
-              {[1, 2, 3, 4].map((page) => (
-                <PaginationItem key={page}>
-                  <PaginationLink
-                    href="#"
-                    isActive={currentPage === page}
-                    onClick={(e) => {
-                      e.preventDefault();
-                      setCurrentPage(page);
-                    }}
-                  >
-                    {page}
-                  </PaginationLink>
-                </PaginationItem>
-              ))}
+                        {/* 3. Estado */}
+                        <TableCell>
+                          {renderEstadoBadge(item.estado)}
+                        </TableCell>
 
-              <PaginationItem>
-                <PaginationNext
-                  href="#"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    if (currentPage < 4) setCurrentPage((p) => p + 1);
-                  }}
-                />
-              </PaginationItem>
-            </PaginationContent>
-          </Pagination>
-        </div>
+                        {/* 4. Actualización: fecha breve */}
+                        <TableCell className="text-muted-foreground font-medium text-xs whitespace-nowrap">
+                          {formatFechaBreve(item.ultimaActualizacion)}
+                        </TableCell>
+
+                        {/* 5. Acciones contextuales por estado con tooltips accesibles */}
+                        <TableCell className="text-right pr-4" onClick={(e) => e.stopPropagation()}>
+                          {/* ── 1. Borrador: Continuar edición (lápiz) + Menú con Ver detalle y Eliminar ── */}
+                          {item.estado === "Borrador" && (
+                            <div className="flex items-center justify-end gap-1.5">
+                              <Tooltip>
+                                <TooltipTrigger asChild>
+                                  <Button
+                                    size="sm"
+                                    variant="outline"
+                                    asChild
+                                    className="h-8 px-2.5 text-xs font-semibold border-border/80 gap-1.5 hover:bg-muted"
+                                    aria-label="Continuar edición"
+                                  >
+                                    <Link href={`/wireframes/solicitudes/nueva?id=${item.id}`}>
+                                      <Pencil className="size-3.5" />
+                                      <span className="hidden xl:inline">Continuar edición</span>
+                                    </Link>
+                                  </Button>
+                                </TooltipTrigger>
+                                <TooltipContent className="text-xs">Continuar edición</TooltipContent>
+                              </Tooltip>
+
+                              <DropdownMenu>
+                                <Tooltip>
+                                  <TooltipTrigger asChild>
+                                    <DropdownMenuTrigger asChild>
+                                      <Button
+                                        size="icon"
+                                        variant="ghost"
+                                        className="size-8 p-0 text-muted-foreground hover:text-foreground border border-transparent hover:border-border"
+                                        aria-label="Más acciones"
+                                      >
+                                        <MoreVertical className="size-4" />
+                                      </Button>
+                                    </DropdownMenuTrigger>
+                                  </TooltipTrigger>
+                                  <TooltipContent className="text-xs">Más acciones</TooltipContent>
+                                </Tooltip>
+                                <DropdownMenuContent align="end" className="w-44 rounded-xl">
+                                  <DropdownMenuItem asChild>
+                                    <Link
+                                      href={`/wireframes/solicitudes/detalle?id=${item.id}`}
+                                      className="flex items-center gap-2 cursor-pointer text-xs"
+                                    >
+                                      <Eye className="size-3.5" />
+                                      <span>Ver detalle</span>
+                                    </Link>
+                                  </DropdownMenuItem>
+                                  <DropdownMenuSeparator />
+                                  <DropdownMenuItem
+                                    onClick={() => setProjectToDelete(item)}
+                                    className="flex items-center gap-2 cursor-pointer text-xs text-destructive focus:text-destructive"
+                                  >
+                                    <Trash2 className="size-3.5" />
+                                    <span>Eliminar borrador</span>
+                                  </DropdownMenuItem>
+                                </DropdownMenuContent>
+                              </DropdownMenu>
+                            </div>
+                          )}
+
+                          {/* ── 2. En revisión: Ver seguimiento (historial) + Ver detalle ── */}
+                          {item.estado === "En revisión" && (
+                            <div className="flex items-center justify-end gap-1.5">
+                              <Tooltip>
+                                <TooltipTrigger asChild>
+                                  <Button
+                                    size="sm"
+                                    variant="outline"
+                                    asChild
+                                    className="h-8 px-2.5 text-xs font-semibold border-border/80 gap-1.5 hover:bg-muted"
+                                    aria-label="Ver seguimiento"
+                                  >
+                                    <Link href={`/wireframes/solicitudes/detalle?id=${item.id}&tab=seguimiento`}>
+                                      <History className="size-3.5" />
+                                      <span className="hidden xl:inline">Ver seguimiento</span>
+                                    </Link>
+                                  </Button>
+                                </TooltipTrigger>
+                                <TooltipContent className="text-xs">Ver seguimiento</TooltipContent>
+                              </Tooltip>
+
+                              <Tooltip>
+                                <TooltipTrigger asChild>
+                                  <Button
+                                    size="icon"
+                                    variant="ghost"
+                                    asChild
+                                    className="size-8 p-0 text-muted-foreground hover:text-foreground border border-transparent hover:border-border"
+                                    aria-label="Ver detalle"
+                                  >
+                                    <Link href={`/wireframes/solicitudes/detalle?id=${item.id}`}>
+                                      <Eye className="size-4" />
+                                    </Link>
+                                  </Button>
+                                </TooltipTrigger>
+                                <TooltipContent className="text-xs">Ver detalle</TooltipContent>
+                              </Tooltip>
+                            </div>
+                          )}
+
+                          {/* ── 3. Observada / Con observaciones: Responder observaciones + Más acciones ── */}
+                          {item.estado === "Observada" && (
+                            <div className="flex items-center justify-end gap-1.5">
+                              <Tooltip>
+                                <TooltipTrigger asChild>
+                                  <Button
+                                    size="sm"
+                                    variant="outline"
+                                    asChild
+                                    className="h-8 px-2.5 text-xs font-semibold border-border/80 gap-1.5 hover:bg-muted"
+                                    aria-label="Responder observaciones"
+                                  >
+                                    <Link href={`/wireframes/solicitudes/detalle?id=${item.id}&tab=observaciones`}>
+                                      <MessageSquare className="size-3.5" />
+                                      <span className="hidden xl:inline">Responder observaciones</span>
+                                    </Link>
+                                  </Button>
+                                </TooltipTrigger>
+                                <TooltipContent className="text-xs">Responder observaciones</TooltipContent>
+                              </Tooltip>
+
+                              <DropdownMenu>
+                                <Tooltip>
+                                  <TooltipTrigger asChild>
+                                    <DropdownMenuTrigger asChild>
+                                      <Button
+                                        size="icon"
+                                        variant="ghost"
+                                        className="size-8 p-0 text-muted-foreground hover:text-foreground border border-transparent hover:border-border"
+                                        aria-label="Más acciones"
+                                      >
+                                        <MoreVertical className="size-4" />
+                                      </Button>
+                                    </DropdownMenuTrigger>
+                                  </TooltipTrigger>
+                                  <TooltipContent className="text-xs">Más acciones</TooltipContent>
+                                </Tooltip>
+                                <DropdownMenuContent align="end" className="w-44 rounded-xl">
+                                  <DropdownMenuItem asChild>
+                                    <Link
+                                      href={`/wireframes/solicitudes/detalle?id=${item.id}`}
+                                      className="flex items-center gap-2 cursor-pointer text-xs"
+                                    >
+                                      <Eye className="size-3.5" />
+                                      <span>Ver detalle</span>
+                                    </Link>
+                                  </DropdownMenuItem>
+                                  <DropdownMenuItem asChild>
+                                    <Link
+                                      href={`/wireframes/solicitudes/detalle?id=${item.id}&tab=seguimiento`}
+                                      className="flex items-center gap-2 cursor-pointer text-xs"
+                                    >
+                                      <History className="size-3.5" />
+                                      <span>Ver seguimiento</span>
+                                    </Link>
+                                  </DropdownMenuItem>
+                                </DropdownMenuContent>
+                              </DropdownMenu>
+                            </div>
+                          )}
+
+                          {/* ── 4. Autorizada o Servicio habilitado: Ver detalle + Ver seguimiento ── */}
+                          {item.estado !== "Borrador" && item.estado !== "En revisión" && item.estado !== "Observada" && (
+                            <div className="flex items-center justify-end gap-1.5">
+                              <Tooltip>
+                                <TooltipTrigger asChild>
+                                  <Button
+                                    size="sm"
+                                    variant="outline"
+                                    asChild
+                                    className="h-8 px-2.5 text-xs font-semibold border-border/80 gap-1.5 hover:bg-muted"
+                                    aria-label="Ver detalle"
+                                  >
+                                    <Link href={`/wireframes/solicitudes/detalle?id=${item.id}`}>
+                                      <Eye className="size-3.5" />
+                                      <span className="hidden xl:inline">Ver detalle</span>
+                                    </Link>
+                                  </Button>
+                                </TooltipTrigger>
+                                <TooltipContent className="text-xs">Ver detalle</TooltipContent>
+                              </Tooltip>
+
+                              <Tooltip>
+                                <TooltipTrigger asChild>
+                                  <Button
+                                    size="icon"
+                                    variant="ghost"
+                                    asChild
+                                    className="size-8 p-0 text-muted-foreground hover:text-foreground border border-transparent hover:border-border"
+                                    aria-label="Ver seguimiento"
+                                  >
+                                    <Link href={`/wireframes/solicitudes/detalle?id=${item.id}&tab=seguimiento`}>
+                                      <History className="size-4" />
+                                    </Link>
+                                  </Button>
+                                </TooltipTrigger>
+                                <TooltipContent className="text-xs">Ver seguimiento</TooltipContent>
+                              </Tooltip>
+                            </div>
+                          )}
+                        </TableCell>
+                      </TableRow>
+                    );
+                  })
+                )}
+              </TableBody>
+            </Table>
+
+            {/* Pie de Tabla Informativo */}
+            <div className="flex flex-col sm:flex-row items-center justify-between text-xs text-muted-foreground pt-1 px-1">
+              <p>
+                Mostrando {filteredProjects.length} de {projects.length} {projects.length === 1 ? "proyecto" : "proyectos"}
+              </p>
+              <p className="text-[11px] italic mt-1 sm:mt-0">
+                Haz clic en cualquier fila para abrir el detalle completo del proyecto.
+              </p>
+            </div>
+          </div>
+        )}
       </main>
+
+      {/* ══════════════════════════════════════════════════════════
+          MODAL DE CONFIRMACIÓN: ELIMINAR BORRADOR
+         ══════════════════════════════════════════════════════════ */}
+      <Dialog open={!!projectToDelete} onOpenChange={(open) => !open && setProjectToDelete(null)}>
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <div className="size-11 rounded-2xl bg-muted border border-border flex items-center justify-center text-foreground mb-2 shadow-xs">
+              <Trash2 className="size-5" />
+            </div>
+            <DialogTitle className="text-base font-bold text-foreground">
+              ¿Eliminar este borrador?
+            </DialogTitle>
+            <DialogDescription className="text-xs text-muted-foreground leading-relaxed">
+              Estás a punto de eliminar el borrador del proyecto{" "}
+              <strong className="text-foreground">{projectToDelete?.nombre}</strong> (
+              <span className="font-mono">{projectToDelete?.codigo}</span>).
+              Esta acción retirará la fila de tu listado y no se puede deshacer.
+            </DialogDescription>
+          </DialogHeader>
+
+          <div className="p-3 rounded-xl bg-muted/40 border border-border/70 text-[11px] text-muted-foreground flex items-start gap-2">
+            <Info className="size-4 shrink-0 text-foreground mt-0.5" />
+            <span>
+              <strong>Propuesta para validación con DINARP:</strong> La eliminación de borradores y las acciones posteriores al envío son opciones de diseño propuestas para el taller.
+            </span>
+          </div>
+
+          <DialogFooter className="flex justify-between items-center w-full pt-3 border-t border-border gap-2">
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              onClick={() => setProjectToDelete(null)}
+              className="text-xs"
+            >
+              Cancelar
+            </Button>
+            <Button
+              type="button"
+              variant="danger"
+              size="sm"
+              onClick={handleConfirmDelete}
+              className="text-xs font-semibold gap-1.5 ml-auto"
+            >
+              <Trash2 className="size-3.5" />
+              <span>Eliminar borrador</span>
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </WireframeDashboardLayout>
   );
 }

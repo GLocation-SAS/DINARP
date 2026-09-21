@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { WireframeThemeProvider } from "./components/wireframe-theme-provider";
 
 export const metadata: Metadata = {
   title: "Wireframes | DINARP",
@@ -10,12 +11,5 @@ interface WireframesLayoutProps {
 }
 
 export default function WireframesLayout({ children }: WireframesLayoutProps) {
-  return (
-    <div
-      data-theme="wireframe"
-      className="min-h-screen bg-background text-foreground font-sans antialiased"
-    >
-      {children}
-    </div>
-  );
+  return <WireframeThemeProvider>{children}</WireframeThemeProvider>;
 }

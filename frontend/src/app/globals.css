@@ -2065,8 +2065,14 @@ input:-webkit-autofill:active {
 .animate-gradient-border-flow {
   background-size: 300% 300%;
   animation: gradient-border-flow 3s ease infinite;
-}/* WIREFRAME MODE OVERRIDES */
-[data-theme="wireframe"] {
+}
+
+/* WIREFRAME MODE OVERRIDES */
+[data-theme="wireframe"],
+[data-theme="wireframe"] *,
+:root[data-theme="wireframe"],
+html[data-theme="wireframe"],
+body[data-theme="wireframe"] {
   --primitive-primary-50: #F8F9FA;
   --primitive-primary-100: #F1F3F5;
   --primitive-primary-200: #E9ECEF;
@@ -2089,27 +2095,103 @@ input:-webkit-autofill:active {
   --primitive-secondary-800: #18181B;
   --primitive-secondary-900: #121416;
 
+  --primitive-info-50: #F8F9FA;
+  --primitive-info-100: #F1F3F5;
+  --primitive-info-200: #E9ECEF;
+  --primitive-info-300: #DEE2E6;
+  --primitive-info-400: #CED4DA;
+  --primitive-info-500: #495057;
+  --primitive-info-600: #343A40;
+  --primitive-info-700: #212529;
+  --primitive-info-800: #18181B;
+  --primitive-info-900: #121416;
+
+  --primitive-success-50: #F8F9FA;
+  --primitive-success-100: #F1F3F5;
+  --primitive-success-200: #E9ECEF;
+  --primitive-success-300: #DEE2E6;
+  --primitive-success-400: #CED4DA;
+  --primitive-success-500: #495057;
+  --primitive-success-600: #343A40;
+  --primitive-success-700: #212529;
+  --primitive-success-800: #18181B;
+  --primitive-success-900: #121416;
+
+  --primitive-warning-50: #F8F9FA;
+  --primitive-warning-100: #F1F3F5;
+  --primitive-warning-200: #E9ECEF;
+  --primitive-warning-300: #DEE2E6;
+  --primitive-warning-400: #CED4DA;
+  --primitive-warning-500: #495057;
+  --primitive-warning-600: #343A40;
+  --primitive-warning-700: #212529;
+  --primitive-warning-800: #18181B;
+  --primitive-warning-900: #121416;
+
+  --primitive-danger-50: #F8F9FA;
+  --primitive-danger-100: #F1F3F5;
+  --primitive-danger-200: #E9ECEF;
+  --primitive-danger-300: #DEE2E6;
+  --primitive-danger-400: #CED4DA;
+  --primitive-danger-500: #495057;
+  --primitive-danger-600: #343A40;
+  --primitive-danger-700: #212529;
+  --primitive-danger-800: #18181B;
+  --primitive-neutral-50: #ffffff;
+  --primitive-neutral-100: #f8f9fa;
+  --primitive-neutral-200: #e9ecef;
+  --primitive-neutral-300: #dee2e6;
+  --primitive-neutral-400: #ced4da;
+  --primitive-neutral-500: #adb5bd;
+  --primitive-neutral-600: #6c757d;
+  --primitive-neutral-700: #495057;
+  --primitive-neutral-800: #343a40;
+  --primitive-neutral-900: #212529;
+  --primitive-neutral-950: #121416;
+
   --primary: var(--primitive-neutral-900);
-  --primary-foreground: var(--primitive-neutral-50);
+  --primary-foreground: #ffffff;
   --secondary: var(--primitive-neutral-800);
-  --secondary-foreground: var(--primitive-neutral-50);
+  --secondary-foreground: #ffffff;
+
+  --info: var(--primitive-neutral-800);
+  --info-foreground: #ffffff;
+  --success: var(--primitive-neutral-800);
+  --success-foreground: #ffffff;
+  --warning: var(--primitive-neutral-800);
+  --warning-foreground: #ffffff;
+  --danger: var(--primitive-neutral-800);
+  --danger-foreground: #ffffff;
 
   --accent: var(--primitive-neutral-200);
   --accent-foreground: var(--primitive-neutral-900);
-  
+
   --ring: var(--primitive-neutral-900);
-  
+
   --sidebar-primary: var(--primitive-neutral-900);
   --sidebar-accent: var(--primitive-neutral-100);
   --sidebar-accent-foreground: var(--primitive-neutral-900);
   --sidebar-ring: var(--primitive-neutral-900);
 }
 
-.dark [data-theme="wireframe"] {
+.dark [data-theme="wireframe"],
+[data-theme="wireframe"].dark,
+html.dark[data-theme="wireframe"],
+body.dark[data-theme="wireframe"],
+[data-theme="dark"][data-theme="wireframe"] {
   --primary: var(--primitive-neutral-50);
   --primary-foreground: var(--primitive-neutral-950);
   --secondary: var(--primitive-neutral-200);
   --secondary-foreground: var(--primitive-neutral-900);
+
+  --info: var(--primitive-neutral-200);
+  --info-foreground: var(--primitive-neutral-900);
+  --success: var(--primitive-neutral-200);
+  --success-foreground: var(--primitive-neutral-900);
+  --warning: var(--primitive-neutral-200);
+  --warning-foreground: var(--primitive-neutral-900);
+  --danger: var(--primitive-neutral-200);
+  --danger-foreground: var(--primitive-neutral-900);
 
   --accent: var(--primitive-neutral-800);
   --accent-foreground: var(--primitive-neutral-50);

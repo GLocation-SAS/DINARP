@@ -48,7 +48,7 @@ const navItems = [
   },
   {
     id: "solicitudes",
-    label: "Proyectos y solicitudes",
+    label: "Proyectos",
     icon: FileText,
     href: "/wireframes/solicitudes",
     aliases: ["solicitudes", "proyectos"],
@@ -253,7 +253,7 @@ export function WireframeDashboardLayout({
                 )}
               >
                 <Icon className={cn("size-4 shrink-0", isActive ? "text-foreground" : "text-muted-foreground")} />
-                <span className="truncate">{item.label}</span>
+                <span className="leading-snug break-words">{item.label}</span>
               </Link>
             );
           })}
