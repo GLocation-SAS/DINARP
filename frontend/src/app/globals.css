@@ -710,13 +710,13 @@
     Ejemplo: bg-warning text-warning-foreground
   */
   --success: var(--primitive-success-400);
-  --success-foreground: var(--primitive-neutral-950);
+  --success-foreground: var(--primitive-neutral-50);
 
   --info: var(--primitive-info-400);
   --info-foreground: var(--primitive-neutral-50);
 
   --warning: var(--primitive-warning-400);
-  --warning-foreground: var(--primitive-neutral-950);
+  --warning-foreground: var(--primitive-neutral-50);
 
   --danger: var(--primitive-danger-400);
   --danger-foreground: var(--primitive-neutral-50);
@@ -884,7 +884,7 @@
 
   /* Main Actions (Primary and Secondary inherit from UI BRAND TOKENS) */
   --primary: var(--primitive-primary-400);
-  --primary-foreground: var(--primitive-neutral-950);
+  --primary-foreground: var(--primitive-neutral-50);
   --secondary-foreground: var(--primitive-neutral-50);
 
   /* Supporting States */
@@ -896,13 +896,13 @@
 
   /* Feedback */
   --success: var(--primitive-success-400);
-  --success-foreground: var(--primitive-neutral-950);
+  --success-foreground: var(--primitive-neutral-50);
 
   --info: var(--primitive-info-400);
-  --info-foreground: var(--primitive-neutral-950);
+  --info-foreground: var(--primitive-neutral-50);
 
   --warning: var(--primitive-warning-400);
-  --warning-foreground: var(--primitive-neutral-950);
+  --warning-foreground: var(--primitive-neutral-50);
 
   --danger: var(--primitive-danger-400);
   --danger-foreground: var(--primitive-neutral-50);
