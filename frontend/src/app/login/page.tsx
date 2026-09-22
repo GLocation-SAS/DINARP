@@ -1,287 +1,391 @@
 "use client";
 
-import React from 'react';
-import { useRouter } from 'next/navigation';
+import React, { useState } from "react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-import { Button } from '@/components/ui/button';
-import { Card, CardContent } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
-import { Input } from '@/components/ui/input';
-import { Checkbox } from '@/components/ui/checkbox';
-import { Link } from '@/components/ui/link';
 import {
-  Palette,
-  Component,
-  LayoutTemplate,
-  Accessibility,
-  ArrowLeft,
-  Lock,
-  ArrowRight,
-  Info,
+  Building2,
+  FileText,
+  ShieldCheck,
+  CheckCircle2,
   Mail,
-  Paintbrush,
-  Layers,
+  Lock,
   Eye,
-  EyeOff
-} from 'lucide-react';
-import { ThemeToggle } from '@/components/theme-toggle';
-import { CapacityCard } from '@/components/ui/capacity-card';
-import { InputGroup, InputGroupInput, InputGroupButton } from '@/components/ui/input-group';
-import { getAssetPath } from '@/lib/utils';
+  EyeOff,
+  ArrowRight,
+  AlertCircle,
+} from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Label } from "@/components/ui/label";
+import {
+  InputGroup,
+  InputGroupInput,
+  InputGroupButton,
+} from "@/components/ui/input-group";
+import { ThemeToggle } from "@/components/theme-toggle";
 
-export default function DesignSystemLoginPage() {
+export default function LoginPage() {
   const router = useRouter();
-  const [email, setEmail] = React.useState('');
-  const [password, setPassword] = React.useState('');
-  const [emailState, setEmailState] = React.useState<'default' | 'success' | 'error'>('default');
-  const [hasErrored, setHasErrored] = React.useState(false);
-  const [showPassword, setShowPassword] = React.useState(false);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+  const [emailState, setEmailState] = useState<"default" | "success" | "error">("default");
+  const [hasInteracted, setHasInteracted] = useState(false);
 
-  const isFormValid = email.trim() !== '' && password.trim() !== '';
+  const isEmailValid = (val: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val);
 
-  React.useEffect(() => {
-    if (!email) {
-      setEmailState('default');
-      setHasErrored(false);
+  const handleEmailChange = (val: string) => {
+    setEmail(val);
+    if (!val.trim()) {
+      setEmailState("default");
       return;
     }
 
-    const isValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-
-    if (isValid) {
-      setEmailState(hasErrored ? 'success' : 'default');
-    } else {
-      if (hasErrored) {
-        setEmailState('error');
-      } else {
-        const timer = setTimeout(() => {
-          setEmailState('error');
-          setHasErrored(true);
-        }, 1500);
-        return () => clearTimeout(timer);
-      }
-    }
-  }, [email, hasErrored]);
-
-  const handleBlur = () => {
-    if (!email) return;
-    const isValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-    if (!isValid) {
-      setEmailState('error');
-      setHasErrored(true);
+    if (isEmailValid(val)) {
+      setEmailState("success");
+    } else if (hasInteracted) {
+      setEmailState("error");
     }
   };
+
+  const handleEmailBlur = () => {
+    setHasInteracted(true);
+    if (!email.trim()) {
+      setEmailState("default");
+      return;
+    }
+
+    if (isEmailValid(email)) {
+      setEmailState("success");
+    } else {
+      setEmailState("error");
+    }
+  };
+
+  const isFormValid = email.trim() !== "" && isEmailValid(email) && password.trim() !== "";
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
-    router.push('/uikit');
+    if (!isEmailValid(email)) {
+      setEmailState("error");
+      setHasInteracted(true);
+      return;
+    }
+    router.push("/uikit");
+  };
+
+  const handleGoogleLogin = () => {
+    toast.info("Función en evaluación de diseño UX/UI", {
+      className: "!w-auto !max-w-none whitespace-nowrap",
+    });
   };
 
   return (
-    <div className="min-h-screen w-full flex items-center justify-center p-0 sm:p-8 lg:p-12 relative overflow-hidden bg-background">
-
-      {/* Background Layer */}
-      <div className="absolute inset-0 z-0 bg-background/20 backdrop-blur-sm sm:backdrop-blur-none sm:bg-transparent" />
-
-      {/* Main Container */}
-      <div className="w-full max-w-[1400px] h-[100dvh] sm:h-[85vh] sm:max-h-[840px] sm:min-h-[700px] bg-background/70 backdrop-blur-xl sm:rounded-[2rem] sm:shadow-2xl sm:border border-border/60 flex overflow-hidden z-10 relative">
-
-        <div className="hidden lg:flex w-[50%] relative flex-col border-r border-border p-10 xl:p-14 bg-surface/30 justify-center items-center">
-
-          <div className="w-full max-w-xl flex flex-col">
-            <div className="flex flex-col mb-10 xl:mb-14">
-              {/* Header Text */}
-              <div>
-                <Badge appearance="outline" tone="primary" className="mb-6 bg-background border-primary/20 text-primary gap-1.5 px-3 py-1 font-semibold tracking-wide uppercase text-xs shadow-sm">
-                  <Paintbrush className="size-4" />
-                  Recursos de Diseño
-                </Badge>
-                <h1 className="font-heading font-bold text-4xl xl:text-5xl text-foreground leading-[1.1] tracking-tight mb-5">
-                  Design System <br /><span className="text-primary">DINARP</span>
-                </h1>
-                <p className="text-muted-foreground text-base xl:text-lg leading-relaxed">
-                  Sistema de diseño institucional para construir interfaces consistentes, accesibles y reutilizables.
-                </p>
-              </div>
-            </div>
-
-            {/* Cards of benefits */}
-            <div className="grid grid-cols-2 gap-3">
-              <CapacityCard
-                title="Componentes"
-                description="Bloques de construcción listos para usar en tus proyectos."
-                icon={Component}
-                color="primary"
-              />
-              <CapacityCard
-                title="Fundamentos y estilos"
-                description="Colores, tipografías, sombras y espaciados estandarizados."
-                icon={Palette}
-                color="success"
-              />
-              <CapacityCard
-                title="Patrones consistentes"
-                description="Composiciones y flujos visuales para una mejor UX."
-                icon={LayoutTemplate}
-                color="info"
-              />
-              <CapacityCard
-                title="Accesibilidad"
-                description="Interfaces diseñadas para que todos puedan interactuar con ellas."
-                icon={Accessibility}
-                color="warning"
-              />
-            </div>
-          </div>
+    <div className="min-h-screen flex flex-col bg-background text-foreground relative">
+      {/* ── Cabecera Superior Institucional (Único logo DINARP) ── */}
+      <header className="w-full border-b border-border/50 bg-background/95 backdrop-blur-md px-6 sm:px-10 lg:px-14 py-3.5 flex items-center justify-between z-30">
+        <div className="flex items-center gap-3.5">
+          <span className="font-heading font-black text-2xl tracking-tight text-[#061d4a] dark:text-white">
+            DINARP
+          </span>
+          <div className="h-5 w-px bg-border/80" />
+          <span className="text-xs sm:text-sm font-medium text-muted-foreground leading-tight">
+            Dirección Nacional de Registros Públicos
+          </span>
         </div>
 
-        {/* ─── LADO DERECHO: Acceso Formulario ─── */}
-        <div className="w-full lg:w-[50%] flex flex-col sm:bg-transparent relative overflow-hidden">
+        <div className="flex items-center gap-2">
+          <ThemeToggle />
+        </div>
+      </header>
 
-          <div className="flex-1 bg-background sm:rounded-none sm:mt-0 relative z-20 px-6 py-6 sm:p-8 xl:p-14 flex flex-col justify-between overflow-hidden">
+      {/* ── Contenido Principal (Dos Columnas: 1920x1080 / Responsive) ── */}
+      <main className="flex-1 flex items-center justify-center p-4 sm:p-6 lg:p-10 xl:p-12">
+        <div className="w-full max-w-[1500px] grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 xl:gap-12 items-center">
 
-            {/* Top Bar */}
-            <div className="w-full flex items-center justify-end mb-8">
-              <div className="flex items-center gap-2 z-50">
-                <ThemeToggle />
-              </div>
+          {/* ══════════════════════════════════════════════════
+              COLUMNA IZQUIERDA: Panel Azul Institucional
+             ══════════════════════════════════════════════════ */}
+          <section className="lg:col-span-7 xl:col-span-7 2xl:col-span-8 relative flex flex-col justify-between overflow-hidden rounded-3xl bg-gradient-to-br from-[#061d4a] via-[#092a6b] to-[#041638] p-8 sm:p-12 lg:p-14 text-white shadow-xl min-h-[560px] lg:min-h-[640px]">
+            {/* Fondo con resplandor ambiental */}
+            <div className="absolute -top-24 -left-24 w-96 h-96 bg-cyan-500/15 rounded-full blur-3xl pointer-events-none" />
+            <div className="absolute -bottom-24 -right-24 w-96 h-96 bg-blue-600/20 rounded-full blur-3xl pointer-events-none" />
+
+            {/* Encabezado y Descripción */}
+            <div className="relative z-10 flex flex-col items-start text-left max-w-2xl">
+              <div className="w-9 h-1 bg-cyan-400 rounded-full mb-6" />
+
+              <h1 className="font-heading text-3xl sm:text-4xl lg:text-[44px] font-extrabold tracking-tight text-white leading-[1.15] mb-4">
+                La información pública, <br className="hidden sm:inline" />
+                conectada con propósito.
+              </h1>
+
+              <p className="text-sm sm:text-base lg:text-lg text-blue-100/85 font-normal leading-relaxed">
+                Solicita datos de otras instituciones, gestiona autorizaciones y sigue cada intercambio desde un solo lugar.
+              </p>
             </div>
 
-            {/* Login Card */}
-            <div className="w-full max-w-[480px] mx-auto flex flex-col items-center justify-start flex-1 pt-6 sm:pt-4 pb-4">
-              <Card
-                className="capacity-card w-full shadow-sm border-border/80 hover:border-transparent px-3 py-6 sm:px-6 sm:py-5 flex flex-col items-center text-center relative transition-all duration-500 sm:-mt-8"
-                style={{
-                  '--card-accent': 'var(--color-primary-500)',
-                  '--card-glow': 'rgba(var(--primitive-primary-500), 0.18)'
-                } as React.CSSProperties}
-              >
+            {/* Secuencia de 4 Tarjetas Conectadas y Centradas */}
+            <div className="relative z-10 my-8 sm:my-10">
+              <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-3.5 relative">
 
-                <div className="mb-4 flex flex-col items-center justify-center">
-                  <div className="flex items-center justify-center mb-4">
-                    <img src={getAssetPath("/logotipo.png")} alt="Logo DINARP" className="h-14 w-auto object-contain" />
+                {/* Conector horizontal para pantallas grandes */}
+                <div className="hidden xl:block absolute top-[40px] left-[12%] right-[12%] h-[2px] bg-blue-400/25 z-0" />
+
+                {/* Tarjeta 1: Entidad solicitante */}
+                <div className="relative z-10 rounded-2xl border border-blue-400/20 bg-blue-950/40 backdrop-blur-md p-5 flex flex-col items-center text-center gap-3 transition-transform hover:-translate-y-0.5">
+                  <div className="size-11 rounded-2xl bg-blue-500/20 border border-blue-400/30 flex items-center justify-center text-cyan-300 shrink-0">
+                    <Building2 className="size-5" />
                   </div>
-                  <h3 className="font-heading font-bold text-xl text-primary dark:text-foreground text-center">Acceso al Design System</h3>
+                  <div className="flex flex-col items-center w-full">
+                    <p className="text-sm font-bold text-white text-center leading-tight">
+                      Entidad solicitante
+                    </p>
+                    <div className="flex flex-col items-center gap-1.5 mt-3">
+                      <div className="h-1.5 w-16 bg-blue-300/30 rounded-full" />
+                      <div className="h-1.5 w-10 bg-blue-300/15 rounded-full" />
+                    </div>
+                  </div>
                 </div>
 
-                <form onSubmit={handleLogin} className="flex flex-col gap-4 relative z-10 w-full">
-                  <div className="flex flex-col gap-2 text-left">
-                    <label className="text-sm font-medium text-foreground">Correo electrónico</label>
-                    <InputGroup state={emailState} leftIcon={<Mail className="size-4" />}>
-                      <InputGroupInput
-                        type="email"
-                        placeholder="ejemplo@gmail.com"
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                        onBlur={handleBlur}
-                        required
-                      />
-                    </InputGroup>
-                    {emailState === 'error' && (
-                      <p className="text-xs text-danger font-medium mt-1 animate-in fade-in slide-in-from-top-1">
-                        Ingresa un correo electrónico válido.
-                      </p>
-                    )}
+                {/* Tarjeta 2: Datos requeridos: Registro Civil */}
+                <div className="relative z-10 rounded-2xl border border-blue-400/20 bg-blue-950/40 backdrop-blur-md p-5 flex flex-col items-center text-center gap-3 transition-transform hover:-translate-y-0.5">
+                  <div className="size-11 rounded-2xl bg-blue-500/20 border border-blue-400/30 flex items-center justify-center text-cyan-300 shrink-0">
+                    <FileText className="size-5" />
                   </div>
-
-                  <div className="flex flex-col gap-2 text-left">
-                    <label className="text-sm font-medium text-foreground">Contraseña</label>
-                    <InputGroup leftIcon={<Lock className="size-4" />}>
-                      <InputGroupInput
-                        type={showPassword ? "text" : "password"}
-                        placeholder="••••••••"
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                        required
-                      />
-                      <InputGroupButton type="button" size="icon-sm" className="h-8 w-8 shrink-0" onClick={() => setShowPassword(!showPassword)}>
-                        {showPassword ? <EyeOff className="size-4" /> : <Eye className="size-4" />}
-                      </InputGroupButton>
-                    </InputGroup>
+                  <div className="flex flex-col items-center w-full">
+                    <p className="text-sm font-bold text-white text-center leading-tight">
+                      Datos requeridos
+                    </p>
+                    <p className="text-xs text-blue-200/80 font-medium text-center mt-0.5">
+                      Registro Civil
+                    </p>
+                    <div className="flex flex-col items-center gap-1.5 mt-2.5">
+                      <div className="h-1.5 w-16 bg-blue-300/30 rounded-full" />
+                      <div className="h-1.5 w-10 bg-blue-300/15 rounded-full" />
+                    </div>
                   </div>
+                </div>
 
-                  <div className="flex flex-col gap-3 mt-3 w-full">
-                    <TooltipProvider>
-                      <Tooltip>
-                        <TooltipTrigger asChild>
-                          <span className="w-full block" tabIndex={!isFormValid ? 0 : -1}>
-                            <Button
-                              variant="primary"
-                              type="submit"
-                              className="w-full h-12 flex items-center justify-center gap-2 text-sm font-semibold"
-                              disabled={!isFormValid}
-                            >
-                              Ingresar al Sistema
-                            </Button>
-                          </span>
-                        </TooltipTrigger>
-                        {!isFormValid && (
-                          <TooltipContent variant="info" side="top" sideOffset={10}>
-                            Faltan campos por completar
-                          </TooltipContent>
-                        )}
-                      </Tooltip>
-                    </TooltipProvider>
-
-                    <Button
-                      type="button"
-                      variant="outline"
-                      size="lg"
-                      onClick={() => toast.info('Función no disponible en esta demo')}
-                      className="w-full h-12 flex items-center justify-center gap-2 text-sm font-semibold text-foreground border-border/80 hover:bg-muted/30"
-                    >
-                      <svg className="size-5" viewBox="0 0 24 24">
-                        <path
-                          d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
-                          fill="#4285F4"
-                        />
-                        <path
-                          d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"
-                          fill="#34A853"
-                        />
-                        <path
-                          d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"
-                          fill="#FBBC05"
-                        />
-                        <path
-                          d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
-                          fill="#EA4335"
-                        />
-                      </svg>
-                      Iniciar con Google
-                    </Button>
+                {/* Tarjeta 3: Revisión DINARP */}
+                <div className="relative z-10 rounded-2xl border border-blue-400/20 bg-blue-950/40 backdrop-blur-md p-5 flex flex-col items-center text-center gap-3 transition-transform hover:-translate-y-0.5">
+                  <div className="size-11 rounded-2xl bg-blue-500/20 border border-blue-400/30 flex items-center justify-center text-cyan-300 shrink-0">
+                    <ShieldCheck className="size-5" />
                   </div>
-                </form>
-              </Card>
+                  <div className="flex flex-col items-center w-full">
+                    <p className="text-sm font-bold text-white text-center leading-tight">
+                      Revisión DINARP
+                    </p>
+                    <div className="flex flex-col items-center gap-1.5 mt-3">
+                      <div className="h-1.5 w-16 bg-blue-300/30 rounded-full" />
+                      <div className="h-1.5 w-10 bg-blue-300/15 rounded-full" />
+                    </div>
+                  </div>
+                </div>
+
+                {/* Tarjeta 4: Intercambio autorizado */}
+                <div className="relative z-10 rounded-2xl border border-teal-400/30 bg-blue-950/40 backdrop-blur-md p-5 flex flex-col items-center text-center gap-3 transition-transform hover:-translate-y-0.5 shadow-sm">
+                  <div className="size-11 rounded-2xl bg-teal-500/20 border border-teal-400/40 flex items-center justify-center text-teal-300 shrink-0">
+                    <CheckCircle2 className="size-5" />
+                  </div>
+                  <div className="flex flex-col items-center w-full">
+                    <p className="text-sm font-bold text-white text-center leading-tight">
+                      Intercambio autorizado
+                    </p>
+                    <div className="flex flex-col items-center gap-1.5 mt-3">
+                      <div className="h-1.5 w-16 bg-teal-400/40 rounded-full" />
+                      <div className="h-1.5 w-10 bg-teal-400/20 rounded-full" />
+                    </div>
+                  </div>
+                </div>
+
+              </div>
             </div>
 
-            {/* Footer */}
-            <div className="w-full flex items-end justify-between mt-auto pt-4">
-              <div className="text-left text-xs text-muted-foreground/70 flex flex-col gap-1">
-                <p>&copy; {new Date().getFullYear()} DINARP.</p>
-                <p>Dirección Nacional de Registros Públicos.</p>
+            {/* Parte Inferior: Mensaje y Constelación */}
+            <div className="relative z-10 pt-4 flex flex-col sm:flex-row items-start sm:items-end justify-between gap-6 border-t border-blue-400/15">
+              <div>
+                <p className="text-[11px] sm:text-xs font-semibold tracking-wider uppercase text-blue-200/75">
+                  Instituciones que trabajan por un Ecuador más conectado
+                </p>
+                <div className="w-8 h-0.5 bg-cyan-400 mt-2" />
               </div>
 
-              <TooltipProvider>
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <Button variant="outline" size="icon" className="size-10 rounded-full shrink-0" aria-label="Información de acceso">
-                      <Info className="size-5 text-muted-foreground" />
-                    </Button>
-                  </TooltipTrigger>
-                  <TooltipContent variant="info" side="top" align="end" className="max-w-[280px] p-4 flex flex-col gap-1 text-left items-start" sideOffset={12}>
-                    <p className="font-heading font-bold text-base text-info-foreground text-left w-full">Plataforma interna</p>
-                    <p className="text-info-foreground/80 text-xs leading-relaxed text-left w-full">El acceso al UI Kit y sistema de diseño está restringido al equipo de desarrollo y diseño institucional.</p>
-                  </TooltipContent>
-                </Tooltip>
-              </TooltipProvider>
+              <div className="flex items-center gap-3 text-[10px] tracking-widest uppercase text-blue-300/60 font-medium">
+                <span>DATOS</span>
+                <span>•</span>
+                <span>INSTITUCIONES</span>
+                <span>•</span>
+                <span>SERVICIOS</span>
+                <span>•</span>
+                <span>CIUDADANÍA</span>
+              </div>
             </div>
+          </section>
 
-          </div>
+          {/* ══════════════════════════════════════════════════
+              COLUMNA DERECHA: Formulario Blanco de Acceso
+             ══════════════════════════════════════════════════ */}
+          <section className="lg:col-span-5 xl:col-span-5 2xl:col-span-4 w-full flex justify-center">
+            <div className="w-full max-w-[440px] rounded-3xl border border-border/80 bg-card p-7 sm:p-10 shadow-sm flex flex-col">
+
+              {/* Título y subtítulo */}
+              <div className="mb-8 text-left">
+                <h2 className="font-heading font-extrabold text-3xl sm:text-4xl tracking-tight text-foreground">
+                  Ingresa al portal
+                </h2>
+                <p className="text-sm sm:text-base text-muted-foreground mt-2 font-medium">
+                  Accede con tu cuenta institucional.
+                </p>
+              </div>
+
+              {/* Formulario */}
+              <form onSubmit={handleLogin} className="flex flex-col gap-5">
+                {/* Correo institucional */}
+                <div className="flex flex-col gap-2 text-left">
+                  <Label
+                    htmlFor="institutional-email"
+                    className="text-xs sm:text-sm font-semibold text-foreground cursor-pointer"
+                  >
+                    Correo institucional
+                  </Label>
+                  <InputGroup
+                    state={emailState}
+                    leftIcon={<Mail className="size-4 text-muted-foreground" />}
+                    rightIcon={
+                      emailState === "success" ? (
+                        <CheckCircle2 className="size-4 text-success animate-in fade-in" />
+                      ) : emailState === "error" ? (
+                        <AlertCircle className="size-4 text-danger animate-in fade-in" />
+                      ) : undefined
+                    }
+                    className="bg-background"
+                  >
+                    <InputGroupInput
+                      id="institutional-email"
+                      type="email"
+                      placeholder="nombre@institucion.gob.ec"
+                      value={email}
+                      onChange={(e) => handleEmailChange(e.target.value)}
+                      onBlur={handleEmailBlur}
+                      required
+                    />
+                  </InputGroup>
+                  {emailState === "error" && (
+                    <p className="text-xs text-danger font-medium mt-0.5 animate-in fade-in slide-in-from-top-1">
+                      Ingresa un correo institucional válido (ej. nombre@institucion.gob.ec).
+                    </p>
+                  )}
+                  {emailState === "success" && (
+                    <p className="text-xs text-success font-medium mt-0.5 animate-in fade-in slide-in-from-top-1">
+                      Formato de correo válido.
+                    </p>
+                  )}
+                </div>
+
+                {/* Contraseña */}
+                <div className="flex flex-col gap-2 text-left">
+                  <Label
+                    htmlFor="institutional-password"
+                    className="text-xs sm:text-sm font-semibold text-foreground cursor-pointer"
+                  >
+                    Contraseña
+                  </Label>
+                  <InputGroup
+                    leftIcon={<Lock className="size-4 text-muted-foreground" />}
+                    className="bg-background"
+                  >
+                    <InputGroupInput
+                      id="institutional-password"
+                      type={showPassword ? "text" : "password"}
+                      placeholder="••••••••"
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                      required
+                    />
+                    <InputGroupButton
+                      type="button"
+                      variant="ghost"
+                      size="icon-xs"
+                      onClick={() => setShowPassword(!showPassword)}
+                      aria-label={showPassword ? "Ocultar contraseña" : "Ver contraseña"}
+                      className="text-muted-foreground hover:text-foreground"
+                    >
+                      {showPassword ? (
+                        <EyeOff className="size-4" />
+                      ) : (
+                        <Eye className="size-4" />
+                      )}
+                    </InputGroupButton>
+                  </InputGroup>
+
+                  <div className="flex justify-end mt-1">
+                    <Link
+                      href="/wireframes/recuperar-acceso"
+                      className="text-xs sm:text-sm text-primary hover:underline font-medium transition-colors"
+                    >
+                      ¿Olvidaste tu contraseña?
+                    </Link>
+                  </div>
+                </div>
+
+                {/* Botón Iniciar sesión */}
+                <Button
+                  type="submit"
+                  variant="primary"
+                  size="lg"
+                  disabled={!isFormValid}
+                  className="w-full mt-2 font-semibold justify-center gap-2 h-12 text-sm sm:text-base rounded-xl bg-[#061d4a] hover:bg-[#0a2f77] dark:bg-primary dark:hover:bg-primary/90 text-white shadow-sm disabled:opacity-50"
+                >
+                  <span>Iniciar sesión</span>
+                  <ArrowRight className="size-4 shrink-0" />
+                </Button>
+
+                {/* Botón Iniciar sesión con Google */}
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="lg"
+                  onClick={handleGoogleLogin}
+                  className="w-full font-semibold justify-center gap-2.5 h-12 text-sm sm:text-base rounded-xl border-border/80 text-foreground hover:bg-muted/30 transition-all"
+                >
+                  <svg className="size-4 shrink-0" viewBox="0 0 24 24">
+                    <path
+                      d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
+                      fill="#4285F4"
+                    />
+                    <path
+                      d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"
+                      fill="#34A853"
+                    />
+                    <path
+                      d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"
+                      fill="#FBBC05"
+                    />
+                    <path
+                      d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
+                      fill="#EA4335"
+                    />
+                  </svg>
+                  <span>Iniciar sesión con Google</span>
+                </Button>
+
+                {/* Divisor institucional inferior */}
+                <div className="flex items-center gap-3 w-full my-2">
+                  <div className="flex-1 h-px bg-border/60" />
+                  <span className="text-xs text-muted-foreground/80 font-normal text-center">
+                    Acceso para instituciones autorizadas.
+                  </span>
+                  <div className="flex-1 h-px bg-border/60" />
+                </div>
+              </form>
+
+            </div>
+          </section>
+
         </div>
-
-      </div>
+      </main>
     </div>
   );
 }

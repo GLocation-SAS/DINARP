@@ -268,11 +268,11 @@ export default function WireframeSolicitudesPage() {
 
             <Button
               asChild
-              className="h-11 px-5 text-xs font-semibold gap-2 shadow-xs shrink-0 bg-foreground text-background hover:bg-foreground/90"
+              className="h-11 px-5 text-xs font-semibold gap-2 shadow-xs shrink-0"
             >
-              <Link href="/wireframes/solicitudes/nueva" className="flex items-center gap-2 text-background">
-                <Plus className="size-4 text-background" />
-                <span className="text-background font-semibold">Crear proyecto</span>
+              <Link href="/wireframes/solicitudes/nueva">
+                <Plus className="size-4" />
+                <span>Crear proyecto</span>
               </Link>
             </Button>
           </div>
@@ -303,11 +303,11 @@ export default function WireframeSolicitudesPage() {
             <Button
               asChild
               size="lg"
-              className="gap-2 px-6 font-semibold shadow-sm h-12 bg-foreground text-background hover:bg-foreground/90"
+              className="gap-2 px-6 font-semibold shadow-sm h-12"
             >
-              <Link href="/wireframes/solicitudes/nueva" className="flex items-center gap-2 text-background">
-                <Plus className="size-4 text-background" />
-                <span className="text-background font-semibold">Crear mi primer proyecto</span>
+              <Link href="/wireframes/solicitudes/nueva">
+                <Plus className="size-4" />
+                <span>Crear mi primer proyecto</span>
               </Link>
             </Button>
 
@@ -765,7 +765,7 @@ export default function WireframeSolicitudesPage() {
             </Button>
             <Button
               type="button"
-              variant="danger"
+              variant="destructive"
               size="sm"
               onClick={handleConfirmDelete}
               className="text-xs font-semibold gap-1.5 ml-auto"

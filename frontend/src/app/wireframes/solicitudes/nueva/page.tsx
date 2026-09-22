@@ -45,15 +45,6 @@ import {
   BreadcrumbPage,
 } from "@/components/ui/breadcrumb";
 import { Stepper, Step } from "@/components/ui/stepper";
-import { Multiselect } from "@/components/ui/multiselect";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogDescription,
-  DialogFooter,
-} from "@/components/ui/dialog";
 import {
   DropdownMenu,
   DropdownMenuTrigger,
@@ -63,7 +54,6 @@ import {
 import { WireframeDashboardLayout } from "../../components/wireframe-dashboard-layout";
 import {
   CATALOGO_EJEMPLO,
-  ENTIDADES_SOLICITANTES_CATALOGO,
   saveStoredProject,
   getProjectById,
   type FuenteSolicitada,
@@ -102,24 +92,38 @@ function CrearProyectoWizard() {
 
   // Paso 1: Proyecto
   const [nombreProyecto, setNombreProyecto] = useState("Validación ciudadana para trámites y servicios en línea");
-  const [entidadesSolicitantes, setEntidadesSolicitantes] = useState<string[]>(["mintel"]);
+  const [entidadSolicitante, setEntidadSolicitante] = useState(
+    "Ministerio de Telecomunicaciones y Sociedad de la Información (MINTEL)"
+  );
   const [objetivoProyecto, setObjetivoProyecto] = useState(
     "Verificación ágil de la identidad de los solicitantes y consulta de su estado tributario para la emisión simplificada de salvoconductos y trámites digitales."
   );
   const [responsableContacto, setResponsableContacto] = useState("Ing. Carlos Mendoza - Director de TIC (carlos.mendoza@mintel.gob.ec)");
 
-  // Paso 2: Fuentes e Información requerida (Multi-fuente) - Vacío por defecto
-  const [fuentesSeleccionadas, setFuentesSeleccionadas] = useState<FuenteSolicitada[]>([]);
-
-  // Modal guiado de selección de fuente y campos
-  const [isFuenteModalOpen, setIsFuenteModalOpen] = useState(false);
-  const [editingFuenteId, setEditingFuenteId] = useState<string | null>(null);
-  const [selectedInstId, setSelectedInstId] = useState<string>("");
-  const [selectedServId, setSelectedServId] = useState<string>("");
-  const [selectedCampos, setSelectedCampos] = useState<string[]>([]);
+  // Paso 2: Fuentes e Información requerida (Multi-fuente)
+  const [fuentesSeleccionadas, setFuentesSeleccionadas] = useState<FuenteSolicitada[]>([
+    {
+      id: "fuente-init-1",
+      institucionId: "digercic",
+      institucionNombre: "Dirección General de Registro Civil, Identificación y Cedulación (DIGERCIC)",
+      servicioId: "cedula-biograficos",
+      servicioNombre: "Consulta de Cédula y Datos Biográficos",
+      campos: ["Número de Cédula", "Nombres y Apellidos Completos", "Fecha de Nacimiento", "Estado Civil", "Condición de Ciudadano"],
+    },
+    {
+      id: "fuente-init-2",
+      institucionId: "sri",
+      institucionNombre: "Servicio de Rentas Internas (SRI)",
+      servicioId: "ruc-estado",
+      servicioNombre: "Consulta de RUC y Estado Tributario",
+      campos: ["Número de RUC", "Razón Social / Nombre Comercial", "Estado del Contribuyente (Activo/Pasivo)"],
+    },
+  ]);
 
   // Paso 3: Justificación
-  const [justificacionUso, setJustificacionUso] = useState("");
+  const [justificacionUso, setJustificacionUso] = useState(
+    "Los datos se utilizarán para la verificación en línea de identidad y estado tributario de los solicitantes sin requerir copias físicas de documentos."
+  );
 
   // Cargar borrador existente si viene por URL
   useEffect(() => {
@@ -127,20 +131,7 @@ function CrearProyectoWizard() {
       const p = getProjectById(editId);
       if (p) {
         setNombreProyecto(p.nombre);
-        if (p.entidadesSolicitantes && p.entidadesSolicitantes.length > 0) {
-          setEntidadesSolicitantes(p.entidadesSolicitantes);
-        } else if (p.entidadSolicitante) {
-          const found = ENTIDADES_SOLICITANTES_CATALOGO.filter(
-            (e) =>
-              p.entidadSolicitante.toLowerCase().includes(e.value) ||
-              p.entidadSolicitante.includes(e.label)
-          );
-          if (found.length > 0) {
-            setEntidadesSolicitantes(found.map((f) => f.value));
-          } else {
-            setEntidadesSolicitantes(["mintel"]);
-          }
-        }
+        setEntidadSolicitante(p.entidadSolicitante);
         setObjetivoProyecto(p.objetivo);
         setResponsableContacto(p.responsable);
         setFuentesSeleccionadas(p.fuentes || []);
@@ -149,88 +140,60 @@ function CrearProyectoWizard() {
     }
   }, [editId]);
 
-  // Manejo guiado de fuentes en Paso 2
-  const handleOpenAddFuente = () => {
-    setEditingFuenteId(null);
-    setSelectedInstId("");
-    setSelectedServId("");
-    setSelectedCampos([]);
-    setIsFuenteModalOpen(true);
-  };
+  // Manejo de fuentes en Paso 2
+  const handleAddFuente = (institucionId: string) => {
+    const inst = CATALOGO_EJEMPLO.find((i) => i.id === institucionId);
+    if (!inst || inst.servicios.length === 0) return;
 
-  const handleOpenEditFuente = (fuente: FuenteSolicitada) => {
-    setEditingFuenteId(fuente.id);
-    setSelectedInstId(fuente.institucionId);
-    setSelectedServId(fuente.servicioId);
-    setSelectedCampos([...fuente.campos]);
-    setIsFuenteModalOpen(true);
-  };
+    const serv = inst.servicios[0];
+    const initialCampos = serv.camposDisponibles.slice(0, 3).map((c) => c.nombre);
 
-  const handleSelectInstitution = (instId: string) => {
-    setSelectedInstId(instId);
-    const inst = CATALOGO_EJEMPLO.find((i) => i.id === instId);
-    if (inst && inst.servicios.length > 0) {
-      setSelectedServId(inst.servicios[0].id);
-    } else {
-      setSelectedServId("");
-    }
-    setSelectedCampos([]);
-  };
+    const nuevaFuente: FuenteSolicitada = {
+      id: `fuente-${Date.now()}`,
+      institucionId: inst.id,
+      institucionNombre: `${inst.nombre} (${inst.siglas})`,
+      servicioId: serv.id,
+      servicioNombre: serv.nombre,
+      campos: initialCampos,
+    };
 
-  const handleSelectService = (servId: string) => {
-    setSelectedServId(servId);
-    setSelectedCampos([]);
-  };
-
-  const handleToggleModalCampo = (campoNombre: string) => {
-    setSelectedCampos((prev) =>
-      prev.includes(campoNombre)
-        ? prev.filter((c) => c !== campoNombre)
-        : [...prev, campoNombre]
-    );
-  };
-
-  const handleSaveFuente = () => {
-    const inst = CATALOGO_EJEMPLO.find((i) => i.id === selectedInstId);
-    if (!inst) return;
-    const serv = inst.servicios.find((s) => s.id === selectedServId);
-    if (!serv) return;
-
-    if (editingFuenteId) {
-      setFuentesSeleccionadas((prev) =>
-        prev.map((f) =>
-          f.id === editingFuenteId
-            ? {
-                ...f,
-                institucionId: inst.id,
-                institucionNombre: `${inst.nombre} (${inst.siglas})`,
-                servicioId: serv.id,
-                servicioNombre: serv.nombre,
-                campos: selectedCampos,
-              }
-            : f
-        )
-      );
-      toast.success("Fuente actualizada correctamente");
-    } else {
-      const nueva: FuenteSolicitada = {
-        id: `fuente-${Date.now()}`,
-        institucionId: inst.id,
-        institucionNombre: `${inst.nombre} (${inst.siglas})`,
-        servicioId: serv.id,
-        servicioNombre: serv.nombre,
-        campos: selectedCampos,
-      };
-      setFuentesSeleccionadas((prev) => [...prev, nueva]);
-      toast.success(`Fuente agregada: ${inst.siglas}`);
-    }
-
-    setIsFuenteModalOpen(false);
+    setFuentesSeleccionadas((prev) => [...prev, nuevaFuente]);
+    toast.success(`Fuente agregada: ${inst.siglas}`);
   };
 
   const handleRemoveFuente = (fuenteId: string) => {
     setFuentesSeleccionadas((prev) => prev.filter((f) => f.id !== fuenteId));
     toast.info("Fuente eliminada del proyecto");
+  };
+
+  const handleToggleCampo = (fuenteId: string, campoNombre: string) => {
+    setFuentesSeleccionadas((prev) =>
+      prev.map((f) => {
+        if (f.id !== fuenteId) return f;
+        const exists = f.campos.includes(campoNombre);
+        const nuevosCampos = exists
+          ? f.campos.filter((c) => c !== campoNombre)
+          : [...f.campos, campoNombre];
+        return { ...f, campos: nuevosCampos };
+      })
+    );
+  };
+
+  const handleChangeServicio = (fuenteId: string, servicioId: string) => {
+    setFuentesSeleccionadas((prev) =>
+      prev.map((f) => {
+        if (f.id !== fuenteId) return f;
+        const inst = CATALOGO_EJEMPLO.find((i) => i.id === f.institucionId);
+        const serv = inst?.servicios.find((s) => s.id === servicioId);
+        if (!serv) return f;
+        return {
+          ...f,
+          servicioId: serv.id,
+          servicioNombre: serv.nombre,
+          campos: serv.camposDisponibles.slice(0, 3).map((c) => c.nombre),
+        };
+      })
+    );
   };
 
   // Guardar / Enviar
@@ -247,19 +210,11 @@ function CrearProyectoWizard() {
       minute: "2-digit",
     });
 
-    const formatEntidadLabel = () => {
-      if (entidadesSolicitantes.length === 0) return "Ministerio de Telecomunicaciones y Sociedad de la Información (MINTEL)";
-      return entidadesSolicitantes
-        .map((val) => ENTIDADES_SOLICITANTES_CATALOGO.find((e) => e.value === val)?.label || val)
-        .join(", ");
-    };
-
     const nuevoProyecto: ProyectoInteroperabilidad = {
       id: codigoGenerado,
       codigo: codigoGenerado,
       nombre: nombreProyecto.trim() || "Proyecto sin título",
-      entidadSolicitante: formatEntidadLabel(),
-      entidadesSolicitantes: entidadesSolicitantes,
+      entidadSolicitante: entidadSolicitante.trim() || "Entidad solicitante",
       objetivo: objetivoProyecto.trim() || "Sin descripción de objetivo",
       responsable: responsableContacto.trim() || "Por definir en taller",
       justificacion: justificacionUso.trim(),
@@ -273,7 +228,7 @@ function CrearProyectoWizard() {
           etapa: estado === "Borrador" ? "Borrador registrado" : "Enviado a revisión",
           fecha: fechaHoy,
           responsable: responsableContacto.split("-")[0].trim() || "Usuario Solicitante",
-          entidad: entidadesSolicitantes.map(v => ENTIDADES_SOLICITANTES_CATALOGO.find(e => e.value === v)?.label.split("(")[0].trim() || v).join(", ") || "MINTEL",
+          entidad: entidadSolicitante.split("(")[0].trim(),
           descripcion:
             estado === "Borrador"
               ? "Se guardó el borrador del proyecto de interoperabilidad con fuentes y campos definidos."
@@ -338,11 +293,11 @@ function CrearProyectoWizard() {
         </div>
 
         {/* ── Stepper Superior de 4 Pasos ── */}
-        <div className="px-6 sm:px-8 pt-6 pb-2 w-full">
+        <div className="px-6 sm:px-8 pt-6 pb-2 max-w-6xl mx-auto w-full">
           <div className="bg-card border border-border rounded-2xl p-4 sm:p-6 shadow-xs">
             <Stepper
               steps={WIZARD_STEPS}
-              activeStep={currentStep}
+              currentStep={currentStep}
               onStepClick={(stepIndex) => {
                 if (stepIndex <= currentStep) setCurrentStep(stepIndex);
               }}
@@ -351,7 +306,7 @@ function CrearProyectoWizard() {
         </div>
 
         {/* ── Contenedor Principal de Formularios ── */}
-        <div className="px-6 sm:px-8 py-6 w-full">
+        <div className="px-6 sm:px-8 py-6 max-w-6xl mx-auto w-full">
           <AnimatePresence mode="wait">
             {/* ══════════════════════════════════════════════════════════
                 PASO 1: PROYECTO
@@ -388,31 +343,21 @@ function CrearProyectoWizard() {
                       </InputGroup>
                     </div>
 
-                    {/* Entidades Solicitantes (Multi-selección) */}
+                    {/* Entidad Solicitante */}
                     <div className="space-y-2 text-left">
-                      <div className="flex items-center justify-between">
-                        <Label htmlFor="entidades-solicitantes" className="text-sm font-semibold">
-                          Entidades solicitantes
-                        </Label>
-                        <Badge appearance="outline" tone="neutral" className="text-[11px] font-normal border-border text-muted-foreground">
-                          {entidadesSolicitantes.length} seleccionada{entidadesSolicitantes.length !== 1 ? "s" : ""}
-                        </Badge>
-                      </div>
-
-                      <Multiselect
-                        options={ENTIDADES_SOLICITANTES_CATALOGO}
-                        selected={entidadesSolicitantes}
-                        onChange={(selected) => {
-                          setEntidadesSolicitantes(selected);
-                        }}
-                        placeholder="Seleccionar una o varias entidades solicitantes..."
-                        searchPlaceholder="Buscar institución pública..."
-                        emptyText="No se encontró la institución."
-                        className="w-full bg-background"
-                      />
-
+                      <Label htmlFor="entidad-solicitante" className="text-sm font-semibold">
+                        Entidad solicitante
+                      </Label>
+                      <InputGroup className="bg-background">
+                        <InputGroupInput
+                          id="entidad-solicitante"
+                          value={entidadSolicitante}
+                          onChange={(e) => setEntidadSolicitante(e.target.value)}
+                          placeholder="Nombre de la institución activa"
+                        />
+                      </InputGroup>
                       <p className="text-xs text-muted-foreground">
-                        Puedes seleccionar múltiples instituciones participantes que requieren utilizar los datos en este proyecto.
+                        Institución que solicita y utilizará los datos intercambiados.
                       </p>
                     </div>
 
@@ -454,11 +399,11 @@ function CrearProyectoWizard() {
                       </p>
                     </div>
                   </CardContent>
-                  <CardFooter className="flex w-full !justify-end pt-4 border-t border-border">
+                  <CardFooter className="flex justify-end pt-4 border-t border-border">
                     <Button
                       type="button"
                       onClick={() => setCurrentStep(1)}
-                      className="gap-2 ml-auto"
+                      className="gap-2"
                       disabled={!nombreProyecto.trim()}
                     >
                       Continuar
@@ -481,143 +426,175 @@ function CrearProyectoWizard() {
                 transition={{ duration: 0.15 }}
                 className="space-y-6"
               >
-                {/* Encabezado del paso */}
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-card p-5 rounded-2xl border border-border shadow-xs">
-                  <div className="space-y-1 max-w-2xl">
+                  <div>
                     <h2 className="text-lg font-bold text-foreground">2. Fuentes y campos solicitados</h2>
-                    <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed">
-                      Selecciona la institución que tiene los datos que necesitas y luego elige los campos que deseas solicitar.
+                    <p className="text-xs sm:text-sm text-muted-foreground mt-0.5">
+                      Puedes agregar una o varias instituciones fuentes al mismo proyecto y seleccionar campos específicos.
                     </p>
                   </div>
 
-                  {fuentesSeleccionadas.length > 0 && (
-                    <Button
-                      type="button"
-                      onClick={handleOpenAddFuente}
-                      className="gap-2 font-semibold shadow-xs shrink-0"
-                    >
-                      <Plus className="size-4" />
-                      <span>Agregar fuente</span>
-                    </Button>
-                  )}
+                  {/* Dropdown Agregar Institución Fuente */}
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button variant="outline" className="gap-2 border-border shrink-0">
+                        <Plus className="size-4" />
+                        Agregar institución fuente
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end" className="w-80">
+                      <div className="px-2 py-1.5 text-xs font-semibold text-muted-foreground">
+                        Seleccionar institución (Datos de ejemplo)
+                      </div>
+                      {CATALOGO_EJEMPLO.map((item) => (
+                        <DropdownMenuItem
+                          key={item.id}
+                          onClick={() => handleAddFuente(item.id)}
+                          className="flex flex-col items-start gap-0.5 py-2 cursor-pointer"
+                        >
+                          <span className="font-semibold text-xs text-foreground">{item.siglas}</span>
+                          <span className="text-[11px] text-muted-foreground line-clamp-1">{item.nombre}</span>
+                        </DropdownMenuItem>
+                      ))}
+                    </DropdownMenuContent>
+                  </DropdownMenu>
                 </div>
 
-                {/* Nota discreta de prototipo */}
+                {/* Nota de prototipo */}
                 <div className="flex items-center gap-2 p-3 bg-muted/40 rounded-xl border border-border/80 text-xs text-muted-foreground">
                   <Info className="size-4 shrink-0" />
                   <span>
-                    <strong>Nota:</strong> Los nombres disponibles en los selectores son <em>datos de ejemplo del prototipo</em> para demostrar el flujo de solicitud.
+                    <strong>Nota:</strong> Los servicios y campos mostrados son <em>datos de ejemplo del prototipo</em> para demostrar la interacción, no el catálogo oficial definitivo de DINARP.
                   </span>
                 </div>
 
-                {/* Estado Vacío o Lista de Fuentes Seleccionadas */}
+                {/* Lista de Fuentes Seleccionadas */}
                 {fuentesSeleccionadas.length === 0 ? (
-                  <div className="py-14 px-6 text-center border border-dashed border-border rounded-2xl bg-muted/20 max-w-xl mx-auto space-y-4">
-                    <div className="size-14 rounded-3xl bg-muted/60 border border-border flex items-center justify-center text-foreground mx-auto shadow-xs">
-                      <Database className="size-7 stroke-[1.5]" />
-                    </div>
-                    <div className="space-y-1.5">
-                      <h3 className="text-base font-bold text-foreground">
-                        No has agregado fuentes aún
-                      </h3>
-                      <p className="text-xs text-muted-foreground max-w-md mx-auto leading-relaxed">
-                        Selecciona la institución que tiene los datos que necesitas y luego elige los campos que deseas solicitar.
-                      </p>
-                    </div>
+                  <div className="p-8 text-center border border-dashed border-border rounded-2xl bg-muted/20">
+                    <Database className="size-8 text-muted-foreground mx-auto mb-2" />
+                    <p className="text-sm font-semibold text-foreground">No has agregado fuentes aún</p>
+                    <p className="text-xs text-muted-foreground mt-1 mb-4">
+                      Agrega al menos una institución fuente para definir los datos que necesitas.
+                    </p>
                     <Button
-                      type="button"
-                      onClick={handleOpenAddFuente}
-                      className="gap-2 font-semibold shadow-sm h-11 px-5"
+                      variant="outline"
+                      size="sm"
+                      onClick={() => handleAddFuente("digercic")}
+                      className="gap-2"
                     >
-                      <Plus className="size-4" />
-                      <span>Agregar fuente</span>
+                      <Plus className="size-3.5" />
+                      Agregar Registro Civil
                     </Button>
                   </div>
                 ) : (
                   <div className="space-y-5">
-                    {fuentesSeleccionadas.map((fuente, index) => (
-                      <Card key={fuente.id} className="border-border bg-card shadow-xs overflow-hidden">
-                        <CardHeader className="bg-muted/30 pb-4 border-b border-border/60">
-                          <div className="flex items-start justify-between gap-4">
-                            <div className="flex items-center gap-3">
-                              <div className="size-8 rounded-xl bg-muted border border-border flex items-center justify-center font-bold text-xs">
-                                {index + 1}
-                              </div>
-                              <div>
-                                <div className="flex items-center gap-2">
-                                  <h3 className="font-bold text-sm text-foreground">{fuente.institucionNombre}</h3>
-                                  <Badge appearance="outline" tone="neutral" className="text-[10px] font-normal border-border py-0">
-                                    Fuente solicitada
-                                  </Badge>
-                                </div>
-                                <p className="text-xs text-muted-foreground mt-0.5">
-                                  Servicio: <strong className="text-foreground">{fuente.servicioNombre}</strong>
-                                </p>
-                              </div>
-                            </div>
+                    {fuentesSeleccionadas.map((fuente, index) => {
+                      const catalogoInst = CATALOGO_EJEMPLO.find((c) => c.id === fuente.institucionId);
+                      const currentServicioObj = catalogoInst?.servicios.find((s) => s.id === fuente.servicioId);
 
-                            <div className="flex items-center gap-1.5">
-                              <Button
-                                type="button"
-                                variant="ghost"
-                                size="sm"
-                                onClick={() => handleOpenEditFuente(fuente)}
-                                className="text-xs h-8 px-2.5 text-muted-foreground hover:text-foreground"
-                              >
-                                Editar selección
-                              </Button>
+                      return (
+                        <Card key={fuente.id} className="border-border bg-card shadow-xs overflow-hidden">
+                          <CardHeader className="bg-muted/30 pb-4 border-b border-border/60">
+                            <div className="flex items-start justify-between gap-4">
+                              <div className="flex items-center gap-3">
+                                <div className="size-8 rounded-xl bg-muted border border-border flex items-center justify-center font-bold text-xs">
+                                  {index + 1}
+                                </div>
+                                <div>
+                                  <div className="flex items-center gap-2">
+                                    <h3 className="font-bold text-sm text-foreground">{fuente.institucionNombre}</h3>
+                                    <Badge appearance="outline" tone="neutral" className="text-[10px] font-normal border-border py-0">
+                                      Fuente solicitada
+                                    </Badge>
+                                  </div>
+                                  <p className="text-xs text-muted-foreground mt-0.5">
+                                    Servicio actual: <strong className="text-foreground">{fuente.servicioNombre}</strong>
+                                  </p>
+                                </div>
+                              </div>
+
                               <Button
                                 type="button"
                                 variant="ghost"
                                 size="sm"
                                 onClick={() => handleRemoveFuente(fuente.id)}
-                                className="text-xs h-8 px-2 text-muted-foreground hover:text-foreground hover:bg-muted/60"
+                                className="text-muted-foreground hover:text-foreground hover:bg-muted/60 h-8 px-2 text-xs gap-1"
                               >
                                 <Trash2 className="size-3.5" />
-                                Quitar
+                                Quitar fuente
                               </Button>
                             </div>
-                          </div>
-                        </CardHeader>
+                          </CardHeader>
 
-                        <CardContent className="p-5 space-y-3">
-                          <div className="flex items-center justify-between">
-                            <Label className="text-xs font-semibold text-foreground">
-                              Campos solicitados ({fuente.campos.length}):
-                            </Label>
-                          </div>
-                          <div className="flex flex-wrap gap-1.5">
-                            {fuente.campos.map((campo, i) => (
-                              <Badge
-                                key={i}
-                                appearance="outline"
-                                tone="neutral"
-                                className="bg-background text-foreground border-border text-xs font-normal py-0.5 px-2.5"
-                              >
-                                {campo}
-                              </Badge>
-                            ))}
-                          </div>
-                        </CardContent>
-                      </Card>
-                    ))}
+                          <CardContent className="p-5 space-y-4">
+                            {/* Selector de Servicio si la institución tiene más de 1 */}
+                            {catalogoInst && catalogoInst.servicios.length > 1 && (
+                              <div className="space-y-1.5">
+                                <Label className="text-xs font-semibold">Servicio / Conjunto de datos:</Label>
+                                <div className="flex flex-wrap gap-2">
+                                  {catalogoInst.servicios.map((serv) => (
+                                    <Button
+                                      key={serv.id}
+                                      type="button"
+                                      variant={fuente.servicioId === serv.id ? "neutral" : "outline"}
+                                      size="sm"
+                                      onClick={() => handleChangeServicio(fuente.id, serv.id)}
+                                      className="text-xs h-7 rounded-lg"
+                                    >
+                                      {serv.nombre}
+                                    </Button>
+                                  ))}
+                                </div>
+                              </div>
+                            )}
 
-                    <div className="flex justify-center pt-2">
-                      <Button
-                        type="button"
-                        variant="outline"
-                        onClick={handleOpenAddFuente}
-                        className="gap-2 border-dashed border-border"
-                      >
-                        <Plus className="size-4" />
-                        <span>Agregar otra fuente al proyecto</span>
-                      </Button>
-                    </div>
+                            {/* Descripción del servicio */}
+                            {currentServicioObj?.descripcion && (
+                              <p className="text-xs text-muted-foreground bg-muted/20 p-2.5 rounded-lg border border-border/50">
+                                {currentServicioObj.descripcion}
+                              </p>
+                            )}
+
+                            {/* Selección de Campos Específicos */}
+                            <div className="space-y-2 pt-1">
+                              <div className="flex items-center justify-between">
+                                <Label className="text-xs font-semibold text-foreground">
+                                  Campos específicos requeridos:
+                                </Label>
+                                <span className="text-[11px] text-muted-foreground">
+                                  {fuente.campos.length} de {currentServicioObj?.camposDisponibles.length || 0} seleccionados
+                                </span>
+                              </div>
+
+                              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2.5 pt-1">
+                                {currentServicioObj?.camposDisponibles.map((campo) => {
+                                  const isSelected = fuente.campos.includes(campo.nombre);
+                                  return (
+                                    <label
+                                      key={campo.id}
+                                      className={`flex items-center gap-2.5 p-2.5 rounded-xl border text-xs cursor-pointer transition-colors ${isSelected
+                                        ? "bg-muted/80 border-foreground/30 font-medium text-foreground"
+                                        : "bg-background border-border text-muted-foreground hover:border-foreground/20"
+                                        }`}
+                                    >
+                                      <Checkbox
+                                        checked={isSelected}
+                                        onCheckedChange={() => handleToggleCampo(fuente.id, campo.nombre)}
+                                      />
+                                      <span className="truncate">{campo.nombre}</span>
+                                    </label>
+                                  );
+                                })}
+                              </div>
+                            </div>
+                          </CardContent>
+                        </Card>
+                      );
+                    })}
                   </div>
                 )}
 
-                {/* Pie de navegación */}
-                <div className="flex justify-between items-center w-full pt-4 border-t border-border">
+                <div className="flex justify-between items-center pt-4 border-t border-border">
                   <Button
                     type="button"
                     variant="outline"
@@ -630,7 +607,7 @@ function CrearProyectoWizard() {
                   <Button
                     type="button"
                     onClick={() => setCurrentStep(2)}
-                    className="gap-2 ml-auto"
+                    className="gap-2"
                     disabled={fuentesSeleccionadas.length === 0}
                   >
                     Continuar
@@ -696,7 +673,7 @@ function CrearProyectoWizard() {
                       </div>
                     </div>
                   </CardContent>
-                  <CardFooter className="flex justify-between items-center w-full pt-4 border-t border-border">
+                  <CardFooter className="flex justify-between pt-4 border-t border-border">
                     <Button
                       type="button"
                       variant="outline"
@@ -709,9 +686,9 @@ function CrearProyectoWizard() {
                     <Button
                       type="button"
                       onClick={() => setCurrentStep(3)}
-                      className="gap-2 ml-auto"
+                      className="gap-2"
                     >
-                      Continuar
+                      Continuar a revisión
                       <ArrowRight className="size-4" />
                     </Button>
                   </CardFooter>
@@ -762,21 +739,8 @@ function CrearProyectoWizard() {
                           <p className="font-semibold text-foreground text-sm mt-0.5">{nombreProyecto}</p>
                         </div>
                         <div>
-                          <p className="text-muted-foreground">Entidades solicitantes:</p>
-                          <div className="flex flex-wrap gap-1.5 mt-1">
-                            {entidadesSolicitantes.length === 0 ? (
-                              <span className="font-semibold text-foreground text-sm">Ninguna seleccionada</span>
-                            ) : (
-                              entidadesSolicitantes.map((val) => {
-                                const label = ENTIDADES_SOLICITANTES_CATALOGO.find((e) => e.value === val)?.label || val;
-                                return (
-                                  <Badge key={val} appearance="outline" tone="neutral" className="border-border bg-muted/40 text-xs py-0.5 px-2 font-medium">
-                                    {label.split("(")[0].trim()}
-                                  </Badge>
-                                );
-                              })
-                            )}
-                          </div>
+                          <p className="text-muted-foreground">Entidad solicitante:</p>
+                          <p className="font-semibold text-foreground text-sm mt-0.5">{entidadSolicitante}</p>
                         </div>
                         <div className="md:col-span-2">
                           <p className="text-muted-foreground">Objetivo:</p>
@@ -806,57 +770,35 @@ function CrearProyectoWizard() {
                         </Button>
                       </div>
 
-                      {fuentesSeleccionadas.length === 0 ? (
-                        <div className="p-6 text-center border border-dashed border-border rounded-xl bg-muted/20 space-y-2">
-                          <Database className="size-6 text-muted-foreground mx-auto mb-1 opacity-60" />
-                          <p className="text-sm font-semibold text-foreground">
-                            Todavía no has agregado datos para solicitar
-                          </p>
-                          <p className="text-xs text-muted-foreground max-w-sm mx-auto">
-                            Regresa al paso 2 para elegir las instituciones fuentes y los campos requeridos.
-                          </p>
-                          <Button
-                            type="button"
-                            variant="outline"
-                            size="sm"
-                            onClick={() => setCurrentStep(1)}
-                            className="text-xs gap-1.5 mt-2"
+                      <div className="space-y-3">
+                        {fuentesSeleccionadas.map((fuente) => (
+                          <div
+                            key={fuente.id}
+                            className="p-4 rounded-xl border border-border bg-muted/20 space-y-2 text-xs"
                           >
-                            <Plus className="size-3.5" />
-                            <span>Agregar fuentes y campos</span>
-                          </Button>
-                        </div>
-                      ) : (
-                        <div className="space-y-3">
-                          {fuentesSeleccionadas.map((fuente) => (
-                            <div
-                              key={fuente.id}
-                              className="p-4 rounded-xl border border-border bg-muted/20 space-y-2 text-xs"
-                            >
-                              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1">
-                                <span className="font-bold text-foreground text-sm">{fuente.institucionNombre}</span>
-                                <span className="text-muted-foreground">Servicio: {fuente.servicioNombre}</span>
-                              </div>
+                            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1">
+                              <span className="font-bold text-foreground text-sm">{fuente.institucionNombre}</span>
+                              <span className="text-muted-foreground">Servicio: {fuente.servicioNombre}</span>
+                            </div>
 
-                              <div className="pt-2">
-                                <p className="text-muted-foreground mb-1.5 font-medium">Campos solicitados ({fuente.campos.length}):</p>
-                                <div className="flex flex-wrap gap-1.5">
-                                  {fuente.campos.map((campo, i) => (
-                                    <Badge
-                                      key={i}
-                                      appearance="outline"
-                                      tone="neutral"
-                                      className="bg-background text-foreground border-border text-[11px] font-normal"
-                                    >
-                                      {campo}
-                                    </Badge>
-                                  ))}
-                                </div>
+                            <div className="pt-2">
+                              <p className="text-muted-foreground mb-1.5 font-medium">Campos solicitados:</p>
+                              <div className="flex flex-wrap gap-1.5">
+                                {fuente.campos.map((campo, i) => (
+                                  <Badge
+                                    key={i}
+                                    appearance="outline"
+                                    tone="neutral"
+                                    className="bg-background text-foreground border-border text-[11px] font-normal"
+                                  >
+                                    {campo}
+                                  </Badge>
+                                ))}
                               </div>
                             </div>
-                          ))}
-                        </div>
-                      )}
+                          </div>
+                        ))}
+                      </div>
                     </div>
 
                     {/* Resumen Paso 3: Justificación (si existe) */}
@@ -895,7 +837,7 @@ function CrearProyectoWizard() {
                       Anterior
                     </Button>
 
-                    <div className="flex items-center gap-2.5 w-full sm:w-auto ml-auto justify-end">
+                    <div className="flex items-center gap-2.5 w-full sm:w-auto">
                       <Button
                         type="button"
                         variant="outline"
@@ -922,180 +864,6 @@ function CrearProyectoWizard() {
           </AnimatePresence>
         </div>
       </div>
-
-      {/* ══════════════════════════════════════════════════════════
-          MODAL GUIADO: AGREGAR / EDITAR FUENTE (1 -> 2 -> 3)
-         ══════════════════════════════════════════════════════════ */}
-      <Dialog open={isFuenteModalOpen} onOpenChange={setIsFuenteModalOpen}>
-        <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
-          <DialogHeader>
-            <DialogTitle className="text-lg font-bold">
-              {editingFuenteId ? "Editar fuente y campos" : "Agregar institución fuente"}
-            </DialogTitle>
-            <DialogDescription className="text-xs text-muted-foreground">
-              Selecciona la institución que tiene los datos que necesitas y luego elige los campos que deseas solicitar.
-            </DialogDescription>
-          </DialogHeader>
-
-          <div className="space-y-6 py-2">
-            {/* ── 1. Elegir la institución fuente ── */}
-            <div className="space-y-2">
-              <div className="flex items-center justify-between">
-                <Label className="text-xs font-bold text-foreground uppercase tracking-wider">
-                  1. Institución fuente
-                </Label>
-                <span className="text-[11px] text-muted-foreground">
-                  Ejemplos del prototipo
-                </span>
-              </div>
-
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
-                {CATALOGO_EJEMPLO.map((inst) => {
-                  const isSelected = selectedInstId === inst.id;
-                  return (
-                    <button
-                      key={inst.id}
-                      type="button"
-                      onClick={() => handleSelectInstitution(inst.id)}
-                      className={`flex flex-col items-start p-3 rounded-xl border text-left transition-all ${
-                        isSelected
-                          ? "border-foreground bg-muted/80 shadow-xs ring-1 ring-foreground/20"
-                          : "border-border bg-card hover:bg-muted/40 text-muted-foreground hover:text-foreground"
-                      }`}
-                    >
-                      <div className="flex items-center justify-between w-full">
-                        <span className="font-bold text-xs text-foreground">{inst.siglas}</span>
-                        {isSelected && <CheckCircle2 className="size-4 text-foreground" />}
-                      </div>
-                      <span className="text-[11px] text-muted-foreground mt-0.5 line-clamp-2">
-                        {inst.nombre}
-                      </span>
-                    </button>
-                  );
-                })}
-              </div>
-            </div>
-
-            {/* ── 2. Elegir el servicio o conjunto de datos disponible ── */}
-            {selectedInstId && (
-              <div className="space-y-2 pt-3 border-t border-border/60">
-                <Label className="text-xs font-bold text-foreground uppercase tracking-wider">
-                  2. Servicio o conjunto de datos
-                </Label>
-                {(() => {
-                  const currentInst = CATALOGO_EJEMPLO.find((i) => i.id === selectedInstId);
-                  return (
-                    <div className="space-y-2">
-                      <div className="flex flex-wrap gap-2">
-                        {currentInst?.servicios.map((serv) => {
-                          const isSelected = selectedServId === serv.id;
-                          return (
-                            <Button
-                              key={serv.id}
-                              type="button"
-                              variant={isSelected ? "neutral" : "outline"}
-                              size="sm"
-                              onClick={() => handleSelectService(serv.id)}
-                              className="text-xs h-8 rounded-xl"
-                            >
-                              {serv.nombre}
-                            </Button>
-                          );
-                        })}
-                      </div>
-                      {(() => {
-                        const currServ = currentInst?.servicios.find((s) => s.id === selectedServId);
-                        if (currServ?.descripcion) {
-                          return (
-                            <p className="text-xs text-muted-foreground bg-muted/30 p-2.5 rounded-lg border border-border/50">
-                              {currServ.descripcion}
-                            </p>
-                          );
-                        }
-                        return null;
-                      })()}
-                    </div>
-                  );
-                })()}
-              </div>
-            )}
-
-            {/* ── 3. Marcar explícitamente los campos que se quieren solicitar ── */}
-            {selectedServId && (
-              <div className="space-y-2.5 pt-3 border-t border-border/60">
-                <div className="flex items-center justify-between">
-                  <Label className="text-xs font-bold text-foreground uppercase tracking-wider">
-                    3. Campos específicos a solicitar
-                  </Label>
-                  <span className="text-[11px] text-muted-foreground">
-                    {selectedCampos.length} seleccionados
-                  </span>
-                </div>
-
-                {(() => {
-                  const currentInst = CATALOGO_EJEMPLO.find((i) => i.id === selectedInstId);
-                  const currServ = currentInst?.servicios.find((s) => s.id === selectedServId);
-                  const camposDisponibles = currServ?.camposDisponibles || [];
-
-                  return (
-                    <div className="space-y-2">
-                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                        {camposDisponibles.map((campo) => {
-                          const isChecked = selectedCampos.includes(campo.nombre);
-                          return (
-                            <label
-                              key={campo.id}
-                              className={`flex items-center gap-2.5 p-2.5 rounded-xl border text-xs cursor-pointer transition-colors ${
-                                isChecked
-                                  ? "bg-muted/80 border-foreground/30 font-medium text-foreground"
-                                  : "bg-background border-border text-muted-foreground hover:border-foreground/20"
-                              }`}
-                            >
-                              <Checkbox
-                                checked={isChecked}
-                                onCheckedChange={() => handleToggleModalCampo(campo.nombre)}
-                              />
-                              <span className="truncate">{campo.nombre}</span>
-                            </label>
-                          );
-                        })}
-                      </div>
-                      {selectedCampos.length === 0 && (
-                        <p className="text-[11px] text-muted-foreground italic pt-1">
-                          Marca las casillas de los campos que deseas solicitar en tu proyecto.
-                        </p>
-                      )}
-                    </div>
-                  );
-                })()}
-              </div>
-            )}
-          </div>
-
-          <DialogFooter className="flex justify-between items-center w-full pt-4 border-t border-border gap-2">
-            <Button
-              type="button"
-              variant="outline"
-              size="sm"
-              onClick={() => setIsFuenteModalOpen(false)}
-              className="text-xs"
-            >
-              Cancelar
-            </Button>
-
-            <Button
-              type="button"
-              size="sm"
-              onClick={handleSaveFuente}
-              disabled={!selectedInstId || !selectedServId || selectedCampos.length === 0}
-              className="text-xs font-semibold gap-1.5 ml-auto"
-            >
-              <CheckCircle2 className="size-3.5" />
-              <span>{editingFuenteId ? "Guardar cambios" : "Agregar fuente al proyecto"}</span>
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
     </WireframeDashboardLayout>
   );
 }
