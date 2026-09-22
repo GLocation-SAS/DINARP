@@ -534,9 +534,27 @@ export default function CatalogoConsultaPage() {
                           <h2 className="font-heading text-base font-bold text-foreground truncate">
                             {institucion.nombre}
                           </h2>
-                          <p className="text-xs text-muted-foreground mt-0.5 truncate">
-                            {institucion.sigla} · {institucion.sector.replace(" - ", " · ")} · RUC {institucion.codigoInstitucion}
-                          </p>
+                          <div className="flex items-center flex-wrap gap-1.5 mt-1.5">
+                            <span className="text-xs font-semibold text-foreground">
+                              {institucion.sigla}
+                            </span>
+                            <span className="text-muted-foreground/60 text-xs">•</span>
+                            <Badge appearance="soft" tone={institucion.sector.toLowerCase().includes("público") ? "info" : "neutral"} className="h-5 px-1.5 text-[10px] uppercase tracking-wider font-semibold">
+                              Sector {institucion.sector.toLowerCase().includes("público") ? "público" : "privado"}
+                            </Badge>
+                            {institucion.sector.includes("-") && (
+                              <>
+                                <span className="text-muted-foreground/60 text-xs">•</span>
+                                <span className="text-xs text-muted-foreground">
+                                  {institucion.sector.split("-")[1].trim()}
+                                </span>
+                              </>
+                            )}
+                            <span className="text-muted-foreground/60 text-xs">•</span>
+                            <span className="text-xs text-muted-foreground">
+                              RUC {institucion.codigoInstitucion}
+                            </span>
+                          </div>
                         </div>
                       </div>
 
