@@ -128,6 +128,28 @@ export interface CampoCatalogo {
 
 export type FuenteEstado = "PUBLICADO" | "OCULTO" | "DESACTIVADO";
 
+export interface EventoTrazabilidadFuente {
+  evento: string;
+  estadoAnterior?: string;
+  estadoNuevo?: string;
+  usuario: string;
+  rol: string;
+  fecha: string;
+  hora: string;
+  observacion?: string;
+  huRef?: string;
+}
+
+export interface NovedadAsociadaFuente {
+  id: string;
+  codigo: string;
+  tipo: string;
+  estado: string;
+  fecha: string;
+  resultado: string;
+  responsable: string;
+}
+
 export interface FuenteServicio {
   id: string;
   institucionId: string;
@@ -136,6 +158,7 @@ export interface FuenteServicio {
   codigoServicio: string;
   descripcion: string;
   estado: FuenteEstado;
+  etapaActual?: string;
   version: string;
   tipoConsumo: "Servicio Web (REST/JSON)" | "Intercambio Masivo (Batch)" | "SOAP / XML";
   baseLegal: string;
@@ -160,6 +183,8 @@ export interface FuenteServicio {
   };
   campos: CampoCatalogo[];
   trazabilidadExpedienteId?: string;
+  trazabilidadEventos?: EventoTrazabilidadFuente[];
+  novedadesAsociadas?: NovedadAsociadaFuente[];
   historialNovedades?: Array<{
     fecha: string;
     tipo: string;
@@ -427,7 +452,9 @@ export interface ExpedienteIntegracion {
   historial: EventoHistorial[];
 }
 
-export type TipoNovedad = "Eliminación" | "Supresión" | "Fusión" | "Actualización de esquema (Propuesta)";
+export type TipoNovedad = "Eliminación" | "Supresión" | "Fusión";
+
+export type EstadoNovedad = "En validación" | "Finalizada" | "No procede";
 
 export interface NovedadCatalogo {
   id: string;
@@ -435,11 +462,14 @@ export interface NovedadCatalogo {
   organismoSolicitante: string;
   tipoNovedad: TipoNovedad;
   fechaRadicacion: string;
-  estado: "En validación legal y funcional" | "Aplicada (Fuente Desactivada)" | "Fusión ejecutada y notificada" | "Rechazada";
+  ultimaActualizacion?: string;
+  estado: EstadoNovedad;
   fuentesAfectadas: Array<{
     fuenteId: string;
     fuenteNombre: string;
     institucionNombre: string;
+    codigoServicio?: string;
+    cantidadCampos?: number;
     estadoPrevio: FuenteEstado;
     estadoNuevo: FuenteEstado;
   }>;
@@ -447,13 +477,21 @@ export interface NovedadCatalogo {
     numeroOficio: string;
     fechaOficio: string;
     archivoPdf: string;
+    archivoTamano?: string;
   };
   evaluacionDGR: {
     responsable: string;
     fechaDictamen?: string;
     conceptoLegal: string;
     conceptoFuncional: string;
-    procede: boolean;
+    procede?: boolean;
+    justificacionNoProcede?: string;
+  };
+  resultadoAplicado?: {
+    tipoResultado: "Fuente actualizada" | "Fuente desactivada";
+    fechaAplicacion: string;
+    responsable: string;
+    observacion: string;
   };
   notificacionFusion?: {
     requiereNotificacion: boolean;
@@ -463,7 +501,9 @@ export interface NovedadCatalogo {
   };
   historialEventos: Array<{
     fecha: string;
+    hora?: string;
     actor: string;
+    rol?: string;
     accion: string;
     detalle: string;
   }>;
@@ -496,13 +536,15 @@ export const INITIAL_INSTITUCIONES: Institucion[] = [
         codigoServicio: "SRV-RC-001",
         descripcion: "Consulta de datos básicos de identificación ciudadana, estado civil, fecha de nacimiento y condición de ciudadanía.",
         estado: "PUBLICADO",
+        etapaActual: "Publicado",
+        trazabilidadExpedienteId: "EXP-2026-001",
         version: "v2.1.0",
         tipoConsumo: "Servicio Web (REST/JSON)",
         baseLegal: "Ley Orgánica de Gestión de la Identidad y Datos Civiles - Res. 004-DN-2023",
         fechaIntegracion: "14/01/2026",
         ultimaActualizacion: "18/02/2026",
-        responsableDGR: "Dra. Valeria Paredes (DGR)",
-        responsableDTD: "Ing. Marco Andrade (DTD)",
+        responsableDGR: "María Torres (DGR)",
+        responsableDTD: "Carlos Mena (DTD)",
         microservicio: {
           nombre: "ms-registrocivil-identidad",
           version: "2.1.0",
@@ -515,7 +557,7 @@ export const INITIAL_INSTITUCIONES: Institucion[] = [
           clasificado: true,
           fechaInforme: "12/01/2026",
           nroInforme: "INF-DPI-2026-0012",
-          responsableDPI: "Mgs. Patricio Silva (DPI)",
+          responsableDPI: "Daniela Ruiz (DPI)",
           archivoInforme: "Informe_Clasificacion_RC_Identidad.pdf"
         },
         campos: [
@@ -528,6 +570,48 @@ export const INITIAL_INSTITUCIONES: Institucion[] = [
           { id: "c-07", nombre: "nombrePadre", tipo: "Texto", descripcion: "Filiación paterna registrada", clasificacion: "Confidencial", requiereJustificacion: true, estadoRevision: "Valido" },
           { id: "c-08", nombre: "nombreMadre", tipo: "Texto", descripcion: "Filiación materna registrada", clasificacion: "Confidencial", requiereJustificacion: true, estadoRevision: "Valido" },
           { id: "c-09", nombre: "domicilioDetallado", tipo: "Texto", descripcion: "Dirección domiciliaria completa con calle secundaria y número de casa", clasificacion: "Confidencial", requiereJustificacion: true, estadoRevision: "Valido" }
+        ],
+        trazabilidadEventos: [
+          {
+            evento: "Fuente incorporada al catálogo",
+            estadoAnterior: "Borrador",
+            estadoNuevo: "OCULTO",
+            usuario: "Carlos Mena",
+            rol: "Dirección de Tecnología y Desarrollo (DTD)",
+            fecha: "10/01/2026",
+            hora: "11:30",
+            observacion: "Validación técnica aprobada (HU-INT-07). Fuente registrada internamente.",
+            huRef: "HU-INT-07"
+          },
+          {
+            evento: "Clasificación de campos completada",
+            usuario: "Daniela Ruiz",
+            rol: "Dirección de Protección de la Información (DPI)",
+            fecha: "12/01/2026",
+            hora: "15:20",
+            observacion: "Informe INF-DPI-2026-0012 cargado. 6 accesibles, 3 confidenciales.",
+            huRef: "HU-INT-08"
+          },
+          {
+            evento: "Aprobación de la integración",
+            usuario: "María Torres",
+            rol: "Dirección de Gestión y Registro (DGR)",
+            fecha: "13/01/2026",
+            hora: "16:40",
+            observacion: "Validación funcional favorable en preproducción.",
+            huRef: "HU-INT-12"
+          },
+          {
+            evento: "Paso a producción y publicación",
+            estadoAnterior: "OCULTO",
+            estadoNuevo: "PUBLICADO",
+            usuario: "Carlos Mena",
+            rol: "Dirección de Tecnología y Desarrollo (DTD)",
+            fecha: "14/01/2026",
+            hora: "10:15",
+            observacion: "Microservicio desplegado en producción (HU-INT-13). Fuente visible para consulta.",
+            huRef: "HU-INT-15"
+          }
         ]
       },
       {
@@ -538,13 +622,15 @@ export const INITIAL_INSTITUCIONES: Institucion[] = [
         codigoServicio: "SRV-RC-002",
         descripcion: "Verificación de validez, fecha de emisión y vigencia de pasaportes ordinarios biométricos.",
         estado: "PUBLICADO",
+        etapaActual: "Publicado",
+        trazabilidadExpedienteId: "EXP-2026-002",
         version: "v1.0.4",
         tipoConsumo: "Servicio Web (REST/JSON)",
-        baseLegal: "Reglamento de Documentos de Viaje - Res. 004-DN-2023",
+        baseLegal: "Ley Orgánica de Movilidad Humana",
         fechaIntegracion: "02/02/2026",
         ultimaActualizacion: "20/02/2026",
-        responsableDGR: "Lcdo. Fernando Cueva (DGR)",
-        responsableDTD: "Ing. Sofía Morales (DTD)",
+        responsableDGR: "María Torres (DGR)",
+        responsableDTD: "Carlos Mena (DTD)",
         microservicio: {
           nombre: "ms-registrocivil-pasaportes",
           version: "1.0.4",
@@ -557,14 +643,38 @@ export const INITIAL_INSTITUCIONES: Institucion[] = [
           clasificado: true,
           fechaInforme: "30/01/2026",
           nroInforme: "INF-DPI-2026-0028",
-          responsableDPI: "Mgs. Patricio Silva (DPI)",
+          responsableDPI: "Daniela Ruiz (DPI)",
           archivoInforme: "Informe_Clasificacion_RC_Pasaportes.pdf"
         },
         campos: [
           { id: "c-10", nombre: "numeroPasaporte", tipo: "Alfanumérico", descripcion: "Código alfanumérico del pasaporte biométrico", clasificacion: "Accesible", estadoRevision: "Valido" },
           { id: "c-11", nombre: "fechaEmision", tipo: "Fecha", descripcion: "Fecha en que se expidió el documento de viaje", clasificacion: "Accesible", estadoRevision: "Valido" },
-          { id: "c-12", nombre: "fechaExpiracion", tipo: "Fecha", descripcion: "Fecha de caducidad del pasaporte", clasificacion: "Accesible", estadoRevision: "Valido" },
+          { id: "c-12", nombre: "fechaCaducidad", tipo: "Fecha", descripcion: "Fecha límite de vigencia legal", clasificacion: "Accesible", estadoRevision: "Valido" },
           { id: "c-13", nombre: "estadoDocumento", tipo: "Texto", descripcion: "Estado actual (Activo, Anulado, Extraviado)", clasificacion: "Accesible", estadoRevision: "Valido" }
+        ],
+        trazabilidadEventos: [
+          {
+            evento: "Fuente incorporada al catálogo",
+            estadoAnterior: "Borrador",
+            estadoNuevo: "OCULTO",
+            usuario: "Carlos Mena",
+            rol: "Dirección de Tecnología y Desarrollo (DTD)",
+            fecha: "28/01/2026",
+            hora: "10:00",
+            observacion: "Validación técnica aprobada (HU-INT-07).",
+            huRef: "HU-INT-07"
+          },
+          {
+            evento: "Paso a producción y publicación",
+            estadoAnterior: "OCULTO",
+            estadoNuevo: "PUBLICADO",
+            usuario: "Carlos Mena",
+            rol: "Dirección de Tecnología y Desarrollo (DTD)",
+            fecha: "02/02/2026",
+            hora: "14:00",
+            observacion: "Despliegue de producción completado (HU-INT-13).",
+            huRef: "HU-INT-15"
+          }
         ]
       }
     ]
@@ -591,13 +701,15 @@ export const INITIAL_INSTITUCIONES: Institucion[] = [
         codigoServicio: "SRV-SRI-001",
         descripcion: "Información del catastro tributario de personas naturales y jurídicas, actividades económicas y estado del RUC.",
         estado: "PUBLICADO",
+        etapaActual: "Publicado",
+        trazabilidadExpedienteId: "EXP-2026-001",
         version: "v3.0.0",
         tipoConsumo: "Servicio Web (REST/JSON)",
         baseLegal: "Código Tributario del Ecuador - Res. 004-DN-2023",
         fechaIntegracion: "19/01/2026",
-        ultimaActualizacion: "05/03/2026",
-        responsableDGR: "Dra. Valeria Paredes (DGR)",
-        responsableDTD: "Ing. Marco Andrade (DTD)",
+        ultimaActualizacion: "25/02/2026",
+        responsableDGR: "María Torres (DGR)",
+        responsableDTD: "Carlos Mena (DTD)",
         microservicio: {
           nombre: "ms-sri-ruc-catastro",
           version: "3.0.0",
@@ -610,7 +722,7 @@ export const INITIAL_INSTITUCIONES: Institucion[] = [
           clasificado: true,
           fechaInforme: "17/01/2026",
           nroInforme: "INF-DPI-2026-0018",
-          responsableDPI: "Mgs. Patricio Silva (DPI)",
+          responsableDPI: "Daniela Ruiz (DPI)",
           archivoInforme: "Informe_Clasificacion_SRI_RUC.pdf"
         },
         campos: [
@@ -619,24 +731,50 @@ export const INITIAL_INSTITUCIONES: Institucion[] = [
           { id: "c-16", nombre: "estadoContribuyente", tipo: "Texto", descripcion: "Estado del RUC (Activo, Pasivo, Suspendido)", clasificacion: "Accesible", estadoRevision: "Valido" },
           { id: "c-17", nombre: "tipoContribuyente", tipo: "Texto", descripcion: "Persona Natural, Sociedad, RIMPE, etc.", clasificacion: "Accesible", estadoRevision: "Valido" },
           { id: "c-18", nombre: "actividadEconomicaPrincipal", tipo: "Texto", descripcion: "Descripción de la actividad según CIIU", clasificacion: "Accesible", estadoRevision: "Valido" },
-          { id: "c-19", nombre: "obligadoContabilidad", tipo: "Booleano", descripcion: "Indicador S/N de obligación contable", clasificacion: "Accesible", estadoRevision: "Valido" }
+          { id: "c-19", nombre: "obligadoLlevarContabilidad", tipo: "Booleano", descripcion: "Indicador S/N de obligación contable", clasificacion: "Accesible", estadoRevision: "Valido" }
+        ],
+        trazabilidadEventos: [
+          {
+            evento: "Fuente incorporada al catálogo",
+            estadoAnterior: "Borrador",
+            estadoNuevo: "OCULTO",
+            usuario: "Carlos Mena",
+            rol: "Dirección de Tecnología y Desarrollo (DTD)",
+            fecha: "15/01/2026",
+            hora: "09:30",
+            observacion: "Validación técnica aprobada (HU-INT-07).",
+            huRef: "HU-INT-07"
+          },
+          {
+            evento: "Paso a producción y publicación",
+            estadoAnterior: "OCULTO",
+            estadoNuevo: "PUBLICADO",
+            usuario: "Carlos Mena",
+            rol: "Dirección de Tecnología y Desarrollo (DTD)",
+            fecha: "19/01/2026",
+            hora: "11:00",
+            observacion: "Microservicio desplegado en producción.",
+            huRef: "HU-INT-15"
+          }
         ]
       },
       {
         id: "FNT-004",
         institucionId: "INST-002",
         institucionNombre: "Servicio de Rentas Internas",
-        nombre: "Avalúo y Catastro Vehicular",
+        nombre: "Catastro de Vehículos y Avalúos Fiscales",
         codigoServicio: "SRV-SRI-002",
-        descripcion: "Valores de avalúo comercial fiscal, impuesto a la propiedad vehicular y características básicas del automotor.",
+        descripcion: "Valores de avalúo comercial y fiscal para cálculo de impuesto a la propiedad vehicular.",
         estado: "OCULTO",
+        etapaActual: "Validación en preproducción",
+        trazabilidadExpedienteId: "EXP-2026-002",
         version: "v1.0.0-rc2",
         tipoConsumo: "Servicio Web (REST/JSON)",
         baseLegal: "Ley de Régimen Tributario Interno - Res. 004-DN-2023",
         fechaIntegracion: "En integración técnica",
         ultimaActualizacion: "15/03/2026",
-        responsableDGR: "Lcdo. Fernando Cueva (DGR)",
-        responsableDTD: "Ing. Sofía Morales (DTD)",
+        responsableDGR: "María Torres (DGR)",
+        responsableDTD: "Carlos Mena (DTD)",
         microservicio: {
           nombre: "ms-sri-vehiculos-avaluo",
           version: "1.0.0-rc2",
@@ -646,8 +784,8 @@ export const INITIAL_INSTITUCIONES: Institucion[] = [
         clasificacionDPI: {
           clasificado: true,
           fechaInforme: "10/03/2026",
-          nroInforme: "INF-DPI-2026-0045",
-          responsableDPI: "Mgs. Patricio Silva (DPI)",
+          nroInforme: "INF-DPI-2026-0035",
+          responsableDPI: "Daniela Ruiz (DPI)",
           archivoInforme: "Informe_Clasificacion_SRI_Vehiculos.pdf"
         },
         campos: [
@@ -656,6 +794,19 @@ export const INITIAL_INSTITUCIONES: Institucion[] = [
           { id: "c-22", nombre: "anioFabricacion", tipo: "Numérico", descripcion: "Año de fabricación del automotor", clasificacion: "Accesible", estadoRevision: "Valido" },
           { id: "c-23", nombre: "avaluoFiscal", tipo: "Numérico", descripcion: "Valor de avalúo vigente según base SRI", clasificacion: "Accesible", estadoRevision: "Valido" },
           { id: "c-24", nombre: "historialExoneraciones", tipo: "JSON", descripcion: "Detalle de beneficios tributarios aplicados", clasificacion: "Confidencial", requiereJustificacion: true, estadoRevision: "Valido" }
+        ],
+        trazabilidadEventos: [
+          {
+            evento: "Fuente incorporada en catálogo (OCULTO)",
+            estadoAnterior: "Borrador",
+            estadoNuevo: "OCULTO",
+            usuario: "Carlos Mena",
+            rol: "Dirección de Tecnología y Desarrollo (DTD)",
+            fecha: "15/03/2026",
+            hora: "10:32",
+            observacion: "Validación técnica favorable (HU-INT-07). Registrado en catálogo interno en estado OCULTO.",
+            huRef: "HU-INT-07"
+          }
         ]
       }
     ]
@@ -665,9 +816,9 @@ export const INITIAL_INSTITUCIONES: Institucion[] = [
     nombre: "Agencia Nacional de Tránsito",
     sigla: "ANT",
     sector: "Público - Función Ejecutiva",
-    codigoInstitucion: "1768134590001",
+    codigoInstitucion: "1768137350001",
     contactoCoordinador: {
-      nombreTitular: "Ing. Pamela Játiva",
+      nombreTitular: "Dra. Pamela Játiva",
       correoTitular: "pamela.jativa@ant.gob.ec",
       nombreSuplente: "Abg. Diego Narváez",
       correoSuplente: "diego.narvaez@ant.gob.ec",
@@ -682,13 +833,15 @@ export const INITIAL_INSTITUCIONES: Institucion[] = [
         codigoServicio: "SRV-ANT-001",
         descripcion: "Consulta de tipo de licencia otorgada, puntos vigentes, restricciones médicas y fecha de caducidad.",
         estado: "PUBLICADO",
+        etapaActual: "Publicado",
+        trazabilidadExpedienteId: "EXP-2026-001",
         version: "v2.0.0",
         tipoConsumo: "Servicio Web (REST/JSON)",
         baseLegal: "Ley Orgánica de Transporte Terrestre, Tránsito y Seguridad Vial",
         fechaIntegracion: "25/01/2026",
         ultimaActualizacion: "28/02/2026",
-        responsableDGR: "Dra. Valeria Paredes (DGR)",
-        responsableDTD: "Ing. Marco Andrade (DTD)",
+        responsableDGR: "María Torres (DGR)",
+        responsableDTD: "Carlos Mena (DTD)",
         microservicio: {
           nombre: "ms-ant-licencias",
           version: "2.0.0",
@@ -701,7 +854,7 @@ export const INITIAL_INSTITUCIONES: Institucion[] = [
           clasificado: true,
           fechaInforme: "22/01/2026",
           nroInforme: "INF-DPI-2026-0021",
-          responsableDPI: "Mgs. Patricio Silva (DPI)",
+          responsableDPI: "Daniela Ruiz (DPI)",
           archivoInforme: "Informe_Clasificacion_ANT_Licencias.pdf"
         },
         campos: [
@@ -709,19 +862,45 @@ export const INITIAL_INSTITUCIONES: Institucion[] = [
           { id: "c-26", nombre: "puntosDisponibles", tipo: "Numérico", descripcion: "Saldo de puntos sobre base de 30", clasificacion: "Accesible", estadoRevision: "Valido" },
           { id: "c-27", nombre: "fechaCaducidad", tipo: "Fecha", descripcion: "Fecha límite de vigencia de la licencia", clasificacion: "Accesible", estadoRevision: "Valido" },
           { id: "c-28", nombre: "restriccionesMedicas", tipo: "Texto", descripcion: "Observaciones de conducción (lentes, prótesis)", clasificacion: "Confidencial", requiereJustificacion: true, estadoRevision: "Valido" }
+        ],
+        trazabilidadEventos: [
+          {
+            evento: "Fuente incorporada al catálogo",
+            estadoAnterior: "Borrador",
+            estadoNuevo: "OCULTO",
+            usuario: "Carlos Mena",
+            rol: "Dirección de Tecnología y Desarrollo (DTD)",
+            fecha: "20/01/2026",
+            hora: "09:00",
+            observacion: "Validación técnica aprobada (HU-INT-07).",
+            huRef: "HU-INT-07"
+          },
+          {
+            evento: "Paso a producción y publicación",
+            estadoAnterior: "OCULTO",
+            estadoNuevo: "PUBLICADO",
+            usuario: "Carlos Mena",
+            rol: "Dirección de Tecnología y Desarrollo (DTD)",
+            fecha: "25/01/2026",
+            hora: "15:00",
+            observacion: "Publicación formal en catálogo.",
+            huRef: "HU-INT-15"
+          }
         ]
       },
       {
         id: "FNT-006",
         institucionId: "INST-003",
         institucionNombre: "Agencia Nacional de Tránsito",
-        nombre: "Registro Histórico de Infracciones de Tránsito",
+        nombre: "Registro Histórico de Infracciones de Tránsito (Legacy)",
         codigoServicio: "SRV-ANT-002",
-        descripcion: "Fuente histórica consolidada de citaciones y fotomultas (Desactivada por migración a plataforma unificada de tránsito).",
+        descripcion: "Servicio histórico de multas y citaciones vehiculares anteriores a la unificación del sistema AXIS.",
         estado: "DESACTIVADO",
-        version: "v1.2.0-legacy",
+        etapaActual: "Desactivado por novedad",
+        trazabilidadExpedienteId: "EXP-2026-001",
+        version: "v1.2.0",
         tipoConsumo: "Servicio Web (REST/JSON)",
-        baseLegal: "Oficio Nro. ANT-DE-2026-0412 / Res. 004-DN-2023",
+        baseLegal: "Resolución N° 004-DN-2023 - Procedimiento de Administración de Catálogo",
         fechaIntegracion: "10/11/2025",
         ultimaActualizacion: "14/03/2026",
         responsableDGR: "María Torres (DGR)",
@@ -732,8 +911,8 @@ export const INITIAL_INSTITUCIONES: Institucion[] = [
         },
         clasificacionDPI: {
           clasificado: true,
-          fechaInforme: "08/11/2025",
-          nroInforme: "INF-DPI-2025-0189",
+          fechaInforme: "05/11/2025",
+          nroInforme: "INF-DPI-2025-0089",
           responsableDPI: "Daniela Ruiz (DPI)",
           archivoInforme: "Informe_Clasificacion_ANT_Infracciones.pdf"
         },
@@ -746,8 +925,54 @@ export const INITIAL_INSTITUCIONES: Institucion[] = [
           {
             fecha: "14/03/2026",
             tipo: "Supresión / Desactivación",
-            detalle: "Fuente desactivada formalmente por requerimiento de novedad NOV-2026-001. Se conserva historial inmutable sin borrado físico.",
+            detalle: "Fuente desactivada formalmente por requerimiento de novedad NOV-2026-001. Se conserva historial inmutable sin borrado físico (HU-INT-18 / Res. 004).",
             responsable: "María Torres (DGR)"
+          }
+        ],
+        novedadesAsociadas: [
+          {
+            id: "NOV-2026-001",
+            codigo: "NOV-2026-001",
+            tipo: "Supresión de Fuente",
+            estado: "Atendida / Aprobada",
+            fecha: "14/03/2026",
+            resultado: "Fuente desactivada en catálogo. Historial preservado sin borrado físico.",
+            responsable: "María Torres (DGR)"
+          }
+        ],
+        trazabilidadEventos: [
+          {
+            evento: "Fuente incorporada al catálogo",
+            estadoAnterior: "Borrador",
+            estadoNuevo: "OCULTO",
+            usuario: "Carlos Mena",
+            rol: "Dirección de Tecnología y Desarrollo (DTD)",
+            fecha: "05/11/2025",
+            hora: "10:00",
+            observacion: "Validación técnica aprobada.",
+            huRef: "HU-INT-07"
+          },
+          {
+            evento: "Fuente publicada",
+            estadoAnterior: "OCULTO",
+            estadoNuevo: "PUBLICADO",
+            usuario: "Carlos Mena",
+            rol: "Dirección de Tecnología y Desarrollo (DTD)",
+            fecha: "10/11/2025",
+            hora: "11:30",
+            observacion: "Paso a producción completado.",
+            huRef: "HU-INT-15"
+          },
+          {
+            evento: "Fuente desactivada por novedad (HU-INT-18)",
+            estadoAnterior: "PUBLICADO",
+            estadoNuevo: "DESACTIVADO",
+            usuario: "María Torres",
+            rol: "Dirección de Gestión y Registro (DGR)",
+            fecha: "14/03/2026",
+            hora: "11:30",
+            observacion: "Fuente desactivada conforme a trámite NOV-2026-001 (Res. 004). Se mantiene historial inmutable.",
+            huRef: "HU-INT-18"
           }
         ]
       }
@@ -755,7 +980,7 @@ export const INITIAL_INSTITUCIONES: Institucion[] = [
   }
 ];
 
-// EXPEDIENTES DE INTEGRACIÓN DE PRUEBA
+// EXPEDIENTES DE INTEGRACIÓN ACTIVOS
 export const INITIAL_EXPEDIENTES: ExpedienteIntegracion[] = [
   {
     id: "EXP-2026-001",
@@ -763,8 +988,8 @@ export const INITIAL_EXPEDIENTES: ExpedienteIntegracion[] = [
     institucionId: "INST-001",
     institucionNombre: "Dirección General de Registro Civil, Identificación y Cedulación",
     institucionSigla: "DIGERCIC",
-    nombreFuente: "Registro de Defunciones y Certificados Digitales",
-    codigoFuente: "SRV-RC-003",
+    nombreFuente: "Registro de Defunciones y Causas de Fallecimiento",
+    codigoFuente: "SRV-RC-004",
     descripcion: "Consulta en tiempo real del acta de defunción, causa de defunción codificada CIE-10, lugar de defunción y datos del declarante para cruce con entidades de seguridad social y bancarias.",
     fechaRadicacion: "18/03/2026 09:30",
     ultimaActualizacion: "22/03/2026 14:15",
@@ -968,11 +1193,173 @@ export const INITIAL_EXPEDIENTES: ExpedienteIntegracion[] = [
         etapaNumero: 1,
         etapaNombre: "Registro de Fuente Candidata",
         actorRol: "COORDINADOR_SINARP",
-        actorNombre: "Andrea López (Registro Civil)",
-        accion: "Envío inicial a revisión",
+        actorNombre: "Carlos Mendoza (SRI)",
+        accion: "Envío inicial a revisión formal",
         version: "v1.0.0",
         huRef: "HU-INT-03"
       }
+    ]
+  },
+  {
+    id: "EXP-2026-003",
+    codigoExpediente: "INT-2026-003",
+    institucionId: "INST-003",
+    institucionNombre: "Agencia Nacional de Tránsito",
+    institucionSigla: "ANT",
+    nombreFuente: "Registro de Títulos Habilitantes de Transporte Público",
+    codigoFuente: "SRV-ANT-005",
+    descripcion: "Consulta de operadoras de transporte, rutas autorizadas, flota vehicular vinculada y permisos de operación interprovincial.",
+    fechaRadicacion: "10/03/2026 10:00",
+    ultimaActualizacion: "14/03/2026 16:30",
+    versionActual: "v1.0.0",
+    etapaActual: "ETAPA_3_CORRECCION_COORDINADOR",
+    responsableActualRol: "COORDINADOR_SINARP",
+    responsableActualNombre: "Andrea López (Coordinador ANT)",
+    estadoGeneral: "Con observaciones",
+    documentosSoporte: [
+      {
+        id: "doc-6",
+        nombre: "Oficio ANT-DE-2026-0312",
+        tipoRequerido: "PDF Firmado",
+        archivoNombre: "ANT-DE-2026-0312.pdf",
+        archivoTamano: "1.2 MB",
+        fechaCarga: "10/03/2026 10:05",
+        estadoRevision: "Aprobado",
+        esReferencial: true
+      },
+      {
+        id: "doc-7",
+        nombre: "Ficha técnica de interoperabilidad",
+        tipoRequerido: "PDF",
+        archivoNombre: "Ficha_Tecnica_Transporte_v1.pdf",
+        archivoTamano: "2.1 MB",
+        fechaCarga: "10/03/2026 10:10",
+        estadoRevision: "Observado",
+        observacionDGR: "Falta detallar la periodicidad de sincronización de rutas y la estructura de códigos de operadoras.",
+        esReferencial: true
+      }
+    ],
+    camposCandidatos: [
+      { id: "f-11", nombre: "rucOperadora", tipo: "Alfanumérico", descripcion: "RUC de la empresa de transporte", clasificacion: "Accesible", estadoRevision: "Valido" },
+      { id: "f-12", nombre: "nombreComercial", tipo: "Texto", descripcion: "Razón social u operadora", clasificacion: "Accesible", estadoRevision: "Valido" },
+      { id: "f-13", nombre: "numeroResolucionHabilitante", tipo: "Texto", descripcion: "Número de acto administrativo", clasificacion: "Accesible", estadoRevision: "Observado", observacionDGR: "Debe aclararse si incluye prórrogas o resoluciones canceladas." }
+    ],
+    historial: [
+      {
+        id: "h-08",
+        fecha: "10/03/2026",
+        hora: "10:15",
+        etapaNumero: 1,
+        etapaNombre: "Registro de Fuente Candidata",
+        actorRol: "COORDINADOR_SINARP",
+        actorNombre: "Andrea López (Coordinador ANT)",
+        accion: "Envío inicial de expediente",
+        version: "v1.0.0",
+        huRef: "HU-INT-03"
+      },
+      {
+        id: "h-09",
+        fecha: "14/03/2026",
+        hora: "16:30",
+        etapaNumero: 2,
+        etapaNombre: "Revisión Documental y de Campos",
+        actorRol: "DGR",
+        actorNombre: "María Torres (DGR)",
+        accion: "Observaciones registradas — Expediente devuelto para corrección",
+        version: "v1.0.0",
+        observaciones: "Se observaron 1 documento técnico y 1 campo candidato. Subsanar para continuar el flujo sin reiniciar el trámite.",
+        huRef: "HU-INT-04"
+      }
+    ]
+  },
+  {
+    id: "EXP-2026-004",
+    codigoExpediente: "INT-2026-004",
+    institucionId: "INST-001",
+    institucionNombre: "Dirección General de Registro Civil, Identificación y Cedulación",
+    institucionSigla: "DIGERCIC",
+    nombreFuente: "Validación Biométrica Dactilar y Facial",
+    codigoFuente: "SRV-RC-005",
+    descripcion: "Servicio de autenticación y verificación de identidad 1:1 mediante cotejo biométrico dactilar y rasgos fisonómicos.",
+    fechaRadicacion: "01/03/2026 08:30",
+    ultimaActualizacion: "20/03/2026 12:00",
+    versionActual: "v1.0.0",
+    etapaActual: "ETAPA_8_APROBACION_DGR",
+    responsableActualRol: "DGR",
+    responsableActualNombre: "María Torres (DGR)",
+    estadoGeneral: "Aprobada",
+    documentosSoporte: [
+      {
+        id: "doc-8",
+        nombre: "Oficio formal DIGERCIC-2026-0150",
+        tipoRequerido: "PDF Firmado",
+        archivoNombre: "DIGERCIC-2026-0150.pdf",
+        archivoTamano: "1.5 MB",
+        fechaCarga: "01/03/2026 08:35",
+        estadoRevision: "Aprobado",
+        esReferencial: true
+      },
+      {
+        id: "doc-9",
+        nombre: "Protocolo de Seguridad y Biometría",
+        tipoRequerido: "PDF",
+        archivoNombre: "Protocolo_Biometria_RC.pdf",
+        archivoTamano: "4.8 MB",
+        fechaCarga: "01/03/2026 08:40",
+        estadoRevision: "Aprobado",
+        esReferencial: true
+      }
+    ],
+    camposCandidatos: [
+      { id: "f-14", nombre: "cedula", tipo: "Alfanumérico", descripcion: "Cédula del ciudadano a verificar", clasificacion: "Accesible", estadoRevision: "Valido" },
+      { id: "f-15", nombre: "templateBiometrico", tipo: "Alfanumérico", descripcion: "Vector dactilar encriptado ANSI-NIST", clasificacion: "Confidencial", requiereJustificacion: true, estadoRevision: "Valido" },
+      { id: "f-16", nombre: "porcentajeCoincidencia", tipo: "Numérico", descripcion: "Score de match biométrico (0-100%)", clasificacion: "Accesible", estadoRevision: "Valido" }
+    ],
+    validacionTecnicaDTD: {
+      aprobado: true,
+      fecha: "05/03/2026 10:00",
+      responsable: "Carlos Mena (DTD)",
+      observacionTecnica: "Arquitectura de microservicio validada. Registrada en catálogo como OCULTO.",
+      estadoCatalogoAsignado: "OCULTO"
+    },
+    clasificacionDPI: {
+      completada: true,
+      fecha: "10/03/2026 14:00",
+      responsable: "Daniela Ruiz (DPI)",
+      numeroInforme: "INF-DPI-2026-0030",
+      informeAdjunto: "Informe_Clasificacion_Biometria.pdf",
+      observaciones: "Template biométrico clasificado estrictamente como Confidencial por tratarse de dato biométrico sensible (Art. 25 LOPDP)."
+    },
+    desplieguePreDTD: {
+      completado: true,
+      fecha: "12/03/2026 17:00",
+      responsable: "Carlos Mena (DTD)",
+      microservicioNombre: "ms-rc-biometria",
+      version: "1.0.0",
+      endpointPre: "https://pre-api.dinarp.gob.ec/v1/rc/biometria"
+    },
+    validacionPreDGR: {
+      evaluada: true,
+      resultado: "Favorable",
+      fecha: "18/03/2026 11:30",
+      responsable: "María Torres (DGR)",
+      observacionesValidacion: "Pruebas de latencia y matching biométrico satisfactorias en ambiente preproducción."
+    },
+    aprobacionDGR: {
+      aprobada: true,
+      fecha: "20/03/2026 12:00",
+      responsable: "María Torres (DGR)",
+      formularioAutomatizadoNro: "FORM-DGR-2026-042",
+      conclusiones: "Validación funcional completada con dictamen favorable. Se aprueba la integración y se remite a DTD para paso a producción."
+    },
+    historial: [
+      { id: "h-10", fecha: "01/03/2026", hora: "08:45", etapaNumero: 1, etapaNombre: "Registro de Fuente Candidata", actorRol: "COORDINADOR_SINARP", actorNombre: "Andrea López", accion: "Envío formal a revisión", version: "v1.0.0", huRef: "HU-INT-03" },
+      { id: "h-11", fecha: "03/03/2026", hora: "11:00", etapaNumero: 2, etapaNombre: "Revisión Documental y de Campos", actorRol: "DGR", actorNombre: "María Torres", accion: "Aprobación documental DGR", version: "v1.0.0", huRef: "HU-INT-04" },
+      { id: "h-12", fecha: "05/03/2026", hora: "10:00", etapaNumero: 4, etapaNombre: "Validación Técnica e Ingreso a Catálogo", actorRol: "DTD", actorNombre: "Carlos Mena", accion: "Validación técnica y registro como OCULTO", version: "v1.0.0", huRef: "HU-INT-06 / HU-INT-07" },
+      { id: "h-13", fecha: "10/03/2026", hora: "14:00", etapaNumero: 5, etapaNombre: "Clasificación DPI", actorRol: "DPI", actorNombre: "Daniela Ruiz", accion: "Informe INF-DPI-2026-0030 emitido", version: "v1.0.0", huRef: "HU-INT-08" },
+      { id: "h-14", fecha: "12/03/2026", hora: "17:00", etapaNumero: 5, etapaNombre: "Despliegue Preproducción", actorRol: "DTD", actorNombre: "Carlos Mena", accion: "Microservicio desplegado en preproducción", version: "v1.0.0", huRef: "HU-INT-09" },
+      { id: "h-15", fecha: "18/03/2026", hora: "11:30", etapaNumero: 6, etapaNombre: "Validación Funcional en Preproducción", actorRol: "DGR", actorNombre: "María Torres", accion: "Validación favorable registrada", version: "v1.0.0", huRef: "HU-INT-10" },
+      { id: "h-16", fecha: "20/03/2026", hora: "12:00", etapaNumero: 8, etapaNombre: "Aprobación de la Integración", actorRol: "DGR", actorNombre: "María Torres", accion: "Formulario automatizado completado y aprobación emitida", version: "v1.0.0", huRef: "HU-INT-12" }
     ]
   }
 ];
@@ -981,16 +1368,19 @@ export const INITIAL_EXPEDIENTES: ExpedienteIntegracion[] = [
 export const INITIAL_NOVEDADES: NovedadCatalogo[] = [
   {
     id: "NOV-2026-001",
-    nroTramite: "NOV-CAT-2026-001",
-    organismoSolicitante: "Agencia Nacional de Tránsito (ANT) / Ministerio de Transporte",
+    nroTramite: "NOV-2026-001",
+    organismoSolicitante: "Agencia Nacional de Tránsito (ANT)",
     tipoNovedad: "Supresión",
-    fechaRadicacion: "12/03/2026 10:00",
-    estado: "Aplicada (Fuente Desactivada)",
+    fechaRadicacion: "12/03/2026",
+    ultimaActualizacion: "14/03/2026",
+    estado: "Finalizada",
     fuentesAfectadas: [
       {
         fuenteId: "FNT-006",
         fuenteNombre: "Registro Histórico de Infracciones de Tránsito (Legacy)",
         institucionNombre: "Agencia Nacional de Tránsito",
+        codigoServicio: "SRV-ANT-002",
+        cantidadCampos: 3,
         estadoPrevio: "PUBLICADO",
         estadoNuevo: "DESACTIVADO"
       }
@@ -998,7 +1388,8 @@ export const INITIAL_NOVEDADES: NovedadCatalogo[] = [
     documentoSoporteOficio: {
       numeroOficio: "ANT-DE-2026-0412-O",
       fechaOficio: "10/03/2026",
-      archivoPdf: "Oficio_Supresion_Servicio_ANT_Legacy.pdf"
+      archivoPdf: "Oficio_Supresion_Servicio_ANT_Legacy.pdf",
+      archivoTamano: "1.8 MB"
     },
     evaluacionDGR: {
       responsable: "María Torres (DGR)",
@@ -1007,23 +1398,34 @@ export const INITIAL_NOVEDADES: NovedadCatalogo[] = [
       conceptoFuncional: "Procede la desactivación en el Catálogo. Se inhabilita para nuevas solicitudes de consumo manteniendo el histórico y bitácora intacta.",
       procede: true
     },
+    resultadoAplicado: {
+      tipoResultado: "Fuente desactivada",
+      fechaAplicacion: "14/03/2026",
+      responsable: "María Torres (DGR)",
+      observacion: "Fuente FNT-006 marcada como DESACTIVADO en el Catálogo sin borrado físico. Se conserva su expediente e historial inmutable."
+    },
     historialEventos: [
-      { fecha: "12/03/2026 10:00", actor: "Mesa de Entrada / DGR", accion: "Radicación de requerimiento", detalle: "Radicado requerimiento de supresión de fuente emitido por ANT." },
-      { fecha: "14/03/2026 11:30", actor: "María Torres (DGR)", accion: "Dictamen favorable y desactivación", detalle: "Fuente FNT-006 marcada como DESACTIVADO en el Catálogo sin borrado físico." }
+      { fecha: "12/03/2026", hora: "10:00", actor: "María Torres", rol: "DGR", accion: "Novedad radicada", detalle: "Radicado requerimiento formal de supresión de fuente emitido por ANT mediante oficio ANT-DE-2026-0412-O." },
+      { fecha: "13/03/2026", hora: "14:30", actor: "María Torres", rol: "DGR", accion: "Validación legal y funcional iniciada", detalle: "Análisis de pertinencia jurídica según Resolución N° 004-DN-2023 y revisión de consumos activos." },
+      { fecha: "14/03/2026", hora: "10:15", actor: "María Torres", rol: "DGR", accion: "Dictamen favorable registrado", detalle: "Concepto legal y funcional favorable. La novedad procede formalmente." },
+      { fecha: "14/03/2026", hora: "11:30", actor: "María Torres", rol: "DGR", accion: "Fuente desactivada en catálogo", detalle: "Estado de FNT-006 actualizado a DESACTIVADO en el Catálogo de Interoperabilidad. Historial conservado." }
     ]
   },
   {
     id: "NOV-2026-002",
-    nroTramite: "NOV-CAT-2026-002",
+    nroTramite: "NOV-2026-002",
     organismoSolicitante: "Ministerio de Telecomunicaciones y de la Sociedad de la Información (MINTEL)",
     tipoNovedad: "Fusión",
-    fechaRadicacion: "19/03/2026 14:20",
-    estado: "En validación legal y funcional",
+    fechaRadicacion: "19/03/2026",
+    ultimaActualizacion: "21/03/2026",
+    estado: "En validación",
     fuentesAfectadas: [
       {
         fuenteId: "FNT-001",
         fuenteNombre: "Datos Demográficos e Identidad",
-        institucionNombre: "Dirección General de Registro Civil",
+        institucionNombre: "Dirección General de Registro Civil, Identificación y Cedulación",
+        codigoServicio: "SRV-RC-001",
+        cantidadCampos: 9,
         estadoPrevio: "PUBLICADO",
         estadoNuevo: "PUBLICADO"
       }
@@ -1031,21 +1433,60 @@ export const INITIAL_NOVEDADES: NovedadCatalogo[] = [
     documentoSoporteOficio: {
       numeroOficio: "MINTEL-SUBGOB-2026-0188-OF",
       fechaOficio: "18/03/2026",
-      archivoPdf: "Requerimiento_Fusion_Padron_Electoral.pdf"
+      archivoPdf: "Requerimiento_Fusion_Servicios_Identidad.pdf",
+      archivoTamano: "2.4 MB"
     },
     evaluacionDGR: {
       responsable: "María Torres (DGR)",
-      conceptoLegal: "En análisis legal de competencias concurrentes CNE - Registro Civil.",
-      conceptoFuncional: "Se evalúa fusionar el padrón electoral pasivo dentro del microservicio de identidad.",
-      procede: false
+      conceptoLegal: "En análisis técnico-jurídico sobre la integración de metadatos registrales.",
+      conceptoFuncional: "Se evalúa consolidar campos de padrón pasivo dentro del microservicio principal de identidad.",
+      procede: undefined
     },
     notificacionFusion: {
       requiereNotificacion: true,
       notificadoCoordinador: false
     },
     historialEventos: [
-      { fecha: "19/03/2026 14:20", actor: "Mesa de Entrada / DGR", accion: "Radicación de requerimiento", detalle: "Radicado requerimiento de fusión de servicios registrales." }
+      { fecha: "19/03/2026", hora: "14:20", actor: "María Torres", rol: "DGR", accion: "Novedad radicada", detalle: "Radicado requerimiento de fusión de servicios registrales remitido por MINTEL." },
+      { fecha: "21/03/2026", hora: "09:00", actor: "María Torres", rol: "DGR", accion: "Validación legal y funcional en curso", detalle: "Revisión documental preliminar y análisis de impacto en esquemas REST." }
+    ]
+  },
+  {
+    id: "NOV-2026-003",
+    nroTramite: "NOV-2026-003",
+    organismoSolicitante: "Gobierno Autónomo Descentralizado de Cuenca",
+    tipoNovedad: "Eliminación",
+    fechaRadicacion: "05/03/2026",
+    ultimaActualizacion: "08/03/2026",
+    estado: "No procede",
+    fuentesAfectadas: [
+      {
+        fuenteId: "FNT-003",
+        fuenteNombre: "Registro Único de Contribuyentes (RUC)",
+        institucionNombre: "Servicio de Rentas Internas",
+        codigoServicio: "SRV-SRI-001",
+        cantidadCampos: 6,
+        estadoPrevio: "PUBLICADO",
+        estadoNuevo: "PUBLICADO"
+      }
+    ],
+    documentoSoporteOficio: {
+      numeroOficio: "GAD-CUE-DIR-2026-0054-O",
+      fechaOficio: "03/03/2026",
+      archivoPdf: "Solicitud_Baja_Servicio_Tributario.pdf",
+      archivoTamano: "1.1 MB"
+    },
+    evaluacionDGR: {
+      responsable: "María Torres (DGR)",
+      fechaDictamen: "08/03/2026",
+      conceptoLegal: "El solicitante (GAD) no es la entidad rectora ni titular de la fuente requerida (SRI). Conforme al Art. 12 de la Res. 004, solo la institución emisora puede solicitar modificaciones de catálogo.",
+      conceptoFuncional: "La fuente mantiene 48 convenios y autorizaciones activas a nivel nacional. No procede la eliminación.",
+      procede: false,
+      justificacionNoProcede: "Desestimada por falta de titularidad del solicitante conforme a la Resolución 004-DN-2023. La fuente permanece activa en catálogo."
+    },
+    historialEventos: [
+      { fecha: "05/03/2026", hora: "11:15", actor: "María Torres", rol: "DGR", accion: "Novedad radicada", detalle: "Ingreso de trámite por mesa de partes." },
+      { fecha: "08/03/2026", hora: "16:00", actor: "María Torres", rol: "DGR", accion: "Dictamen No Procede registrado", detalle: "Requerimiento desestimado formalmente por incompetencia de la entidad solicitante." }
     ]
   }
 ];
-

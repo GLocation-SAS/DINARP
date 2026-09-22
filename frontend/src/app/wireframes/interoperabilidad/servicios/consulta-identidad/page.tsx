@@ -16,6 +16,8 @@ import {
   Lock,
   Code2,
   Copy,
+  Eye,
+  FileText as FileTextIcon,
 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -37,9 +39,13 @@ import {
 } from "@/components/ui/breadcrumb";
 import { DetailList } from "@/components/ui/detail-list";
 import { WireframeDashboardLayout } from "../../../components/wireframe-dashboard-layout";
+import { OnboardingGuide } from "@/components/ui/onboarding-guide";
 
 export default function WireframeDetalleServicioPage() {
   const router = useRouter();
+
+  const [pruebaState, setPruebaState] = React.useState<"idle" | "success" | "error" | "soporte_pendiente" | "soporte_resuelto">("idle");
+  const [onboardingMode, setOnboardingMode] = React.useState<"detalle" | "prueba" | "soporte">("detalle");
 
   const datosHabilitados = [
     { campo: "Número de identificación", codigo: "cedula", tipo: "String(10)" },
@@ -50,8 +56,37 @@ export default function WireframeDetalleServicioPage() {
     { campo: "Estado civil", codigo: "estado_civil", tipo: "String(30)" },
   ];
 
+  let steps: any[] = [];
+  if (onboardingMode === "detalle") {
+    steps = [
+      { targetId: "info-principal", title: "Información principal", content: "Aquí puedes consultar la institución, fuente, solicitud asociada y estado actual del paquete." },
+      { targetId: "campos-autorizados", title: "Campos autorizados", content: "Estos son únicamente los campos que fueron aprobados durante tu solicitud." },
+      { targetId: "documentos-paquete", title: "Documentos", content: "Aquí puedes consultar los documentos asociados a la habilitación del servicio." },
+      { targetId: "btn-seguimiento", title: "Seguimiento", content: "Consulta el historial de creación, validación, entrega y pruebas del paquete." }
+    ];
+  } else if (onboardingMode === "prueba") {
+    steps = [
+      { targetId: "bloque-prueba", title: "Prueba de consumo", content: "Realiza una prueba para confirmar que tu institución puede consumir correctamente la información habilitada." },
+      { targetId: "resultado-prueba", title: "Resultado de prueba", content: "Registra si el consumo fue favorable o presentó algún error." }
+    ];
+    if (pruebaState === "success") {
+      steps.push({ targetId: "resultado-prueba", title: "Prueba exitosa", content: "La prueba fue satisfactoria. El proceso de acceso a interoperabilidad queda completado." });
+    } else if (pruebaState === "error") {
+      steps.push({ targetId: "resultado-prueba", title: "Reportar error", content: "Si encuentras un problema durante el consumo, puedes reportarlo para recibir soporte." });
+    }
+  } else if (onboardingMode === "soporte") {
+    steps = [
+      { targetId: "soporte-ticket", title: "Número de seguimiento", content: "Tu reporte tiene un número de seguimiento para consultar su atención." },
+      { targetId: "soporte-estado", title: "Estado del requerimiento", content: "Aquí puedes consultar el avance del soporte técnico." }
+    ];
+    if (pruebaState === "soporte_resuelto") {
+      steps.push({ targetId: "btn-repetir-prueba", title: "Soporte resuelto", content: "El inconveniente fue atendido. Ahora puedes repetir la prueba de consumo." });
+    }
+  }
+
   return (
     <WireframeDashboardLayout activeMenu="servicios">
+      <OnboardingGuide steps={steps} guideKey={`onboarding-${onboardingMode}-${pruebaState}`} />
       <main className="relative p-4 sm:p-6 lg:p-8 w-full space-y-6 sm:space-y-8">
         {/* Background subtle effect */}
         <div className="absolute top-0 right-0 w-96 h-96 bg-radial from-muted/20 to-transparent pointer-events-none -z-10 blur-3xl opacity-60" />
@@ -119,6 +154,7 @@ export default function WireframeDetalleServicioPage() {
             </Button>
 
             <Button
+              id="btn-seguimiento"
               type="button"
               variant="outline"
               onClick={() => router.push("/wireframes/interoperabilidad/servicios/consulta-identidad/historial")}
@@ -127,6 +163,17 @@ export default function WireframeDetalleServicioPage() {
               <History className="size-4" />
               <span>Ver historial</span>
             </Button>
+
+            {onboardingMode !== "prueba" && (
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => setOnboardingMode("prueba")}
+                className="h-10 px-4 rounded-xl text-xs font-semibold gap-1.5 border-border bg-primary/10"
+              >
+                <span>Probar Onboarding Prueba</span>
+              </Button>
+            )}
 
             <Button
               type="button"
@@ -141,7 +188,7 @@ export default function WireframeDetalleServicioPage() {
         </div>
 
         {/* ── 3. Resumen del Servicio ── */}
-        <Card className="border-border bg-surface shadow-xs">
+        <Card id="info-principal" className="border-border bg-surface shadow-xs">
           <CardHeader className="p-6 pb-2">
             <CardTitle className="text-base font-heading font-bold text-foreground">
               Resumen del servicio
@@ -185,7 +232,7 @@ export default function WireframeDetalleServicioPage() {
         </Card>
 
         {/* ── 4. Datos Habilitados ── */}
-        <Card className="border-border bg-surface shadow-xs">
+        <Card id="campos-autorizados" className="border-border bg-surface shadow-xs">
           <CardHeader className="p-6 pb-3 flex flex-row items-center justify-between space-y-0">
             <div>
               <CardTitle className="text-base font-heading font-bold text-foreground">
@@ -267,6 +314,86 @@ export default function WireframeDetalleServicioPage() {
             />
           </CardContent>
         </Card>
+
+        {/* ── 6. Documentos y respaldos ── */}
+        <Card id="documentos-paquete" className="border-border bg-surface shadow-xs">
+          <CardHeader className="p-6 pb-3">
+            <CardTitle className="text-base font-heading font-bold text-foreground flex items-center gap-2">
+              <Layers className="size-4 text-muted-foreground" />
+              <span>Documentos y respaldos</span>
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="p-6 pt-1 space-y-4">
+            <div className="flex items-center gap-4 p-3 rounded-xl border border-border bg-background">
+              <FileTextIcon className="size-6 text-primary" />
+              <div>
+                <p className="text-sm font-semibold">Resolución de autorización</p>
+                <p className="text-xs text-muted-foreground">PDF • 1.2 MB</p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* ── 7. Prueba de consumo ── */}
+        <Card id="bloque-prueba" className="border-border bg-surface shadow-xs">
+          <CardHeader className="p-6 pb-3">
+            <CardTitle className="text-base font-heading font-bold text-foreground flex items-center gap-2">
+              <Globe className="size-4 text-muted-foreground" />
+              <span>Prueba de consumo en producción</span>
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="p-6 pt-1 space-y-4">
+            <div className="text-sm text-muted-foreground mb-4">
+              Ejecute una prueba para confirmar que los parámetros de conexión y credenciales son correctos.
+            </div>
+            <div id="resultado-prueba" className="flex items-center gap-4 p-4 rounded-xl border border-border bg-background">
+              <Button size="sm" variant="outline" onClick={() => setPruebaState("success")}>Simular Éxito</Button>
+              <Button size="sm" variant="outline" onClick={() => setPruebaState("error")}>Simular Error</Button>
+            </div>
+            {pruebaState === "success" && (
+              <div className="p-4 bg-success/10 text-success border border-success/20 rounded-xl text-sm font-medium">
+                Conexión establecida exitosamente.
+              </div>
+            )}
+            {pruebaState === "error" && (
+              <div className="p-4 bg-destructive/10 text-destructive border border-destructive/20 rounded-xl text-sm font-medium flex flex-col gap-2">
+                <span>Error 403: Credenciales inválidas o expiradas.</span>
+                <Button size="sm" variant="danger" onClick={() => { setOnboardingMode("soporte"); setPruebaState("soporte_pendiente") }}>
+                  Reportar a soporte
+                </Button>
+              </div>
+            )}
+          </CardContent>
+        </Card>
+
+        {/* ── 8. Soporte Técnico (Solo visible si hay ticket) ── */}
+        {(pruebaState === "soporte_pendiente" || pruebaState === "soporte_resuelto") && (
+          <Card className="border-border bg-surface shadow-xs mt-6">
+            <CardHeader className="p-6 pb-3">
+              <CardTitle className="text-base font-heading font-bold text-foreground flex items-center gap-2">
+                <span>Soporte Técnico</span>
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="p-6 pt-1 space-y-4">
+              <div className="flex items-center gap-4">
+                <div id="soporte-ticket" className="text-sm font-semibold">
+                  Ticket #REQ-2026-992
+                </div>
+                <Badge id="soporte-estado" tone={pruebaState === "soporte_resuelto" ? "success" : "warning"} appearance="soft">
+                  {pruebaState === "soporte_resuelto" ? "Resuelto" : "En atención"}
+                </Badge>
+              </div>
+              {pruebaState === "soporte_pendiente" && (
+                <Button size="sm" onClick={() => setPruebaState("soporte_resuelto")}>Simular Resolución</Button>
+              )}
+              {pruebaState === "soporte_resuelto" && (
+                <Button id="btn-repetir-prueba" size="sm" variant="primary" onClick={() => { setOnboardingMode("prueba"); setPruebaState("success"); }}>
+                  Repetir prueba
+                </Button>
+              )}
+            </CardContent>
+          </Card>
+        )}
       </main>
     </WireframeDashboardLayout>
   );

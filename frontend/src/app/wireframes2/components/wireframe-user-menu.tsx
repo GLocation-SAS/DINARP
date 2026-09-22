@@ -23,13 +23,14 @@ import {
   Sparkles
 } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { type MockUser, ROLES_CONFIG } from "../catalogo-interoperabilidad/data/catalogo-data";
+import { type MockUser, type UserRole, ROLES_CONFIG } from "../catalogo-interoperabilidad/data/catalogo-data";
 
 interface WireframeUserMenuProps {
   user: MockUser;
+  onRoleChange?: (role: UserRole) => void;
 }
 
-export function WireframeUserMenu({ user }: WireframeUserMenuProps) {
+export function WireframeUserMenu({ user, onRoleChange }: WireframeUserMenuProps) {
   const [open, setOpen] = useState(false);
 
   const getEmail = (name: string, inst: string) => {
@@ -109,11 +110,33 @@ export function WireframeUserMenu({ user }: WireframeUserMenuProps) {
         <div className="p-2.5 my-1 bg-surface border border-border rounded-md text-[10px] text-muted-foreground leading-relaxed flex items-start gap-2">
           <Info className="size-3.5 text-muted-foreground mt-0.5 shrink-0" />
           <div>
-            <strong className="text-foreground font-semibold">Simulación Wireframe:</strong> En el sistema real, cada usuario autentica con su rol asignado por DINARP.
+            <strong className="text-foreground font-semibold">Modo prototipo · Vista por rol:</strong> En producción el rol será asignado al usuario autenticado.
           </div>
         </div>
 
         <DropdownMenuSeparator className="bg-border/60" />
+
+        {onRoleChange && (
+          <div className="py-1">
+            <span className="px-2 text-[10px] font-semibold text-muted-foreground uppercase tracking-wider mb-1 block">
+              Cambiar rol de visualización
+            </span>
+            {(["COORDINADOR_SINARP", "DGR", "DTD", "DPI"] as UserRole[]).map(role => (
+              <DropdownMenuItem
+                key={role}
+                onClick={() => onRoleChange(role)}
+                className={cn(
+                  "text-xs cursor-pointer justify-between",
+                  user.role === role && "bg-muted font-medium text-foreground"
+                )}
+              >
+                <span>{ROLES_CONFIG[role].shortName}</span>
+                {user.role === role && <CheckCircle2 className="size-3.5 text-foreground" />}
+              </DropdownMenuItem>
+            ))}
+            <DropdownMenuSeparator className="bg-border/60 mt-1" />
+          </div>
+        )}
 
         <DropdownMenuItem asChild className="text-xs cursor-pointer">
           <Link href="/wireframes2" className="flex items-center gap-2">

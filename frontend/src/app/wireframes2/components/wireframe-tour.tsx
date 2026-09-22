@@ -14,7 +14,7 @@ export interface TourStep {
   onBeforeStep?: () => void;
 }
 
-interface CatalogoTourProps {
+interface WireframeTourProps {
   isOpen: boolean;
   onClose: () => void;
   steps: TourStep[];
@@ -22,13 +22,13 @@ interface CatalogoTourProps {
   onStepChange: (step: number) => void;
 }
 
-export function CatalogoTour({
+export function WireframeTour({
   isOpen,
   onClose,
   steps,
   currentStep,
   onStepChange
-}: CatalogoTourProps) {
+}: WireframeTourProps) {
   const [targetRect, setTargetRect] = useState<DOMRect | null>(null);
   const [popoverPos, setPopoverPos] = useState<{ top: number; left: number; placement: "top" | "bottom" }>({
     top: 0,

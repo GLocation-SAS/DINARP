@@ -1,0 +1,158 @@
+"use client";
+
+import React, { useState } from "react";
+import { WireframeDashboardLayout } from "../../../../components/wireframe-dashboard-layout";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
+import Link from "next/link";
+import { ArrowLeft, FileText, Download, CreditCard, CheckCircle2, Clock } from "lucide-react";
+
+export default function FacturacionPage({ params }: { params: { id: string } }) {
+  const [estadoPago, setEstadoPago] = useState("Pendiente de pago");
+
+  // Mock data
+  const factura = {
+    numero: "FAC-0028",
+    institucion: "Banco Pichincha",
+    solicitud: params.id,
+    fechaEmision: "2026-09-22",
+    valor: "$ 150.00",
+    servicios: [
+      { nombre: "estadoContribuyente", fuente: "Registro Único de Contribuyentes (RUC)", valor: "$ 50.00" },
+      { nombre: "historialCrediticio", fuente: "Buró de Crédito", valor: "$ 100.00" }
+    ]
+  };
+
+  return (
+    <WireframeDashboardLayout
+      activeMenu="acceso-interoperabilidad"
+      breadcrumbs={[
+        { label: "Acceso a Interoperabilidad", href: "/wireframes2/acceso-interoperabilidad" },
+        { label: "Gestión de solicitudes", href: "/wireframes2/acceso-interoperabilidad/solicitudes" },
+        { label: params.id, href: `/wireframes2/acceso-interoperabilidad/solicitudes/${params.id}` },
+        { label: "Facturación" }
+      ]}
+      headerSlot={
+        <select
+          className="h-8 text-xs px-2 py-1 rounded-md border border-border bg-surface text-foreground"
+          value={estadoPago}
+          onChange={(e) => setEstadoPago(e.target.value)}
+        >
+          <option value="Pendiente de pago">Simular: Pendiente de pago</option>
+          <option value="Pago en validación">Simular: Pago en validación</option>
+          <option value="Pago verificado">Simular: Pago verificado</option>
+        </select>
+      }
+    >
+      <div className="w-full max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex flex-col gap-6">
+        <div>
+          <Link href={`/wireframes2/acceso-interoperabilidad/solicitudes/${params.id}`}>
+            <Button variant="ghost" size="sm" className="mb-4 pl-0">
+              <ArrowLeft className="w-4 h-4 mr-2" />
+              Volver a la solicitud
+            </Button>
+          </Link>
+          <h1 className="font-heading text-2xl md:text-3xl font-bold tracking-tight text-foreground">Facturación</h1>
+          <p className="text-muted-foreground text-sm mt-1">Gestión de pago para habilitación de servicios de interoperabilidad.</p>
+        </div>
+
+        <Card className="p-0 overflow-hidden">
+          {/* Header Card */}
+          <div className="bg-muted/30 border-b border-border p-6 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+            <div>
+              <h2 className="text-xl font-bold text-foreground">Factura {factura.numero}</h2>
+              <div className="text-sm text-muted-foreground mt-2 grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-1">
+                <p>Institución: <strong className="text-foreground">{factura.institucion}</strong></p>
+                <p>Fecha de emisión: <strong className="text-foreground">{factura.fechaEmision}</strong></p>
+                <p>
+                  Solicitud asociada: <strong className="text-foreground">{factura.solicitud}</strong>{" "}
+                  <Link href={`/wireframes2/acceso-interoperabilidad/solicitudes/${params.id}`} className="text-primary hover:underline ml-1">[Ver solicitud]</Link>
+                </p>
+              </div>
+            </div>
+            <div className="flex flex-col items-end gap-2 shrink-0">
+              <span className="text-sm text-muted-foreground">Valor total</span>
+              <span className="text-3xl font-bold text-foreground">{factura.valor}</span>
+              {estadoPago === "Pendiente de pago" && <Badge tone="danger" appearance="soft">Pendiente</Badge>}
+              {estadoPago === "Pago en validación" && <Badge tone="warning" appearance="soft">Pago en validación</Badge>}
+              {estadoPago === "Pago verificado" && <Badge tone="success" appearance="soft">Pago verificado</Badge>}
+            </div>
+          </div>
+
+          {/* Estado de Pago Mensaje */}
+          {estadoPago === "Pago en validación" && (
+            <div className="bg-warning/10 border-b border-warning/20 p-4 flex gap-3 items-start">
+              <Clock className="w-5 h-5 text-warning shrink-0 mt-0.5" />
+              <div>
+                <h3 className="font-medium text-warning-foreground text-sm">Validación en proceso</h3>
+                <p className="text-sm text-warning-foreground/80 mt-1">El pago ha sido reportado y se encuentra en validación por el área correspondiente. Este proceso puede tomar hasta 48 horas laborables.</p>
+              </div>
+            </div>
+          )}
+
+          {estadoPago === "Pago verificado" && (
+            <div className="bg-success/10 border-b border-success/20 p-4 flex gap-3 items-start">
+              <CheckCircle2 className="w-5 h-5 text-success shrink-0 mt-0.5" />
+              <div>
+                <h3 className="font-medium text-success-foreground text-sm">El pago fue verificado correctamente</h3>
+                <p className="text-sm text-success-foreground/80 mt-1">La solicitud continuará con la creación y habilitación de los paquetes de consumo.</p>
+                <Link href={`/wireframes2/acceso-interoperabilidad/solicitudes/${params.id}`}>
+                  <Button size="sm" variant="outline" className="mt-3 bg-background">Volver a la solicitud</Button>
+                </Link>
+              </div>
+            </div>
+          )}
+
+          <div className="p-6">
+            <h3 className="text-sm font-bold text-foreground mb-4">Detalle de servicios aprobados</h3>
+            
+            <div className="border border-border rounded-lg overflow-hidden">
+              <table className="w-full text-sm">
+                <thead className="bg-muted/50 border-b border-border text-left">
+                  <tr>
+                    <th className="px-4 py-3 font-medium text-muted-foreground">Servicio / Campo</th>
+                    <th className="px-4 py-3 font-medium text-muted-foreground">Fuente de datos</th>
+                    <th className="px-4 py-3 font-medium text-muted-foreground text-right">Valor</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-border">
+                  {factura.servicios.map((s, i) => (
+                    <tr key={i} className="hover:bg-muted/20 transition-colors">
+                      <td className="px-4 py-3 font-medium">{s.nombre}</td>
+                      <td className="px-4 py-3 text-muted-foreground">{s.fuente}</td>
+                      <td className="px-4 py-3 text-right">{s.valor}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <div className="p-6 pt-0 flex flex-col sm:flex-row justify-between items-center gap-4">
+            <div className="flex gap-2">
+              <Button variant="outline" size="sm">
+                <FileText className="w-4 h-4 mr-2" />
+                Ver factura
+              </Button>
+              <Button variant="outline" size="sm">
+                <Download className="w-4 h-4 mr-2" />
+                Descargar
+              </Button>
+            </div>
+            
+            {estadoPago === "Pendiente de pago" && (
+              <div className="flex flex-col items-end">
+                <Button onClick={() => setEstadoPago("Pago en validación")}>
+                  <CreditCard className="w-4 h-4 mr-2" />
+                  Continuar con pago
+                </Button>
+                <span className="text-[10px] text-muted-foreground mt-2">* Integración de pago pendiente de validación</span>
+              </div>
+            )}
+          </div>
+        </Card>
+      </div>
+    </WireframeDashboardLayout>
+  );
+}

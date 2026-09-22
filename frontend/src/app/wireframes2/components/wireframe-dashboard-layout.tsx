@@ -45,7 +45,9 @@ interface WireframeDashboardLayoutProps {
   activeMenu?: string;
   currentUser?: MockUser;
   currentRole?: UserRole;
+  onRoleChange?: (role: UserRole) => void;
   breadcrumbs?: BreadcrumbSegment[];
+  headerSlot?: React.ReactNode;
   children: React.ReactNode;
 }
 
@@ -96,46 +98,23 @@ const navItems: NavItem[] = [
     ]
   },
   {
-    id: "seguimiento",
-    label: "Seguimiento y Trazabilidad",
-    icon: Clock,
-    href: "/wireframes2/seguimiento",
-    pathPrefix: "/wireframes2/seguimiento"
-  },
-  {
-    id: "tarifario",
-    label: "Tarifario y Cotización",
-    icon: Receipt,
-    href: "/wireframes2/tarifario",
-    pathPrefix: "/wireframes2/tarifario"
-  },
-  {
-    id: "facturacion",
-    label: "Facturación",
-    icon: CreditCard,
-    href: "/wireframes2/facturacion",
-    pathPrefix: "/wireframes2/facturacion"
-  },
-  {
-    id: "usuarios",
-    label: "Usuarios",
-    icon: Users,
-    href: "/wireframes2/usuarios",
-    pathPrefix: "/wireframes2/usuarios"
-  },
-  {
-    id: "roles",
-    label: "Roles y Permisos",
-    icon: ShieldCheck,
-    href: "/wireframes2/roles",
-    pathPrefix: "/wireframes2/roles"
-  },
-  {
-    id: "reportes",
-    label: "Reportes",
-    icon: BarChart2,
-    href: "/wireframes2/reportes",
-    pathPrefix: "/wireframes2/reportes"
+    id: "acceso-interoperabilidad-group",
+    label: "Acceso a Interoperabilidad",
+    icon: Network,
+    pathPrefix: "/wireframes2/acceso-interoperabilidad",
+    children: [
+      {
+        id: "acceso-interoperabilidad",
+        label: "Gestión de solicitudes",
+        href: "/wireframes2/acceso-interoperabilidad/solicitudes",
+        exact: false
+      },
+      {
+        id: "paquetes-consumo",
+        label: "Paquetes de consumo",
+        href: "/wireframes2/acceso-interoperabilidad/paquetes"
+      }
+    ]
   }
 ];
 
@@ -143,8 +122,10 @@ export function WireframeDashboardLayout({
   activeMenu,
   currentUser,
   currentRole,
+  onRoleChange,
   breadcrumbs,
-  children,
+  headerSlot,
+  children
 }: WireframeDashboardLayoutProps) {
   const pathname = usePathname();
   const [themeMode, setThemeMode] = useState<"claro" | "oscuro">("claro");
@@ -328,12 +309,15 @@ export function WireframeDashboardLayout({
 
             // Expanded Mode
             if (hasChildren) {
+              const isOpen = item.id === "catalogo-interoperabilidad-group" ? catalogoOpen : true; // Keep acceso always open for now since we didn't add a state for it, or we can just add a state if needed. But this is a wireframe. Let's just do a generic approach if possible. Wait, we don't have generic states.
               return (
                 <div key={item.id} className="space-y-1">
                   {/* Encabezado de Módulo Padre */}
                   <button
                     type="button"
-                    onClick={() => setCatalogoOpen(!catalogoOpen)}
+                    onClick={() => {
+                      if (item.id === "catalogo-interoperabilidad-group") setCatalogoOpen(!catalogoOpen);
+                    }}
                     className={cn(
                       "w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-semibold transition-all text-left",
                       groupActive
@@ -345,7 +329,7 @@ export function WireframeDashboardLayout({
                       <Icon className={cn("size-4.5 shrink-0", groupActive ? "text-foreground" : "text-muted-foreground")} />
                       <span className="leading-snug">{item.label}</span>
                     </div>
-                    {catalogoOpen ? (
+                    {isOpen ? (
                       <ChevronDown className="size-3.5 text-muted-foreground shrink-0 ml-1.5" />
                     ) : (
                       <ChevronRight className="size-3.5 text-muted-foreground shrink-0 ml-1.5" />
@@ -353,7 +337,7 @@ export function WireframeDashboardLayout({
                   </button>
 
                   {/* Subsecciones Internas */}
-                  {catalogoOpen && (
+                  {isOpen && (
                     <div className="pl-4 pr-1 py-1 space-y-1 border-l-2 border-border/60 ml-4">
                       {item.children?.map((sub) => {
                         const isSubActive = isSubItemActive(sub);
@@ -473,8 +457,9 @@ export function WireframeDashboardLayout({
 
             {/* Breadcrumbs en el Header */}
             {breadcrumbs && breadcrumbs.length > 0 && (
-              <div className="hidden sm:flex items-center min-w-0 overflow-hidden">
+              <div className="hidden sm:flex items-center min-w-0 overflow-hidden gap-4">
                 <WireframeBreadcrumbs segments={breadcrumbs} className="text-xs" />
+                {headerSlot}
               </div>
             )}
 
@@ -491,7 +476,7 @@ export function WireframeDashboardLayout({
           <div className="flex items-center gap-2 sm:gap-3 ml-auto">
             <ThemeToggle />
             <NotificationsMenu />
-            <WireframeUserMenu user={resolvedUser} />
+            <WireframeUserMenu user={resolvedUser} onRoleChange={onRoleChange} />
           </div>
         </header>
 

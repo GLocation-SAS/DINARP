@@ -13,6 +13,7 @@ import {
   CheckCircle2,
   ExternalLink,
 } from "lucide-react";
+import { OnboardingGuide } from "@/components/ui/onboarding-guide";
 
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -44,6 +45,7 @@ export default function WireframeDetalleFacturaPage() {
   const router = useRouter();
   const [isDownloading, setIsDownloading] = useState(false);
   const [downloadSuccess, setDownloadSuccess] = useState(false);
+  const [estadoPago, setEstadoPago] = useState<"Pendiente de pago" | "Pago verificado">("Pendiente de pago");
 
   const handleDownloadPdf = () => {
     setIsDownloading(true);
@@ -53,8 +55,28 @@ export default function WireframeDetalleFacturaPage() {
     }, 800);
   };
 
+  const handlePagar = () => {
+    setEstadoPago("Pago verificado");
+  };
+
+  const onboardingSteps = [
+    { targetId: "estado-pago", title: "Pendiente de pago", content: "Tu solicitud ya fue aprobada y tiene una factura asociada pendiente de gestión." },
+    { targetId: "resumen-factura", title: "Resumen de factura", content: "Aquí puedes consultar el número de factura, valor, fecha y solicitud relacionada." },
+    { targetId: "btn-gestionar-pago", title: "Gestionar pago", content: "Continúa desde aquí con el proceso de pago para que tu solicitud pueda avanzar." },
+    { targetId: "estado-pago", title: "Estado del pago", content: "Después de realizar el pago, podrás consultar si se encuentra pendiente de validación o ya fue verificado." }
+  ];
+
+  if (estadoPago === "Pago verificado") {
+    onboardingSteps.push({
+      targetId: "estado-pago",
+      title: "Pago verificado",
+      content: "El pago fue verificado. Tu solicitud continuará automáticamente hacia la creación de los paquetes de consumo."
+    });
+  }
+
   return (
     <WireframeDashboardLayout activeMenu="facturacion">
+      <OnboardingGuide steps={onboardingSteps} guideKey={`onboarding-facturacion-${estadoPago}`} />
       <main className="relative p-4 sm:p-6 lg:p-8 w-full space-y-6 sm:space-y-8">
         {/* Background subtle effect */}
         <div className="absolute top-0 right-0 w-96 h-96 bg-radial from-muted/20 to-transparent pointer-events-none -z-10 blur-3xl opacity-60" />
@@ -81,20 +103,32 @@ export default function WireframeDetalleFacturaPage() {
             </p>
           </div>
 
-          <Button
-            type="button"
-            variant="outline"
-            onClick={handleDownloadPdf}
-            disabled={isDownloading}
-            className="h-10 px-4 text-xs font-semibold gap-2 border-border/80 bg-surface shrink-0"
-          >
-            <Download className="size-3.5" />
-            <span>{isDownloading ? "Generando PDF..." : "Descargar factura (PDF)"}</span>
-          </Button>
+          <div className="flex flex-wrap items-center gap-2.5 shrink-0 pt-2 lg:pt-0">
+            <Button
+              id="btn-gestionar-pago"
+              type="button"
+              variant="primary"
+              onClick={handlePagar}
+              disabled={estadoPago === "Pago verificado"}
+              className="h-10 px-4 text-xs font-semibold gap-2 shrink-0 shadow-xs"
+            >
+              <span>{estadoPago === "Pago verificado" ? "Pago realizado" : "Gestionar pago"}</span>
+            </Button>
+            <Button
+              type="button"
+              variant="outline"
+              onClick={handleDownloadPdf}
+              disabled={isDownloading}
+              className="h-10 px-4 text-xs font-semibold gap-2 border-border/80 bg-surface shrink-0"
+            >
+              <Download className="size-3.5" />
+              <span>{isDownloading ? "Generando PDF..." : "Descargar factura"}</span>
+            </Button>
+          </div>
         </div>
 
         {/* ── 3. Sección: Información General ── */}
-        <Card className="rounded-2xl border-border bg-surface p-6 sm:p-8 space-y-6 shadow-xs">
+        <Card id="resumen-factura" className="rounded-2xl border-border bg-surface p-6 sm:p-8 space-y-6 shadow-xs">
           <h2 className="text-sm font-bold text-foreground">
             Información general
           </h2>
@@ -117,8 +151,8 @@ export default function WireframeDetalleFacturaPage() {
               {/* Estado */}
               <div>
                 <span className="text-muted-foreground block text-[11px] mb-0.5">Estado</span>
-                <Badge tone="neutral" appearance="soft" size="sm" className="font-semibold text-xs">
-                  Emitida
+                <Badge id="estado-pago" tone={estadoPago === "Pago verificado" ? "success" : "warning"} appearance="soft" size="sm" className="font-semibold text-xs">
+                  {estadoPago}
                 </Badge>
               </div>
 

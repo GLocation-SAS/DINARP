@@ -14,15 +14,24 @@ import {
   Building2,
   X,
   FileText,
-  MoreHorizontal,
   ExternalLink,
-  Copy,
-  Check
+  MoreHorizontal,
+  ArrowRight,
+  Edit,
+  ShieldAlert
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardDecorativeIcon } from "@/components/ui/card";
+import { Card, CardDecorativeIcon } from "@/components/ui/card";
 import { Search as SearchInput } from "@/components/ui/search";
+import {
+  Table,
+  TableHeader,
+  TableRow,
+  TableHead,
+  TableBody,
+  TableCell
+} from "@/components/ui/table";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -35,14 +44,13 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { WireframeDashboardLayout } from "../../components/wireframe-dashboard-layout";
-import { CatalogoTour, type TourStep } from "../components/catalogo-tour";
+import { WireframeTour, type TourStep } from "../../components/wireframe-tour";
 import { INITIAL_INSTITUCIONES, MOCK_USERS_BY_ROLE, type FuenteEstado } from "../data/catalogo-data";
 
 export default function GestionCatalogoPage() {
   const [searchTerm, setSearchTerm] = useState("");
   const [estadoFilter, setEstadoFilter] = useState<string>("ALL");
   const [institucionFilter, setInstitucionFilter] = useState<string>("ALL");
-  const [copiedCode, setCopiedCode] = useState<string | null>(null);
 
   // Estados del Onboarding Tour
   const [isTourOpen, setIsTourOpen] = useState(false);
@@ -51,7 +59,7 @@ export default function GestionCatalogoPage() {
   // Comprobar si es la primera visita para abrir automáticamente el tour
   useEffect(() => {
     if (typeof window !== "undefined") {
-      const tourShown = localStorage.getItem("dinarp_gestion_tour_completed_v1");
+      const tourShown = localStorage.getItem("dinarp_gestion_tour_completed_v2");
       if (!tourShown) {
         const timer = setTimeout(() => {
           setIsTourOpen(true);
@@ -64,7 +72,7 @@ export default function GestionCatalogoPage() {
   const handleCloseTour = () => {
     setIsTourOpen(false);
     if (typeof window !== "undefined") {
-      localStorage.setItem("dinarp_gestion_tour_completed_v1", "true");
+      localStorage.setItem("dinarp_gestion_tour_completed_v2", "true");
     }
   };
 
@@ -79,40 +87,40 @@ export default function GestionCatalogoPage() {
       id: "step-resumen",
       target: '[data-tour="tour-resumen"]',
       title: "Resumen del catálogo",
-      description: "Consulta rápidamente cuántas fuentes están publicadas, ocultas o desactivadas.",
+      description: "Consulta el estado general de las fuentes administradas por DINARP.",
       placement: "bottom"
     },
     {
       id: "step-filtros",
       target: '[data-tour="tour-filtros"]',
       title: "Buscar y filtrar",
-      description: "Encuentra una fuente por nombre, institución o estado.",
+      description: "Encuentra una fuente por nombre, código, institución o estado.",
       placement: "bottom"
     },
     {
       id: "step-estado",
       target: '[data-tour="tour-estado"]',
-      title: "Revisar estado",
-      description: "Identifica si una fuente está publicada, oculta o desactivada.",
+      title: "Revisar el estado",
+      description: "Identifica rápidamente si una fuente está publicada, oculta o desactivada.",
       placement: "bottom"
     },
     {
       id: "step-detalle",
       target: '[data-tour="tour-ver-detalle"]',
       title: "Ver detalle",
-      description: "Consulta la información administrativa, técnica y la trazabilidad de una fuente.",
+      description: "Consulta campos, clasificación, integración, novedades e historial.",
       placement: "bottom"
     },
     {
-      id: "step-novedades",
-      target: '[data-tour="tour-novedades"]',
-      title: "Gestionar novedades",
-      description: "Accede a los requerimientos de eliminación, supresión o fusión de fuentes.",
+      id: "step-procesos",
+      target: '[data-tour="tour-acciones-menu"]',
+      title: "Procesos relacionados",
+      description: "Desde una fuente puedes consultar su integración o iniciar una novedad cuando corresponda.",
       placement: "bottom"
     }
   ], []);
 
-  // Aplanar todas las fuentes para la tabla de administración DINARP
+  // Aplanar todas las fuentes para el inventario administrativo de DINARP
   const allFuentes = useMemo(() => {
     return INITIAL_INSTITUCIONES.flatMap(inst =>
       inst.fuentes.map(f => ({
@@ -150,35 +158,27 @@ export default function GestionCatalogoPage() {
 
   const hasActiveFilters = searchTerm !== "" || estadoFilter !== "ALL" || institucionFilter !== "ALL";
 
-  const handleCopyCode = (code: string) => {
-    if (typeof navigator !== "undefined" && navigator.clipboard) {
-      navigator.clipboard.writeText(code);
-      setCopiedCode(code);
-      setTimeout(() => setCopiedCode(null), 2000);
-    }
-  };
-
   const getEstadoBadge = (estado: FuenteEstado) => {
     switch (estado) {
       case "PUBLICADO":
         return (
           <Badge tone="neutral" appearance="soft" size="sm" className="gap-1 font-medium">
             <Eye className="size-3 text-muted-foreground" />
-            Publicado
+            PUBLICADO
           </Badge>
         );
       case "OCULTO":
         return (
           <Badge tone="neutral" appearance="outline" size="sm" className="gap-1 font-medium border-dashed text-muted-foreground">
             <EyeOff className="size-3 text-muted-foreground" />
-            Oculto
+            OCULTO
           </Badge>
         );
       case "DESACTIVADO":
         return (
           <Badge tone="neutral" appearance="soft" size="sm" className="gap-1 font-medium bg-muted/40 text-muted-foreground/80">
             <FolderArchive className="size-3 text-muted-foreground" />
-            Desactivado
+            DESACTIVADO
           </Badge>
         );
     }
@@ -199,13 +199,13 @@ export default function GestionCatalogoPage() {
 
           {/* Encabezado y Acciones Principales */}
           <div className="border border-border rounded-xl bg-surface p-6 flex flex-col gap-6 shadow-xs">
-            <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
               <div className="flex flex-col gap-1 min-w-0">
                 <h1 className="font-heading text-2xl md:text-3xl font-bold tracking-tight text-foreground">
                   Gestión del Catálogo
                 </h1>
                 <p className="text-sm text-muted-foreground">
-                  Administra las fuentes del catálogo, sus estados, metadatos, responsables y trazabilidad.
+                  Administra y consulta las fuentes que forman parte del Catálogo de Interoperabilidad.
                 </p>
               </div>
 
@@ -219,124 +219,102 @@ export default function GestionCatalogoPage() {
                   <HelpCircle className="size-3.5" />
                   <span>Ver recorrido</span>
                 </Button>
-
-                <Button
-                  variant="primary"
-                  size="sm"
-                  asChild
-                  className="text-xs gap-1.5 shadow-xs"
-                  data-tour="tour-novedades"
-                >
-                  <Link href="/wireframes2/catalogo-interoperabilidad/novedades">
-                    <FileText className="size-3.5" />
-                    <span>Gestionar novedades</span>
-                  </Link>
-                </Button>
               </div>
             </div>
 
-            {/* Cards de Resumen Compactas */}
+            {/* Featured Cards para las 4 Métricas de Resumen */}
             <div data-tour="tour-resumen" className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-              {/* Total de fuentes */}
-              <Card size="sm" className="bg-card border-border/80 shadow-2xs">
-                <CardHeader className="pb-1.5">
-                  <div className="flex items-center justify-between">
-                    <CardDescription className="text-xs font-medium text-muted-foreground">
-                      Total de fuentes
-                    </CardDescription>
-                    <CardDecorativeIcon tone="neutral" size="sm">
-                      <Database className="size-3.5" />
-                    </CardDecorativeIcon>
-                  </div>
-                  <CardTitle className="text-2xl font-bold font-mono tracking-tight text-foreground">
-                    {stats.total}
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="text-[11px] text-muted-foreground pt-0">
-                  Inventario total registrado en el catálogo.
-                </CardContent>
+              {/* 1. Total de fuentes */}
+              <Card
+                variant="featured"
+                className="bg-card hover:bg-muted/40 border border-border shadow-xs transition-all"
+                innerClassName="p-5 items-start text-left gap-1"
+              >
+                <span className="font-heading font-extrabold text-3xl sm:text-4xl text-foreground tracking-tight block">
+                  {stats.total}
+                </span>
+                <span className="text-xs font-semibold text-foreground block">
+                  Total de fuentes
+                </span>
+                <span className="text-[11px] text-muted-foreground font-normal">
+                  Cantidad total registrada dentro del catálogo.
+                </span>
+                <CardDecorativeIcon>
+                  <Database className="size-24 text-muted-foreground" />
+                </CardDecorativeIcon>
               </Card>
 
-              {/* Publicadas */}
-              <Card size="sm" className="bg-card border-border/80 shadow-2xs">
-                <CardHeader className="pb-1.5">
-                  <div className="flex items-center justify-between">
-                    <CardDescription className="text-xs font-medium text-muted-foreground">
-                      Publicadas
-                    </CardDescription>
-                    <CardDecorativeIcon tone="neutral" size="sm">
-                      <Eye className="size-3.5" />
-                    </CardDecorativeIcon>
-                  </div>
-                  <CardTitle className="text-2xl font-bold font-mono tracking-tight text-foreground">
-                    {stats.publicadas}
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="text-[11px] text-muted-foreground pt-0">
-                  Visibles para consulta.
-                </CardContent>
+              {/* 2. Publicadas */}
+              <Card
+                variant="featured"
+                className="bg-card hover:bg-muted/40 border border-border shadow-xs transition-all"
+                innerClassName="p-5 items-start text-left gap-1"
+              >
+                <span className="font-heading font-extrabold text-3xl sm:text-4xl text-foreground tracking-tight block">
+                  {stats.publicadas}
+                </span>
+                <span className="text-xs font-semibold text-foreground block">
+                  Publicadas
+                </span>
+                <span className="text-[11px] text-muted-foreground font-normal">
+                  Fuentes disponibles para consulta.
+                </span>
+                <CardDecorativeIcon>
+                  <Eye className="size-24 text-muted-foreground" />
+                </CardDecorativeIcon>
               </Card>
 
-              {/* Ocultas */}
-              <Card size="sm" className="bg-card border-border/80 shadow-2xs">
-                <CardHeader className="pb-1.5">
-                  <div className="flex items-center justify-between">
-                    <CardDescription className="text-xs font-medium text-muted-foreground">
-                      Ocultas
-                    </CardDescription>
-                    <CardDecorativeIcon tone="neutral" size="sm">
-                      <EyeOff className="size-3.5" />
-                    </CardDecorativeIcon>
-                  </div>
-                  <CardTitle className="text-2xl font-bold font-mono tracking-tight text-foreground">
-                    {stats.ocultas}
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="text-[11px] text-muted-foreground pt-0">
-                  No visibles para consumidores.
-                </CardContent>
+              {/* 3. Ocultas */}
+              <Card
+                variant="featured"
+                className="bg-card hover:bg-muted/40 border border-border shadow-xs transition-all"
+                innerClassName="p-5 items-start text-left gap-1"
+              >
+                <span className="font-heading font-extrabold text-3xl sm:text-4xl text-foreground tracking-tight block">
+                  {stats.ocultas}
+                </span>
+                <span className="text-xs font-semibold text-foreground block">
+                  Ocultas
+                </span>
+                <span className="text-[11px] text-muted-foreground font-normal">
+                  Fuentes existentes internamente, pero todavía no disponibles para consumidores.
+                </span>
+                <CardDecorativeIcon>
+                  <EyeOff className="size-24 text-muted-foreground" />
+                </CardDecorativeIcon>
               </Card>
 
-              {/* Desactivadas */}
-              <Card size="sm" className="bg-card border-border/80 shadow-2xs">
-                <CardHeader className="pb-1.5">
-                  <div className="flex items-center justify-between">
-                    <CardDescription className="text-xs font-medium text-muted-foreground">
-                      Desactivadas
-                    </CardDescription>
-                    <CardDecorativeIcon tone="neutral" size="sm">
-                      <FolderArchive className="size-3.5" />
-                    </CardDecorativeIcon>
-                  </div>
-                  <CardTitle className="text-2xl font-bold font-mono tracking-tight text-foreground">
-                    {stats.desactivadas}
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="text-[11px] text-muted-foreground pt-0">
-                  Fuera de nuevas solicitudes, conservan su historial.
-                </CardContent>
+              {/* 4. Desactivadas */}
+              <Card
+                variant="featured"
+                className="bg-card hover:bg-muted/40 border border-border shadow-xs transition-all"
+                innerClassName="p-5 items-start text-left gap-1"
+              >
+                <span className="font-heading font-extrabold text-3xl sm:text-4xl text-foreground tracking-tight block">
+                  {stats.desactivadas}
+                </span>
+                <span className="text-xs font-semibold text-foreground block">
+                  Desactivadas
+                </span>
+                <span className="text-[11px] text-muted-foreground font-normal">
+                  Fuentes que ya no están disponibles para nuevas solicitudes, pero conservan su información e historial.
+                </span>
+                <CardDecorativeIcon>
+                  <FolderArchive className="size-24 text-muted-foreground" />
+                </CardDecorativeIcon>
               </Card>
-            </div>
-
-            {/* Anotación Funcional de Publicación */}
-            <div className="bg-muted/20 border border-border/60 rounded-lg px-3.5 py-2.5 flex items-center gap-2.5 text-xs text-muted-foreground">
-              <Info className="size-4 shrink-0 text-muted-foreground/80" />
-              <p className="leading-relaxed">
-                <strong className="text-foreground font-medium">Nota funcional:</strong> Pendiente de validación: definir si la publicación ocurre automáticamente después de producción o mediante acción manual de DGR.
-              </p>
             </div>
           </div>
 
           {/* Bloque de Inventario: Filtros y Tabla */}
           <div className="border border-border rounded-xl bg-surface p-6 flex flex-col gap-6 shadow-xs">
-            
             {/* Barra de Filtros */}
             <div data-tour="tour-filtros" className="flex flex-col gap-3">
               <div className="grid grid-cols-1 sm:grid-cols-12 gap-3 items-end">
-                {/* Búsqueda */}
-                <div className="sm:col-span-12 lg:col-span-5 flex flex-col gap-1.5">
+                {/* Búsqueda general */}
+                <div className="sm:col-span-12 lg:col-span-6 flex flex-col gap-1.5">
                   <label htmlFor="search-fuentes" className="text-xs font-medium text-muted-foreground">
-                    Búsqueda de fuentes
+                    Búsqueda general
                   </label>
                   <SearchInput
                     id="search-fuentes"
@@ -364,19 +342,19 @@ export default function GestionCatalogoPage() {
                           {estadoFilter === "PUBLICADO" && (
                             <>
                               <Eye className="size-3.5 text-muted-foreground" />
-                              Publicado
+                              PUBLICADO
                             </>
                           )}
                           {estadoFilter === "OCULTO" && (
                             <>
                               <EyeOff className="size-3.5 text-muted-foreground" />
-                              Oculto
+                              OCULTO
                             </>
                           )}
                           {estadoFilter === "DESACTIVADO" && (
                             <>
                               <FolderArchive className="size-3.5 text-muted-foreground" />
-                              Desactivado
+                              DESACTIVADO
                             </>
                           )}
                         </span>
@@ -395,15 +373,15 @@ export default function GestionCatalogoPage() {
                         </DropdownMenuRadioItem>
                         <DropdownMenuRadioItem value="PUBLICADO" className="text-xs">
                           <Eye className="size-3.5 mr-1.5 text-muted-foreground" />
-                          Publicado
+                          PUBLICADO
                         </DropdownMenuRadioItem>
                         <DropdownMenuRadioItem value="OCULTO" className="text-xs">
                           <EyeOff className="size-3.5 mr-1.5 text-muted-foreground" />
-                          Oculto
+                          OCULTO
                         </DropdownMenuRadioItem>
                         <DropdownMenuRadioItem value="DESACTIVADO" className="text-xs">
                           <FolderArchive className="size-3.5 mr-1.5 text-muted-foreground" />
-                          Desactivado
+                          DESACTIVADO
                         </DropdownMenuRadioItem>
                       </DropdownMenuRadioGroup>
                     </DropdownMenuContent>
@@ -411,7 +389,7 @@ export default function GestionCatalogoPage() {
                 </div>
 
                 {/* Filtro por Institución */}
-                <div className="sm:col-span-6 lg:col-span-4 flex flex-col gap-1.5">
+                <div className="sm:col-span-6 lg:col-span-3 flex flex-col gap-1.5">
                   <label className="text-xs font-medium text-muted-foreground">
                     Institución
                   </label>
@@ -542,20 +520,20 @@ export default function GestionCatalogoPage() {
               </span>
             </div>
 
-            {/* Tabla Simplificada de Fuentes */}
-            <div className="overflow-x-auto rounded-lg border border-border bg-card">
-              <table className="w-full text-xs text-left">
-                <thead className="bg-muted/60 text-muted-foreground font-semibold border-b border-border">
-                  <tr>
-                    <th className="px-4 py-3 min-w-[220px]">Fuente</th>
-                    <th className="px-4 py-3 min-w-[180px]">Institución</th>
-                    <th className="px-4 py-3 min-w-[140px]" data-tour="tour-estado">
+            {/* Tabla Principal Simplificada y Escaneable */}
+            <div className="overflow-x-auto border-y border-border bg-card mt-2">
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead className="min-w-[220px]">Fuente</TableHead>
+                    <TableHead className="min-w-[180px]">Institución</TableHead>
+                    <TableHead className="min-w-[140px]" data-tour="tour-estado">
                       <div className="flex items-center gap-1.5">
                         <span>Estado</span>
                         <Tooltip>
                           <TooltipTrigger asChild>
                             <button type="button" className="inline-flex cursor-help focus:outline-hidden">
-                              <Info className="size-3 text-muted-foreground hover:text-foreground" />
+                              <Info className="size-3.5 text-muted-foreground hover:text-foreground" />
                             </button>
                           </TooltipTrigger>
                           <TooltipContent side="top" sideOffset={6} className="w-72 p-3 text-left space-y-2.5">
@@ -567,7 +545,7 @@ export default function GestionCatalogoPage() {
                                   <span>PUBLICADO</span>
                                 </div>
                                 <p className="text-[11px] text-muted-foreground leading-relaxed pl-4.5">
-                                  Disponible para consulta y selección.
+                                  Fuente disponible para consulta dentro del catálogo.
                                 </p>
                               </div>
 
@@ -579,7 +557,7 @@ export default function GestionCatalogoPage() {
                                   <span>OCULTO</span>
                                 </div>
                                 <p className="text-[11px] text-muted-foreground leading-relaxed pl-4.5">
-                                  Registrado internamente, pero aún no visible para consumidores.
+                                  Fuente registrada internamente pero no visible para consumidores.
                                 </p>
                               </div>
 
@@ -591,140 +569,131 @@ export default function GestionCatalogoPage() {
                                   <span>DESACTIVADO</span>
                                 </div>
                                 <p className="text-[11px] text-muted-foreground leading-relaxed pl-4.5">
-                                  Ya no está disponible para nuevas solicitudes, pero conserva historial y trazabilidad.
+                                  Fuente no disponible para nuevas solicitudes. Su historial se conserva.
                                 </p>
                               </div>
                             </div>
                           </TooltipContent>
                         </Tooltip>
                       </div>
-                    </th>
-                    <th className="px-4 py-3 text-center min-w-[90px]">Campos</th>
-                    <th className="px-4 py-3 min-w-[140px]">Última actualización</th>
-                    <th className="px-4 py-3 text-right min-w-[130px]">Acciones</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-border/60">
+                    </TableHead>
+                    <TableHead className="text-center min-w-[80px]">Campos</TableHead>
+                    <TableHead className="min-w-[140px]">Última actualización</TableHead>
+                    <TableHead className="text-right min-w-[120px]">Acciones</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
                   {fuentesFiltradas.length === 0 ? (
-                    <tr>
-                      <td colSpan={6} className="px-4 py-10 text-center text-muted-foreground">
+                    <TableRow>
+                      <TableCell colSpan={6} className="py-10 text-center text-muted-foreground">
                         No se encontraron fuentes bajo los criterios de búsqueda o filtros seleccionados.
-                      </td>
-                    </tr>
+                      </TableCell>
+                    </TableRow>
                   ) : (
                     fuentesFiltradas.map((fuente, idx) => (
-                      <tr key={fuente.id} className="hover:bg-muted/30 transition-colors">
+                      <TableRow key={fuente.id}>
                         {/* Fuente: Nombre y Código */}
-                        <td className="px-4 py-3.5">
-                          <div className="flex flex-col gap-0.5">
+                        <TableCell>
+                          <div className="flex flex-col gap-0.5 whitespace-normal">
                             <span className="font-semibold text-foreground text-sm leading-snug">
                               {fuente.nombre}
                             </span>
-                            <span className="font-mono text-[11px] text-muted-foreground">
+                            <span className="font-mono text-[11px] text-muted-foreground mt-0.5">
                               {fuente.codigoServicio}
                             </span>
                           </div>
-                        </td>
+                        </TableCell>
 
                         {/* Institución */}
-                        <td className="px-4 py-3.5">
-                          <div className="flex flex-col gap-0.5">
-                            <span className="font-medium text-foreground">
+                        <TableCell>
+                          <div className="flex flex-col gap-0.5 whitespace-normal">
+                            <span className="font-medium text-foreground text-xs line-clamp-1">
                               {fuente.institucionSigla}
                             </span>
-                            <span className="text-[11px] text-muted-foreground line-clamp-1 max-w-xs">
+                            <span className="text-[11px] text-muted-foreground line-clamp-1 mt-0.5">
                               {fuente.institucionNombreCompleto}
                             </span>
                           </div>
-                        </td>
+                        </TableCell>
 
                         {/* Estado */}
-                        <td className="px-4 py-3.5">
+                        <TableCell>
                           {getEstadoBadge(fuente.estado)}
-                        </td>
+                        </TableCell>
 
-                        {/* Campos */}
-                        <td className="px-4 py-3.5 text-center">
-                          <Badge
-                            tone="neutral"
-                            appearance="outline"
-                            size="sm"
-                            className="font-mono text-[11px] font-normal border-border/80 bg-muted/30 text-muted-foreground px-2 py-0.5"
-                          >
-                            {fuente.campos.length}
-                          </Badge>
-                        </td>
+                        {/* Cantidad de Campos */}
+                        <TableCell className="text-center font-mono font-medium text-muted-foreground">
+                          {fuente.campos?.length || 0}
+                        </TableCell>
 
-                        {/* Última actualización */}
-                        <td className="px-4 py-3.5 text-muted-foreground text-xs font-mono">
+                        {/* Última Actualización */}
+                        <TableCell className="text-xs text-muted-foreground whitespace-nowrap">
                           {fuente.ultimaActualizacion}
-                        </td>
+                        </TableCell>
 
                         {/* Acciones */}
-                        <td className="px-4 py-3.5 text-right">
-                          <div className="flex items-center justify-end gap-1.5">
-                            <Button
-                              variant="secondary"
-                              size="sm"
-                              asChild
-                              className="text-xs h-8 px-3"
-                              data-tour={idx === 0 ? "tour-ver-detalle" : undefined}
-                            >
-                              <Link href={`/wireframes2/catalogo-interoperabilidad/gestion/fuente/${fuente.id}`}>
-                                Ver detalle
-                              </Link>
-                            </Button>
+                        <TableCell className="text-right">
+                          <div className="flex items-center justify-end gap-1">
+                            <TooltipProvider delayDuration={0}>
+                              <Tooltip>
+                                <TooltipTrigger asChild>
+                                  <Button
+                                    variant="ghost"
+                                    size="icon-sm"
+                                    asChild
+                                    className="size-8 rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted"
+                                  >
+                                    <Link href={`/wireframes2/catalogo-interoperabilidad/gestion/fuente/${fuente.id}`}>
+                                      <Eye className="size-4" />
+                                    </Link>
+                                  </Button>
+                                </TooltipTrigger>
+                                <TooltipContent side="top">
+                                  <p className="text-xs">Ver detalle</p>
+                                </TooltipContent>
+                              </Tooltip>
 
-                            <DropdownMenu>
-                              <DropdownMenuTrigger asChild>
-                                <Button
-                                  variant="ghost"
-                                  size="sm"
-                                  className="size-8 p-0 text-muted-foreground hover:text-foreground"
-                                  aria-label="Más acciones"
-                                >
-                                  <MoreHorizontal className="size-4" />
-                                </Button>
-                              </DropdownMenuTrigger>
-                              <DropdownMenuContent align="end" className="w-48">
-                                <DropdownMenuItem asChild className="text-xs cursor-pointer">
-                                  <Link href={`/wireframes2/catalogo-interoperabilidad/gestion/fuente/${fuente.id}`}>
-                                    <ExternalLink className="size-3.5 mr-2 text-muted-foreground" />
-                                    Ver ficha completa
-                                  </Link>
-                                </DropdownMenuItem>
-                                <DropdownMenuItem asChild className="text-xs cursor-pointer">
-                                  <Link href="/wireframes2/catalogo-interoperabilidad/novedades">
-                                    <FileText className="size-3.5 mr-2 text-muted-foreground" />
-                                    Gestionar novedad
-                                  </Link>
-                                </DropdownMenuItem>
-                                <DropdownMenuSeparator />
-                                <DropdownMenuItem
-                                  onClick={() => handleCopyCode(fuente.codigoServicio)}
-                                  className="text-xs cursor-pointer"
-                                >
-                                  {copiedCode === fuente.codigoServicio ? (
-                                    <>
-                                      <Check className="size-3.5 mr-2 text-foreground" />
-                                      <span>Código copiado</span>
-                                    </>
-                                  ) : (
-                                    <>
-                                      <Copy className="size-3.5 mr-2 text-muted-foreground" />
-                                      <span>Copiar código</span>
-                                    </>
-                                  )}
-                                </DropdownMenuItem>
-                              </DropdownMenuContent>
-                            </DropdownMenu>
+                              {(MOCK_USERS_BY_ROLE.DGR.role === "COORDINADOR_SINARP" || MOCK_USERS_BY_ROLE.DGR.role === "DTD") && (
+                                <Tooltip>
+                                  <TooltipTrigger asChild>
+                                    <Button
+                                      variant="ghost"
+                                      size="icon-sm"
+                                      className="size-8 rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted"
+                                    >
+                                      <Edit className="size-4" />
+                                    </Button>
+                                  </TooltipTrigger>
+                                  <TooltipContent side="top">
+                                    <p className="text-xs">Editar metadatos</p>
+                                  </TooltipContent>
+                                </Tooltip>
+                              )}
+
+                              {MOCK_USERS_BY_ROLE.DGR.role === "DPI" && (
+                                <Tooltip>
+                                  <TooltipTrigger asChild>
+                                    <Button
+                                      variant="ghost"
+                                      size="icon-sm"
+                                      className="size-8 rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted"
+                                    >
+                                      <ShieldAlert className="size-4" />
+                                    </Button>
+                                  </TooltipTrigger>
+                                  <TooltipContent side="top">
+                                    <p className="text-xs">Revisar clasificación</p>
+                                  </TooltipContent>
+                                </Tooltip>
+                              )}
+                            </TooltipProvider>
                           </div>
-                        </td>
-                      </tr>
+                        </TableCell>
+                      </TableRow>
                     ))
                   )}
-                </tbody>
-              </table>
+                </TableBody>
+              </Table>
             </div>
 
           </div>
@@ -732,7 +701,7 @@ export default function GestionCatalogoPage() {
         </div>
 
         {/* Componente del Recorrido Guiado (Onboarding Tour) */}
-        <CatalogoTour
+        <WireframeTour
           isOpen={isTourOpen}
           onClose={handleCloseTour}
           steps={tourSteps}

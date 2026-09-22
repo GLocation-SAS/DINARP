@@ -41,7 +41,7 @@ import {
 import { WireframeDashboardLayout } from "../components/wireframe-dashboard-layout";
 import { WireframeBreadcrumbs } from "../components/wireframe-breadcrumbs";
 import { INITIAL_INSTITUCIONES, type CampoClasificacion, type FuenteServicio } from "./data/catalogo-data";
-import { CatalogoTour, type TourStep } from "./components/catalogo-tour";
+import { WireframeTour, type TourStep } from "../components/wireframe-tour";
 
 function getTechnicalMetadata(fuente: FuenteServicio) {
   let tipo = "Servicio Web";
@@ -925,7 +925,7 @@ export default function CatalogoConsultaPage() {
         </div>
 
         {/* Product Tour Onboarding */}
-        <CatalogoTour
+        <WireframeTour
           isOpen={isTourOpen}
           onClose={handleCloseTour}
           steps={tourSteps}

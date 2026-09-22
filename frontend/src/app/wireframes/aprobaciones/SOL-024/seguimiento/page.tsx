@@ -1,4 +1,5 @@
 "use client";
+import { OnboardingGuide } from "@/components/ui/onboarding-guide";
 
 import React from "react";
 import Link from "next/link";
@@ -15,6 +16,7 @@ import {
   Activity,
   History,
   Lock,
+  ArrowRight,
 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -41,8 +43,18 @@ import { WireframeDashboardLayout } from "../../../components/wireframe-dashboar
 export default function WireframeSeguimientoPermisoPage() {
   const router = useRouter();
 
+  // Simulating entity type for onboarding demo
+  const [tipoEntidad] = React.useState<"publica" | "privada">("privada");
+
+  const onboardingSteps = [
+    { targetId: "estado-solicitud", title: "Estado de la solicitud", content: "Tu solicitud fue aprobada. Ahora continuará con la etapa de formalización correspondiente a tu institución." },
+    { targetId: "accion-requerida", title: "Acción requerida", content: tipoEntidad === "publica" ? "Debes continuar con la formalización mediante convenio." : "Debes continuar con la formalización y el proceso de facturación correspondiente." },
+    { targetId: "seguimiento-timeline", title: "Seguimiento", content: "Desde aquí puedes consultar cada etapa posterior a la aprobación sin perder el historial de tu solicitud." }
+  ];
+
   return (
     <WireframeDashboardLayout activeMenu="aprobaciones">
+      <OnboardingGuide steps={onboardingSteps} guideKey="onboarding-solicitud-aprobada" />
       <main className="relative p-4 sm:p-6 lg:p-8 w-full space-y-6 sm:space-y-8">
         {/* Background subtle effect */}
         <div className="absolute top-0 right-0 w-96 h-96 bg-radial from-muted/20 to-transparent pointer-events-none -z-10 blur-3xl opacity-60" />
@@ -83,7 +95,7 @@ export default function WireframeSeguimientoPermisoPage() {
         </Breadcrumb>
 
         {/* ── 2. Header: Estado Principal "Solicitud aprobada" ── */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2 border-b border-border/80">
+        <div id="estado-solicitud" className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2 border-b border-border/80">
           <div className="flex items-start gap-4">
             <div className="size-12 rounded-2xl bg-muted/80 flex items-center justify-center text-foreground shrink-0 shadow-xs">
               <CheckCircle2 className="size-7 stroke-[2]" />
@@ -115,6 +127,30 @@ export default function WireframeSeguimientoPermisoPage() {
             <span>Volver a bandeja</span>
           </Button>
         </div>
+
+        {/* ── 2.5 Bloque de acción requerida ── */}
+        <Alert
+          id="accion-requerida"
+          variant="default"
+          icon={<Info className="size-4 text-foreground" />}
+          className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-4 rounded-2xl bg-primary/10 border-primary/20"
+        >
+          <div className="text-xs text-foreground font-medium leading-relaxed">
+            {tipoEntidad === "publica" 
+              ? "Acción requerida: Debes continuar con la formalización mediante convenio para proceder a la habilitación."
+              : "Acción requerida: Debes continuar con la formalización y el proceso de facturación correspondiente."}
+          </div>
+          <Button
+            type="button"
+            variant="primary"
+            size="sm"
+            onClick={() => router.push(tipoEntidad === "publica" ? "/wireframes/formalizacion" : "/wireframes/facturacion/F-2026-00125")}
+            className="h-9 px-4 rounded-xl text-xs font-semibold gap-1.5 shrink-0 shadow-xs"
+          >
+            <span>Continuar proceso</span>
+            <ArrowRight className="size-3.5" />
+          </Button>
+        </Alert>
 
         {/* ── 3. Card: Resumen del permiso ── */}
         <Card className="border-border bg-surface shadow-xs">
@@ -167,7 +203,7 @@ export default function WireframeSeguimientoPermisoPage() {
         {/* ── 4. Dos Columnas: Seguimiento del proceso & Condiciones del permiso ── */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {/* Columna Izquierda: Seguimiento del proceso (Timeline) */}
-          <Card className="border-border bg-surface shadow-xs">
+          <Card id="seguimiento-timeline" className="border-border bg-surface shadow-xs">
             <CardHeader className="p-6 pb-3">
               <CardTitle className="text-base font-heading font-bold text-foreground flex items-center gap-2">
                 <Clock className="size-4 text-muted-foreground" />

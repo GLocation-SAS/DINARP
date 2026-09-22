@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import Link from "next/link";
 import {
   ArrowLeft,
+  ArrowRight,
   ArrowLeftRight,
   Building2,
   FileText,
@@ -24,20 +25,40 @@ import {
   X,
   MessageSquare,
   AlertTriangle,
-  FileCheck,
+  FileCheck2,
   Sparkles,
   Info,
   ChevronRight,
-  ExternalLink
+  ExternalLink,
+  ChevronDown,
+  CheckCircle,
+  FolderArchive,
+  Terminal,
+  HelpCircle
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardDecorativeIcon } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger
+} from "@/components/ui/dropdown-menu";
 import { WireframeDashboardLayout } from "../../../components/wireframe-dashboard-layout";
 import { WireframeBreadcrumbs } from "../../../components/wireframe-breadcrumbs";
+import { useSimulatedRole } from "../../hooks/use-simulated-role";
 import {
   ROLES_CONFIG,
   ETAPAS_EXPEDIENTE_CONFIG,
@@ -56,50 +77,57 @@ interface ExpedienteClientViewProps {
 
 export function ExpedienteClientView({ initialExpediente }: ExpedienteClientViewProps) {
   const [expediente, setExpediente] = useState<ExpedienteIntegracion>(initialExpediente);
-  const [activeRole, setActiveRole] = useState<UserRole>(initialExpediente.responsableActualRol);
+  const [activeRole, setActiveRole] = useSimulatedRole(initialExpediente.responsableActualRol);
+  const [activeTab, setActiveTab] = useState<
+    "resumen" | "informacion" | "documentos" | "campos" | "clasificacion" | "tecnica" | "validaciones" | "historial"
+  >("resumen");
 
-  // Estados de formularios contextuales
-  // DGR Observaciones (Paso 2)
+  const currentUser = MOCK_USERS_BY_ROLE[activeRole];
+
+  // Modales y formularios contextuales por rol
+  // DGR: Observaciones (Paso 2)
+  const [isObsModalOpen, setIsObsModalOpen] = useState(false);
   const [obsTipo, setObsTipo] = useState<"campo" | "documento" | "informacion">("campo");
   const [obsElementoId, setObsElementoId] = useState("");
   const [obsTexto, setObsTexto] = useState("");
-  const [mostrarModalObs, setMostrarModalObs] = useState(false);
 
-  // Coordinador Corrección (Paso 3)
+  // Coordinador: Corrección (Paso 3)
   const [correccionTexto, setCorreccionTexto] = useState("");
 
-  // DPI Clasificación (Paso 5)
+  // DPI: Clasificación (Paso 5)
   const [dpiInformeNro, setDpiInformeNro] = useState("INF-DPI-2026-0044");
   const [dpiInformePdf, setDpiInformePdf] = useState("Informe_Tecnico_Clasificacion_DPI.pdf");
   const [dpiCampos, setDpiCampos] = useState<CampoCatalogo[]>(expediente.camposCandidatos);
 
-  // DTD Despliegue Preproducción (Paso 5)
-  const [dtdMicroservicio, setDtdMicroservicio] = useState("ms-rc-defunciones");
-  const [dtdVersionPre, setDtdVersionPre] = useState("1.0.0-rc1");
-  const [dtdEndpointPre, setDtdEndpointPre] = useState("https://pre-api.dinarp.gob.ec/v1/rc/defunciones");
+  // DTD: Despliegue Preproducción (Paso 5)
+  const [dtdMicroservicio, setDtdMicroservicio] = useState(expediente.desplieguePreDTD?.microservicioNombre || "ms-rc-defunciones");
+  const [dtdVersionPre, setDtdVersionPre] = useState(expediente.desplieguePreDTD?.version || "1.0.0-rc1");
+  const [dtdEndpointPre, setDtdEndpointPre] = useState(expediente.desplieguePreDTD?.endpointPre || "https://pre-api.dinarp.gob.ec/v1/rc/defunciones");
 
-  // DGR Validación Preproducción (Paso 6)
+  // DGR: Validación Preproducción (Paso 6)
+  const [isValPreModalOpen, setIsValPreModalOpen] = useState(false);
   const [validacionPreResultado, setValidacionPreResultado] = useState<"Favorable" | "No favorable">("Favorable");
-  const [validacionPreErrores, setValidacionPreErrores] = useState("Error de timeout (504) al consultar con identificaciones mayores a 10 dígitos.");
+  const [validacionPreObs, setValidacionPreObs] = useState("");
 
-  // DTD Corrección Error Loop (Paso 7)
-  const [dtdSolucionError, setDtdSolucionError] = useState("Ajustado el pool de conexiones y validación de expresiones regulares en el microservicio.");
+  // DTD: Corrección Error Loop (Paso 7)
+  const [dtdSolucionError, setDtdSolucionError] = useState("");
   const [dtdVersionNueva, setDtdVersionNueva] = useState("1.0.0-rc2");
 
-  // DGR Aprobación Formulario (Paso 8)
+  // DGR: Aprobación Formulario (Paso 8)
   const [formularioNro, setFormularioNro] = useState("FORM-DGR-2026-089");
   const [formularioConclusiones, setFormularioConclusiones] = useState("Cumplidos todos los requisitos técnicos y documentales; integración validada favorablemente en preproducción.");
 
-  // DTD Paso a Producción (Paso 9)
+  // DTD: Paso a Producción (Paso 9)
   const [endpointProd, setEndpointProd] = useState("https://api.dinarp.gob.ec/v1/rc/defunciones");
   const [versionProd, setVersionProd] = useState("1.0.0");
 
   // ==========================================
-  // MANEJADORES DE TRANSICIÓN DE ETAPAS
+  // TRANSICIONES DE ETAPAS (HU-INT-03 A 15)
   // ==========================================
 
-  // Paso 2 -> 3: DGR emite observaciones
-  const handleDgrSolicitarCorreccion = () => {
+  // HU-INT-04: DGR emite observaciones
+  const handleDgrSolicitarCorreccion = (e: React.FormEvent) => {
+    e.preventDefault();
     if (!obsTexto.trim()) {
       alert("Ingrese la observación obligatoria.");
       return;
@@ -125,17 +153,17 @@ export function ExpedienteClientView({ initialExpediente }: ExpedienteClientView
       responsableActualRol: "COORDINADOR_SINARP",
       responsableActualNombre: "Andrea López (Coordinador SINARP)",
       estadoGeneral: "Con observaciones",
-      ultimaActualizacion: "Justo ahora",
+      ultimaActualizacion: `${nuevoEvento.fecha} ${nuevoEvento.hora}`,
       historial: [nuevoEvento, ...prev.historial]
     }));
 
-    setActiveRole("COORDINADOR_SINARP");
-    setMostrarModalObs(false);
+    setIsObsModalOpen(false);
     setObsTexto("");
+    alert("Observaciones enviadas al Coordinador SINARP para subsanación puntual.");
   };
 
-  // Paso 2 -> 4: DGR aprueba requisitos iniciales y deriva a DTD
-  const handleDgrAprobarRequisitos = () => {
+  // HU-INT-04: DGR aprueba revisión inicial y deriva a DTD
+  const handleDgrAprobarRevision = () => {
     const nuevoEvento: EventoHistorial = {
       id: `h_${Date.now()}`,
       fecha: new Date().toLocaleDateString("es-EC"),
@@ -144,9 +172,9 @@ export function ExpedienteClientView({ initialExpediente }: ExpedienteClientView
       etapaNombre: "Revisión Documental y de Campos",
       actorRol: "DGR",
       actorNombre: "María Torres (DGR)",
-      accion: "Aprobación documental y pase a validación técnica (Enlace A)",
+      accion: "Aprobación documental y derivación a Tecnología",
       version: expediente.versionActual,
-      detalles: "Requisitos documentales y pertinencia funcional conformes.",
+      detalles: "Requisitos documentales y campos candidatos conformes.",
       huRef: "HU-INT-04"
     };
 
@@ -156,14 +184,14 @@ export function ExpedienteClientView({ initialExpediente }: ExpedienteClientView
       responsableActualRol: "DTD",
       responsableActualNombre: "Carlos Mena (DTD)",
       estadoGeneral: "En validación técnica DTD",
-      ultimaActualizacion: "Justo ahora",
+      ultimaActualizacion: `${nuevoEvento.fecha} ${nuevoEvento.hora}`,
       historial: [nuevoEvento, ...prev.historial]
     }));
 
-    setActiveRole("DTD");
+    alert("Revisión documental aprobada. Expediente asignado a DTD para validación técnica.");
   };
 
-  // Paso 3 -> 2: Coordinador reenvía tras subsanar
+  // HU-INT-05: Coordinador subsana y reenvía a DGR
   const handleCoordinadorReenviar = () => {
     const nuevoEvento: EventoHistorial = {
       id: `h_${Date.now()}`,
@@ -172,10 +200,10 @@ export function ExpedienteClientView({ initialExpediente }: ExpedienteClientView
       etapaNumero: 3,
       etapaNombre: "Depuración y Subsanación",
       actorRol: "COORDINADOR_SINARP",
-      actorNombre: "Andrea López (Coordinador SINARP)",
-      accion: "Reenvío de información subsanada",
+      actorNombre: "Andrea López (Coordinador)",
+      accion: "Reenvío con correcciones subsanadas",
       version: "v1.0.1",
-      detalles: correccionTexto || "Se subsanaron las observaciones sin reiniciar el trámite.",
+      detalles: correccionTexto || "Se atendieron las observaciones registradas por DGR sin reiniciar el trámite.",
       huRef: "HU-INT-05"
     };
 
@@ -186,15 +214,15 @@ export function ExpedienteClientView({ initialExpediente }: ExpedienteClientView
       responsableActualRol: "DGR",
       responsableActualNombre: "María Torres (DGR)",
       estadoGeneral: "En revisión DGR",
-      ultimaActualizacion: "Justo ahora",
+      ultimaActualizacion: `${nuevoEvento.fecha} ${nuevoEvento.hora}`,
       historial: [nuevoEvento, ...prev.historial]
     }));
 
-    setActiveRole("DGR");
     setCorreccionTexto("");
+    alert("Correcciones enviadas a DGR para nueva revisión.");
   };
 
-  // Paso 4 -> 5: DTD valida técnicamente y pasa a OCULTO
+  // HU-INT-07: DTD valida técnicamente y pasa la fuente a estado OCULTO
   const handleDtdPasarOculto = () => {
     const nuevoEvento: EventoHistorial = {
       id: `h_${Date.now()}`,
@@ -204,9 +232,9 @@ export function ExpedienteClientView({ initialExpediente }: ExpedienteClientView
       etapaNombre: "Validación Técnica e Ingreso a Catálogo",
       actorRol: "DTD",
       actorNombre: "Carlos Mena (DTD)",
-      accion: "Validación técnica aprobada y registro en catálogo estado OCULTO",
+      accion: "Validación técnica aprobada y registro de fuente como OCULTO",
       version: expediente.versionActual,
-      detalles: "Fuente registrada internamente en estado OCULTO. Se inician actividades paralelas DPI y DTD.",
+      detalles: "Fuente incorporada internamente en el Catálogo de Interoperabilidad bajo estado OCULTO. Se inician ramas paralelas DPI y DTD.",
       huRef: "HU-INT-06 / HU-INT-07"
     };
 
@@ -218,28 +246,37 @@ export function ExpedienteClientView({ initialExpediente }: ExpedienteClientView
       estadoGeneral: "En integración y clasificación",
       validacionTecnicaDTD: {
         aprobado: true,
-        fecha: new Date().toLocaleDateString("es-EC"),
+        fecha: nuevoEvento.fecha,
         responsable: "Carlos Mena (DTD)",
+        observacionTecnica: "Esquema REST y contratos de integración validados satisfactoriamente.",
         estadoCatalogoAsignado: "OCULTO"
       },
-      ultimaActualizacion: "Justo ahora",
+      ultimaActualizacion: `${nuevoEvento.fecha} ${nuevoEvento.hora}`,
       historial: [nuevoEvento, ...prev.historial]
     }));
+
+    alert("¡Fuente ingresada al Catálogo como OCULTO! Se habilitan en paralelo las actividades de DPI (Clasificación) y DTD (Preproducción).");
   };
 
-  // Paso 5: DPI clasifica campos
-  const handleDpiGuardarClasificacion = () => {
+  // HU-INT-08: DPI clasifica campos y emite informe técnico
+  const handleDpiFinalizarClasificacion = () => {
+    const camposPendientes = dpiCampos.filter(c => c.clasificacion === "Pendiente");
+    if (camposPendientes.length > 0) {
+      alert("No es posible finalizar: aún existen campos con clasificación 'Pendiente'.");
+      return;
+    }
+
     const nuevoEvento: EventoHistorial = {
       id: `h_${Date.now()}`,
       fecha: new Date().toLocaleDateString("es-EC"),
       hora: new Date().toLocaleTimeString("es-EC", { hour: "2-digit", minute: "2-digit" }),
       etapaNumero: 5,
-      etapaNombre: "Clasificación de Campos DPI",
+      etapaNombre: "Clasificación DPI",
       actorRol: "DPI",
       actorNombre: "Daniela Ruiz (DPI)",
-      accion: "Clasificación oficial de campos y carga de informe",
+      accion: "Informe de clasificación de datos emitido",
       version: expediente.versionActual,
-      detalles: `Informe ${dpiInformeNro} adjuntado. Campos catalogados como Accesibles / Confidenciales.`,
+      detalles: `Informe ${dpiInformeNro} cargado. Clasificados ${dpiCampos.length} campos (Accesible / Confidencial).`,
       huRef: "HU-INT-08"
     };
 
@@ -248,19 +285,21 @@ export function ExpedienteClientView({ initialExpediente }: ExpedienteClientView
       camposCandidatos: dpiCampos,
       clasificacionDPI: {
         completada: true,
-        fecha: new Date().toLocaleDateString("es-EC"),
+        fecha: nuevoEvento.fecha,
         responsable: "Daniela Ruiz (DPI)",
         numeroInforme: dpiInformeNro,
-        informeAdjunto: dpiInformePdf
+        informeAdjunto: dpiInformePdf,
+        observaciones: "Clasificación jurídica de datos personales completada conforme a la LOPDP."
       },
+      ultimaActualizacion: `${nuevoEvento.fecha} ${nuevoEvento.hora}`,
       historial: [nuevoEvento, ...prev.historial]
     }));
 
-    alert("Clasificación DPI guardada con éxito.");
+    alert("Clasificación DPI registrada formalmente con informe adjunto.");
   };
 
-  // Paso 5: DTD registra despliegue en Preproducción y deriva a validación DGR (Paso 6)
-  const handleDtdDesplegarPre = () => {
+  // HU-INT-09: DTD registra despliegue en preproducción
+  const handleDtdRegistrarPreproduccion = () => {
     const nuevoEvento: EventoHistorial = {
       id: `h_${Date.now()}`,
       fecha: new Date().toLocaleDateString("es-EC"),
@@ -271,7 +310,7 @@ export function ExpedienteClientView({ initialExpediente }: ExpedienteClientView
       actorNombre: "Carlos Mena (DTD)",
       accion: "Microservicio desplegado en ambiente de preproducción",
       version: dtdVersionPre,
-      detalles: `Endpoint: ${dtdEndpointPre}`,
+      detalles: `Endpoint: ${dtdEndpointPre} • Microservicio: ${dtdMicroservicio}`,
       huRef: "HU-INT-09"
     };
 
@@ -283,90 +322,74 @@ export function ExpedienteClientView({ initialExpediente }: ExpedienteClientView
       estadoGeneral: "En validación preproducción",
       desplieguePreDTD: {
         completado: true,
-        fecha: new Date().toLocaleDateString("es-EC"),
+        fecha: nuevoEvento.fecha,
         responsable: "Carlos Mena (DTD)",
         microservicioNombre: dtdMicroservicio,
         version: dtdVersionPre,
-        endpointPre: dtdEndpointPre
+        endpointPre: dtdEndpointPre,
+        notasDespliegue: "Microservicio activo en clúster preproducción con mTLS y credenciales de prueba."
       },
-      ultimaActualizacion: "Justo ahora",
+      ultimaActualizacion: `${nuevoEvento.fecha} ${nuevoEvento.hora}`,
       historial: [nuevoEvento, ...prev.historial]
     }));
 
-    setActiveRole("DGR");
+    alert("Despliegue en preproducción registrado. Tarea de validación funcional asignada a DGR.");
   };
 
-  // Paso 6: DGR valida en Preproducción (Favorable -> Paso 8 | No Favorable -> Paso 7)
-  const handleDgrValidarPre = () => {
-    if (validacionPreResultado === "Favorable") {
-      const nuevoEvento: EventoHistorial = {
-        id: `h_${Date.now()}`,
-        fecha: new Date().toLocaleDateString("es-EC"),
-        hora: new Date().toLocaleTimeString("es-EC", { hour: "2-digit", minute: "2-digit" }),
-        etapaNumero: 6,
-        etapaNombre: "Validación Funcional en Preproducción",
-        actorRol: "DGR",
-        actorNombre: "María Torres (DGR)",
-        accion: "Resultado de validación FAVORABLE",
-        version: expediente.versionActual,
-        detalles: "Pruebas de consumo completadas sin incidencias. Se habilita formulario de aprobación.",
-        huRef: "HU-INT-10"
-      };
+  // HU-INT-10: DGR evalúa preproducción (Favorable / No Favorable)
+  const handleDgrEvaluarPreproduccion = (e: React.FormEvent) => {
+    e.preventDefault();
 
-      setExpediente(prev => ({
-        ...prev,
-        etapaActual: "ETAPA_8_APROBACION_DGR",
-        responsableActualRol: "DGR",
-        responsableActualNombre: "María Torres (DGR)",
-        estadoGeneral: "En validación preproducción",
-        validacionPreDGR: {
-          evaluada: true,
-          resultado: "Favorable",
-          fecha: new Date().toLocaleDateString("es-EC"),
-          responsable: "María Torres (DGR)"
-        },
-        ultimaActualizacion: "Justo ahora",
-        historial: [nuevoEvento, ...prev.historial]
-      }));
-    } else {
-      // Loop de error -> DTD
-      const nuevoEvento: EventoHistorial = {
-        id: `h_${Date.now()}`,
-        fecha: new Date().toLocaleDateString("es-EC"),
-        hora: new Date().toLocaleTimeString("es-EC", { hour: "2-digit", minute: "2-digit" }),
-        etapaNumero: 6,
-        etapaNombre: "Validación Funcional en Preproducción",
-        actorRol: "DGR",
-        actorNombre: "María Torres (DGR)",
-        accion: "Resultado de validación NO FAVORABLE (Reporte de Error)",
-        version: expediente.versionActual,
-        observaciones: validacionPreErrores,
-        huRef: "HU-INT-10"
-      };
-
-      setExpediente(prev => ({
-        ...prev,
-        etapaActual: "ETAPA_7_ERROR_TECNICO_LOOP",
-        responsableActualRol: "DTD",
-        responsableActualNombre: "Carlos Mena (DTD)",
-        estadoGeneral: "En corrección técnica",
-        validacionPreDGR: {
-          evaluada: true,
-          resultado: "No favorable",
-          fecha: new Date().toLocaleDateString("es-EC"),
-          responsable: "María Torres (DGR)",
-          observacionesValidacion: validacionPreErrores
-        },
-        ultimaActualizacion: "Justo ahora",
-        historial: [nuevoEvento, ...prev.historial]
-      }));
-
-      setActiveRole("DTD");
+    if (validacionPreResultado === "No favorable" && !validacionPreObs.trim()) {
+      alert("Es obligatorio registrar los errores u observaciones para devolver a DTD.");
+      return;
     }
+
+    const esFavorable = validacionPreResultado === "Favorable";
+
+    const nuevoEvento: EventoHistorial = {
+      id: `h_${Date.now()}`,
+      fecha: new Date().toLocaleDateString("es-EC"),
+      hora: new Date().toLocaleTimeString("es-EC", { hour: "2-digit", minute: "2-digit" }),
+      etapaNumero: 6,
+      etapaNombre: "Validación Funcional en Preproducción",
+      actorRol: "DGR",
+      actorNombre: "María Torres (DGR)",
+      accion: esFavorable ? "Validación favorable en preproducción" : "Validación no favorable — Errores reportados",
+      version: expediente.versionActual,
+      observaciones: esFavorable ? undefined : validacionPreObs,
+      detalles: esFavorable ? "Pruebas funcionales de consumo satisfactorias." : `Incidencias técnicas reportadas: ${validacionPreObs}`,
+      huRef: esFavorable ? "HU-INT-10" : "HU-INT-11"
+    };
+
+    setExpediente(prev => ({
+      ...prev,
+      etapaActual: esFavorable ? "ETAPA_8_APROBACION_DGR" : "ETAPA_7_ERROR_TECNICO_LOOP",
+      responsableActualRol: esFavorable ? "DGR" : "DTD",
+      responsableActualNombre: esFavorable ? "María Torres (DGR)" : "Carlos Mena (DTD)",
+      estadoGeneral: esFavorable ? "En revisión DGR" : "En corrección técnica",
+      validacionPreDGR: {
+        evaluada: true,
+        resultado: validacionPreResultado,
+        fecha: nuevoEvento.fecha,
+        responsable: "María Torres (DGR)",
+        observacionesValidacion: validacionPreObs || "Pruebas funcionales exitosas."
+      },
+      ultimaActualizacion: `${nuevoEvento.fecha} ${nuevoEvento.hora}`,
+      historial: [nuevoEvento, ...prev.historial]
+    }));
+
+    setIsValPreModalOpen(false);
+    alert(esFavorable ? "Validación favorable registrada. Habilitada etapa de aprobación." : "Reporte de incidencias enviado a DTD para corrección técnica.");
   };
 
-  // Paso 7: DTD solventa error técnico y redesplega (vuelve a Paso 6)
-  const handleDtdSolventarError = () => {
+  // HU-INT-11: DTD atiende incidencias y redespliega
+  const handleDtdCorregirYRedesplegar = () => {
+    if (!dtdSolucionError.trim()) {
+      alert("Describa la solución técnica aplicada.");
+      return;
+    }
+
     const nuevoEvento: EventoHistorial = {
       id: `h_${Date.now()}`,
       fecha: new Date().toLocaleDateString("es-EC"),
@@ -375,9 +398,9 @@ export function ExpedienteClientView({ initialExpediente }: ExpedienteClientView
       etapaNombre: "Corrección Técnica y Redespliegue",
       actorRol: "DTD",
       actorNombre: "Carlos Mena (DTD)",
-      accion: "Error técnico solventado y nuevo despliegue",
+      accion: "Corrección técnica aplicada y redespliegue en preproducción",
       version: dtdVersionNueva,
-      detalles: dtdSolucionError,
+      detalles: `Solución: ${dtdSolucionError} • Nueva versión: ${dtdVersionNueva}`,
       huRef: "HU-INT-11"
     };
 
@@ -390,20 +413,26 @@ export function ExpedienteClientView({ initialExpediente }: ExpedienteClientView
       estadoGeneral: "En validación preproducción",
       correccionTecnicaDTD: {
         atendida: true,
-        fecha: new Date().toLocaleDateString("es-EC"),
+        fecha: nuevoEvento.fecha,
         responsable: "Carlos Mena (DTD)",
         solucionAplicada: dtdSolucionError,
         nuevaVersion: dtdVersionNueva
       },
-      ultimaActualizacion: "Justo ahora",
+      ultimaActualizacion: `${nuevoEvento.fecha} ${nuevoEvento.hora}`,
       historial: [nuevoEvento, ...prev.historial]
     }));
 
-    setActiveRole("DGR");
+    setDtdSolucionError("");
+    alert("Microservicio redesplegado con correcciones. Reasignado a DGR para nueva validación.");
   };
 
-  // Paso 8: DGR aprueba la integración formalmente
+  // HU-INT-12: DGR diligencia formulario automatizado y aprueba
   const handleDgrAprobarIntegracion = () => {
+    if (!formularioConclusiones.trim()) {
+      alert("Debe completar las conclusiones en el formulario automatizado.");
+      return;
+    }
+
     const nuevoEvento: EventoHistorial = {
       id: `h_${Date.now()}`,
       fecha: new Date().toLocaleDateString("es-EC"),
@@ -412,9 +441,9 @@ export function ExpedienteClientView({ initialExpediente }: ExpedienteClientView
       etapaNombre: "Aprobación de la Integración",
       actorRol: "DGR",
       actorNombre: "María Torres (DGR)",
-      accion: "Aprobación formal mediante formulario automatizado (Enlace C)",
+      accion: "Aprobación formal de integración emitida",
       version: expediente.versionActual,
-      detalles: `Formulario ${formularioNro} diligenciado. Pasa a DTD para paso a producción.`,
+      detalles: `Formulario automatizado ${formularioNro} formalizado. Pasa a DTD para paso a producción.`,
       huRef: "HU-INT-12"
     };
 
@@ -426,45 +455,45 @@ export function ExpedienteClientView({ initialExpediente }: ExpedienteClientView
       estadoGeneral: "Aprobada",
       aprobacionDGR: {
         aprobada: true,
-        fecha: new Date().toLocaleDateString("es-EC"),
+        fecha: nuevoEvento.fecha,
         responsable: "María Torres (DGR)",
         formularioAutomatizadoNro: formularioNro,
         conclusiones: formularioConclusiones
       },
-      ultimaActualizacion: "Justo ahora",
+      ultimaActualizacion: `${nuevoEvento.fecha} ${nuevoEvento.hora}`,
       historial: [nuevoEvento, ...prev.historial]
     }));
 
-    setActiveRole("DTD");
+    alert("¡Integración aprobada formalmente! Tarea de paso a producción asignada a DTD.");
   };
 
-  // Paso 9 -> 10: DTD registra paso a producción y notifica automáticamente
+  // HU-INT-13 & 14: DTD ejecuta paso a producción y se dispara notificación
   const handleDtdPasoProduccion = () => {
-    const eventoProd: EventoHistorial = {
-      id: `h_${Date.now()}_prod`,
+    const nuevoEvento1: EventoHistorial = {
+      id: `h_${Date.now()}`,
       fecha: new Date().toLocaleDateString("es-EC"),
       hora: new Date().toLocaleTimeString("es-EC", { hour: "2-digit", minute: "2-digit" }),
       etapaNumero: 9,
       etapaNombre: "Paso a Producción",
       actorRol: "DTD",
       actorNombre: "Carlos Mena (DTD)",
-      accion: "Despliegue y pase a producción oficial",
+      accion: "Despliegue en ambiente productivo completado",
       version: versionProd,
-      detalles: `Endpoint Productivo: ${endpointProd}`,
+      detalles: `Endpoint productivo: ${endpointProd}`,
       huRef: "HU-INT-13"
     };
 
-    const eventoNotif: EventoHistorial = {
-      id: `h_${Date.now()}_notif`,
-      fecha: new Date().toLocaleDateString("es-EC"),
-      hora: new Date().toLocaleTimeString("es-EC", { hour: "2-digit", minute: "2-digit" }),
+    const nuevoEvento2: EventoHistorial = {
+      id: `h_${Date.now() + 1}`,
+      fecha: nuevoEvento1.fecha,
+      hora: nuevoEvento1.hora,
       etapaNumero: 10,
       etapaNombre: "Notificación Automática de Cierre",
       actorRol: "COORDINADOR_SINARP",
-      actorNombre: "Sistema Automatizado SURI / NOT",
-      accion: "Correo electrónico enviado al Coordinador Titular y Suplente",
+      actorNombre: "Sistema Automático DINARP",
+      accion: "Notificación automática remitida a Coordinadores SINARP",
       version: versionProd,
-      detalles: "Notificación automática: 'Fuente integrada y disponible en ambiente productivo'.",
+      detalles: `Notificados: Titular y Suplente de ${expediente.institucionSigla}. Fuente integrada correctamente.`,
       huRef: "HU-INT-14"
     };
 
@@ -472,35 +501,36 @@ export function ExpedienteClientView({ initialExpediente }: ExpedienteClientView
       ...prev,
       etapaActual: "ETAPA_10_NOTIFICACION_FINAL",
       responsableActualRol: "COORDINADOR_SINARP",
-      responsableActualNombre: "Coordinador SINARP (Proceso Completado)",
+      responsableActualNombre: "Trámite Finalizado",
       estadoGeneral: "Integrada",
       pasoProduccionDTD: {
         ejecutado: true,
-        fecha: new Date().toLocaleDateString("es-EC"),
+        fecha: nuevoEvento1.fecha,
         responsable: "Carlos Mena (DTD)",
         endpointProd: endpointProd,
         versionProd: versionProd
       },
       notificacionFinal: {
         enviada: true,
-        fecha: new Date().toLocaleDateString("es-EC"),
-        destinatarios: ["andrea.lopez@registrocivil.gob.ec", "andrea.saltos@registrocivil.gob.ec"],
-        asunto: `Fuente ${prev.nombreFuente} integrada exitosamente`
+        fecha: nuevoEvento1.fecha,
+        destinatarios: ["carlos.mendoza@registrocivil.gob.ec", "andrea.saltos@registrocivil.gob.ec"],
+        asunto: `Fuente ${expediente.nombreFuente} integrada satisfactoriamente al Catálogo DINARP`
       },
-      ultimaActualizacion: "Justo ahora",
-      historial: [eventoNotif, eventoProd, ...prev.historial]
+      ultimaActualizacion: `${nuevoEvento1.fecha} ${nuevoEvento1.hora}`,
+      historial: [nuevoEvento2, nuevoEvento1, ...prev.historial]
     }));
 
-    setActiveRole("COORDINADOR_SINARP");
+    alert("¡Paso a producción completado! Notificación automática enviada a los coordinadores institucional titular y suplente.");
   };
 
-  const etapaActualConfig = ETAPAS_EXPEDIENTE_CONFIG[expediente.etapaActual];
-  const currentUser = MOCK_USERS_BY_ROLE[activeRole];
+  // Helper para verificar si el rol activo tiene tarea pendiente en la etapa actual
+  const isMyTurn = expediente.responsableActualRol === activeRole;
 
   return (
     <WireframeDashboardLayout
-      activeMenu="integraciones"
+      activeMenu="integracion-fuentes"
       currentRole={activeRole}
+      currentUser={currentUser}
       breadcrumbs={[
         { label: "Catálogo de Interoperabilidad", href: "/wireframes2/catalogo-interoperabilidad" },
         { label: "Integración de Fuentes", href: "/wireframes2/catalogo-interoperabilidad/integraciones" },
@@ -509,849 +539,628 @@ export function ExpedienteClientView({ initialExpediente }: ExpedienteClientView
     >
       <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex flex-col gap-6">
 
-        {/* Barra Superior */}
-        <div className="flex items-center justify-between">
+        {/* Retorno */}
+        <div className="flex items-center justify-between gap-4 -mt-2">
           <Button variant="ghost" size="sm" asChild className="gap-1.5 -ml-2 text-muted-foreground hover:text-foreground">
             <Link href="/wireframes2/catalogo-interoperabilidad/integraciones">
               <ArrowLeft className="size-4" />
-              Volver al Listado de Integraciones
+              Volver a Integración de Fuentes
             </Link>
           </Button>
 
-          <div className="flex items-center gap-2">
-            <Badge tone="neutral" appearance="soft" size="sm">
-              Expediente: {expediente.codigoExpediente}
-            </Badge>
-            <Badge tone="neutral" appearance="outline" size="sm">
-              {expediente.versionActual}
-            </Badge>
-          </div>
+          {/* Enlace opcional a Gestión si ya tiene estado OCULTO o PUBLICADO */}
+          {expediente.validacionTecnicaDTD?.estadoCatalogoAsignado === "OCULTO" && (
+            <Button variant="outline" size="sm" asChild className="gap-1.5 text-xs">
+              <Link href="/wireframes2/catalogo-interoperabilidad/gestion">
+                <Layers className="size-3.5" />
+                Ver fuente en Gestión
+                <ExternalLink className="size-3 ml-0.5 opacity-60" />
+              </Link>
+            </Button>
+          )}
         </div>
 
-        {/* Simulador Interactivo de Roles */}
-        <div className="bg-surface border-2 border-border rounded-xl p-4 flex flex-col md:flex-row items-start md:items-center justify-between gap-4 shadow-xs">
-          <div className="flex items-center gap-3">
-            <div className="size-10 rounded-lg bg-foreground text-background flex items-center justify-center font-bold text-sm shrink-0">
-              <UserCheck className="size-5" />
-            </div>
-            <div>
-              <div className="flex items-center gap-2 flex-wrap">
-                <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-                  Simulador de Rol Activo
-                </span>
-                <Badge tone="neutral" appearance="soft" size="sm" className="font-semibold">
-                  {currentUser.name} ({currentUser.roleTitle.split("(")[0].trim()})
-                </Badge>
+        {/* HEADER DEL EXPEDIENTE */}
+        <Card variant="featured">
+          <CardContent className="p-6 flex flex-col gap-5">
+            <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 border-b border-border pb-5">
+              <div className="flex flex-col gap-1.5">
+                <div className="flex items-center gap-2.5 flex-wrap">
+                  <span className="text-xs font-mono font-bold bg-muted px-2.5 py-1 rounded border border-border text-foreground">
+                    {expediente.codigoExpediente}
+                  </span>
+                  <Badge tone="neutral" appearance="outline" size="sm" className="font-mono">
+                    {expediente.codigoFuente}
+                  </Badge>
+                  <Badge tone="info" appearance="soft" size="sm">
+                    {expediente.estadoGeneral}
+                  </Badge>
+                </div>
+                <h1 className="font-heading text-xl sm:text-2xl font-bold tracking-tight text-foreground mt-1">
+                  {expediente.nombreFuente}
+                </h1>
+                <p className="text-xs sm:text-sm text-muted-foreground flex items-center gap-1.5">
+                  <Building2 className="size-3.5 shrink-0" />
+                  <span>{expediente.institucionNombre} ({expediente.institucionSigla})</span>
+                </p>
               </div>
-              <p className="text-xs text-muted-foreground mt-0.5">
-                Cambia de rol para interactuar con las acciones específicas autorizadas para cada actor según la Resolución 004-DN-2023.
-              </p>
-            </div>
-          </div>
-
-          <div className="flex flex-wrap items-center gap-1.5 shrink-0 bg-muted/40 p-1 rounded-lg border border-border">
-            {(Object.keys(MOCK_USERS_BY_ROLE) as UserRole[]).map(roleKey => {
-              const u = MOCK_USERS_BY_ROLE[roleKey];
-              const isSelected = activeRole === roleKey;
-              return (
-                <button
-                  key={roleKey}
-                  type="button"
-                  onClick={() => setActiveRole(roleKey)}
-                  className={`px-3 py-1.5 rounded-md text-xs font-medium transition-all flex items-center gap-1.5 cursor-pointer ${isSelected
-                    ? "bg-foreground text-background shadow-xs font-semibold"
-                    : "text-muted-foreground hover:text-foreground hover:bg-muted/60"
-                    }`}
-                >
-                  <span className="font-mono text-[10px] opacity-80">{u.initials}</span>
-                  <span>{u.name.split(" ")[0]} ({ROLES_CONFIG[roleKey].shortName})</span>
-                </button>
-              );
-            })}
-          </div>
-        </div>
-
-        {/* Encabezado del Expediente */}
-        <div className="border border-border rounded-xl bg-card p-6 flex flex-col md:flex-row md:items-center md:justify-between gap-6 shadow-xs">
-          <div className="flex flex-col gap-2">
-            <div className="flex items-center gap-2 flex-wrap">
-              <Badge tone="neutral" appearance="soft" size="sm">
-                {expediente.codigoExpediente}
-              </Badge>
-              <span className="text-xs text-muted-foreground">•</span>
-              <span className="text-xs font-medium text-muted-foreground">{expediente.institucionNombre}</span>
-              <span className="text-xs text-muted-foreground">•</span>
-              <span className="text-xs font-mono text-muted-foreground">{expediente.codigoFuente}</span>
             </div>
 
-            <h1 className="font-heading text-2xl md:text-3xl font-bold tracking-tight text-foreground">
-              {expediente.nombreFuente}
-            </h1>
+            {/* Metadatos Clave */}
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 text-xs">
+              <div>
+                <span className="text-muted-foreground block text-[11px]">Etapa actual:</span>
+                <span className="font-semibold text-foreground">
+                  {ETAPAS_EXPEDIENTE_CONFIG[expediente.etapaActual]?.nombre}
+                </span>
+                <span className="text-[10px] text-muted-foreground font-mono block">
+                  {ETAPAS_EXPEDIENTE_CONFIG[expediente.etapaActual]?.huRef}
+                </span>
+              </div>
 
-            <p className="text-sm text-muted-foreground max-w-3xl leading-relaxed">
-              {expediente.descripcion}
-            </p>
-          </div>
+              <div>
+                <span className="text-muted-foreground block text-[11px]">Responsable actual:</span>
+                <span className="font-semibold text-foreground flex items-center gap-1">
+                  {expediente.responsableActualNombre}
+                </span>
+              </div>
 
-          <div className="flex flex-col items-start md:items-end gap-2.5 shrink-0">
-            <div className="flex items-center gap-2">
-              <span className="text-xs text-muted-foreground">Estado General:</span>
-              <Badge tone="neutral" appearance="outline" size="sm" className="font-semibold text-xs">
-                {expediente.estadoGeneral}
-              </Badge>
+              <div>
+                <span className="text-muted-foreground block text-[11px]">Fecha radicación:</span>
+                <span className="font-semibold text-foreground">
+                  {expediente.fechaRadicacion}
+                </span>
+              </div>
+
+              <div>
+                <span className="text-muted-foreground block text-[11px]">Última actualización:</span>
+                <span className="font-semibold text-foreground">
+                  {expediente.ultimaActualizacion}
+                </span>
+              </div>
             </div>
-            <div className="text-[11px] text-muted-foreground text-left md:text-right">
-              <div>Radicación: {expediente.fechaRadicacion}</div>
-              <div>Actualización: {expediente.ultimaActualizacion}</div>
-            </div>
-          </div>
-        </div>
 
-        {/* Stepper: Etapas del Expediente (Trazabilidad HU-INT y BPMN) */}
-        <Card size="sm" className="bg-card border-border">
-          <CardHeader className="pb-3">
-            <div className="flex items-center justify-between">
-              <CardTitle className="text-sm font-semibold flex items-center gap-2">
-                <Clock className="size-4 text-muted-foreground" />
-                Etapas del Expediente (Trazabilidad HU-INT / Res. 004-DN-2023)
-              </CardTitle>
-              <Badge tone="neutral" appearance="soft" size="sm">
-                Etapa {etapaActualConfig.numero} de 10: {etapaActualConfig.nombre}
-              </Badge>
-            </div>
-            <CardDescription className="text-xs">
-              Responsable actual: <strong className="text-foreground">{ROLES_CONFIG[expediente.responsableActualRol].name}</strong> ({expediente.responsableActualNombre})
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="pt-2">
-            <div className="grid grid-cols-2 sm:grid-cols-5 lg:grid-cols-10 gap-2">
-              {Object.values(ETAPAS_EXPEDIENTE_CONFIG).map(etapa => {
-                const isCurrent = etapa.id === expediente.etapaActual;
-                const isPast = etapa.numero < etapaActualConfig.numero;
-
-                return (
-                  <div
-                    key={etapa.id}
-                    className={`p-2 rounded-lg border text-xs flex flex-col gap-1 transition-all ${isCurrent
-                      ? "border-foreground bg-muted/60 font-semibold text-foreground shadow-xs"
-                      : isPast
-                        ? "border-border bg-muted/20 text-muted-foreground"
-                        : "border-border/60 bg-surface/40 text-muted-foreground/60"
-                      }`}
-                  >
-                    <div className="flex items-center justify-between">
-                      <span className="font-mono text-[10px]">Paso {etapa.numero}</span>
-                      {isPast && <Check className="size-3 text-foreground" />}
-                      {isCurrent && <div className="size-1.5 rounded-full bg-foreground animate-pulse" />}
-                    </div>
-                    <div className="text-[11px] leading-tight line-clamp-2">
-                      {etapa.nombre}
-                    </div>
-                    <div className="text-[9px] font-mono text-muted-foreground">
-                      {etapa.huRef}
-                    </div>
+            {/* BANNER DINÁMICO DE TAREA ACTIVA PARA EL ROL */}
+            {isMyTurn && (
+              <div className="bg-amber-500/10 border border-amber-500/30 rounded-lg p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                <div className="flex items-start gap-2.5">
+                  <AlertCircle className="size-4 text-amber-600 shrink-0 mt-0.5" />
+                  <div>
+                    <span className="text-xs font-bold text-foreground block">
+                      Tarea activa asignada a tu perfil ({ROLES_CONFIG[activeRole].shortName}):
+                    </span>
+                    <span className="text-xs text-muted-foreground">
+                      {ETAPAS_EXPEDIENTE_CONFIG[expediente.etapaActual]?.descripcion}
+                    </span>
                   </div>
-                );
-              })}
+                </div>
+
+                <div className="flex items-center gap-2 shrink-0">
+                  {/* ACCIONES COORDINADOR (Paso 3) */}
+                  {activeRole === "COORDINADOR_SINARP" && expediente.etapaActual === "ETAPA_3_CORRECCION_COORDINADOR" && (
+                    <Button
+                      variant="primary"
+                      size="sm"
+                      onClick={handleCoordinadorReenviar}
+                      className="gap-1.5 text-xs font-semibold"
+                    >
+                      <Send className="size-3.5" />
+                      Reenviar a revisión DGR
+                    </Button>
+                  )}
+
+                  {/* ACCIONES DGR (Paso 2) */}
+                  {activeRole === "DGR" && expediente.etapaActual === "ETAPA_2_REVISION_DGR" && (
+                    <>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => setIsObsModalOpen(true)}
+                        className="gap-1.5 text-xs"
+                      >
+                        <AlertTriangle className="size-3.5 text-amber-600" />
+                        Solicitar corrección
+                      </Button>
+                      <Button
+                        variant="primary"
+                        size="sm"
+                        onClick={handleDgrAprobarRevision}
+                        className="gap-1.5 text-xs font-semibold"
+                      >
+                        <Check className="size-3.5" />
+                        Aprobar revisión
+                      </Button>
+                    </>
+                  )}
+
+                  {/* ACCIONES DTD (Paso 4) */}
+                  {activeRole === "DTD" && expediente.etapaActual === "ETAPA_4_VALIDACION_DTD" && (
+                    <Button
+                      variant="primary"
+                      size="sm"
+                      onClick={handleDtdPasarOculto}
+                      className="gap-1.5 text-xs font-semibold"
+                    >
+                      <EyeOff className="size-3.5" />
+                      Registrar en catálogo como OCULTO
+                    </Button>
+                  )}
+
+                  {/* ACCIONES DGR (Paso 6) */}
+                  {activeRole === "DGR" && expediente.etapaActual === "ETAPA_6_VALIDACION_PRE_DGR" && (
+                    <Button
+                      variant="primary"
+                      size="sm"
+                      onClick={() => setIsValPreModalOpen(true)}
+                      className="gap-1.5 text-xs font-semibold"
+                    >
+                      <FileCheck2 className="size-3.5" />
+                      Evaluar validación preproducción
+                    </Button>
+                  )}
+
+                  {/* ACCIONES DGR (Paso 8) */}
+                  {activeRole === "DGR" && expediente.etapaActual === "ETAPA_8_APROBACION_DGR" && (
+                    <Button
+                      variant="primary"
+                      size="sm"
+                      onClick={handleDgrAprobarIntegracion}
+                      className="gap-1.5 text-xs font-semibold"
+                    >
+                      <CheckCircle2 className="size-3.5" />
+                      Aprobar integración formal
+                    </Button>
+                  )}
+
+                  {/* ACCIONES DTD (Paso 9) */}
+                  {activeRole === "DTD" && expediente.etapaActual === "ETAPA_9_PRODUCCION_DTD" && (
+                    <Button
+                      variant="primary"
+                      size="sm"
+                      onClick={handleDtdPasoProduccion}
+                      className="gap-1.5 text-xs font-semibold"
+                    >
+                      <Server className="size-3.5" />
+                      Registrar paso a producción
+                    </Button>
+                  )}
+                </div>
+              </div>
+            )}
+          </CardContent>
+        </Card>
+
+        {/* STEPPER / TIMELINE DE PROGRESO */}
+        <Card>
+          <CardContent className="p-4 sm:p-5">
+            <div className="flex items-center justify-between mb-3">
+              <span className="text-xs font-bold uppercase tracking-wider text-muted-foreground flex items-center gap-1.5">
+                <Clock className="size-3.5" />
+                Flujo de Incorporación (HU-INT-03 a 15)
+              </span>
+              <Badge tone="neutral" appearance="soft" size="sm" className="text-[11px]">
+                Etapa {ETAPAS_EXPEDIENTE_CONFIG[expediente.etapaActual]?.numero || 1} de 10
+              </Badge>
+            </div>
+
+            {/* Stepper visual con soporte de la rama paralela */}
+            <div className="grid grid-cols-2 sm:grid-cols-5 lg:grid-cols-9 gap-2 text-center text-xs">
+              <div className="bg-muted/40 p-2.5 rounded-lg border border-border flex flex-col items-center gap-1">
+                <span className="size-5 rounded-full bg-primary text-primary-foreground font-bold text-[10px] flex items-center justify-center">1</span>
+                <span className="font-semibold text-foreground text-[11px]">Registro</span>
+                <span className="text-[10px] text-muted-foreground">HU-INT-03</span>
+              </div>
+
+              <div className="bg-muted/40 p-2.5 rounded-lg border border-border flex flex-col items-center gap-1">
+                <span className="size-5 rounded-full bg-primary text-primary-foreground font-bold text-[10px] flex items-center justify-center">2</span>
+                <span className="font-semibold text-foreground text-[11px]">Revisión DGR</span>
+                <span className="text-[10px] text-muted-foreground">HU-INT-04</span>
+              </div>
+
+              <div className="bg-muted/40 p-2.5 rounded-lg border border-border flex flex-col items-center gap-1">
+                <span className="size-5 rounded-full bg-primary text-primary-foreground font-bold text-[10px] flex items-center justify-center">3</span>
+                <span className="font-semibold text-foreground text-[11px]">Validación DTD</span>
+                <span className="text-[10px] text-muted-foreground">HU-INT-06/07</span>
+              </div>
+
+              {/* RAMA PARALELA DESTACADA */}
+              <div className="sm:col-span-2 bg-purple-500/10 p-2.5 rounded-lg border border-purple-500/30 flex flex-col items-center gap-1">
+                <span className="size-5 rounded-full bg-purple-600 text-white font-bold text-[10px] flex items-center justify-center">4</span>
+                <span className="font-bold text-foreground text-[11px]">Paralelo: DPI + DTD</span>
+                <span className="text-[10px] text-muted-foreground">Clasificación & Preproducción</span>
+              </div>
+
+              <div className="bg-muted/40 p-2.5 rounded-lg border border-border flex flex-col items-center gap-1">
+                <span className="size-5 rounded-full bg-primary text-primary-foreground font-bold text-[10px] flex items-center justify-center">5</span>
+                <span className="font-semibold text-foreground text-[11px]">Validación DGR</span>
+                <span className="text-[10px] text-muted-foreground">HU-INT-10</span>
+              </div>
+
+              <div className="bg-muted/40 p-2.5 rounded-lg border border-border flex flex-col items-center gap-1">
+                <span className="size-5 rounded-full bg-primary text-primary-foreground font-bold text-[10px] flex items-center justify-center">6</span>
+                <span className="font-semibold text-foreground text-[11px]">Aprobación</span>
+                <span className="text-[10px] text-muted-foreground">HU-INT-12</span>
+              </div>
+
+              <div className="bg-muted/40 p-2.5 rounded-lg border border-border flex flex-col items-center gap-1">
+                <span className="size-5 rounded-full bg-primary text-primary-foreground font-bold text-[10px] flex items-center justify-center">7</span>
+                <span className="font-semibold text-foreground text-[11px]">Producción</span>
+                <span className="text-[10px] text-muted-foreground">HU-INT-13</span>
+              </div>
+
+              <div className="bg-muted/40 p-2.5 rounded-lg border border-border flex flex-col items-center gap-1">
+                <span className="size-5 rounded-full bg-primary text-primary-foreground font-bold text-[10px] flex items-center justify-center">8</span>
+                <span className="font-semibold text-foreground text-[11px]">Notificación</span>
+                <span className="text-[10px] text-muted-foreground">HU-INT-14</span>
+              </div>
             </div>
           </CardContent>
         </Card>
 
-        {/* PANEL CONTEXTUAL DE ACCIONES SEGÚN ETAPA Y ROL ACTIVO */}
-        <div className="border-2 border-foreground/30 rounded-xl bg-surface p-6 shadow-xs flex flex-col gap-5">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-border pb-4">
-            <div>
-              <div className="flex items-center gap-2">
-                <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-                  Bandeja de Acción Operativa
-                </span>
-                <Badge tone="neutral" appearance="soft" size="sm">
-                  {etapaActualConfig.huRef}
-                </Badge>
-              </div>
-              <h2 className="font-heading text-lg font-bold text-foreground mt-0.5">
-                {etapaActualConfig.nombre}
-              </h2>
-            </div>
-
-            <div className="text-xs text-muted-foreground bg-muted/40 px-3 py-1.5 rounded-md border border-border">
-              Rol autorizado: <strong className="text-foreground">{ROLES_CONFIG[etapaActualConfig.rolResponsable].shortName}</strong>
-            </div>
-          </div>
-
-          {/* VISTA SEGÚN ETAPA ACTUAL */}
-
-          {/* ETAPA 2: Revisión DGR (HU-INT-04) */}
-          {expediente.etapaActual === "ETAPA_2_REVISION_DGR" && (
-            <div className="space-y-4">
-              <p className="text-xs text-muted-foreground">
-                Como profesional de la <strong className="text-foreground">Dirección de Gestión y Registro (DGR)</strong>, revise la pertinencia de los documentos soporte y los campos candidatos. Si encuentra discrepancias, use la acción <em>Solicitar corrección</em> para emitir observaciones puntuales sin reiniciar el trámite.
-              </p>
-
-              {activeRole === "DGR" ? (
-                <div className="flex flex-wrap items-center gap-3 pt-2">
-                  <Button
-                    type="button"
-                    variant="primary"
-                    size="sm"
-                    onClick={handleDgrAprobarRequisitos}
-                    className="gap-1.5 font-semibold"
-                  >
-                    <CheckCircle2 className="size-4" />
-                    Aprobar Requisitos y Derivar a DTD (Enlace A)
-                  </Button>
-
-                  <Button
-                    type="button"
-                    variant="secondary"
-                    size="sm"
-                    onClick={() => setMostrarModalObs(true)}
-                    className="gap-1.5"
-                  >
-                    <AlertCircle className="size-4" />
-                    Solicitar Corrección con Observaciones
-                  </Button>
-                </div>
-              ) : (
-                <div className="p-3 bg-muted/30 border border-border rounded-lg text-xs text-muted-foreground">
-                  Acción reservada para la <strong>DGR</strong>. Cambia el rol a <strong>DGR (Funcional)</strong> en el simulador para interactuar.
-                </div>
-              )}
-
-              {/* Modal / Panel de Observación DGR */}
-              {mostrarModalObs && (
-                <div className="p-4 rounded-lg border border-border bg-card space-y-3 mt-4">
-                  <div className="text-xs font-semibold text-foreground flex items-center justify-between">
-                    <span>Registrar Observación Puntual de Corrección</span>
-                    <button type="button" onClick={() => setMostrarModalObs(false)} className="text-muted-foreground hover:text-foreground">
-                      <X className="size-4" />
-                    </button>
-                  </div>
-
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                    <div className="space-y-1">
-                      <Label className="text-[11px] text-muted-foreground">Elemento con Observación</Label>
-                      <select
-                        value={obsTipo}
-                        onChange={e => setObsTipo(e.target.value as any)}
-                        className="w-full text-xs h-9 px-2 rounded-md border border-border bg-background text-foreground"
-                      >
-                        <option value="campo">Campo Candidato</option>
-                        <option value="documento">Documento Soporte</option>
-                        <option value="informacion">Información General</option>
-                      </select>
-                    </div>
-
-                    <div className="space-y-1">
-                      <Label className="text-[11px] text-muted-foreground">Identificador / Nombre del Elemento</Label>
-                      <Input
-                        placeholder="Ej. causaFallecimientoCIE10"
-                        value={obsElementoId}
-                        onChange={e => setObsElementoId(e.target.value)}
-                        className="text-xs bg-background"
-                      />
-                    </div>
-                  </div>
-
-                  <div className="space-y-1">
-                    <Label className="text-[11px] text-muted-foreground">Descripción Detallada de la Observación *</Label>
-                    <Textarea
-                      placeholder="Explique claramente qué se debe corregir o aclarar..."
-                      value={obsTexto}
-                      onChange={e => setObsTexto(e.target.value)}
-                      className="text-xs bg-background min-h-[70px]"
-                    />
-                  </div>
-
-                  <div className="flex justify-end gap-2 pt-1">
-                    <Button type="button" variant="ghost" size="sm" onClick={() => setMostrarModalObs(false)} className="text-xs">
-                      Cancelar
-                    </Button>
-                    <Button type="button" variant="primary" size="sm" onClick={handleDgrSolicitarCorreccion} className="text-xs">
-                      Confirmar Observación y Devolver al Coordinador
-                    </Button>
-                  </div>
-                </div>
-              )}
-            </div>
-          )}
-
-          {/* ETAPA 3: Corrección Coordinador (HU-INT-05) */}
-          {expediente.etapaActual === "ETAPA_3_CORRECCION_COORDINADOR" && (
-            <div className="space-y-4">
-              <div className="p-4 rounded-lg bg-muted/40 border border-border flex items-start gap-3">
-                <AlertCircle className="size-5 text-muted-foreground mt-0.5 shrink-0" />
-                <div className="text-xs space-y-1">
-                  <strong className="text-foreground font-semibold">Observación emitida por DGR:</strong>
-                  <p className="text-muted-foreground">
-                    {expediente.historial[0]?.observaciones || "Por favor subsanar la especificación del campo observado conforme a la norma."}
-                  </p>
-                </div>
-              </div>
-
-              <p className="text-xs text-muted-foreground">
-                Como <strong className="text-foreground">Coordinador SINARP</strong>, corrija únicamente los elementos observados. <strong>No requiere empezar el trámite de nuevo</strong>.
-              </p>
-
-              {activeRole === "COORDINADOR_SINARP" ? (
-                <div className="space-y-3">
-                  <div className="space-y-1">
-                    <Label className="text-xs font-semibold">Detalle de la Subsanación Realizada *</Label>
-                    <Textarea
-                      placeholder="Indique los ajustes realizados en el campo o documento observado..."
-                      value={correccionTexto}
-                      onChange={e => setCorreccionTexto(e.target.value)}
-                      className="text-xs bg-background min-h-[70px]"
-                    />
-                  </div>
-
-                  <div className="flex justify-end">
-                    <Button
-                      type="button"
-                      variant="primary"
-                      size="sm"
-                      onClick={handleCoordinadorReenviar}
-                      className="gap-1.5 font-semibold"
-                    >
-                      <Send className="size-4" />
-                      Reenviar a Revisión DGR (HU-INT-05)
-                    </Button>
-                  </div>
-                </div>
-              ) : (
-                <div className="p-3 bg-muted/30 border border-border rounded-lg text-xs text-muted-foreground">
-                  Acción reservada para el <strong>Coordinador SINARP</strong>. Cambia el rol a <strong>Coordinador SINARP</strong> en el simulador para interactuar.
-                </div>
-              )}
-            </div>
-          )}
-
-          {/* ETAPA 4: Validación Técnica DTD e Ingreso a Catálogo en Estado OCULTO (HU-INT-06 / 07) */}
-          {expediente.etapaActual === "ETAPA_4_VALIDACION_DTD" && (
-            <div className="space-y-4">
-              <p className="text-xs text-muted-foreground">
-                Como profesional de la <strong className="text-foreground">Dirección de Tecnología y Desarrollo (DTD)</strong>, verifique la viabilidad técnica de los datos. Al validar correctamente, la fuente ingresa al catálogo en estado <code className="text-foreground font-mono">OCULTO</code> (no visible a consumidores) para habilitar en paralelo la clasificación DPI y el desarrollo del microservicio.
-              </p>
-
-              {activeRole === "DTD" ? (
-                <div className="flex items-center gap-3 pt-2">
-                  <Button
-                    type="button"
-                    variant="primary"
-                    size="sm"
-                    onClick={handleDtdPasarOculto}
-                    className="gap-1.5 font-semibold"
-                  >
-                    <EyeOff className="size-4" />
-                    Validar Técnicamente e Ingresar a Catálogo en Estado OCULTO (HU-INT-07)
-                  </Button>
-                </div>
-              ) : (
-                <div className="p-3 bg-muted/30 border border-border rounded-lg text-xs text-muted-foreground">
-                  Acción reservada para la <strong>DTD</strong>. Cambia el rol a <strong>DTD (Técnica)</strong> en el simulador para interactuar.
-                </div>
-              )}
-            </div>
-          )}
-
-          {/* ETAPA 5: Clasificación DPI + Integración DTD en Paralelo (HU-INT-08 & 09) */}
-          {expediente.etapaActual === "ETAPA_5_PARALELO_DPI_DTD" && (
-            <div className="space-y-6">
-
-              {/* Alerta de Actividades Paralelas y Pendiente de Validación */}
-              <div className="p-4 rounded-lg bg-muted/30 border border-border flex items-start gap-3">
-                <Info className="size-5 text-muted-foreground mt-0.5 shrink-0" />
-                <div className="text-xs text-muted-foreground space-y-1 leading-relaxed">
-                  <strong className="text-foreground font-semibold">Ejecución en Paralelo (BPMN / Res. 004):</strong>
-                  <p>
-                    DPI y DTD trabajan simultáneamente: DPI clasifica la sensibilidad de los campos y carga su informe técnico, mientras DTD genera y despliega el microservicio en preproducción.
-                  </p>
-                  <p className="font-semibold text-foreground pt-1">
-                    * Pendiente de validación: ¿La validación funcional por DGR (Paso 6) requiere esperar síncronamente al informe DPI o avanza de forma asíncrona?
-                  </p>
-                </div>
-              </div>
-
-              {/* Subpanel A: Dirección de Protección de la Información (DPI) */}
-              <Card size="sm" className="border-border bg-card">
-                <CardHeader className="pb-3">
-                  <div className="flex items-center justify-between">
-                    <CardTitle className="text-sm font-semibold flex items-center gap-2">
-                      <ShieldCheck className="size-4 text-muted-foreground" />
-                      Actividad Paralela A: Clasificación Oficial de Campos (DPI)
-                    </CardTitle>
-                    <Badge tone="neutral" appearance="soft" size="sm">
-                      {expediente.clasificacionDPI?.completada ? "Informe Emitido" : "En Clasificación"}
-                    </Badge>
-                  </div>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                    <div className="space-y-1">
-                      <Label className="text-[11px] text-muted-foreground">Número de Informe Técnico DPI *</Label>
-                      <Input
-                        value={dpiInformeNro}
-                        onChange={e => setDpiInformeNro(e.target.value)}
-                        className="text-xs bg-background font-mono"
-                        disabled={activeRole !== "DPI"}
-                      />
-                    </div>
-
-                    <div className="space-y-1">
-                      <Label className="text-[11px] text-muted-foreground">Informe de Clasificación PDF *</Label>
-                      <Input
-                        value={dpiInformePdf}
-                        onChange={e => setDpiInformePdf(e.target.value)}
-                        className="text-xs bg-background font-mono"
-                        disabled={activeRole !== "DPI"}
-                      />
-                    </div>
-                  </div>
-
-                  {/* Tabla de Clasificación de Campos */}
-                  <div className="border border-border rounded-lg overflow-x-auto">
-                    <table className="w-full text-left text-xs">
-                      <thead className="bg-muted/40 border-b border-border text-muted-foreground uppercase text-[10px]">
-                        <tr>
-                          <th className="py-2 px-3">Campo</th>
-                          <th className="py-2 px-3">Tipo</th>
-                          <th className="py-2 px-3">Clasificación Asignada DPI</th>
-                        </tr>
-                      </thead>
-                      <tbody className="divide-y divide-border">
-                        {dpiCampos.map(c => (
-                          <tr key={c.id}>
-                            <td className="py-2 px-3 font-mono text-foreground font-medium">{c.nombre}</td>
-                            <td className="py-2 px-3 text-muted-foreground">{c.tipo}</td>
-                            <td className="py-2 px-3">
-                              {activeRole === "DPI" ? (
-                                <select
-                                  value={c.clasificacion}
-                                  onChange={e => {
-                                    const val = e.target.value as any;
-                                    setDpiCampos(prev => prev.map(item => item.id === c.id ? { ...item, clasificacion: val } : item));
-                                  }}
-                                  className="text-xs h-8 px-2 rounded border border-border bg-background text-foreground"
-                                >
-                                  <option value="Accesible">Accesible</option>
-                                  <option value="Confidencial">Confidencial (Motivado)</option>
-                                </select>
-                              ) : (
-                                <Badge tone="neutral" appearance={c.clasificacion === "Confidencial" ? "outline" : "soft"} size="sm">
-                                  {c.clasificacion}
-                                </Badge>
-                              )}
-                            </td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
-                  </div>
-
-                  {activeRole === "DPI" && (
-                    <div className="flex justify-end">
-                      <Button type="button" variant="secondary" size="sm" onClick={handleDpiGuardarClasificacion} className="text-xs gap-1.5">
-                        <CheckCircle2 className="size-3.5" />
-                        Guardar Dictamen de Clasificación DPI
-                      </Button>
-                    </div>
-                  )}
-                </CardContent>
-              </Card>
-
-              {/* Subpanel B: Dirección de Tecnología y Desarrollo (DTD) */}
-              <Card size="sm" className="border-border bg-card">
-                <CardHeader className="pb-3">
-                  <div className="flex items-center justify-between">
-                    <CardTitle className="text-sm font-semibold flex items-center gap-2">
-                      <Server className="size-4 text-muted-foreground" />
-                      Actividad Paralela B: Microservicio y Despliegue en Preproducción (DTD)
-                    </CardTitle>
-                    <Badge tone="neutral" appearance="soft" size="sm">
-                      {expediente.desplieguePreDTD?.completado ? "Desplegado" : "Pendiente"}
-                    </Badge>
-                  </div>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                    <div className="space-y-1">
-                      <Label className="text-[11px] text-muted-foreground">Nombre Microservicio</Label>
-                      <Input
-                        value={dtdMicroservicio}
-                        onChange={e => setDtdMicroservicio(e.target.value)}
-                        className="text-xs bg-background font-mono"
-                        disabled={activeRole !== "DTD"}
-                      />
-                    </div>
-                    <div className="space-y-1">
-                      <Label className="text-[11px] text-muted-foreground">Versión Preproducción</Label>
-                      <Input
-                        value={dtdVersionPre}
-                        onChange={e => setDtdVersionPre(e.target.value)}
-                        className="text-xs bg-background font-mono"
-                        disabled={activeRole !== "DTD"}
-                      />
-                    </div>
-                    <div className="space-y-1">
-                      <Label className="text-[11px] text-muted-foreground">Endpoint Preproducción</Label>
-                      <Input
-                        value={dtdEndpointPre}
-                        onChange={e => setDtdEndpointPre(e.target.value)}
-                        className="text-xs bg-background font-mono"
-                        disabled={activeRole !== "DTD"}
-                      />
-                    </div>
-                  </div>
-
-                  {activeRole === "DTD" ? (
-                    <div className="flex justify-end pt-2">
-                      <Button
-                        type="button"
-                        variant="primary"
-                        size="sm"
-                        onClick={handleDtdDesplegarPre}
-                        className="gap-1.5 font-semibold text-xs"
-                      >
-                        <Upload className="size-3.5" />
-                        Registrar Despliegue y Pasar a Validación DGR (Paso 6)
-                      </Button>
-                    </div>
-                  ) : (
-                    <div className="p-3 bg-muted/20 border border-border rounded-lg text-xs text-muted-foreground">
-                      Para registrar el despliegue en preproducción, activa el rol <strong>DTD (Técnica)</strong> en el simulador.
-                    </div>
-                  )}
-                </CardContent>
-              </Card>
-
-            </div>
-          )}
-
-          {/* ETAPA 6: Validación Preproducción DGR (HU-INT-10) */}
-          {expediente.etapaActual === "ETAPA_6_VALIDACION_PRE_DGR" && (
-            <div className="space-y-4">
-              <p className="text-xs text-muted-foreground">
-                Como profesional de la <strong className="text-foreground">Dirección de Gestión y Registro (DGR)</strong>, realice pruebas funcionales de consumo sobre el endpoint de preproducción. Si la validación es <em>Favorable</em>, se habilita la aprobación; si es <em>No Favorable</em>, el proceso retorna a DTD para corrección técnica y redespliegue.
-              </p>
-
-              {activeRole === "DGR" ? (
-                <div className="space-y-4 bg-card p-4 rounded-lg border border-border">
-                  <div className="space-y-2">
-                    <Label className="text-xs font-semibold">Resultado de la Validación Funcional *</Label>
-                    <div className="flex items-center gap-4">
-                      <label className="flex items-center gap-2 text-xs cursor-pointer">
-                        <input
-                          type="radio"
-                          name="resultadoVal"
-                          checked={validacionPreResultado === "Favorable"}
-                          onChange={() => setValidacionPreResultado("Favorable")}
-                        />
-                        <span className="font-semibold text-foreground">Validación Favorable (Sin errores)</span>
-                      </label>
-                      <label className="flex items-center gap-2 text-xs cursor-pointer">
-                        <input
-                          type="radio"
-                          name="resultadoVal"
-                          checked={validacionPreResultado === "No favorable"}
-                          onChange={() => setValidacionPreResultado("No favorable")}
-                        />
-                        <span className="font-semibold text-foreground">Validación No Favorable (Con errores técnicos)</span>
-                      </label>
-                    </div>
-                  </div>
-
-                  {validacionPreResultado === "No favorable" && (
-                    <div className="space-y-1">
-                      <Label className="text-[11px] text-muted-foreground">Descripción de los Errores Detectados *</Label>
-                      <Textarea
-                        value={validacionPreErrores}
-                        onChange={e => setValidacionPreErrores(e.target.value)}
-                        className="text-xs bg-background min-h-[70px]"
-                        placeholder="Describa el comportamiento anómalo o fallo técnico..."
-                      />
-                    </div>
-                  )}
-
-                  <div className="flex justify-end pt-2">
-                    <Button
-                      type="button"
-                      variant="primary"
-                      size="sm"
-                      onClick={handleDgrValidarPre}
-                      className="gap-1.5 font-semibold text-xs"
-                    >
-                      <CheckCircle2 className="size-4" />
-                      Registrar Resultado de Validación (HU-INT-10)
-                    </Button>
-                  </div>
-                </div>
-              ) : (
-                <div className="p-3 bg-muted/30 border border-border rounded-lg text-xs text-muted-foreground">
-                  Acción reservada para la <strong>DGR</strong>. Cambia el rol a <strong>DGR (Funcional)</strong> en el simulador para interactuar.
-                </div>
-              )}
-            </div>
-          )}
-
-          {/* ETAPA 7: Error Técnico y Redespliegue DTD (HU-INT-11) */}
-          {expediente.etapaActual === "ETAPA_7_ERROR_TECNICO_LOOP" && (
-            <div className="space-y-4">
-              <div className="p-4 rounded-lg bg-muted/40 border border-border flex items-start gap-3">
-                <AlertCircle className="size-5 text-muted-foreground mt-0.5 shrink-0" />
-                <div className="text-xs space-y-1">
-                  <strong className="text-foreground font-semibold">Incidencia reportada por DGR:</strong>
-                  <p className="text-muted-foreground">
-                    {expediente.validacionPreDGR?.observacionesValidacion || validacionPreErrores}
-                  </p>
-                </div>
-              </div>
-
-              <p className="text-xs text-muted-foreground">
-                Como profesional de la <strong className="text-foreground">Dirección de Tecnología y Desarrollo (DTD)</strong>, solvente el error técnico, incremente la versión y redespliegue en preproducción para devolver el expediente a validación DGR.
-              </p>
-
-              {activeRole === "DTD" ? (
-                <div className="space-y-3 bg-card p-4 rounded-lg border border-border">
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                    <div className="space-y-1">
-                      <Label className="text-[11px] text-muted-foreground">Nueva Versión del Microservicio</Label>
-                      <Input
-                        value={dtdVersionNueva}
-                        onChange={e => setDtdVersionNueva(e.target.value)}
-                        className="text-xs bg-background font-mono"
-                      />
-                    </div>
-                    <div className="space-y-1">
-                      <Label className="text-[11px] text-muted-foreground">Solución Técnica Aplicada *</Label>
-                      <Input
-                        value={dtdSolucionError}
-                        onChange={e => setDtdSolucionError(e.target.value)}
-                        className="text-xs bg-background"
-                      />
-                    </div>
-                  </div>
-
-                  <div className="flex justify-end pt-2">
-                    <Button
-                      type="button"
-                      variant="primary"
-                      size="sm"
-                      onClick={handleDtdSolventarError}
-                      className="gap-1.5 font-semibold text-xs"
-                    >
-                      <RefreshCw className="size-4" />
-                      Solventar Error y Redesplegar (Loop HU-INT-11)
-                    </Button>
-                  </div>
-                </div>
-              ) : (
-                <div className="p-3 bg-muted/30 border border-border rounded-lg text-xs text-muted-foreground">
-                  Acción reservada para la <strong>DTD</strong>. Cambia el rol a <strong>DTD (Técnica)</strong> en el simulador para interactuar.
-                </div>
-              )}
-            </div>
-          )}
-
-          {/* ETAPA 8: Aprobación DGR mediante Formulario Automatizado (HU-INT-12) */}
-          {expediente.etapaActual === "ETAPA_8_APROBACION_DGR" && (
-            <div className="space-y-4">
-              <p className="text-xs text-muted-foreground">
-                Como profesional de la <strong className="text-foreground">Dirección de Gestión y Registro (DGR)</strong>, diligencie el formulario automatizado con los resultados precargados y emita la aprobación formal de la integración.
-              </p>
-
-              {activeRole === "DGR" ? (
-                <div className="space-y-3 bg-card p-4 rounded-lg border border-border">
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                    <div className="space-y-1">
-                      <Label className="text-[11px] text-muted-foreground">Nro. Formulario Automatizado</Label>
-                      <Input
-                        value={formularioNro}
-                        onChange={e => setFormularioNro(e.target.value)}
-                        className="text-xs bg-background font-mono"
-                      />
-                    </div>
-                    <div className="space-y-1">
-                      <Label className="text-[11px] text-muted-foreground">Dictamen de Aprobación</Label>
-                      <Input
-                        value="FAVORABLE - APTO PARA PRODUCCIÓN"
-                        readOnly
-                        className="text-xs bg-muted/30 font-semibold text-foreground"
-                      />
-                    </div>
-                  </div>
-
-                  <div className="space-y-1">
-                    <Label className="text-[11px] text-muted-foreground">Conclusiones del Informe de Integración *</Label>
-                    <Textarea
-                      value={formularioConclusiones}
-                      onChange={e => setFormularioConclusiones(e.target.value)}
-                      className="text-xs bg-background min-h-[60px]"
-                    />
-                  </div>
-
-                  <div className="flex justify-end pt-2">
-                    <Button
-                      type="button"
-                      variant="primary"
-                      size="sm"
-                      onClick={handleDgrAprobarIntegracion}
-                      className="gap-1.5 font-semibold text-xs"
-                    >
-                      <CheckCircle2 className="size-4" />
-                      Aprobar Integración y Derivar a DTD para Producción (Enlace C)
-                    </Button>
-                  </div>
-                </div>
-              ) : (
-                <div className="p-3 bg-muted/30 border border-border rounded-lg text-xs text-muted-foreground">
-                  Acción reservada para la <strong>DGR</strong>. Cambia el rol a <strong>DGR (Funcional)</strong> en el simulador para interactuar.
-                </div>
-              )}
-            </div>
-          )}
-
-          {/* ETAPA 9: Paso a Producción DTD (HU-INT-13) */}
-          {expediente.etapaActual === "ETAPA_9_PRODUCCION_DTD" && (
-            <div className="space-y-4">
-              <p className="text-xs text-muted-foreground">
-                Como profesional de la <strong className="text-foreground">Dirección de Tecnología y Desarrollo (DTD)</strong>, registre el despliegue productivo del microservicio. Al completar este paso, el sistema disparará automáticamente la notificación al Coordinador SINARP.
-              </p>
-
-              {activeRole === "DTD" ? (
-                <div className="space-y-3 bg-card p-4 rounded-lg border border-border">
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                    <div className="space-y-1">
-                      <Label className="text-[11px] text-muted-foreground">Endpoint Oficial de Producción *</Label>
-                      <Input
-                        value={endpointProd}
-                        onChange={e => setEndpointProd(e.target.value)}
-                        className="text-xs bg-background font-mono"
-                      />
-                    </div>
-                    <div className="space-y-1">
-                      <Label className="text-[11px] text-muted-foreground">Versión Productiva Final</Label>
-                      <Input
-                        value={versionProd}
-                        onChange={e => setVersionProd(e.target.value)}
-                        className="text-xs bg-background font-mono"
-                      />
-                    </div>
-                  </div>
-
-                  <div className="flex justify-end pt-2">
-                    <Button
-                      type="button"
-                      variant="primary"
-                      size="sm"
-                      onClick={handleDtdPasoProduccion}
-                      className="gap-1.5 font-semibold text-xs"
-                    >
-                      <Server className="size-4" />
-                      Registrar Paso a Producción y Disparar Notificación (HU-INT-13)
-                    </Button>
-                  </div>
-                </div>
-              ) : (
-                <div className="p-3 bg-muted/30 border border-border rounded-lg text-xs text-muted-foreground">
-                  Acción reservada para la <strong>DTD</strong>. Cambia el rol a <strong>DTD (Técnica)</strong> en el simulador para interactuar.
-                </div>
-              )}
-            </div>
-          )}
-
-          {/* ETAPA 10: Notificación Final y Proceso Concluido (HU-INT-14) */}
-          {expediente.etapaActual === "ETAPA_10_NOTIFICACION_FINAL" && (
-            <div className="space-y-4">
-              <div className="p-5 rounded-lg bg-muted/40 border border-border flex items-start gap-4">
-                <CheckCircle2 className="size-6 text-foreground shrink-0 mt-0.5" />
-                <div className="text-xs space-y-1.5 leading-relaxed">
-                  <strong className="text-foreground text-sm font-semibold">Fuente Integrada Exitosamente en el Ecosistema DINARP</strong>
-                  <p className="text-muted-foreground">
-                    El proceso de integración ha concluido. El sistema envió la notificación automática al Coordinador Titular (andrea.lopez@registrocivil.gob.ec) y Suplente.
-                  </p>
-                  <div className="flex items-center gap-2 pt-2">
-                    <Badge tone="neutral" appearance="soft" size="sm">
-                      Endpoint: {expediente.pasoProduccionDTD?.endpointProd}
-                    </Badge>
-                    <Badge tone="neutral" appearance="outline" size="sm">
-                      Versión: {expediente.pasoProduccionDTD?.versionProd}
-                    </Badge>
-                  </div>
-                </div>
-              </div>
-
-              <div className="flex justify-end gap-3">
-                <Button variant="secondary" size="sm" asChild className="text-xs">
-                  <Link href="/wireframes2/catalogo-interoperabilidad/gestion">
-                    Ver en Gestión del Catálogo
-                  </Link>
-                </Button>
-                <Button variant="primary" size="sm" asChild className="text-xs">
-                  <Link href="/wireframes2/catalogo-interoperabilidad">
-                    Ver en Catálogo de Servicios
-                  </Link>
-                </Button>
-              </div>
-            </div>
-          )}
-
+        {/* NAVEGACIÓN POR TABS / SECCIONES */}
+        <div className="flex items-center gap-1 border-b border-border overflow-x-auto pb-1 text-xs">
+          {[
+            { id: "resumen", label: "Resumen", icon: Layers },
+            { id: "informacion", label: "Información de la fuente", icon: Building2 },
+            { id: "documentos", label: `Documentación (${expediente.documentosSoporte.length})`, icon: FileText },
+            { id: "campos", label: `Campos (${expediente.camposCandidatos.length})`, icon: Sparkles },
+            { id: "clasificacion", label: "Clasificación DPI", icon: ShieldCheck },
+            { id: "tecnica", label: "Integración técnica DTD", icon: Server },
+            { id: "validaciones", label: "Validaciones DGR", icon: FileCheck2 },
+            { id: "historial", label: `Historial (${expediente.historial.length})`, icon: Clock },
+          ].map(tab => {
+            const Icon = tab.icon;
+            const isActive = activeTab === tab.id;
+            return (
+              <Button
+                key={tab.id}
+                variant={isActive ? "primary" : "ghost"}
+                size="sm"
+                onClick={() => setActiveTab(tab.id as any)}
+                className={`h-9 px-3 gap-1.5 shrink-0 rounded-b-none border-b-2 ${isActive ? "border-primary font-semibold" : "border-transparent text-muted-foreground"
+                  }`}
+              >
+                <Icon className="size-3.5" />
+                <span>{tab.label}</span>
+              </Button>
+            );
+          })}
         </div>
 
-        {/* Sección de Ficha de Datos del Trámite: Documentos y Campos */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        {/* CONTENIDO DE TABS */}
 
-          {/* Documentos Soporte */}
-          <Card size="sm" className="bg-card border-border">
-            <CardHeader className="pb-3">
-              <CardTitle className="text-sm font-semibold flex items-center gap-2">
-                <FileText className="size-4 text-muted-foreground" />
-                Documentación Soporte Radicada
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-3">
-              {expediente.documentosSoporte.map(doc => (
-                <div key={doc.id} className="p-3 rounded-lg border border-border bg-surface flex items-center justify-between gap-3 text-xs">
-                  <div className="flex items-center gap-2.5">
-                    <FileText className="size-4 text-muted-foreground shrink-0" />
-                    <div>
-                      <div className="font-semibold text-foreground">{doc.nombre}</div>
-                      <div className="text-[11px] font-mono text-muted-foreground">{doc.archivoNombre} ({doc.archivoTamano})</div>
+        {/* TAB 1: RESUMEN */}
+        {activeTab === "resumen" && (
+          <div className="flex flex-col gap-6">
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+              {/* Columna Izquierda: Ficha y Estado */}
+              <div className="lg:col-span-2 flex flex-col gap-6">
+                <Card>
+                  <CardHeader className="pb-3 border-b border-border">
+                    <CardTitle className="text-sm font-bold font-heading">
+                      Descripción Funcional de la Fuente
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="p-4 flex flex-col gap-3 text-xs leading-relaxed">
+                    <p className="text-foreground">
+                      {expediente.descripcion}
+                    </p>
+                    <div className="bg-muted/30 border border-border rounded-lg p-3 grid grid-cols-1 sm:grid-cols-2 gap-3 text-[11px]">
+                      <div>
+                        <span className="text-muted-foreground block">Base Legal:</span>
+                        <span className="font-medium text-foreground">
+                          Ley Orgánica de Gestión de la Identidad y Datos Civiles / Res. 004
+                        </span>
+                      </div>
+                      <div>
+                        <span className="text-muted-foreground block">Tipo de Consumo:</span>
+                        <span className="font-medium text-foreground">
+                          Servicio Web (REST / JSON Sincrónico)
+                        </span>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+
+                {/* Si la fuente está en estado con observaciones, mostrar alerta detallada */}
+                {expediente.estadoGeneral === "Con observaciones" && (
+                  <div className="bg-amber-500/10 border border-amber-500/30 rounded-xl p-5 flex flex-col gap-3">
+                    <div className="flex items-center gap-2 text-amber-700 font-bold text-sm">
+                      <AlertCircle className="size-4 text-amber-600" />
+                      Esta integración requiere correcciones
+                    </div>
+                    <p className="text-xs text-muted-foreground leading-relaxed">
+                      La Dirección de Gestión y Registro (DGR) devolvió el expediente solicitando subsanación puntual de los siguientes elementos observados. El Coordinador SINARP puede editar los datos y reenviar sin reiniciar el trámite.
+                    </p>
+                    <div className="divide-y divide-amber-500/20 bg-surface rounded-lg border border-amber-500/30 overflow-hidden text-xs">
+                      {expediente.documentosSoporte.filter(d => d.estadoRevision === "Observado").map(d => (
+                        <div key={d.id} className="p-3 flex flex-col gap-1">
+                          <span className="font-semibold text-foreground">Documento observado: {d.nombre}</span>
+                          <span className="text-muted-foreground">{d.observacionDGR}</span>
+                        </div>
+                      ))}
+                      {expediente.camposCandidatos.filter(c => c.estadoRevision === "Observado").map(c => (
+                        <div key={c.id} className="p-3 flex flex-col gap-1">
+                          <span className="font-semibold text-foreground">Campo observado: {c.nombre}</span>
+                          <span className="text-muted-foreground">{c.observacionDGR}</span>
+                        </div>
+                      ))}
                     </div>
                   </div>
-                  <Badge tone="neutral" appearance="soft" size="sm">
-                    {doc.estadoRevision}
-                  </Badge>
+                )}
+
+                {/* Resumen de los 2 paralelos */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  {/* DPI */}
+                  <Card>
+                    <CardHeader className="p-4 pb-2 border-b border-border">
+                      <div className="flex items-center justify-between">
+                        <span className="text-xs font-bold font-heading flex items-center gap-1.5">
+                          <ShieldCheck className="size-4 text-purple-600" />
+                          Rama A: DPI Clasificación
+                        </span>
+                        <Badge
+                          tone={expediente.clasificacionDPI?.completada ? "success" : "neutral"}
+                          appearance="soft"
+                          size="sm"
+                        >
+                          {expediente.clasificacionDPI?.completada ? "Completada" : "En proceso"}
+                        </Badge>
+                      </div>
+                    </CardHeader>
+                    <CardContent className="p-4 text-xs flex flex-col gap-2">
+                      <p className="text-muted-foreground">
+                        {expediente.clasificacionDPI?.completada
+                          ? `Informe ${expediente.clasificacionDPI.numeroInforme} emitido con clasificación de todos los campos.`
+                          : "Pendiente emisión del Informe Técnico de Clasificación de Datos."}
+                      </p>
+                    </CardContent>
+                  </Card>
+
+                  {/* DTD */}
+                  <Card>
+                    <CardHeader className="p-4 pb-2 border-b border-border">
+                      <div className="flex items-center justify-between">
+                        <span className="text-xs font-bold font-heading flex items-center gap-1.5">
+                          <Server className="size-4 text-blue-600" />
+                          Rama B: DTD Integración
+                        </span>
+                        <Badge
+                          tone={expediente.desplieguePreDTD?.completado ? "success" : "neutral"}
+                          appearance="soft"
+                          size="sm"
+                        >
+                          {expediente.desplieguePreDTD?.completado ? "Desplegado" : "Pendiente"}
+                        </Badge>
+                      </div>
+                    </CardHeader>
+                    <CardContent className="p-4 text-xs flex flex-col gap-2">
+                      <p className="text-muted-foreground">
+                        {expediente.desplieguePreDTD?.completado
+                          ? `Microservicio ${expediente.desplieguePreDTD.microservicioNombre} (${expediente.desplieguePreDTD.version}) activo en preproducción.`
+                          : "Pendiente configuración del microservicio y despliegue en clúster preproducción."}
+                      </p>
+                    </CardContent>
+                  </Card>
                 </div>
-              ))}
+              </div>
+
+              {/* Columna Derecha: Antecedentes del Procedimiento y Coordinadores */}
+              <div className="flex flex-col gap-6">
+                <Card>
+                  <CardHeader className="pb-3 border-b border-border">
+                    <CardTitle className="text-sm font-bold font-heading">
+                      Coordinación Institucional
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="p-4 flex flex-col gap-3 text-xs">
+                    <div>
+                      <span className="text-muted-foreground block text-[11px]">Coordinador Titular:</span>
+                      <span className="font-semibold text-foreground">Ing. Carlos Mendoza Viteri</span>
+                      <span className="text-muted-foreground block text-[11px]">carlos.mendoza@registrocivil.gob.ec</span>
+                    </div>
+                    <div>
+                      <span className="text-muted-foreground block text-[11px]">Coordinador Suplente:</span>
+                      <span className="font-semibold text-foreground">Lcda. Andrea Saltos</span>
+                      <span className="text-muted-foreground block text-[11px]">andrea.saltos@registrocivil.gob.ec</span>
+                    </div>
+                  </CardContent>
+                </Card>
+
+                {/* Antecedentes del Procedimiento Oficial DINARP */}
+                <Card>
+                  <CardHeader className="pb-3 border-b border-border">
+                    <CardTitle className="text-sm font-bold font-heading">
+                      Antecedentes del Procedimiento
+                    </CardTitle>
+                    <CardDescription className="text-[11px] text-muted-foreground">
+                      Elementos documentales del procedimiento actual entregado
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent className="p-4 flex flex-col gap-2.5 text-xs">
+                    <div className="p-2.5 rounded bg-muted/40 border border-border flex flex-col gap-1">
+                      <span className="font-semibold text-foreground text-[11px]">Ticket JTRAC / Caso de Negocio:</span>
+                      <span className="text-muted-foreground text-[11px]">
+                        JTRAC-2026-0891 (Registrado como antecedente en expediente)
+                      </span>
+                    </div>
+                    <div className="p-2.5 rounded bg-muted/40 border border-border flex flex-col gap-1">
+                      <span className="font-semibold text-foreground text-[11px]">Plan de Implementación:</span>
+                      <span className="text-muted-foreground text-[11px]">
+                        Plan_Tecnico_Interoperabilidad_v1.0.pdf
+                      </span>
+                    </div>
+                    <p className="text-[11px] text-muted-foreground italic">
+                      Anotación: Estos elementos corresponden al procedimiento actual y se conservan como documentación de soporte.
+                    </p>
+                  </CardContent>
+                </Card>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* TAB 2: INFORMACIÓN DE LA FUENTE */}
+        {activeTab === "informacion" && (
+          <Card>
+            <CardHeader className="pb-4 border-b border-border">
+              <CardTitle className="text-base font-bold font-heading">
+                Información General de la Fuente Candidata
+              </CardTitle>
+              <CardDescription className="text-xs text-muted-foreground">
+                Datos descriptivos y marco institucional ingresados por el Coordinador SINARP (HU-INT-03)
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="p-6 grid grid-cols-1 sm:grid-cols-2 gap-6 text-xs">
+              <div className="flex flex-col gap-1">
+                <span className="text-muted-foreground font-semibold">Nombre de la fuente:</span>
+                <span className="text-foreground text-sm font-medium">{expediente.nombreFuente}</span>
+              </div>
+              <div className="flex flex-col gap-1">
+                <span className="text-muted-foreground font-semibold">Código técnico asignado:</span>
+                <span className="text-foreground text-sm font-mono font-medium">{expediente.codigoFuente}</span>
+              </div>
+              <div className="flex flex-col gap-1 sm:col-span-2">
+                <span className="text-muted-foreground font-semibold">Descripción del servicio:</span>
+                <p className="text-foreground leading-relaxed">{expediente.descripcion}</p>
+              </div>
+              <div className="flex flex-col gap-1">
+                <span className="text-muted-foreground font-semibold">Institución Emisora:</span>
+                <span className="text-foreground">{expediente.institucionNombre} ({expediente.institucionSigla})</span>
+              </div>
+              <div className="flex flex-col gap-1">
+                <span className="text-muted-foreground font-semibold">Base Legal y Normativa:</span>
+                <span className="text-foreground">Ley Orgánica de Gestión de la Identidad y Datos Civiles / Resolución N° 004-DN-2023</span>
+              </div>
             </CardContent>
           </Card>
+        )}
 
-          {/* Campos Registrados */}
-          <Card size="sm" className="bg-card border-border">
-            <CardHeader className="pb-3">
-              <CardTitle className="text-sm font-semibold flex items-center gap-2">
-                <Layers className="size-4 text-muted-foreground" />
-                Campos y Clasificación Actual ({expediente.camposCandidatos.length} campos)
-              </CardTitle>
+        {/* TAB 3: DOCUMENTACIÓN */}
+        {activeTab === "documentos" && (
+          <Card>
+            <CardHeader className="pb-4 border-b border-border">
+              <div className="flex items-center justify-between">
+                <div>
+                  <CardTitle className="text-base font-bold font-heading">
+                    Documentación de Soporte (Resolución N° 004)
+                  </CardTitle>
+                  <CardDescription className="text-xs text-muted-foreground">
+                    Oficios de solicitud, especificación técnica y actos administrativos
+                  </CardDescription>
+                </div>
+                <Badge tone="neutral" appearance="soft" size="sm">
+                  {expediente.documentosSoporte.length} documentos
+                </Badge>
+              </div>
             </CardHeader>
-            <CardContent>
-              <div className="border border-border rounded-lg overflow-x-auto">
-                <table className="w-full text-left text-xs">
-                  <thead className="bg-muted/40 border-b border-border text-muted-foreground uppercase text-[10px]">
-                    <tr>
-                      <th className="py-2 px-3">Campo</th>
-                      <th className="py-2 px-3">Tipo</th>
-                      <th className="py-2 px-3 text-center">Clasificación DPI</th>
+            <CardContent className="p-5 flex flex-col gap-4">
+              <div className="divide-y divide-border border border-border rounded-lg overflow-hidden bg-surface">
+                {expediente.documentosSoporte.map(doc => (
+                  <div key={doc.id} className="p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
+                    <div className="flex items-start gap-3">
+                      <div className="size-8 rounded bg-muted flex items-center justify-center shrink-0 mt-0.5">
+                        <FileText className="size-4 text-muted-foreground" />
+                      </div>
+                      <div className="flex flex-col">
+                        <span className="font-semibold text-foreground">
+                          {doc.nombre}
+                        </span>
+                        <span className="text-[11px] text-muted-foreground">
+                          Tipo: {doc.tipoRequerido} • Archivo: {doc.archivoNombre} ({doc.archivoTamano || "1.2 MB"})
+                        </span>
+                        {doc.observacionDGR && (
+                          <span className="text-amber-600 text-[11px] font-medium mt-1">
+                            Observación DGR: {doc.observacionDGR}
+                          </span>
+                        )}
+                      </div>
+                    </div>
+
+                    <div className="flex items-center gap-2 shrink-0">
+                      <Badge
+                        tone={doc.estadoRevision === "Aprobado" ? "success" : doc.estadoRevision === "Observado" ? "warning" : "neutral"}
+                        appearance="soft"
+                        size="sm"
+                      >
+                        {doc.estadoRevision}
+                      </Badge>
+                      <Button variant="outline" size="sm" className="h-7 text-xs">
+                        Ver archivo
+                      </Button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+        )}
+
+        {/* TAB 4: CAMPOS */}
+        {activeTab === "campos" && (
+          <Card>
+            <CardHeader className="pb-4 border-b border-border">
+              <div className="flex items-center justify-between">
+                <div>
+                  <CardTitle className="text-base font-bold font-heading">
+                    Campos Candidatos de la Fuente
+                  </CardTitle>
+                  <CardDescription className="text-xs text-muted-foreground">
+                    Atributos que conforman la estructura de intercambio (HU-INT-03 / HU-INT-04)
+                  </CardDescription>
+                </div>
+                <Badge tone="neutral" appearance="soft" size="sm">
+                  {expediente.camposCandidatos.length} campos
+                </Badge>
+              </div>
+            </CardHeader>
+            <CardContent className="p-5">
+              <div className="border border-border rounded-lg overflow-x-auto bg-surface">
+                <table className="w-full text-left text-xs border-collapse">
+                  <thead>
+                    <tr className="border-b border-border bg-muted/40 font-semibold text-muted-foreground uppercase tracking-wider">
+                      <th className="py-2.5 px-3">Nombre del campo</th>
+                      <th className="py-2.5 px-3">Tipo de dato</th>
+                      <th className="py-2.5 px-3">Descripción</th>
+                      <th className="py-2.5 px-3">Clasificación DPI</th>
+                      <th className="py-2.5 px-3">Estado revisión</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-border">
-                    {expediente.camposCandidatos.map(c => (
-                      <tr key={c.id}>
-                        <td className="py-2 px-3 font-mono text-foreground font-medium">{c.nombre}</td>
-                        <td className="py-2 px-3 text-muted-foreground">{c.tipo}</td>
-                        <td className="py-2 px-3 text-center">
-                          <Badge tone="neutral" appearance={c.clasificacion === "Confidencial" ? "outline" : "soft"} size="sm">
-                            {c.clasificacion}
+                    {expediente.camposCandidatos.map(campo => (
+                      <tr key={campo.id} className="hover:bg-muted/20">
+                        <td className="py-2.5 px-3 font-mono font-medium text-foreground">
+                          {campo.nombre}
+                        </td>
+                        <td className="py-2.5 px-3">
+                          <Badge tone="neutral" appearance="outline" size="sm" className="text-[10px]">
+                            {campo.tipo}
+                          </Badge>
+                        </td>
+                        <td className="py-2.5 px-3 text-muted-foreground max-w-sm">
+                          {campo.descripcion}
+                          {campo.observacionDGR && (
+                            <span className="block text-amber-600 text-[10px] font-medium mt-0.5">
+                              Observación DGR: {campo.observacionDGR}
+                            </span>
+                          )}
+                        </td>
+                        <td className="py-2.5 px-3">
+                          <Badge
+                            tone={campo.clasificacion === "Accesible" ? "success" : campo.clasificacion === "Confidencial" ? "warning" : "neutral"}
+                            appearance="soft"
+                            size="sm"
+                          >
+                            {campo.clasificacion}
+                          </Badge>
+                        </td>
+                        <td className="py-2.5 px-3">
+                          <Badge
+                            tone={campo.estadoRevision === "Valido" ? "success" : campo.estadoRevision === "Observado" ? "warning" : "neutral"}
+                            appearance="soft"
+                            size="sm"
+                          >
+                            {campo.estadoRevision || "Pendiente"}
                           </Badge>
                         </td>
                       </tr>
@@ -1361,62 +1170,505 @@ export function ExpedienteClientView({ initialExpediente }: ExpedienteClientView
               </div>
             </CardContent>
           </Card>
+        )}
 
-        </div>
-
-        {/* Historial y Bitácora Inmutable de Eventos */}
-        <div className="border border-border rounded-xl bg-card p-6 flex flex-col gap-4 shadow-xs">
-          <div className="flex items-center justify-between border-b border-border pb-3">
-            <div>
-              <h3 className="font-heading text-base font-bold text-foreground flex items-center gap-2">
-                <Clock className="size-4 text-muted-foreground" />
-                Historial Inmutable del Expediente
-              </h3>
-              <p className="text-xs text-muted-foreground">
-                Trazabilidad de cambios, versiones, observaciones y devoluciones registradas en SURI.
-              </p>
-            </div>
-            <Badge tone="neutral" appearance="outline" size="sm">
-              {expediente.historial.length} Eventos Auditados
-            </Badge>
-          </div>
-
-          <div className="space-y-3">
-            {expediente.historial.map(item => (
-              <div key={item.id} className="p-4 rounded-lg border border-border bg-surface flex flex-col gap-1.5 text-xs">
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1">
+        {/* TAB 5: CLASIFICACIÓN DPI */}
+        {activeTab === "clasificacion" && (
+          <div className="flex flex-col gap-6">
+            <Card>
+              <CardHeader className="pb-4 border-b border-border">
+                <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
-                    <Badge tone="neutral" appearance="soft" size="sm" className="font-mono text-[10px]">
-                      {item.version}
-                    </Badge>
-                    <span className="font-semibold text-foreground">{item.accion}</span>
-                    <span className="text-muted-foreground text-[11px]">({item.huRef})</span>
+                    <CardDecorativeIcon>
+                      <ShieldCheck className="size-4 text-purple-600" />
+                    </CardDecorativeIcon>
+                    <div>
+                      <CardTitle className="text-base font-bold font-heading">
+                        Clasificación Jurídica de Sensibilidad de Datos (DPI)
+                      </CardTitle>
+                      <CardDescription className="text-xs text-muted-foreground">
+                        Conforme a la Ley Orgánica de Protección de Datos Personales (HU-INT-08)
+                      </CardDescription>
+                    </div>
                   </div>
-                  <span className="text-muted-foreground font-mono text-[11px]">
-                    {item.fecha} — {item.hora}
-                  </span>
+                  <Badge
+                    tone={expediente.clasificacionDPI?.completada ? "success" : "warning"}
+                    appearance="soft"
+                    size="sm"
+                  >
+                    {expediente.clasificacionDPI?.completada ? "Clasificación Formalizada" : "Pendiente de Dictamen"}
+                  </Badge>
+                </div>
+              </CardHeader>
+              <CardContent className="p-5 flex flex-col gap-5">
+                {/* Formulario / Tabla interactiva para DPI */}
+                <div className="border border-border rounded-lg overflow-x-auto bg-surface">
+                  <table className="w-full text-left text-xs border-collapse">
+                    <thead>
+                      <tr className="border-b border-border bg-muted/40 font-semibold text-muted-foreground uppercase tracking-wider">
+                        <th className="py-2.5 px-3">Campo</th>
+                        <th className="py-2.5 px-3">Tipo</th>
+                        <th className="py-2.5 px-3">Descripción</th>
+                        <th className="py-2.5 px-3">Nivel de Sensibilidad</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-border">
+                      {dpiCampos.map((c, idx) => (
+                        <tr key={c.id} className="hover:bg-muted/20">
+                          <td className="py-2.5 px-3 font-mono font-medium text-foreground">
+                            {c.nombre}
+                          </td>
+                          <td className="py-2.5 px-3">
+                            <Badge tone="neutral" appearance="outline" size="sm" className="text-[10px]">
+                              {c.tipo}
+                            </Badge>
+                          </td>
+                          <td className="py-2.5 px-3 text-muted-foreground max-w-xs">
+                            {c.descripcion}
+                          </td>
+                          <td className="py-2.5 px-3">
+                            {activeRole === "DPI" && !expediente.clasificacionDPI?.completada ? (
+                              <select
+                                value={c.clasificacion}
+                                onChange={e => {
+                                  const val = e.target.value as any;
+                                  const updated = [...dpiCampos];
+                                  updated[idx].clasificacion = val;
+                                  setDpiCampos(updated);
+                                }}
+                                className="h-8 text-xs border border-border rounded bg-background px-2 focus:ring-1 focus:ring-ring"
+                              >
+                                <option value="Pendiente">Pendiente de clasificación</option>
+                                <option value="Accesible">Accesible (Público)</option>
+                                <option value="Confidencial">Confidencial (Protegido)</option>
+                              </select>
+                            ) : (
+                              <Badge
+                                tone={c.clasificacion === "Accesible" ? "success" : c.clasificacion === "Confidencial" ? "warning" : "neutral"}
+                                appearance="soft"
+                                size="sm"
+                              >
+                                {c.clasificacion}
+                              </Badge>
+                            )}
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
                 </div>
 
-                <div className="text-[11px] text-muted-foreground">
-                  Responsable: <strong className="text-foreground">{item.actorNombre}</strong> ({ROLES_CONFIG[item.actorRol]?.shortName || item.actorRol})
-                </div>
-
-                {item.detalles && (
-                  <p className="text-muted-foreground pt-0.5">{item.detalles}</p>
-                )}
-
-                {item.observaciones && (
-                  <div className="p-2.5 rounded bg-muted/40 border border-border mt-1 text-[11px] text-foreground">
-                    <strong>Observación registrada:</strong> {item.observaciones}
+                {/* Informe Técnico PDF obligatorio */}
+                <div className="bg-muted/30 border border-border rounded-lg p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                  <div className="flex items-start gap-3">
+                    <FileText className="size-5 text-purple-600 shrink-0 mt-0.5" />
+                    <div>
+                      <span className="text-xs font-bold text-foreground block">
+                        Informe Técnico de Clasificación (Obligatorio)
+                      </span>
+                      <span className="text-[11px] text-muted-foreground">
+                        N.º de Informe: {dpiInformeNro} • Archivo: {dpiInformePdf}
+                      </span>
+                    </div>
                   </div>
-                )}
-              </div>
-            ))}
+
+                  {activeRole === "DPI" && !expediente.clasificacionDPI?.completada && (
+                    <Button
+                      variant="primary"
+                      size="sm"
+                      onClick={handleDpiFinalizarClasificacion}
+                      className="gap-1.5 text-xs font-semibold shrink-0"
+                    >
+                      <CheckCircle2 className="size-3.5" />
+                      Finalizar y formalizar clasificación
+                    </Button>
+                  )}
+                </div>
+              </CardContent>
+            </Card>
           </div>
-        </div>
+        )}
 
+        {/* TAB 6: INTEGRACIÓN TÉCNICA DTD */}
+        {activeTab === "tecnica" && (
+          <div className="flex flex-col gap-6">
+            <Card>
+              <CardHeader className="pb-4 border-b border-border">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <CardDecorativeIcon>
+                      <Server className="size-4 text-blue-600" />
+                    </CardDecorativeIcon>
+                    <div>
+                      <CardTitle className="text-base font-bold font-heading">
+                        Integración Técnica y Despliegues (DTD)
+                      </CardTitle>
+                      <CardDescription className="text-xs text-muted-foreground">
+                        Microservicios, endpoints de prueba y paso a producción (HU-INT-09 / 13)
+                      </CardDescription>
+                    </div>
+                  </div>
+                  <Badge
+                    tone={expediente.pasoProduccionDTD?.ejecutado ? "success" : expediente.desplieguePreDTD?.completado ? "info" : "neutral"}
+                    appearance="soft"
+                    size="sm"
+                  >
+                    {expediente.pasoProduccionDTD?.ejecutado ? "En Producción" : expediente.desplieguePreDTD?.completado ? "En Preproducción" : "Pendiente"}
+                  </Badge>
+                </div>
+              </CardHeader>
+              <CardContent className="p-5 flex flex-col gap-5 text-xs">
+                {/* Preproducción */}
+                <div className="border border-border rounded-lg p-4 bg-surface flex flex-col gap-3">
+                  <div className="flex items-center justify-between">
+                    <span className="font-bold text-foreground flex items-center gap-1.5">
+                      <Terminal className="size-4 text-blue-600" />
+                      Ambiente de Preproducción (Testing)
+                    </span>
+                    <Badge tone="info" appearance="soft" size="sm">
+                      {expediente.desplieguePreDTD?.completado ? "Desplegado" : "Pendiente"}
+                    </Badge>
+                  </div>
+
+                  {expediente.desplieguePreDTD?.completado ? (
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 bg-muted/30 p-3 rounded font-mono text-[11px]">
+                      <div>
+                        <span className="text-muted-foreground block text-[10px]">Microservicio:</span>
+                        <span className="font-semibold text-foreground">{expediente.desplieguePreDTD.microservicioNombre}</span>
+                      </div>
+                      <div>
+                        <span className="text-muted-foreground block text-[10px]">Versión:</span>
+                        <span className="font-semibold text-foreground">{expediente.desplieguePreDTD.version}</span>
+                      </div>
+                      <div className="sm:col-span-3">
+                        <span className="text-muted-foreground block text-[10px]">Endpoint Preproducción:</span>
+                        <span className="font-semibold text-foreground text-blue-600 underline truncate block">
+                          {expediente.desplieguePreDTD.endpointPre}
+                        </span>
+                      </div>
+                    </div>
+                  ) : activeRole === "DTD" ? (
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
+                      <div className="flex flex-col gap-1">
+                        <Label className="text-[11px] text-muted-foreground">Nombre microservicio</Label>
+                        <Input
+                          value={dtdMicroservicio}
+                          onChange={e => setDtdMicroservicio(e.target.value)}
+                          className="h-8 text-xs font-mono"
+                        />
+                      </div>
+                      <div className="flex flex-col gap-1">
+                        <Label className="text-[11px] text-muted-foreground">Versión</Label>
+                        <Input
+                          value={dtdVersionPre}
+                          onChange={e => setDtdVersionPre(e.target.value)}
+                          className="h-8 text-xs font-mono"
+                        />
+                      </div>
+                      <div className="sm:col-span-2 flex flex-col gap-1">
+                        <Label className="text-[11px] text-muted-foreground">Endpoint Preproducción</Label>
+                        <div className="flex items-center gap-2">
+                          <Input
+                            value={dtdEndpointPre}
+                            onChange={e => setDtdEndpointPre(e.target.value)}
+                            className="h-8 text-xs font-mono flex-1"
+                          />
+                          <Button
+                            variant="primary"
+                            size="sm"
+                            onClick={handleDtdRegistrarPreproduccion}
+                            className="h-8 text-xs shrink-0"
+                          >
+                            Registrar despliegue
+                          </Button>
+                        </div>
+                      </div>
+                    </div>
+                  ) : (
+                    <p className="text-muted-foreground italic">
+                      Pendiente de despliegue por parte de la Dirección de Tecnología (DTD).
+                    </p>
+                  )}
+                </div>
+
+                {/* Paso a Producción */}
+                <div className="border border-border rounded-lg p-4 bg-surface flex flex-col gap-3">
+                  <div className="flex items-center justify-between">
+                    <span className="font-bold text-foreground flex items-center gap-1.5">
+                      <Server className="size-4 text-emerald-600" />
+                      Ambiente de Producción (Oficial)
+                    </span>
+                    <Badge
+                      tone={expediente.pasoProduccionDTD?.ejecutado ? "success" : "neutral"}
+                      appearance="soft"
+                      size="sm"
+                    >
+                      {expediente.pasoProduccionDTD?.ejecutado ? "Producción Activa" : "No Desplegado"}
+                    </Badge>
+                  </div>
+
+                  {expediente.pasoProduccionDTD?.ejecutado ? (
+                    <div className="bg-emerald-500/10 border border-emerald-500/30 rounded p-3 font-mono text-[11px] flex flex-col gap-1">
+                      <span className="text-muted-foreground">Endpoint Productivo:</span>
+                      <span className="font-bold text-emerald-700 text-xs">
+                        {expediente.pasoProduccionDTD.endpointProd}
+                      </span>
+                      <span className="text-[10px] text-muted-foreground mt-1">
+                        Desplegado el {expediente.pasoProduccionDTD.fecha} por {expediente.pasoProduccionDTD.responsable}
+                      </span>
+                    </div>
+                  ) : (
+                    <p className="text-muted-foreground italic">
+                      El paso a producción se habilita una vez emitida la aprobación formal por parte de DGR (HU-INT-12).
+                    </p>
+                  )}
+                </div>
+
+                {/* Anotación HU-INT-15 sobre publicación */}
+                <div className="bg-muted/40 border border-border rounded-lg p-3.5 flex items-start gap-2.5 text-xs text-muted-foreground">
+                  <Info className="size-4 text-muted-foreground shrink-0 mt-0.5" />
+                  <div>
+                    <strong className="text-foreground">Anotación de diseño (HU-INT-15):</strong> Publicación pendiente de definición con DINARP. Se debe confirmar si el paso de <code>OCULTO → PUBLICADO</code> se ejecuta automáticamente tras el despliegue a producción o requiere una acción manual complementaria de DGR.
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        )}
+
+        {/* TAB 7: VALIDACIONES DGR */}
+        {activeTab === "validaciones" && (
+          <div className="flex flex-col gap-6">
+            <Card>
+              <CardHeader className="pb-4 border-b border-border">
+                <CardTitle className="text-base font-bold font-heading">
+                  Validaciones Funcionales y Aprobación (DGR)
+                </CardTitle>
+                <CardDescription className="text-xs text-muted-foreground">
+                  Dictámenes de pruebas en preproducción y formulario automatizado (HU-INT-10 / 12)
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="p-5 flex flex-col gap-5 text-xs">
+                {/* Dictamen Preproducción */}
+                <div className="border border-border rounded-lg p-4 bg-surface flex flex-col gap-3">
+                  <div className="flex items-center justify-between">
+                    <span className="font-bold text-foreground">
+                      Validación Funcional en Preproducción (HU-INT-10)
+                    </span>
+                    <Badge
+                      tone={expediente.validacionPreDGR?.resultado === "Favorable" ? "success" : expediente.validacionPreDGR?.resultado === "No favorable" ? "danger" : "neutral"}
+                      appearance="soft"
+                      size="sm"
+                    >
+                      {expediente.validacionPreDGR?.resultado || "Pendiente"}
+                    </Badge>
+                  </div>
+                  {expediente.validacionPreDGR?.evaluada ? (
+                    <p className="text-muted-foreground leading-relaxed">
+                      {expediente.validacionPreDGR.observacionesValidacion}
+                    </p>
+                  ) : (
+                    <p className="text-muted-foreground italic">
+                      Pendiente de evaluación funcional por parte de DGR en el ambiente de preproducción.
+                    </p>
+                  )}
+                </div>
+
+                {/* Formulario Automatizado y Aprobación */}
+                <div className="border border-border rounded-lg p-4 bg-surface flex flex-col gap-3">
+                  <div className="flex items-center justify-between">
+                    <span className="font-bold text-foreground">
+                      Formulario Automatizado de Aprobación (HU-INT-12)
+                    </span>
+                    <Badge
+                      tone={expediente.aprobacionDGR?.aprobada ? "success" : "neutral"}
+                      appearance="soft"
+                      size="sm"
+                    >
+                      {expediente.aprobacionDGR?.aprobada ? "Aprobada" : "Pendiente"}
+                    </Badge>
+                  </div>
+
+                  {expediente.aprobacionDGR?.aprobada ? (
+                    <div className="bg-muted/30 border border-border rounded p-3 flex flex-col gap-1.5">
+                      <span className="font-mono text-[11px] text-foreground font-semibold">
+                        N.º Formulario: {expediente.aprobacionDGR.formularioAutomatizadoNro}
+                      </span>
+                      <p className="text-muted-foreground leading-relaxed">
+                        Conclusiones: {expediente.aprobacionDGR.conclusiones}
+                      </p>
+                      <span className="text-[10px] text-muted-foreground mt-1">
+                        Aprobado el {expediente.aprobacionDGR.fecha} por {expediente.aprobacionDGR.responsable}
+                      </span>
+                    </div>
+                  ) : (
+                    <p className="text-muted-foreground italic">
+                      El formulario automatizado precargará los antecedentes técnicos y legales para la firma y aprobación final de DGR.
+                    </p>
+                  )}
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        )}
+
+        {/* TAB 8: HISTORIAL Y TRAZABILIDAD */}
+        {activeTab === "historial" && (
+          <Card>
+            <CardHeader className="pb-4 border-b border-border">
+              <div className="flex items-center justify-between">
+                <div>
+                  <CardTitle className="text-base font-bold font-heading">
+                    Historial Inmutable de Trazabilidad
+                  </CardTitle>
+                  <CardDescription className="text-xs text-muted-foreground">
+                    Registro cronológico de actuaciones, devoluciones, correcciones y aprobaciones
+                  </CardDescription>
+                </div>
+                <Badge tone="neutral" appearance="soft" size="sm">
+                  {expediente.historial.length} eventos registrados
+                </Badge>
+              </div>
+            </CardHeader>
+            <CardContent className="p-5">
+              <div className="relative pl-6 space-y-6 before:absolute before:left-2.5 before:top-2 before:bottom-2 before:w-0.5 before:bg-border">
+                {expediente.historial.map((ev, index) => (
+                  <div key={ev.id} className="relative flex flex-col gap-1.5 text-xs">
+                    <span className="absolute -left-6 top-1 size-3 rounded-full bg-primary ring-4 ring-background" />
+                    <div className="flex items-center gap-2 flex-wrap">
+                      <span className="font-bold text-foreground">
+                        {ev.accion}
+                      </span>
+                      <Badge tone="neutral" appearance="soft" size="sm" className="text-[10px]">
+                        {ROLES_CONFIG[ev.actorRol]?.shortName || ev.actorRol}
+                      </Badge>
+                      <span className="text-[11px] text-muted-foreground font-mono">
+                        {ev.fecha} {ev.hora}
+                      </span>
+                    </div>
+                    <span className="text-muted-foreground text-[11px]">
+                      Responsable: <strong className="text-foreground">{ev.actorNombre}</strong> • Versión: {ev.version} • Ref: {ev.huRef}
+                    </span>
+                    {ev.observaciones && (
+                      <div className="p-2.5 bg-amber-500/10 border border-amber-500/20 rounded text-amber-800 text-[11px] mt-1">
+                        <strong>Observaciones:</strong> {ev.observaciones}
+                      </div>
+                    )}
+                    {ev.detalles && (
+                      <p className="text-muted-foreground mt-0.5 leading-relaxed">
+                        {ev.detalles}
+                      </p>
+                    )}
+                  </div>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+        )}
+
+        {/* MODAL DE OBSERVACIONES DGR (Paso 2) */}
+        <Dialog open={isObsModalOpen} onOpenChange={setIsObsModalOpen}>
+          <DialogContent className="sm:max-w-md">
+            <DialogHeader>
+              <DialogTitle className="text-base font-heading font-bold flex items-center gap-2">
+                <AlertTriangle className="size-4 text-amber-600" />
+                Solicitar Correcciones al Coordinador
+              </DialogTitle>
+              <DialogDescription className="text-xs text-muted-foreground">
+                Registra las observaciones puntuales que el organismo emisor debe subsanar (HU-INT-04).
+              </DialogDescription>
+            </DialogHeader>
+            <form onSubmit={handleDgrSolicitarCorreccion} className="flex flex-col gap-4 py-2">
+              <div className="flex flex-col gap-1.5">
+                <Label className="text-xs font-semibold">Elemento a observar</Label>
+                <select
+                  value={obsTipo}
+                  onChange={e => setObsTipo(e.target.value as any)}
+                  className="h-9 text-xs border border-border rounded bg-background px-2"
+                >
+                  <option value="campo">Campo candidato</option>
+                  <option value="documento">Documento soporte</option>
+                  <option value="informacion">Información general de la fuente</option>
+                </select>
+              </div>
+
+              <div className="flex flex-col gap-1.5">
+                <Label className="text-xs font-semibold">
+                  Observación o justificación <span className="text-destructive">*</span>
+                </Label>
+                <Textarea
+                  value={obsTexto}
+                  onChange={e => setObsTexto(e.target.value)}
+                  placeholder="Detalla con precisión el ajuste o corrección requerida..."
+                  rows={3}
+                  className="text-xs"
+                  required
+                />
+              </div>
+
+              <DialogFooter className="gap-2 sm:gap-0">
+                <Button type="button" variant="outline" size="sm" onClick={() => setIsObsModalOpen(false)}>
+                  Cancelar
+                </Button>
+                <Button type="submit" variant="primary" size="sm">
+                  Enviar observaciones
+                </Button>
+              </DialogFooter>
+            </form>
+          </DialogContent>
+        </Dialog>
+
+        {/* MODAL DE VALIDACIÓN PREPRODUCCIÓN DGR (Paso 6) */}
+        <Dialog open={isValPreModalOpen} onOpenChange={setIsValPreModalOpen}>
+          <DialogContent className="sm:max-w-md">
+            <DialogHeader>
+              <DialogTitle className="text-base font-heading font-bold flex items-center gap-2">
+                <FileCheck2 className="size-4 text-blue-600" />
+                Validación Funcional en Preproducción
+              </DialogTitle>
+              <DialogDescription className="text-xs text-muted-foreground">
+                Evalúa el comportamiento funcional del microservicio desplegado (HU-INT-10).
+              </DialogDescription>
+            </DialogHeader>
+            <form onSubmit={handleDgrEvaluarPreproduccion} className="flex flex-col gap-4 py-2">
+              <div className="flex flex-col gap-1.5">
+                <Label className="text-xs font-semibold">Resultado de la evaluación</Label>
+                <select
+                  value={validacionPreResultado}
+                  onChange={e => setValidacionPreResultado(e.target.value as any)}
+                  className="h-9 text-xs border border-border rounded bg-background px-2"
+                >
+                  <option value="Favorable">Validación Favorable (Pruebas exitosas)</option>
+                  <option value="No favorable">Validación No Favorable (Con errores técnicos)</option>
+                </select>
+              </div>
+
+              <div className="flex flex-col gap-1.5">
+                <Label className="text-xs font-semibold">
+                  Observaciones / Errores técnicos {validacionPreResultado === "No favorable" && <span className="text-destructive">*</span>}
+                </Label>
+                <Textarea
+                  value={validacionPreObs}
+                  onChange={e => setValidacionPreObs(e.target.value)}
+                  placeholder="Detalla el resultado de las pruebas o los errores encontrados..."
+                  rows={3}
+                  className="text-xs"
+                  required={validacionPreResultado === "No favorable"}
+                />
+              </div>
+
+              <DialogFooter className="gap-2 sm:gap-0">
+                <Button type="button" variant="outline" size="sm" onClick={() => setIsValPreModalOpen(false)}>
+                  Cancelar
+                </Button>
+                <Button type="submit" variant="primary" size="sm">
+                  Registrar dictamen
+                </Button>
+              </DialogFooter>
+            </form>
+          </DialogContent>
+        </Dialog>
       </div>
     </WireframeDashboardLayout>
   );
 }
-

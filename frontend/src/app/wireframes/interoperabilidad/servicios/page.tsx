@@ -71,10 +71,12 @@ import {
 } from "@/components/ui/pagination";
 import { toast } from "sonner";
 import { WireframeDashboardLayout } from "../../components/wireframe-dashboard-layout";
+import { OnboardingGuide } from "@/components/ui/onboarding-guide";
 
 interface ServicioItem {
   id: string;
   servicio: string;
+  solicitud: string;
   fuente: string;
   consumidor: string;
   estado: "Activo" | "Suspendido" | "En revisión";
@@ -87,6 +89,7 @@ const INITIAL_SERVICIOS_DATA: ServicioItem[] = [
   {
     id: "consulta-identidad",
     servicio: "Consulta de datos de identidad",
+    solicitud: "SOL-024",
     fuente: "Registro Civil",
     consumidor: "MIES",
     estado: "Activo",
@@ -97,6 +100,7 @@ const INITIAL_SERVICIOS_DATA: ServicioItem[] = [
   {
     id: "consulta-ruc",
     servicio: "Consulta de RUC",
+    solicitud: "SOL-025",
     fuente: "SRI",
     consumidor: "Registro Civil",
     estado: "Activo",
@@ -107,6 +111,7 @@ const INITIAL_SERVICIOS_DATA: ServicioItem[] = [
   {
     id: "titulos-bachiller",
     servicio: "Títulos de bachiller",
+    solicitud: "SOL-026",
     fuente: "MINEDUC",
     consumidor: "Senescyt",
     estado: "Activo",
@@ -117,6 +122,7 @@ const INITIAL_SERVICIOS_DATA: ServicioItem[] = [
   {
     id: "historial-aportes",
     servicio: "Historial de aportes",
+    solicitud: "SOL-027",
     fuente: "IESS",
     consumidor: "MIES",
     estado: "Suspendido",
@@ -127,6 +133,7 @@ const INITIAL_SERVICIOS_DATA: ServicioItem[] = [
   {
     id: "matriculacion-vehicular",
     servicio: "Matriculación vehicular",
+    solicitud: "SOL-028",
     fuente: "ANT",
     consumidor: "Municipio de Guayaquil",
     estado: "Activo",
@@ -137,6 +144,7 @@ const INITIAL_SERVICIOS_DATA: ServicioItem[] = [
   {
     id: "puntos-licencia",
     servicio: "Puntos de licencia",
+    solicitud: "SOL-029",
     fuente: "ANT",
     consumidor: "Policía Nacional",
     estado: "En revisión",
@@ -148,6 +156,13 @@ const INITIAL_SERVICIOS_DATA: ServicioItem[] = [
 
 export default function WireframeServiciosHabilitadosPage() {
   const router = useRouter();
+
+  const onboardingSteps = [
+    { targetId: "titulo-paquetes", title: "Paquetes de consumo", content: "Aquí puedes consultar los paquetes de consumo que fueron habilitados a partir de tus solicitudes aprobadas." },
+    { targetId: "col-solicitud", title: "Solicitud relacionada", content: "Cada paquete mantiene relación con la solicitud que originó el acceso." },
+    { targetId: "col-estado", title: "Estado del paquete", content: "El estado te permite saber si el paquete aún está en validación o ya está disponible para consumo." },
+    { targetId: "btn-detalle", title: "Acción Ver detalle", content: "Consulta los campos autorizados, documentos, validaciones y pruebas asociadas al paquete." }
+  ];
 
   const [serviciosList, setServiciosList] = useState<ServicioItem[]>(INITIAL_SERVICIOS_DATA);
   const [searchQuery, setSearchQuery] = useState("");
@@ -195,6 +210,7 @@ export default function WireframeServiciosHabilitadosPage() {
 
   return (
     <WireframeDashboardLayout activeMenu="servicios">
+      <OnboardingGuide steps={onboardingSteps} guideKey="onboarding-paquetes" />
       <main className="relative p-4 sm:p-6 lg:p-8 w-full space-y-6 sm:space-y-8">
         {/* Background subtle effect */}
         <div className="absolute top-0 right-0 w-96 h-96 bg-radial from-muted/20 to-transparent pointer-events-none -z-10 blur-3xl opacity-60" />
@@ -219,7 +235,7 @@ export default function WireframeServiciosHabilitadosPage() {
         </Breadcrumb>
 
         {/* ── 2. Header Title, Description & Export Button ── */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2 border-b border-border/80">
+        <div id="titulo-paquetes" className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2 border-b border-border/80">
           <div className="space-y-1">
             <h1 className="font-heading font-extrabold text-3xl sm:text-4xl tracking-tight text-foreground">
               Interoperabilidad / Servicios
@@ -333,6 +349,9 @@ export default function WireframeServiciosHabilitadosPage() {
                   SERVICIO
                 </TableHead>
                 <TableHead className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider py-3.5 px-4 text-left">
+                  SOLICITUD
+                </TableHead>
+                <TableHead className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider py-3.5 px-4 text-left">
                   FUENTE
                 </TableHead>
                 <TableHead className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider py-3.5 px-4 text-left">
@@ -343,9 +362,6 @@ export default function WireframeServiciosHabilitadosPage() {
                 </TableHead>
                 <TableHead className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider py-3.5 px-4 text-left">
                   VIGENCIA
-                </TableHead>
-                <TableHead className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider py-3.5 px-4 text-left">
-                  ÚLTIMA ACTUALIZACIÓN
                 </TableHead>
                 <TableHead className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider py-3.5 px-4 text-right">
                   ACCIONES
@@ -360,7 +376,7 @@ export default function WireframeServiciosHabilitadosPage() {
                   </TableCell>
                 </TableRow>
               ) : (
-                filteredServicios.map((s) => (
+                filteredServicios.map((s, index) => (
                   <TableRow
                     key={s.id}
                     className="border-b border-border/40 hover:bg-muted/20 transition-colors cursor-pointer"
@@ -369,6 +385,11 @@ export default function WireframeServiciosHabilitadosPage() {
                     {/* Servicio */}
                     <TableCell className="py-4 px-4 text-xs font-bold text-foreground max-w-[200px]">
                       {s.servicio}
+                    </TableCell>
+
+                    {/* Solicitud */}
+                    <TableCell id={index === 0 ? "col-solicitud" : undefined} className="py-4 px-4 text-xs font-mono text-muted-foreground whitespace-nowrap">
+                      {s.solicitud}
                     </TableCell>
 
                     {/* Fuente */}
@@ -382,7 +403,7 @@ export default function WireframeServiciosHabilitadosPage() {
                     </TableCell>
 
                     {/* Estado */}
-                    <TableCell className="py-4 px-4 whitespace-nowrap">
+                    <TableCell id={index === 0 ? "col-estado" : undefined} className="py-4 px-4 whitespace-nowrap">
                       <Badge
                         tone="neutral"
                         appearance={s.estado === "Activo" ? "solid" : "outline"}
@@ -399,17 +420,13 @@ export default function WireframeServiciosHabilitadosPage() {
                       {s.vigencia}
                     </TableCell>
 
-                    {/* Última actualización */}
-                    <TableCell className="py-4 px-4 text-xs text-muted-foreground whitespace-nowrap">
-                      {s.ultimaActualizacion}
-                    </TableCell>
-
                     {/* Acciones */}
                     <TableCell className="py-4 px-4 text-right whitespace-nowrap" onClick={(e) => e.stopPropagation()}>
                       <div className="inline-flex items-center justify-end gap-1">
                         <Tooltip>
                           <TooltipTrigger asChild>
                             <Button
+                              id={index === 0 ? "btn-detalle" : undefined}
                               type="button"
                               variant="ghost"
                               size="icon-sm"

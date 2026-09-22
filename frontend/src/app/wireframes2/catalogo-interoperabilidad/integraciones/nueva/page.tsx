@@ -19,16 +19,25 @@ import {
   UserCheck,
   Check,
   X,
-  Lock
+  FileCheck2,
+  Layers,
+  ChevronDown
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardDecorativeIcon } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger
+} from "@/components/ui/dropdown-menu";
 import { WireframeDashboardLayout } from "../../../components/wireframe-dashboard-layout";
 import { WireframeBreadcrumbs } from "../../../components/wireframe-breadcrumbs";
+import { useSimulatedRole } from "../../hooks/use-simulated-role";
 import {
   INITIAL_INSTITUCIONES,
   ROLES_CONFIG,
@@ -40,513 +49,569 @@ import {
 
 export default function NuevaIntegracionPage() {
   const router = useRouter();
-  const [activeRole, setActiveRole] = useState<UserRole>("COORDINADOR_SINARP");
+  const [activeRole, setActiveRole] = useSimulatedRole("COORDINADOR_SINARP");
 
   const currentUser = MOCK_USERS_BY_ROLE[activeRole];
-  const isCoordinador = activeRole === "COORDINADOR_SINARP";
 
-  // Paso 1: Datos de la Institución y Fuente
+  // Datos principales de la fuente (HU-INT-03)
   const [selectedInstId, setSelectedInstId] = useState("INST-001");
   const [nombreFuente, setNombreFuente] = useState("");
   const [codigoSugerido, setCodigoSugerido] = useState("");
   const [descripcionFuente, setDescripcionFuente] = useState("");
   const [baseLegal, setBaseLegal] = useState("");
-  const [tipoConsumo, setTipoConsumo] = useState("REST / JSON (Sincrónico)");
+  const [tipoConsumo, setTipoConsumo] = useState("Servicio Web (REST/JSON)");
 
-  // Documentos Soporte (Res. 004 Art. 12)
+  // Documentos Soporte preliminares (Res. 004 Art. 12)
   const [documentos, setDocumentos] = useState<DocumentoSoporte[]>([
     {
-      id: "DOC-01",
+      id: "doc-01",
       nombre: "Oficio formal de solicitud de alta de fuente",
-      tipoRequerido: "Oficio Institucional (PDF Firmado Electrónicamente)",
+      tipoRequerido: "PDF Firmado Electrónicamente",
       archivoNombre: "Oficio_Solicitud_Alta_RC_2026.pdf",
-      fechaCarga: "22/09/2026",
+      archivoTamano: "1.4 MB",
+      fechaCarga: new Date().toLocaleDateString("es-EC"),
       estadoRevision: "Pendiente",
-      esReferencial: true,
+      esReferencial: true
     },
     {
-      id: "DOC-02",
-      nombre: "Diccionario técnico preliminar y especificación OpenAPI / WSDL",
-      tipoRequerido: "Especificación Técnica (JSON / YAML / WSDL)",
-      archivoNombre: "Especificacion_Tecnica_DatosIdentidad.json",
-      fechaCarga: "22/09/2026",
+      id: "doc-02",
+      nombre: "Diccionario técnico y especificación OpenAPI / WSDL",
+      tipoRequerido: "JSON / YAML / PDF",
+      archivoNombre: "Especificacion_Tecnica_Servicio.json",
+      archivoTamano: "620 KB",
+      fechaCarga: new Date().toLocaleDateString("es-EC"),
       estadoRevision: "Pendiente",
-      esReferencial: true,
+      esReferencial: true
     },
     {
-      id: "DOC-03",
-      nombre: "Matriz de justificación legal por atributo de dato (Borrador)",
-      tipoRequerido: "Matriz Legal (PDF / Excel)",
-      archivoNombre: "",
-      estadoRevision: "Pendiente",
-      esReferencial: true,
-    },
-    {
-      id: "DOC-04",
+      id: "doc-03",
       nombre: "Designación formal del Coordinador SINARP (Titular / Suplente)",
-      tipoRequerido: "Acto Administrativo de Designación (PDF)",
+      tipoRequerido: "Acción de Personal / Resolución PDF",
       archivoNombre: "Resolucion_Designacion_Coordinador.pdf",
-      fechaCarga: "22/09/2026",
+      archivoTamano: "890 KB",
+      fechaCarga: new Date().toLocaleDateString("es-EC"),
       estadoRevision: "Pendiente",
-      esReferencial: true,
+      esReferencial: true
     }
   ]);
 
-  // Campos Candidatos
-  const [campos, setCampos] = useState<Array<{ id: string; nombre: string; tipo: string; descripcion: string }>>([
-    { id: "c1", nombre: "cedula", tipo: "String (10)", descripcion: "Número único de cédula de ciudadanía" },
-    { id: "c2", nombre: "nombresCompletos", tipo: "String (150)", descripcion: "Nombres y apellidos completos del titular" },
-    { id: "c3", nombre: "fechaNacimiento", tipo: "Date (YYYY-MM-DD)", descripcion: "Fecha de nacimiento registrada en el tomo" },
+  // Campos Candidatos (Mínimo 1 requerido)
+  const [campos, setCampos] = useState<Array<{ id: string; nombre: string; tipo: "Texto" | "Numérico" | "Fecha" | "Booleano" | "JSON" | "Alfanumérico"; descripcion: string }>>([
+    { id: "c-01", nombre: "numeroIdentificacion", tipo: "Alfanumérico", descripcion: "Número único de cédula o documento de identificación" },
+    { id: "c-02", nombre: "nombresCompletos", tipo: "Texto", descripcion: "Nombres y apellidos completos según acta registral" },
+    { id: "c-03", nombre: "fechaNacimiento", tipo: "Fecha", descripcion: "Fecha de nacimiento registrada (AAAA-MM-DD)" }
   ]);
 
+  // Estado del nuevo campo en modal o inline
   const [nuevoCampoNombre, setNuevoCampoNombre] = useState("");
-  const [nuevoCampoTipo, setNuevoCampoTipo] = useState("String");
-  const [nuevoCampoDesc, setNuevoCampoDesc] = useState("");
+  const [nuevoCampoTipo, setNuevoCampoTipo] = useState<"Texto" | "Numérico" | "Fecha" | "Booleano" | "JSON" | "Alfanumérico">("Texto");
+  const [nuevoCampoDescripcion, setNuevoCampoDescripcion] = useState("");
 
   const handleAgregarCampo = () => {
-    if (!nuevoCampoNombre.trim() || !isCoordinador) return;
-    setCampos(prev => [
-      ...prev,
+    if (!nuevoCampoNombre.trim() || !nuevoCampoDescripcion.trim()) {
+      alert("Ingrese nombre y descripción para el campo candidato.");
+      return;
+    }
+
+    setCampos([
+      ...campos,
       {
-        id: `c_${Date.now()}`,
+        id: `c-${Date.now()}`,
         nombre: nuevoCampoNombre.trim(),
         tipo: nuevoCampoTipo,
-        descripcion: nuevoCampoDesc.trim() || "Sin descripción",
+        descripcion: nuevoCampoDescripcion.trim()
       }
     ]);
+
     setNuevoCampoNombre("");
-    setNuevoCampoDesc("");
+    setNuevoCampoDescripcion("");
+    setNuevoCampoTipo("Texto");
   };
 
   const handleEliminarCampo = (id: string) => {
-    if (!isCoordinador) return;
-    setCampos(prev => prev.filter(c => c.id !== id));
-  };
-
-  const handleRadicar = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!isCoordinador) {
-      alert("Acción no permitida: Solo el Coordinador SINARP puede radicar una nueva fuente.");
+    if (campos.length <= 1) {
+      alert("Debe existir al menos un campo candidato para radicar la integración.");
       return;
     }
-    alert("Expediente radicado formalmente ante DINARP. Se ha generado el trámite EXP-2026-003 y notificado a la Dirección de Gestión y Registro (DGR) para revisión documental (HU-INT-04).");
+    setCampos(campos.filter(c => c.id !== id));
+  };
+
+  const handleEnviarARevision = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (activeRole !== "COORDINADOR_SINARP") return;
+
+    if (!nombreFuente.trim() || !descripcionFuente.trim()) {
+      alert("Por favor complete los campos obligatorios de la fuente.");
+      return;
+    }
+
+    if (campos.length === 0) {
+      alert("Debe ingresar al menos un campo candidato.");
+      return;
+    }
+
+    alert(
+      "¡Integración enviada a revisión formal!\n\n" +
+      "Estado asignado: EN REVISIÓN DGR\n" +
+      "Responsable asignado: María Torres (DGR)\n" +
+      "Referencia: HU-INT-03 / HU-INT-04"
+    );
+
     router.push("/wireframes2/catalogo-interoperabilidad/integraciones");
   };
 
+  const isCoordinador = activeRole === "COORDINADOR_SINARP";
+
   return (
     <WireframeDashboardLayout
-      activeMenu="integraciones"
+      activeMenu="integracion-fuentes"
       currentRole={activeRole}
-      breadcrumbs={[
-        { label: "Catálogo de Interoperabilidad", href: "/wireframes2/catalogo-interoperabilidad" },
-        { label: "Integración de Fuentes", href: "/wireframes2/catalogo-interoperabilidad/integraciones" },
-        { label: "Nueva Integración" }
-      ]}
+      currentUser={currentUser}
     >
       <div className="w-full max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex flex-col gap-6">
+        {/* Breadcrumb & Selector de Rol Superior */}
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+          <WireframeBreadcrumbs
+            segments={[
+              { label: "Catálogo de Interoperabilidad", href: "/wireframes2/catalogo-interoperabilidad" },
+              { label: "Integración de Fuentes", href: "/wireframes2/catalogo-interoperabilidad/integraciones" },
+              { label: "Nueva integración" }
+            ]}
+          />
+          <div data-tour="tour-roles" className="flex flex-col items-end gap-0.5">
+            <span className="text-[10px] uppercase font-semibold text-muted-foreground tracking-wider">
+              Vista simulada
+            </span>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="outline" size="sm" className="h-8 gap-2 bg-muted/40 border-border hover:bg-muted text-xs shadow-xs">
+                  <UserCheck className="size-3.5" />
+                  {ROLES_CONFIG[activeRole].shortName}
+                  <ChevronDown className="size-3 opacity-60" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-56">
+                <div className="px-2 py-1.5 mb-1 bg-muted/50 border-b border-border text-xs text-muted-foreground">
+                  Permite visualizar el prototipo según las responsabilidades de cada rol.
+                </div>
+                {(["COORDINADOR_SINARP", "DGR", "DTD", "DPI"] as UserRole[]).map(roleKey => {
+                  const r = ROLES_CONFIG[roleKey];
+                  return (
+                    <DropdownMenuItem
+                      key={roleKey}
+                      onClick={() => setActiveRole(roleKey)}
+                      className="text-xs cursor-pointer flex justify-between"
+                    >
+                      <span>{r.shortName}</span>
+                      {activeRole === roleKey && <CheckCircle2 className="size-3.5 text-foreground" />}
+                    </DropdownMenuItem>
+                  );
+                })}
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </div>
+        </div>
 
-        {/* Barra Superior de Retorno */}
-        <div className="flex items-center justify-between">
+        {/* Retorno */}
+        <div className="flex items-center justify-between gap-4 -mt-2">
           <Button variant="ghost" size="sm" asChild className="gap-1.5 -ml-2 text-muted-foreground hover:text-foreground">
             <Link href="/wireframes2/catalogo-interoperabilidad/integraciones">
               <ArrowLeft className="size-4" />
-              Volver a Integración de Fuentes
+              Volver a Integraciones
             </Link>
           </Button>
 
-          <Badge tone="neutral" appearance="soft" size="sm">
-            HU-INT-01 a HU-INT-03
+          <Badge tone="neutral" appearance="outline" size="sm" className="text-xs">
+            HU-INT-03: Registro de Fuente Candidata
           </Badge>
         </div>
 
-        {/* Simulador Interactivo de Roles */}
-        <div className="bg-surface border-2 border-border rounded-xl p-4 flex flex-col gap-3 shadow-xs">
-          <div className="flex flex-col md:flex-row md:items-center justify-between gap-3">
-            <div className="flex items-center gap-2.5">
-              <UserCheck className="size-5 text-foreground shrink-0" />
-              <div>
-                <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-                  Simulador de Rol en Formulario
-                </span>
-                <span className="mx-2 text-muted-foreground">•</span>
-                <span className="text-xs font-bold text-foreground">
-                  {currentUser.name} ({currentUser.roleTitle.split("(")[0].trim()})
-                </span>
-              </div>
-            </div>
-
-            <div className="flex flex-wrap items-center gap-1.5 shrink-0 bg-muted/40 p-1 rounded-lg border border-border">
-              {(Object.keys(MOCK_USERS_BY_ROLE) as UserRole[]).map(roleKey => {
-                const u = MOCK_USERS_BY_ROLE[roleKey];
-                const isSelected = activeRole === roleKey;
-                return (
-                  <button
-                    key={roleKey}
-                    type="button"
-                    onClick={() => setActiveRole(roleKey)}
-                    className={`px-2.5 py-1 rounded-md text-xs font-semibold transition-all flex items-center gap-1.5 cursor-pointer ${isSelected
-                      ? "bg-foreground text-background shadow-xs"
-                      : "text-muted-foreground hover:text-foreground hover:bg-muted"
-                      }`}
-                  >
-                    <span className="font-mono text-[10px] opacity-80">{u.initials}</span>
-                    <span>{u.name.split(" ")[0]} ({ROLES_CONFIG[roleKey].shortName})</span>
-                  </button>
-                );
-              })}
-            </div>
-          </div>
-
-          {!isCoordinador && (
-            <div className="p-3 bg-muted/30 border border-border rounded-lg flex items-start gap-2.5 text-xs text-muted-foreground">
-              <Lock className="size-4 text-foreground mt-0.5 shrink-0" />
-              <div>
-                <strong className="text-foreground font-semibold">Modo Solo Lectura ({currentUser.roleTitle}):</strong>
-                <p className="mt-0.5">
-                  Este actor no tiene facultades para crear ni radicar solicitudes de alta de fuentes. Solo el <strong className="text-foreground">Coordinador SINARP (Andrea López)</strong> puede editar y enviar este formulario inicial.
-                </p>
-              </div>
-            </div>
-          )}
-        </div>
-
-        {/* Encabezado del Trámite */}
-        <div className="border border-border rounded-xl bg-card p-6 flex flex-col gap-2 shadow-xs">
-          <div className="flex items-center gap-2">
-            <Badge tone="neutral" appearance="soft" size="sm">
-              Etapa 1: Solicitud de Alta de Fuente
-            </Badge>
-            <span className="text-xs text-muted-foreground">•</span>
-            <span className="text-xs font-mono text-muted-foreground">Borrador de Expediente</span>
-          </div>
-
+        {/* Header Principal */}
+        <div className="flex flex-col gap-1.5 border-b border-border pb-5">
           <h1 className="font-heading text-2xl md:text-3xl font-bold tracking-tight text-foreground">
-            Registro de Nueva Fuente de Interoperabilidad
+            Nueva Integración de Fuente
           </h1>
-
-          <p className="text-sm text-muted-foreground max-w-3xl leading-relaxed">
-            Formulario institucional para la radicación formal de una fuente de datos o servicio digital de consulta. El Coordinador SINARP aporta la información preliminar, adjunta los documentos habilitantes y define los campos candidatos a interoperar.
+          <p className="text-sm text-muted-foreground">
+            Registra una nueva fuente de datos y sus campos candidatos para someterla a revisión formal ante DINARP.
           </p>
         </div>
 
-        {/* Advertencia Legal sobre Documentos Soporte */}
-        <div className="bg-surface border border-border rounded-xl p-4 flex items-start gap-4">
-          <Info className="size-5 text-muted-foreground mt-0.5 shrink-0" />
-          <div className="text-xs text-muted-foreground leading-relaxed">
-            <strong className="text-foreground font-semibold">Aviso sobre Requisitos Documentales (Res. 004-DN-2023):</strong>
-            <p className="mt-0.5">
-              Los documentos de soporte listados corresponden a la práctica operativa referencial de DINARP. <span className="font-semibold text-foreground">El listado exacto y definitivo de adjuntos obligatorios se encuentra pendiente de validación formal</span> por la Dirección de Gestión y Registro.
+        {!isCoordinador ? (
+          <div className="flex flex-col items-center justify-center py-16 text-center border border-border rounded-xl bg-surface shadow-xs">
+            <div className="size-12 rounded-full bg-muted/50 flex items-center justify-center mb-4">
+              <AlertCircle className="size-6 text-muted-foreground" />
+            </div>
+            <h2 className="text-lg font-bold font-heading mb-2">Acceso Restringido</h2>
+            <p className="text-sm text-muted-foreground max-w-md">
+              Esta acción corresponde únicamente al <strong>Coordinador SINARP</strong>.
+              Por favor, cambia el rol de simulación en la parte superior derecha para continuar.
             </p>
           </div>
-        </div>
-
-        <form onSubmit={handleRadicar} className="space-y-6">
-
-          {/* Bloque 1: Identificación Institucional y de la Fuente */}
-          <Card size="sm" className="bg-card border-border">
-            <CardHeader className="pb-3">
-              <CardTitle className="text-sm font-semibold flex items-center gap-2">
-                <Building2 className="size-4 text-muted-foreground" />
-                1. Datos de la Institución y Fuente Solicitada
-              </CardTitle>
-              <CardDescription className="text-xs">
-                Información general del servicio digital que se integrará al Sistema Nacional de Registro de Datos Públicos.
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <fieldset disabled={!isCoordinador} className="space-y-4">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div className="space-y-1.5">
-                    <Label className="text-xs text-foreground">Institución Emisora *</Label>
+        ) : (
+          <form onSubmit={handleEnviarARevision} className="flex flex-col gap-6">
+            {/* SECCIÓN 1: DATOS DE LA INSTITUCIÓN Y FUENTE */}
+            <Card>
+              <CardHeader className="pb-4 border-b border-border">
+                <div className="flex items-center gap-2">
+                  <CardDecorativeIcon>
+                    <Building2 className="size-4 text-foreground" />
+                  </CardDecorativeIcon>
+                  <div>
+                    <CardTitle className="text-base font-bold font-heading">
+                      1. Datos de la Institución y Fuente
+                    </CardTitle>
+                    <CardDescription className="text-xs text-muted-foreground">
+                      Información institucional y propósito del servicio a incorporar
+                    </CardDescription>
+                  </div>
+                </div>
+              </CardHeader>
+              <CardContent className="p-5 flex flex-col gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  {/* Institución Emisora */}
+                  <div className="flex flex-col gap-1.5 sm:col-span-2">
+                    <Label htmlFor="institucion-select" className="text-xs font-semibold text-foreground">
+                      Institución emisora <span className="text-destructive">*</span>
+                    </Label>
                     <select
+                      id="institucion-select"
                       value={selectedInstId}
                       onChange={e => setSelectedInstId(e.target.value)}
-                      className="w-full text-xs h-9 px-3 rounded-md border border-border bg-background text-foreground focus:outline-none focus:ring-1 focus:ring-foreground disabled:opacity-60"
-                      required
+                      className="h-10 text-sm border border-border rounded-lg bg-background px-3 focus:outline-none focus:ring-2 focus:ring-ring"
                     >
                       {INITIAL_INSTITUCIONES.map(inst => (
                         <option key={inst.id} value={inst.id}>
-                          {inst.sigla} — {inst.nombre}
+                          {inst.nombre} ({inst.sigla}) — RUC: {inst.codigoInstitucion}
                         </option>
                       ))}
                     </select>
                   </div>
 
-                  <div className="space-y-1.5">
-                    <Label className="text-xs text-foreground">Código Sugerido del Servicio</Label>
+                  {/* Nombre de la fuente */}
+                  <div className="flex flex-col gap-1.5 sm:col-span-2">
+                    <Label htmlFor="nombre-fuente" className="text-xs font-semibold text-foreground">
+                      Nombre oficial de la fuente de datos <span className="text-destructive">*</span>
+                    </Label>
                     <Input
-                      placeholder="Ej. RC-DAT-IDENT-001"
-                      value={codigoSugerido}
-                      onChange={e => setCodigoSugerido(e.target.value)}
-                      className="text-xs bg-background font-mono disabled:opacity-60"
-                    />
-                  </div>
-                </div>
-
-                <div className="space-y-1.5">
-                  <Label className="text-xs text-foreground">Nombre Oficial de la Fuente / Servicio *</Label>
-                  <Input
-                    placeholder="Ej. Consulta de Datos de Identidad y Registro Civil"
-                    value={nombreFuente}
-                    onChange={e => setNombreFuente(e.target.value)}
-                    className="text-xs bg-background disabled:opacity-60"
-                    required
-                  />
-                </div>
-
-                <div className="space-y-1.5">
-                  <Label className="text-xs text-foreground">Descripción y Propósito Funcional *</Label>
-                  <Textarea
-                    placeholder="Describa el objetivo de la fuente, a qué trámites o consultas ciudadanas servirá y la naturaleza de los registros provistos..."
-                    value={descripcionFuente}
-                    onChange={e => setDescripcionFuente(e.target.value)}
-                    className="text-xs bg-background min-h-[75px] disabled:opacity-60"
-                    required
-                  />
-                </div>
-
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div className="space-y-1.5">
-                    <Label className="text-xs text-foreground">Base Legal Habilitante *</Label>
-                    <Input
-                      placeholder="Ej. Ley Orgánica de Gestión de la Identidad y Datos Civiles Art. 85"
-                      value={baseLegal}
-                      onChange={e => setBaseLegal(e.target.value)}
-                      className="text-xs bg-background disabled:opacity-60"
+                      id="nombre-fuente"
+                      placeholder="Ej: Registro de Defunciones y Causas de Fallecimiento"
+                      value={nombreFuente}
+                      onChange={e => setNombreFuente(e.target.value)}
+                      className="h-10 text-sm"
                       required
                     />
                   </div>
 
-                  <div className="space-y-1.5">
-                    <Label className="text-xs text-foreground">Tipo / Modalidad de Consumo Propuesto *</Label>
+                  {/* Código sugerido */}
+                  <div className="flex flex-col gap-1.5">
+                    <Label htmlFor="codigo-sugerido" className="text-xs font-semibold text-foreground">
+                      Código de servicio sugerido
+                    </Label>
+                    <Input
+                      id="codigo-sugerido"
+                      placeholder="Ej: SRV-RC-004"
+                      value={codigoSugerido}
+                      onChange={e => setCodigoSugerido(e.target.value)}
+                      className="h-10 text-sm font-mono"
+                    />
+                    <span className="text-[11px] text-muted-foreground">
+                      Sujeto a validación y asignación técnica final por DTD.
+                    </span>
+                  </div>
+
+                  {/* Tipo de Consumo */}
+                  <div className="flex flex-col gap-1.5">
+                    <Label htmlFor="tipo-consumo" className="text-xs font-semibold text-foreground">
+                      Tipo de consumo previsto
+                    </Label>
                     <select
+                      id="tipo-consumo"
                       value={tipoConsumo}
                       onChange={e => setTipoConsumo(e.target.value)}
-                      className="w-full text-xs h-9 px-3 rounded-md border border-border bg-background text-foreground focus:outline-none focus:ring-1 focus:ring-foreground disabled:opacity-60"
+                      className="h-10 text-sm border border-border rounded-lg bg-background px-3 focus:outline-none focus:ring-2 focus:ring-ring"
                     >
-                      <option value="REST / JSON (Sincrónico)">Servicio Web REST / JSON (Sincrónico)</option>
-                      <option value="SOAP / XML (Sincrónico)">Servicio Web SOAP / XML (Sincrónico)</option>
-                      <option value="Intercambio Masivo (Batch / SFTP)">Intercambio Masivo Asincrónico (Batch / SFTP)</option>
+                      <option value="Servicio Web (REST/JSON)">Servicio Web (REST/JSON)</option>
+                      <option value="Intercambio Masivo (Batch)">Intercambio Masivo (Batch)</option>
+                      <option value="SOAP / XML">SOAP / XML</option>
                     </select>
                   </div>
-                </div>
-              </fieldset>
-            </CardContent>
-          </Card>
 
-          {/* Bloque 2: Documentación de Soporte */}
-          <Card size="sm" className="bg-card border-border">
-            <CardHeader className="pb-3">
-              <CardTitle className="text-sm font-semibold flex items-center gap-2">
-                <FileText className="size-4 text-muted-foreground" />
-                2. Documentación Habilitante de Soporte
-              </CardTitle>
-              <CardDescription className="text-xs">
-                Archivos obligatorios y referenciales para la revisión formal por parte de DGR y DTD.
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-3">
-              <div className="border border-border rounded-lg overflow-hidden">
-                <table className="w-full text-left text-xs">
-                  <thead className="bg-muted/40 border-b border-border text-muted-foreground uppercase text-[10px] tracking-wider font-semibold">
-                    <tr>
-                      <th className="py-2.5 px-3">Requisito Documental</th>
-                      <th className="py-2.5 px-3">Formato Esperado</th>
-                      <th className="py-2.5 px-3">Archivo Adjunto</th>
-                      <th className="py-2.5 px-3 text-right">Acción</th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-border">
-                    {documentos.map(doc => (
-                      <tr key={doc.id} className="hover:bg-muted/20">
-                        <td className="py-2.5 px-3 font-medium text-foreground">
-                          {doc.nombre}
-                          {doc.esReferencial && (
-                            <span className="block text-[10px] text-muted-foreground font-normal">
-                              (Referencial • sujeto a validación DGR)
+                  {/* Descripción */}
+                  <div className="flex flex-col gap-1.5 sm:col-span-2">
+                    <Label htmlFor="descripcion-fuente" className="text-xs font-semibold text-foreground">
+                      Descripción funcional de la fuente <span className="text-destructive">*</span>
+                    </Label>
+                    <Textarea
+                      id="descripcion-fuente"
+                      placeholder="Detalla el alcance, contenido y finalidad de la fuente que se incorpora..."
+                      value={descripcionFuente}
+                      onChange={e => setDescripcionFuente(e.target.value)}
+                      rows={3}
+                      className="text-xs leading-relaxed"
+                      required
+                    />
+                  </div>
+
+                  {/* Base legal */}
+                  <div className="flex flex-col gap-1.5 sm:col-span-2">
+                    <Label htmlFor="base-legal" className="text-xs font-semibold text-foreground">
+                      Base legal aplicable
+                    </Label>
+                    <Input
+                      id="base-legal"
+                      placeholder="Ej: Ley Orgánica de Gestión de la Identidad y Datos Civiles / Art. 12 Res. 004"
+                      value={baseLegal}
+                      onChange={e => setBaseLegal(e.target.value)}
+                      className="h-10 text-sm"
+                    />
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* SECCIÓN 2: DOCUMENTACIÓN SOPORTE */}
+            <Card>
+              <CardHeader className="pb-4 border-b border-border">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <CardDecorativeIcon>
+                      <FileCheck2 className="size-4 text-foreground" />
+                    </CardDecorativeIcon>
+                    <div>
+                      <CardTitle className="text-base font-bold font-heading">
+                        2. Documentación Soporte (Resolución N° 004)
+                      </CardTitle>
+                      <CardDescription className="text-xs text-muted-foreground">
+                        Oficios de solicitud, especificación técnica y designación de coordinadores
+                      </CardDescription>
+                    </div>
+                  </div>
+                  <Badge tone="neutral" appearance="soft" size="sm">
+                    {documentos.length} documentos
+                  </Badge>
+                </div>
+              </CardHeader>
+              <CardContent className="p-5 flex flex-col gap-4">
+                {/* Anotación de diseño obligatoria */}
+                <div className="bg-muted/40 border border-border rounded-lg p-3.5 flex items-start gap-3">
+                  <Info className="size-4 text-muted-foreground shrink-0 mt-0.5" />
+                  <div className="text-xs text-muted-foreground leading-relaxed">
+                    <strong className="text-foreground">Anotación de diseño (HU-INT-03):</strong> El listado exacto de documentos soporte y metadatos adicionales está <em>pendiente de definición con DINARP</em>. Se presenta la estructura base requerida por el procedimiento actual.
+                  </div>
+                </div>
+
+                <div className="divide-y divide-border border border-border rounded-lg overflow-hidden bg-surface">
+                  {documentos.map((doc, index) => (
+                    <div key={doc.id} className="p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                      <div className="flex items-start gap-3">
+                        <div className="size-8 rounded bg-muted flex items-center justify-center shrink-0 mt-0.5">
+                          <FileText className="size-4 text-muted-foreground" />
+                        </div>
+                        <div className="flex flex-col">
+                          <span className="text-xs font-semibold text-foreground">
+                            {doc.nombre}
+                          </span>
+                          <span className="text-[11px] text-muted-foreground">
+                            Requerido: {doc.tipoRequerido}
+                          </span>
+                          {doc.archivoNombre && (
+                            <span className="text-[11px] text-muted-foreground/80 font-mono mt-0.5">
+                              Archivo: {doc.archivoNombre} ({doc.archivoTamano || "1.2 MB"})
                             </span>
                           )}
-                        </td>
-                        <td className="py-2.5 px-3 text-muted-foreground">{doc.tipoRequerido}</td>
-                        <td className="py-2.5 px-3">
-                          {doc.archivoNombre ? (
-                            <span className="font-mono text-foreground font-medium flex items-center gap-1.5">
-                              <FileText className="size-3 text-muted-foreground" />
-                              {doc.archivoNombre}
-                            </span>
-                          ) : (
-                            <span className="text-muted-foreground italic">No cargado</span>
-                          )}
-                        </td>
-                        <td className="py-2.5 px-3 text-right">
-                          <Button
-                            type="button"
-                            variant="secondary"
-                            size="sm"
-                            disabled={!isCoordinador}
-                            className="text-[11px] h-7 gap-1"
-                            onClick={() => {
-                              if (!isCoordinador) return;
-                              setDocumentos(prev =>
-                                prev.map(d =>
-                                  d.id === doc.id
-                                    ? { ...d, archivoNombre: `Archivo_${doc.id}_Adjunto.pdf`, fechaCarga: "22/09/2026" }
-                                    : d
-                                )
-                              );
-                            }}
-                          >
-                            <Upload className="size-3" />
-                            {doc.archivoNombre ? "Reemplazar" : "Cargar"}
-                          </Button>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            </CardContent>
-          </Card>
+                        </div>
+                      </div>
 
-          {/* Bloque 3: Estructura de Campos Candidatos */}
-          <Card size="sm" className="bg-card border-border">
-            <CardHeader className="pb-3">
-              <div className="flex items-center justify-between">
-                <div>
-                  <CardTitle className="text-sm font-semibold">
-                    3. Definición de Campos Candidatos a Interoperar ({campos.length})
-                  </CardTitle>
-                  <CardDescription className="text-xs">
-                    El Coordinador SINARP define los campos técnicos y su descripción funcional. La clasificación (Accesible/Confidencial) la realizará la DPI en la Etapa 5.
-                  </CardDescription>
-                </div>
-                <Badge tone="neutral" appearance="outline" size="sm">
-                  Clasificación por DPI en Etapa 5
-                </Badge>
-              </div>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="border border-border rounded-lg overflow-hidden">
-                <table className="w-full text-left text-xs">
-                  <thead className="bg-muted/40 border-b border-border text-muted-foreground uppercase text-[10px] tracking-wider font-semibold">
-                    <tr>
-                      <th className="py-2.5 px-3">Nombre del Campo</th>
-                      <th className="py-2.5 px-3">Tipo de Dato</th>
-                      <th className="py-2.5 px-3">Descripción Funcional</th>
-                      <th className="py-2.5 px-3 text-right">Acción</th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-border">
-                    {campos.map(c => (
-                      <tr key={c.id} className="hover:bg-muted/20">
-                        <td className="py-2.5 px-3 font-mono font-medium text-foreground">{c.nombre}</td>
-                        <td className="py-2.5 px-3">
-                          <Badge tone="neutral" appearance="soft" size="sm">
-                            {c.tipo}
+                      <div className="flex items-center gap-2 shrink-0">
+                        {doc.archivoNombre ? (
+                          <Badge tone="success" appearance="soft" size="sm" className="gap-1">
+                            <Check className="size-3" />
+                            Cargado
                           </Badge>
-                        </td>
-                        <td className="py-2.5 px-3 text-muted-foreground">{c.descripcion}</td>
-                        <td className="py-2.5 px-3 text-right">
-                          <Button
-                            type="button"
-                            variant="ghost"
-                            size="sm"
-                            disabled={!isCoordinador}
-                            onClick={() => handleEliminarCampo(c.id)}
-                            className="text-muted-foreground hover:text-foreground h-7 px-2"
-                          >
-                            <Trash2 className="size-3.5" />
+                        ) : (
+                          <Button variant="outline" size="sm" className="h-8 gap-1.5 text-xs">
+                            <Upload className="size-3.5" />
+                            Cargar archivo
                           </Button>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-
-              {/* Formulario para Añadir Nuevo Campo */}
-              {isCoordinador && (
-                <div className="p-3 rounded-lg border border-dashed border-border bg-muted/20 flex flex-col md:flex-row items-end gap-3">
-                  <div className="flex-1 w-full space-y-1">
-                    <Label className="text-[11px] text-muted-foreground">Nombre del Campo</Label>
-                    <Input
-                      placeholder="Ej. direccionDomicilio"
-                      value={nuevoCampoNombre}
-                      onChange={e => setNuevoCampoNombre(e.target.value)}
-                      className="text-xs bg-background font-mono h-8"
-                    />
-                  </div>
-                  <div className="w-full md:w-36 space-y-1">
-                    <Label className="text-[11px] text-muted-foreground">Tipo de Dato</Label>
-                    <select
-                      value={nuevoCampoTipo}
-                      onChange={e => setNuevoCampoTipo(e.target.value)}
-                      className="w-full text-xs h-8 px-2 rounded-md border border-border bg-background text-foreground"
-                    >
-                      <option value="String">String</option>
-                      <option value="Number">Number</option>
-                      <option value="Date">Date</option>
-                      <option value="Boolean">Boolean</option>
-                      <option value="Object / Array">Object / Array</option>
-                    </select>
-                  </div>
-                  <div className="flex-1 w-full space-y-1">
-                    <Label className="text-[11px] text-muted-foreground">Descripción</Label>
-                    <Input
-                      placeholder="Ej. Dirección de residencia habitual"
-                      value={nuevoCampoDesc}
-                      onChange={e => setNuevoCampoDesc(e.target.value)}
-                      className="text-xs bg-background h-8"
-                    />
-                  </div>
-                  <Button
-                    type="button"
-                    variant="secondary"
-                    size="sm"
-                    onClick={handleAgregarCampo}
-                    className="h-8 text-xs shrink-0 gap-1"
-                  >
-                    <Plus className="size-3.5" />
-                    Agregar Campo
-                  </Button>
+                        )}
+                      </div>
+                    </div>
+                  ))}
                 </div>
-              )}
-            </CardContent>
-          </Card>
+              </CardContent>
+            </Card>
 
-          {/* Botonera de Envío y Guardado */}
-          <div className="border-t border-border pt-6 flex flex-col sm:flex-row items-center justify-between gap-4">
-            <div className="text-xs text-muted-foreground">
-              Al radicar, el expediente avanza a la <strong className="text-foreground">Etapa 2 (Revisión DGR)</strong> sin reiniciar números de trámite.
-            </div>
+            {/* SECCIÓN 3: CAMPOS CANDIDATOS */}
+            <Card>
+              <CardHeader className="pb-4 border-b border-border">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <CardDecorativeIcon>
+                      <Layers className="size-4 text-foreground" />
+                    </CardDecorativeIcon>
+                    <div>
+                      <CardTitle className="text-base font-bold font-heading">
+                        3. Campos Candidatos
+                      </CardTitle>
+                      <CardDescription className="text-xs text-muted-foreground">
+                        Estructura inicial de datos que conformarán la fuente de interoperabilidad
+                      </CardDescription>
+                    </div>
+                  </div>
+                  <Badge tone="neutral" appearance="soft" size="sm">
+                    {campos.length} campos registrados
+                  </Badge>
+                </div>
+              </CardHeader>
+              <CardContent className="p-5 flex flex-col gap-4">
+                {/* Tabla de campos existentes */}
+                <div className="border border-border rounded-lg overflow-x-auto bg-surface">
+                  <table className="w-full text-left text-xs border-collapse">
+                    <thead>
+                      <tr className="border-b border-border bg-muted/40 font-semibold text-muted-foreground uppercase tracking-wider">
+                        <th className="py-2.5 px-3">Nombre del campo</th>
+                        <th className="py-2.5 px-3">Tipo de dato</th>
+                        <th className="py-2.5 px-3">Descripción</th>
+                        <th className="py-2.5 px-3 text-right">Acción</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-border">
+                      {campos.map((campo, index) => (
+                        <tr key={campo.id} className="hover:bg-muted/20">
+                          <td className="py-2.5 px-3 font-mono font-medium text-foreground">
+                            {campo.nombre}
+                          </td>
+                          <td className="py-2.5 px-3">
+                            <Badge tone="neutral" appearance="outline" size="sm" className="text-[10px]">
+                              {campo.tipo}
+                            </Badge>
+                          </td>
+                          <td className="py-2.5 px-3 text-muted-foreground max-w-sm">
+                            {campo.descripcion}
+                          </td>
+                          <td className="py-2.5 px-3 text-right">
+                            <Button
+                              type="button"
+                              variant="ghost"
+                              size="icon"
+                              onClick={() => handleEliminarCampo(campo.id)}
+                              className="size-7 text-muted-foreground hover:text-destructive"
+                              title="Eliminar campo"
+                            >
+                              <Trash2 className="size-3.5" />
+                            </Button>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
 
-            <div className="flex items-center gap-3 w-full sm:w-auto justify-end">
-              <Button type="button" variant="ghost" size="sm" asChild className="text-xs text-muted-foreground">
-                <Link href="/wireframes2/catalogo-interoperabilidad/integraciones">
-                  Cancelar
-                </Link>
+                {/* Formulario Inline para agregar nuevo campo */}
+                <div className="bg-muted/30 border border-border rounded-lg p-4 flex flex-col gap-3">
+                  <span className="text-xs font-semibold text-foreground">
+                    + Agregar nuevo campo candidato
+                  </span>
+                  <div className="grid grid-cols-1 sm:grid-cols-12 gap-3">
+                    <div className="sm:col-span-4 flex flex-col gap-1">
+                      <Label htmlFor="new-campo-nombre" className="text-[11px] text-muted-foreground font-medium">
+                        Nombre técnico del campo
+                      </Label>
+                      <Input
+                        id="new-campo-nombre"
+                        placeholder="Ej: lugarFallecimiento"
+                        value={nuevoCampoNombre}
+                        onChange={e => setNuevoCampoNombre(e.target.value)}
+                        className="h-8 text-xs font-mono"
+                      />
+                    </div>
+                    <div className="sm:col-span-3 flex flex-col gap-1">
+                      <Label htmlFor="new-campo-tipo" className="text-[11px] text-muted-foreground font-medium">
+                        Tipo de dato
+                      </Label>
+                      <select
+                        id="new-campo-tipo"
+                        value={nuevoCampoTipo}
+                        onChange={e => setNuevoCampoTipo(e.target.value as any)}
+                        className="h-8 text-xs border border-border rounded-lg bg-background px-2 focus:outline-none focus:ring-2 focus:ring-ring"
+                      >
+                        <option value="Texto">Texto</option>
+                        <option value="Alfanumérico">Alfanumérico</option>
+                        <option value="Numérico">Numérico</option>
+                        <option value="Fecha">Fecha</option>
+                        <option value="Booleano">Booleano</option>
+                        <option value="JSON">JSON</option>
+                      </select>
+                    </div>
+                    <div className="sm:col-span-5 flex flex-col gap-1">
+                      <Label htmlFor="new-campo-desc" className="text-[11px] text-muted-foreground font-medium">
+                        Descripción del atributo
+                      </Label>
+                      <div className="flex items-center gap-2">
+                        <Input
+                          id="new-campo-desc"
+                          placeholder="Descripción y propósito..."
+                          value={nuevoCampoDescripcion}
+                          onChange={e => setNuevoCampoDescripcion(e.target.value)}
+                          className="h-8 text-xs flex-1"
+                        />
+                        <Button
+                          type="button"
+                          variant="secondary"
+                          size="sm"
+                          onClick={handleAgregarCampo}
+                          className="h-8 text-xs shrink-0"
+                        >
+                          Agregar
+                        </Button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Botones de acción */}
+            <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-4 border-t border-border">
+              <Button
+                type="button"
+                variant="outline"
+                size="default"
+                onClick={() => {
+                  alert("Borrador guardado localmente en el expediente.");
+                }}
+                className="w-full sm:w-auto text-xs gap-1.5"
+              >
+                <Save className="size-4" />
+                Guardar borrador
               </Button>
-              {isCoordinador ? (
-                <>
-                  <Button type="button" variant="secondary" size="sm" className="text-xs gap-1.5">
-                    <Save className="size-3.5" />
-                    Guardar Borrador
-                  </Button>
-                  <Button type="submit" variant="primary" size="sm" className="text-xs gap-1.5 font-semibold">
-                    <Send className="size-3.5" />
-                    Radicar Expediente ante DINARP (HU-INT-03)
-                  </Button>
-                </>
-              ) : (
-                <Badge tone="neutral" appearance="outline" size="sm" className="py-1.5 px-3 text-xs border-dashed">
-                  Acción bloqueada para {currentUser.roleTitle.split("(")[0].trim()}
-                </Badge>
-              )}
+
+              <div className="flex items-center gap-3 w-full sm:w-auto">
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="default"
+                  asChild
+                  className="w-full sm:w-auto text-xs"
+                >
+                  <Link href="/wireframes2/catalogo-interoperabilidad/integraciones">
+                    Cancelar
+                  </Link>
+                </Button>
+
+                <Button
+                  type="submit"
+                  variant="primary"
+                  size="default"
+                  className="w-full sm:w-auto text-xs gap-2 font-semibold"
+                >
+                  <Send className="size-4" />
+                  Enviar a revisión DGR
+                </Button>
+              </div>
             </div>
-          </div>
-
-        </form>
-
+          </form>
+        )}
       </div>
     </WireframeDashboardLayout>
   );

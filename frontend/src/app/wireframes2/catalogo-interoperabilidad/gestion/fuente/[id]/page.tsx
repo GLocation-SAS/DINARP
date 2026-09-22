@@ -14,17 +14,21 @@ import {
   FolderArchive,
   Clock,
   FileText,
-  CheckCircle2,
   ExternalLink,
   Info,
-  AlertCircle
+  AlertCircle,
+  FileSearch,
+  Layers,
+  History
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { WireframeDashboardLayout } from "../../../../components/wireframe-dashboard-layout";
 import { WireframeBreadcrumbs } from "../../../../components/wireframe-breadcrumbs";
-import { INITIAL_INSTITUCIONES, type FuenteServicio, type FuenteEstado } from "../../../data/catalogo-data";
+import { INITIAL_INSTITUCIONES, MOCK_USERS_BY_ROLE, type FuenteEstado, type FuenteServicio } from "../../../data/catalogo-data";
 
 export function generateStaticParams() {
   const allFuentes = INITIAL_INSTITUCIONES.flatMap(inst => inst.fuentes);
@@ -59,297 +63,558 @@ export default async function DetalleFuenteAdminPage({ params }: PageProps) {
       case "PUBLICADO":
         return (
           <Badge tone="neutral" appearance="soft" size="sm" className="gap-1.5 font-semibold">
-            <Eye className="size-3.5" />
-            PUBLICADO (Visible en Consulta)
+            <Eye className="size-3.5 text-muted-foreground" />
+            PUBLICADO
           </Badge>
         );
       case "OCULTO":
         return (
-          <Badge tone="neutral" appearance="outline" size="sm" className="gap-1.5 font-semibold border-dashed">
-            <EyeOff className="size-3.5" />
-            OCULTO (Inventario Interno)
+          <Badge tone="neutral" appearance="outline" size="sm" className="gap-1.5 font-semibold border-dashed text-muted-foreground">
+            <EyeOff className="size-3.5 text-muted-foreground" />
+            OCULTO
           </Badge>
         );
       case "DESACTIVADO":
         return (
-          <Badge tone="neutral" appearance="soft" size="sm" className="gap-1.5 opacity-80">
-            <FolderArchive className="size-3.5" />
-            DESACTIVADO (Histórico Preservado)
+          <Badge tone="neutral" appearance="soft" size="sm" className="gap-1.5 font-semibold bg-muted/50 text-muted-foreground">
+            <FolderArchive className="size-3.5 text-muted-foreground" />
+            DESACTIVADO
           </Badge>
         );
     }
   };
 
+  const expedienteId = fuente.trazabilidadExpedienteId || "EXP-2026-001";
+  const camposAccesibles = fuente.campos.filter(c => c.clasificacion === "Accesible").length;
+  const camposConfidenciales = fuente.campos.filter(c => c.clasificacion === "Confidencial").length;
+  const camposPendientes = fuente.campos.filter(c => !c.clasificacion || c.clasificacion === "Pendiente").length;
+
   return (
-    <WireframeDashboardLayout
-      activeMenu="gestion-catalogo"
-      breadcrumbs={[
-        { label: "Catálogo de Interoperabilidad", href: "/wireframes2/catalogo-interoperabilidad" },
-        { label: "Gestión", href: "/wireframes2/catalogo-interoperabilidad/gestion" },
-        { label: fuente.nombre }
-      ]}
-    >
-      <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex flex-col gap-6">
-
-        {/* Barra Superior de Navegación */}
-        <div className="flex items-center justify-between">
-          <Button variant="ghost" size="sm" asChild className="gap-1.5 -ml-2 text-muted-foreground hover:text-foreground">
-            <Link href="/wireframes2/catalogo-interoperabilidad/gestion">
-              <ArrowLeft className="size-4" />
-              Volver a Gestión
-            </Link>
-          </Button>
-
-          <div className="flex items-center gap-2">
-            <Badge tone="neutral" appearance="soft" size="sm">
-              Ficha Técnica SURI
-            </Badge>
-            <Badge tone="neutral" appearance="outline" size="sm">
-              HU-INT-07 / HU-INT-08 / HU-INT-13
-            </Badge>
+    <TooltipProvider delayDuration={100}>
+      <WireframeDashboardLayout
+        activeMenu="gestion-catalogo"
+        currentRole="DGR"
+        currentUser={MOCK_USERS_BY_ROLE.DGR}
+        breadcrumbs={[
+          { label: "Catálogo de Interoperabilidad", href: "/wireframes2/catalogo-interoperabilidad" },
+          { label: "Gestión", href: "/wireframes2/catalogo-interoperabilidad/gestion" },
+          { label: fuente.nombre }
+        ]}
+      >
+        <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex flex-col gap-6">
+          {/* Barra Superior de Navegación */}
+          <div className="flex items-center justify-between -mt-2">
+            <Button variant="ghost" size="sm" asChild className="gap-1.5 -ml-2 text-muted-foreground hover:text-foreground">
+              <Link href="/wireframes2/catalogo-interoperabilidad/gestion">
+                <ArrowLeft className="size-4" />
+                Volver a Gestión
+              </Link>
+            </Button>
           </div>
-        </div>
 
-        {/* Encabezado de la Ficha Técnica */}
-        <div className="border border-border rounded-xl bg-card p-6 flex flex-col md:flex-row md:items-center md:justify-between gap-6 shadow-xs">
-          <div className="flex flex-col gap-2">
-            <div className="flex items-center gap-2 flex-wrap">
-              <span className="font-mono text-xs font-semibold px-2 py-0.5 rounded-md bg-muted text-muted-foreground">
-                {fuente.codigoServicio}
-              </span>
-              <span className="text-xs text-muted-foreground">•</span>
-              <span className="text-xs font-medium text-muted-foreground">
-                {fuente.institucionNombre} ({fuente.institucionObj.sigla})
-              </span>
-              <span className="text-xs text-muted-foreground">•</span>
-              <span className="text-xs font-mono text-muted-foreground">{fuente.version}</span>
+          {/* Header del Detalle */}
+          <div className="border border-border rounded-xl bg-surface p-6 flex flex-col gap-6 shadow-xs">
+            <div className="flex flex-col lg:flex-row lg:items-start justify-between gap-6">
+              <div className="flex flex-col gap-2 min-w-0">
+                <div className="flex items-center gap-2 flex-wrap text-xs text-muted-foreground">
+                  <span className="font-mono font-semibold px-2 py-0.5 rounded-md bg-muted text-foreground border border-border/60">
+                    {fuente.codigoServicio}
+                  </span>
+                  <span>•</span>
+                  <span className="font-medium text-foreground">
+                    {fuente.institucionNombre}
+                  </span>
+                </div>
+
+                <h1 className="font-heading text-2xl md:text-3xl font-bold tracking-tight text-foreground">
+                  {fuente.nombre}
+                </h1>
+
+                <p className="text-sm text-muted-foreground max-w-3xl leading-relaxed">
+                  {fuente.descripcion}
+                </p>
+              </div>
+
+              <div className="flex flex-col sm:flex-row lg:flex-col items-start lg:items-end gap-3 shrink-0">
+                <div className="flex items-center gap-2">
+                  {getEstadoBadge(fuente.estado)}
+                </div>
+
+                <div className="text-xs text-muted-foreground">
+                  Actualizado: <strong className="font-mono text-foreground font-medium">{fuente.ultimaActualizacion}</strong>
+                </div>
+
+                <div className="flex items-center gap-2 pt-1">
+                  <Button variant="outline" size="sm" asChild className="text-xs gap-1.5 shadow-2xs">
+                    <Link href={`/wireframes2/catalogo-interoperabilidad/integraciones/${expedienteId}`}>
+                      <ExternalLink className="size-3.5" />
+                      <span>Ver integración</span>
+                    </Link>
+                  </Button>
+
+                  <Button variant="outline" size="sm" asChild className="text-xs gap-1.5 shadow-2xs">
+                    <Link href={`/wireframes2/catalogo-interoperabilidad/novedades?fuenteId=${fuente.id}`}>
+                      <FileText className="size-3.5" />
+                      <span>Gestionar novedad</span>
+                    </Link>
+                  </Button>
+                </div>
+              </div>
             </div>
 
-            <h1 className="font-heading text-2xl md:text-3xl font-bold tracking-tight text-foreground">
-              {fuente.nombre}
-            </h1>
-
-            <p className="text-sm text-muted-foreground max-w-3xl leading-relaxed">
-              {fuente.descripcion}
-            </p>
+            {/* Banner contextual si está desactivada */}
+            {fuente.estado === "DESACTIVADO" && (
+              <div className="bg-muted/30 border border-border rounded-xl p-4 flex items-start gap-3">
+                <AlertCircle className="size-4 text-muted-foreground mt-0.5 shrink-0" />
+                <div className="text-xs text-muted-foreground leading-relaxed space-y-1">
+                  <strong className="text-foreground font-semibold">Fuente Desactivada:</strong>
+                  <p>
+                    Esta fuente no está disponible para nuevas solicitudes de interoperabilidad. Su información, expediente e historial de transacciones se conservan para auditoría y fines legales.
+                  </p>
+                </div>
+              </div>
+            )}
           </div>
 
-          <div className="flex flex-col items-start md:items-end gap-3 shrink-0">
-            <div>{getEstadoBadge(fuente.estado)}</div>
-            <div className="text-[11px] text-muted-foreground text-left md:text-right">
-              <div>Fecha Integración: {fuente.fechaIntegracion}</div>
-              <div>Última Actualización: {fuente.ultimaActualizacion}</div>
-            </div>
-          </div>
-        </div>
+          {/* Secciones por Tabs */}
+          <Tabs defaultValue="resumen" className="w-full flex flex-col gap-6">
+            <TabsList className="bg-surface border border-border p-1 rounded-xl justify-start w-full overflow-x-auto">
+              <TabsTrigger value="resumen" className="text-xs gap-1.5">
+                <Building2 className="size-3.5" />
+                Resumen
+              </TabsTrigger>
+              <TabsTrigger value="campos" className="text-xs gap-1.5">
+                <Database className="size-3.5" />
+                Campos ({fuente.campos.length})
+              </TabsTrigger>
+              <TabsTrigger value="clasificacion" className="text-xs gap-1.5">
+                <ShieldCheck className="size-3.5" />
+                Clasificación
+              </TabsTrigger>
+              <TabsTrigger value="integracion" className="text-xs gap-1.5">
+                <Server className="size-3.5" />
+                Integración
+              </TabsTrigger>
+              <TabsTrigger value="novedades" className="text-xs gap-1.5">
+                <FileText className="size-3.5" />
+                Novedades ({fuente.novedadesAsociadas?.length || fuente.historialNovedades?.length || 0})
+              </TabsTrigger>
+              <TabsTrigger value="historial" className="text-xs gap-1.5">
+                <History className="size-3.5" />
+                Historial y trazabilidad
+              </TabsTrigger>
+            </TabsList>
 
-        {/* Si la fuente está DESACTIVADA, mostrar alerta de conservación histórica */}
-        {fuente.estado === "DESACTIVADO" && (
-          <div className="bg-muted/40 border border-border rounded-xl p-5 flex items-start gap-4">
-            <AlertCircle className="size-5 text-muted-foreground mt-0.5 shrink-0" />
-            <div className="text-xs text-muted-foreground leading-relaxed">
-              <strong className="text-foreground font-semibold">Fuente Desactivada (HU-INT-18 / Res. 004):</strong>
-              <p className="mt-1">
-                Esta fuente ha sido desactivada y retirada del catálogo de consulta para nuevas solicitudes. <strong>No ha sido eliminada físicamente de la base de datos</strong>; su expediente, metadatos, microservicio e historial inmutable se conservan para auditoría y trazabilidad legal.
-              </p>
-            </div>
-          </div>
-        )}
+            {/* TAB 1: RESUMEN */}
+            <TabsContent value="resumen" className="m-0 flex flex-col gap-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {/* Identificación de la Fuente */}
+                <Card size="sm" className="bg-surface border-border">
+                  <CardHeader>
+                    <CardTitle className="text-sm font-semibold flex items-center gap-2">
+                      <Building2 className="size-4 text-muted-foreground" />
+                      Institución y Fuente
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-3 text-xs">
+                    <div>
+                      <span className="text-muted-foreground block text-[11px]">Institución:</span>
+                      <span className="font-medium text-foreground">{fuente.institucionNombre} ({fuente.institucionObj.sigla})</span>
+                    </div>
+                    <div>
+                      <span className="text-muted-foreground block text-[11px]">Nombre de la fuente:</span>
+                      <span className="font-medium text-foreground">{fuente.nombre}</span>
+                    </div>
+                    <div>
+                      <span className="text-muted-foreground block text-[11px]">Código de la fuente:</span>
+                      <span className="font-mono font-medium text-foreground">{fuente.codigoServicio}</span>
+                    </div>
+                    <div>
+                      <span className="text-muted-foreground block text-[11px]">Descripción:</span>
+                      <span className="text-muted-foreground leading-relaxed">{fuente.descripcion}</span>
+                    </div>
+                  </CardContent>
+                </Card>
 
-        {/* Cuadrícula de 3 Columnas: Metadatos Funcionales, DPI y DTD */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                {/* Estado y Dimensiones */}
+                <Card size="sm" className="bg-surface border-border">
+                  <CardHeader>
+                    <CardTitle className="text-sm font-semibold flex items-center gap-2">
+                      <Layers className="size-4 text-muted-foreground" />
+                      Estado del Catálogo
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-3 text-xs">
+                    <div className="flex items-center justify-between">
+                      <span className="text-muted-foreground text-[11px]">Estado:</span>
+                      <div>{getEstadoBadge(fuente.estado)}</div>
+                    </div>
+                    <div>
+                      <span className="text-muted-foreground block text-[11px]">Cantidad de campos:</span>
+                      <span className="font-medium text-foreground">{fuente.campos.length} campos registrados</span>
+                    </div>
+                    <div>
+                      <span className="text-muted-foreground block text-[11px]">Responsable Funcional DGR:</span>
+                      <span className="font-medium text-foreground">{fuente.responsableDGR}</span>
+                    </div>
+                  </CardContent>
+                </Card>
 
-          {/* Col 1: Responsabilidad Funcional (DGR) */}
-          <Card size="sm" className="bg-card border-border">
-            <CardHeader>
-              <div className="flex items-center justify-between">
-                <CardTitle className="text-sm font-semibold flex items-center gap-2">
-                  <Building2 className="size-4 text-muted-foreground" />
-                  Responsabilidad Funcional (DGR)
-                </CardTitle>
-                <Badge tone="neutral" appearance="soft" size="sm">DGR</Badge>
+                {/* Fechas de Registro y Actualización */}
+                <Card size="sm" className="bg-surface border-border">
+                  <CardHeader>
+                    <CardTitle className="text-sm font-semibold flex items-center gap-2">
+                      <Clock className="size-4 text-muted-foreground" />
+                      Fechas y Registro
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-3 text-xs">
+                    <div>
+                      <span className="text-muted-foreground block text-[11px]">Fecha de registro:</span>
+                      <span className="font-mono text-foreground">{fuente.fechaIntegracion}</span>
+                    </div>
+                    <div>
+                      <span className="text-muted-foreground block text-[11px]">Última actualización:</span>
+                      <span className="font-mono text-foreground">{fuente.ultimaActualizacion}</span>
+                    </div>
+                    <div>
+                      <span className="text-muted-foreground block text-[11px]">Expediente de Integración:</span>
+                      <Link
+                        href={`/wireframes2/catalogo-interoperabilidad/integraciones/${expedienteId}`}
+                        className="font-mono font-medium text-foreground hover:underline inline-flex items-center gap-1 mt-0.5"
+                      >
+                        {expedienteId}
+                        <ExternalLink className="size-3" />
+                      </Link>
+                    </div>
+                  </CardContent>
+                </Card>
               </div>
-            </CardHeader>
-            <CardContent className="space-y-3 text-xs">
-              <div>
-                <span className="text-muted-foreground block text-[11px]">Institución Emisora:</span>
-                <span className="font-medium text-foreground">{fuente.institucionNombre}</span>
-              </div>
-              <div>
-                <span className="text-muted-foreground block text-[11px]">Sector / RUC:</span>
-                <span className="text-foreground">{fuente.institucionObj.sector} — {fuente.institucionObj.codigoInstitucion}</span>
-              </div>
-              <div>
-                <span className="text-muted-foreground block text-[11px]">Base Legal Habilitante:</span>
-                <span className="text-foreground">{fuente.baseLegal}</span>
-              </div>
-              <div>
-                <span className="text-muted-foreground block text-[11px]">Responsable Funcional DGR:</span>
-                <span className="font-medium text-foreground">{fuente.responsableDGR}</span>
-              </div>
-            </CardContent>
-          </Card>
+            </TabsContent>
 
-          {/* Col 2: Clasificación de Datos (DPI) */}
-          <Card size="sm" className="bg-card border-border">
-            <CardHeader>
-              <div className="flex items-center justify-between">
-                <CardTitle className="text-sm font-semibold flex items-center gap-2">
-                  <ShieldCheck className="size-4 text-muted-foreground" />
-                  Clasificación de Datos (DPI)
-                </CardTitle>
-                <Badge tone="neutral" appearance="soft" size="sm">HU-INT-08</Badge>
+            {/* TAB 2: CAMPOS */}
+            <TabsContent value="campos" className="m-0 flex flex-col gap-4">
+              <div className="border border-border rounded-xl bg-surface p-5 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 shadow-xs">
+                <div>
+                  <h3 className="font-heading text-base font-bold text-foreground">
+                    Campos de la Fuente ({fuente.campos.length} campos)
+                  </h3>
+                  <p className="text-xs text-muted-foreground">
+                    Diccionario de campos y su clasificación de seguridad (solo lectura).
+                  </p>
+                </div>
               </div>
-            </CardHeader>
-            <CardContent className="space-y-3 text-xs">
-              <div className="flex items-center justify-between">
-                <span className="text-muted-foreground text-[11px]">Estado de Clasificación:</span>
-                <Badge tone="neutral" appearance="soft" size="sm" className="font-semibold">
-                  {fuente.clasificacionDPI.clasificado ? "Certificado Oficial" : "Pendiente"}
-                </Badge>
-              </div>
-              <div>
-                <span className="text-muted-foreground block text-[11px]">Nro. Informe Técnico DPI:</span>
-                <span className="font-mono font-medium text-foreground">{fuente.clasificacionDPI.nroInforme || "N/A"}</span>
-              </div>
-              <div>
-                <span className="text-muted-foreground block text-[11px]">Responsable DPI:</span>
-                <span className="text-foreground">{fuente.clasificacionDPI.responsableDPI || "Mgs. Patricio Silva"}</span>
-              </div>
-              <div>
-                <span className="text-muted-foreground block text-[11px]">Documento de Dictamen:</span>
-                <span className="text-foreground font-mono text-[11px] underline cursor-pointer">
-                  {fuente.clasificacionDPI.archivoInforme || "Informe_DPI_Adjunto.pdf"}
-                </span>
-              </div>
-            </CardContent>
-          </Card>
 
-          {/* Col 3: Integración Técnica (DTD) */}
-          <Card size="sm" className="bg-card border-border">
-            <CardHeader>
-              <div className="flex items-center justify-between">
-                <CardTitle className="text-sm font-semibold flex items-center gap-2">
-                  <Server className="size-4 text-muted-foreground" />
-                  Arquitectura Técnica (DTD)
-                </CardTitle>
-                <Badge tone="neutral" appearance="soft" size="sm">HU-INT-09 / 13</Badge>
+              <div className="overflow-x-auto rounded-lg border border-border bg-card">
+                <table className="w-full text-left text-xs">
+                  <thead className="bg-muted/60 border-b border-border text-muted-foreground uppercase text-[10px] tracking-wider font-semibold">
+                    <tr>
+                      <th className="py-3 px-4 min-w-[180px]">Campo</th>
+                      <th className="py-3 px-4 min-w-[280px]">Descripción</th>
+                      <th className="py-3 px-4 min-w-[120px]">Tipo de dato</th>
+                      <th className="py-3 px-4 min-w-[140px] text-center">Clasificación</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-border/60">
+                    {fuente.campos.map(campo => (
+                      <tr key={campo.id} className="hover:bg-muted/20 transition-colors">
+                        <td className="py-3 px-4 font-mono font-medium text-foreground">{campo.nombre}</td>
+                        <td className="py-3 px-4 text-muted-foreground leading-relaxed">{campo.descripcion}</td>
+                        <td className="py-3 px-4 font-mono text-muted-foreground">
+                          <span className="px-2 py-0.5 rounded bg-muted text-foreground text-[11px]">
+                            {campo.tipo}
+                          </span>
+                        </td>
+                        <td className="py-3 px-4 text-center">
+                          {campo.clasificacion === "Accesible" && (
+                            <Badge tone="neutral" appearance="soft" size="sm" className="gap-1 inline-flex font-medium">
+                              <Check className="size-3 text-muted-foreground" />
+                              Accesible
+                            </Badge>
+                          )}
+                          {campo.clasificacion === "Confidencial" && (
+                            <Badge tone="neutral" appearance="outline" size="sm" className="gap-1 inline-flex font-semibold border-border">
+                              <Lock className="size-3 text-muted-foreground" />
+                              Confidencial
+                            </Badge>
+                          )}
+                          {!campo.clasificacion && (
+                            <Badge tone="neutral" appearance="outline" size="sm" className="text-muted-foreground border-dashed">
+                              Pendiente de clasificación
+                            </Badge>
+                          )}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
               </div>
-            </CardHeader>
-            <CardContent className="space-y-3 text-xs">
-              <div>
-                <span className="text-muted-foreground block text-[11px]">Microservicio Integrador:</span>
-                <span className="font-mono font-medium text-foreground">{fuente.microservicio.nombre} ({fuente.microservicio.version})</span>
-              </div>
-              <div>
-                <span className="text-muted-foreground block text-[11px]">Endpoint Preproducción:</span>
-                <span className="font-mono text-[10px] text-muted-foreground break-all">
-                  {fuente.microservicio.endpointPre || "No desplegado"}
-                </span>
-              </div>
-              <div>
-                <span className="text-muted-foreground block text-[11px]">Endpoint Producción:</span>
-                <span className="font-mono text-[10px] text-foreground break-all">
-                  {fuente.microservicio.endpointProd || "No disponible"}
-                </span>
-              </div>
-              <div>
-                <span className="text-muted-foreground block text-[11px]">Responsable Técnico DTD:</span>
-                <span className="text-foreground">{fuente.responsableDTD}</span>
-              </div>
-            </CardContent>
-          </Card>
-        </div>
+            </TabsContent>
 
-        {/* Tabla Detallada de Campos y Clasificación */}
-        <div className="border border-border rounded-xl bg-card overflow-hidden shadow-xs">
-          <div className="p-4 sm:p-5 border-b border-border flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
-            <div>
-              <h3 className="font-heading text-base font-bold text-foreground">
-                Diccionario de Datos y Clasificación de Campos ({fuente.campos.length} campos)
-              </h3>
-              <p className="text-xs text-muted-foreground">
-                Cada campo cuenta con su clasificación inmutable asignada por la Dirección de Protección de la Información.
-              </p>
-            </div>
-          </div>
-
-          <div className="overflow-x-auto">
-            <table className="w-full text-left text-xs">
-              <thead className="bg-muted/40 border-b border-border text-muted-foreground uppercase text-[10px] tracking-wider font-semibold">
-                <tr>
-                  <th className="py-3 px-4">#</th>
-                  <th className="py-3 px-4">Nombre del Campo</th>
-                  <th className="py-3 px-4">Tipo</th>
-                  <th className="py-3 px-4">Descripción Funcional</th>
-                  <th className="py-3 px-4 text-center">Clasificación DPI</th>
-                  <th className="py-3 px-4 text-center">Nivel de Protección</th>
-                  <th className="py-3 px-4 text-center">Estado Revisión</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-border">
-                {fuente.campos.map((campo, idx) => (
-                  <tr key={campo.id} className="hover:bg-muted/20 transition-colors">
-                    <td className="py-3 px-4 text-muted-foreground font-mono">{idx + 1}</td>
-                    <td className="py-3 px-4 font-mono font-medium text-foreground">{campo.nombre}</td>
-                    <td className="py-3 px-4">
-                      <Badge tone="neutral" appearance="soft" size="sm">{campo.tipo}</Badge>
-                    </td>
-                    <td className="py-3 px-4 text-muted-foreground max-w-md">{campo.descripcion}</td>
-                    <td className="py-3 px-4 text-center">
-                      {campo.clasificacion === "Accesible" ? (
-                        <Badge tone="neutral" appearance="soft" size="sm" className="gap-1 inline-flex">
-                          <Check className="size-3" />
-                          Accesible
-                        </Badge>
-                      ) : (
-                        <Badge tone="neutral" appearance="outline" size="sm" className="gap-1 inline-flex font-semibold">
-                          <Lock className="size-3" />
-                          Confidencial
-                        </Badge>
-                      )}
-                    </td>
-                    <td className="py-3 px-4 text-center text-[11px] text-muted-foreground">
-                      {campo.clasificacion === "Confidencial" ? "Exige Motivación Legal" : "Acceso General"}
-                    </td>
-                    <td className="py-3 px-4 text-center">
-                      <Badge tone="neutral" appearance="soft" size="sm">
-                        <CheckCircle2 className="size-3 mr-1 text-foreground" />
-                        {campo.estadoRevision || "Valido"}
-                      </Badge>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </div>
-
-        {/* Historial y Trazabilidad de Novedades de la Fuente */}
-        {fuente.historialNovedades && fuente.historialNovedades.length > 0 && (
-          <div className="border border-border rounded-xl bg-card p-6 flex flex-col gap-4">
-            <h3 className="font-heading text-base font-bold text-foreground flex items-center gap-2">
-              <Clock className="size-4 text-muted-foreground" />
-              Bitácora de Novedades y Auditoría Regulatoria
-            </h3>
-            <div className="space-y-3">
-              {fuente.historialNovedades.map((item, idx) => (
-                <div key={idx} className="p-3.5 rounded-lg border border-border bg-surface flex flex-col gap-1 text-xs">
-                  <div className="flex items-center justify-between">
-                    <span className="font-semibold text-foreground">{item.tipo}</span>
-                    <span className="text-muted-foreground font-mono text-[11px]">{item.fecha}</span>
+            {/* TAB 3: CLASIFICACION */}
+            <TabsContent value="clasificacion" className="m-0 flex flex-col gap-6">
+              <div className="border border-border rounded-xl bg-surface p-6 flex flex-col gap-6 shadow-xs">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                  <div>
+                    <h3 className="font-heading text-base font-bold text-foreground">
+                      Resumen de Clasificación
+                    </h3>
+                    <p className="text-xs text-muted-foreground">
+                      Resumen del dictamen emitido por la Dirección de Protección de la Información (información en solo lectura).
+                    </p>
                   </div>
-                  <p className="text-muted-foreground">{item.detalle}</p>
-                  <div className="text-[11px] text-muted-foreground pt-1">
-                    Registrado por: <span className="font-medium text-foreground">{item.responsable}</span>
+
+                  <Button variant="outline" size="sm" asChild className="text-xs gap-1.5 shrink-0">
+                    <Link href={`/wireframes2/catalogo-interoperabilidad/integraciones/${expedienteId}`}>
+                      <ExternalLink className="size-3.5" />
+                      <span>Ver integración</span>
+                    </Link>
+                  </Button>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                  <div className="p-4 rounded-lg border border-border bg-card flex flex-col gap-1">
+                    <span className="text-[11px] text-muted-foreground">Total de campos</span>
+                    <span className="font-heading font-bold text-xl text-foreground">
+                      {fuente.campos.length}
+                    </span>
+                  </div>
+
+                  <div className="p-4 rounded-lg border border-border bg-card flex flex-col gap-1">
+                    <span className="text-[11px] text-muted-foreground">Accesibles</span>
+                    <span className="font-heading font-bold text-xl text-foreground flex items-center gap-1.5">
+                      <Check className="size-4 text-muted-foreground" />
+                      {camposAccesibles}
+                    </span>
+                  </div>
+
+                  <div className="p-4 rounded-lg border border-border bg-card flex flex-col gap-1">
+                    <span className="text-[11px] text-muted-foreground">Confidenciales</span>
+                    <span className="font-heading font-bold text-xl text-foreground flex items-center gap-1.5">
+                      <Lock className="size-4 text-muted-foreground" />
+                      {camposConfidenciales}
+                    </span>
+                  </div>
+
+                  <div className="p-4 rounded-lg border border-border bg-card flex flex-col gap-1">
+                    <span className="text-[11px] text-muted-foreground">Pendientes</span>
+                    <span className="font-heading font-bold text-xl text-foreground">
+                      {camposPendientes}
+                    </span>
                   </div>
                 </div>
-              ))}
-            </div>
-          </div>
-        )}
 
-      </div>
-    </WireframeDashboardLayout>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2">
+                  <div className="p-4 rounded-lg border border-border bg-card flex flex-col gap-1.5 text-xs">
+                    <span className="text-[11px] text-muted-foreground">Fecha de última clasificación:</span>
+                    <span className="font-mono text-foreground font-medium">
+                      {fuente.clasificacionDPI.fechaInforme || "12/01/2026"}
+                    </span>
+                  </div>
+
+                  <div className="p-4 rounded-lg border border-border bg-card flex flex-col gap-1.5 text-xs">
+                    <span className="text-[11px] text-muted-foreground">Informe técnico asociado:</span>
+                    <span className="font-mono text-foreground font-medium">
+                      {fuente.clasificacionDPI.nroInforme || "INF-DPI-2026-0012"} — {fuente.clasificacionDPI.archivoInforme || "Informe_Clasificacion.pdf"}
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </TabsContent>
+
+            {/* TAB 4: INTEGRACION */}
+            <TabsContent value="integracion" className="m-0 flex flex-col gap-6">
+              <div className="border border-border rounded-xl bg-surface p-6 flex flex-col gap-6 shadow-xs">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                  <div>
+                    <h3 className="font-heading text-base font-bold text-foreground">
+                      Resumen de Integración Asociada
+                    </h3>
+                    <p className="text-xs text-muted-foreground">
+                      Información técnica consolidada del microservicio y despliegue (solo lectura).
+                    </p>
+                  </div>
+
+                  <Button variant="outline" size="sm" asChild className="text-xs gap-1.5 shrink-0">
+                    <Link href={`/wireframes2/catalogo-interoperabilidad/integraciones/${expedienteId}`}>
+                      <ExternalLink className="size-3.5" />
+                      <span>Ver expediente de integración</span>
+                    </Link>
+                  </Button>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                  <div className="p-4 rounded-lg border border-border bg-card flex flex-col gap-1.5 text-xs">
+                    <span className="text-[11px] text-muted-foreground">Estado de integración:</span>
+                    <span className="font-medium text-foreground">
+                      {fuente.estado === "PUBLICADO" ? "Producción Habilitada" : fuente.estado === "OCULTO" ? "En Validación Técnica / Preproducción" : "Desactivado"}
+                    </span>
+                  </div>
+
+                  <div className="p-4 rounded-lg border border-border bg-card flex flex-col gap-1.5 text-xs">
+                    <span className="text-[11px] text-muted-foreground">Versión:</span>
+                    <span className="font-mono text-foreground">{fuente.version}</span>
+                  </div>
+
+                  <div className="p-4 rounded-lg border border-border bg-card flex flex-col gap-1.5 text-xs">
+                    <span className="text-[11px] text-muted-foreground">Ambiente actual:</span>
+                    <span className="font-medium text-foreground">
+                      {fuente.estado === "PUBLICADO" ? "Producción" : "Preproducción / Pruebas"}
+                    </span>
+                  </div>
+
+                  <div className="p-4 rounded-lg border border-border bg-card flex flex-col gap-1.5 text-xs">
+                    <span className="text-[11px] text-muted-foreground">Fecha de última integración:</span>
+                    <span className="font-mono text-foreground">{fuente.fechaIntegracion}</span>
+                  </div>
+
+                  <div className="p-4 rounded-lg border border-border bg-card flex flex-col gap-1.5 text-xs">
+                    <span className="text-[11px] text-muted-foreground">Fecha de producción:</span>
+                    <span className="font-mono text-foreground">
+                      {fuente.microservicio.fechaDespliegueProd || (fuente.estado === "PUBLICADO" ? fuente.fechaIntegracion : "Pendiente de pase a producción")}
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </TabsContent>
+
+            {/* TAB 5: NOVEDADES */}
+            <TabsContent value="novedades" className="m-0 flex flex-col gap-6">
+              <div className="border border-border rounded-xl bg-surface p-6 flex flex-col gap-6 shadow-xs">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                  <div>
+                    <h3 className="font-heading text-base font-bold text-foreground">
+                      Novedades de la Fuente
+                    </h3>
+                    <p className="text-xs text-muted-foreground">
+                      Requerimientos formales de cambio, supresión o actualización tramitados.
+                    </p>
+                  </div>
+
+                  <Button variant="outline" size="sm" asChild className="text-xs gap-1.5 shrink-0">
+                    <Link href={`/wireframes2/catalogo-interoperabilidad/novedades?fuenteId=${fuente.id}`}>
+                      <FileText className="size-3.5" />
+                      <span>Gestionar novedad</span>
+                    </Link>
+                  </Button>
+                </div>
+
+                {fuente.novedadesAsociadas && fuente.novedadesAsociadas.length > 0 ? (
+                  <div className="overflow-x-auto rounded-lg border border-border bg-card">
+                    <table className="w-full text-left text-xs">
+                      <thead className="bg-muted/60 border-b border-border text-muted-foreground uppercase text-[10px] tracking-wider font-semibold">
+                        <tr>
+                          <th className="py-3 px-4">Tipo</th>
+                          <th className="py-3 px-4">Estado</th>
+                          <th className="py-3 px-4">Fecha</th>
+                          <th className="py-3 px-4">Resultado</th>
+                        </tr>
+                      </thead>
+                      <tbody className="divide-y divide-border/60">
+                        {fuente.novedadesAsociadas.map(nov => (
+                          <tr key={nov.id} className="hover:bg-muted/20 transition-colors">
+                            <td className="py-3 px-4 font-medium text-foreground">{nov.tipo}</td>
+                            <td className="py-3 px-4">
+                              <Badge tone="neutral" appearance="soft" size="sm">{nov.estado}</Badge>
+                            </td>
+                            <td className="py-3 px-4 font-mono text-muted-foreground">{nov.fecha}</td>
+                            <td className="py-3 px-4 text-muted-foreground">{nov.resultado}</td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                ) : fuente.historialNovedades && fuente.historialNovedades.length > 0 ? (
+                  <div className="overflow-x-auto rounded-lg border border-border bg-card">
+                    <table className="w-full text-left text-xs">
+                      <thead className="bg-muted/60 border-b border-border text-muted-foreground uppercase text-[10px] tracking-wider font-semibold">
+                        <tr>
+                          <th className="py-3 px-4">Tipo</th>
+                          <th className="py-3 px-4">Estado</th>
+                          <th className="py-3 px-4">Fecha</th>
+                          <th className="py-3 px-4">Resultado</th>
+                        </tr>
+                      </thead>
+                      <tbody className="divide-y divide-border/60">
+                        {fuente.historialNovedades.map((item, idx) => (
+                          <tr key={idx} className="hover:bg-muted/20 transition-colors">
+                            <td className="py-3 px-4 font-medium text-foreground">{item.tipo}</td>
+                            <td className="py-3 px-4">
+                              <Badge tone="neutral" appearance="soft" size="sm">Finalizada</Badge>
+                            </td>
+                            <td className="py-3 px-4 font-mono text-muted-foreground">{item.fecha}</td>
+                            <td className="py-3 px-4 text-muted-foreground">{item.detalle}</td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                ) : (
+                  <div className="p-8 text-center text-xs text-muted-foreground rounded-lg border border-dashed border-border">
+                    Esta fuente no registra novedades.
+                  </div>
+                )}
+              </div>
+            </TabsContent>
+
+            {/* TAB 6: HISTORIAL Y TRAZABILIDAD */}
+            <TabsContent value="historial" className="m-0 flex flex-col gap-6">
+              <div className="border border-border rounded-xl bg-surface p-6 flex flex-col gap-6 shadow-xs">
+                <div>
+                  <h3 className="font-heading text-base font-bold text-foreground flex items-center gap-2">
+                    <History className="size-4 text-muted-foreground" />
+                    Historial y Trazabilidad
+                  </h3>
+                  <p className="text-xs text-muted-foreground">
+                    Timeline cronológico con los eventos y cambios registrados en la fuente.
+                  </p>
+                </div>
+
+                <div className="space-y-4">
+                  {fuente.trazabilidadEventos && fuente.trazabilidadEventos.length > 0 ? (
+                    fuente.trazabilidadEventos.map((evt, idx) => (
+                      <div
+                        key={idx}
+                        className="p-4 rounded-xl border border-border bg-card flex flex-col gap-2 transition-all hover:bg-muted/20"
+                      >
+                        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                          <span className="font-semibold text-sm text-foreground">{evt.evento}</span>
+                          <span className="font-mono text-xs text-muted-foreground">
+                            {evt.fecha} — {evt.hora}
+                          </span>
+                        </div>
+
+                        <div className="flex items-center gap-2 text-xs text-muted-foreground flex-wrap">
+                          <span>Usuario: <strong className="text-foreground">{evt.usuario}</strong></span>
+                          <span>•</span>
+                          <span>Rol: <strong className="text-foreground">{evt.rol}</strong></span>
+                          {evt.estadoAnterior && evt.estadoNuevo && (
+                            <>
+                              <span>•</span>
+                              <span>Estado: <strong className="text-foreground">{evt.estadoAnterior}</strong> → <strong className="text-foreground">{evt.estadoNuevo}</strong></span>
+                            </>
+                          )}
+                        </div>
+
+                        {evt.observacion && (
+                          <p className="text-xs text-muted-foreground bg-muted/30 p-2.5 rounded-lg border border-border/60 leading-relaxed">
+                            {evt.observacion}
+                          </p>
+                        )}
+                      </div>
+                    ))
+                  ) : (
+                    <div className="p-8 text-center text-xs text-muted-foreground">
+                      No se registran eventos adicionales de trazabilidad para esta fuente.
+                    </div>
+                  )}
+                </div>
+              </div>
+            </TabsContent>
+          </Tabs>
+
+        </div>
+      </WireframeDashboardLayout>
+    </TooltipProvider>
   );
 }

@@ -74,6 +74,9 @@ export default async function RootLayout({
       suppressHydrationWarning
     >
       <head>
+      </head>
+
+      <body>
         <Script
           id="theme-script"
           strategy="beforeInteractive"
@@ -100,9 +103,6 @@ export default async function RootLayout({
             `,
           }}
         />
-      </head>
-
-      <body>
         <NextIntlClientProvider
           locale="es"
           messages={messages}
