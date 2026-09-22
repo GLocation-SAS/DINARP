@@ -302,7 +302,7 @@ export default function CatalogoConsultaPage() {
               <div data-tour="tour-search" className="sm:col-span-12 lg:col-span-5 space-y-1.5">
                 <label className="text-xs font-medium text-muted-foreground whitespace-nowrap block">Búsqueda general</label>
                 <SearchInput
-                  placeholder="Buscar por institución, fuente o campo..."
+                  placeholder="Buscar por institución, fuente, servicio o campo..."
                   value={searchTerm}
                   onChange={e => setSearchTerm(e.target.value)}
                   onClear={() => setSearchTerm("")}
