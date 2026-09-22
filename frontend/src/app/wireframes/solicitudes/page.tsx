@@ -765,7 +765,7 @@ export default function WireframeSolicitudesPage() {
             </Button>
             <Button
               type="button"
-              variant="destructive"
+              variant="danger"
               size="sm"
               onClick={handleConfirmDelete}
               className="text-xs font-semibold gap-1.5 ml-auto"

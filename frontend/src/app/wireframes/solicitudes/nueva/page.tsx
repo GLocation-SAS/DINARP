@@ -297,7 +297,7 @@ function CrearProyectoWizard() {
           <div className="bg-card border border-border rounded-2xl p-4 sm:p-6 shadow-xs">
             <Stepper
               steps={WIZARD_STEPS}
-              currentStep={currentStep}
+              activeStep={currentStep}
               onStepClick={(stepIndex) => {
                 if (stepIndex <= currentStep) setCurrentStep(stepIndex);
               }}
