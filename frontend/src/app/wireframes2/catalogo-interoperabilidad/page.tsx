@@ -142,7 +142,7 @@ export default function CatalogoConsultaPage() {
   // Auto-lanzar solo en primera visita
   useEffect(() => {
     try {
-      const hasSeenTour = localStorage.getItem("dinarp_catalogo_tour_seen");
+      const hasSeenTour = localStorage.getItem("catalogo-consulta-tour-completed");
       if (!hasSeenTour) {
         const timer = setTimeout(() => {
           setIsTourOpen(true);
@@ -157,15 +157,8 @@ export default function CatalogoConsultaPage() {
   const handleCloseTour = () => {
     setIsTourOpen(false);
     try {
-      localStorage.setItem("dinarp_catalogo_tour_seen", "true");
+      localStorage.setItem("catalogo-consulta-tour-completed", "true");
     } catch {}
-  };
-
-  const handleStartTour = () => {
-    setTourStep(0);
-    setExpandedInstituciones(prev => ({ ...prev, "INST-001": true }));
-    setExpandedFuentes(prev => ({ ...prev, "FNT-001": true }));
-    setIsTourOpen(true);
   };
 
   const tourSteps: TourStep[] = useMemo(() => [
@@ -225,29 +218,17 @@ export default function CatalogoConsultaPage() {
           { label: "Consulta" }
         ]}
       >
-        <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex flex-col gap-6">
+        <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 flex flex-col gap-5 sm:gap-6">
         
         {/* Contenedor Principal de Encabezado y Métricas */}
-        <div className="border border-border rounded-xl bg-surface p-6 flex flex-col gap-6 shadow-xs">
-          <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
-            <div className="flex flex-col gap-1 min-w-0">
-              <h1 className="font-heading text-2xl md:text-3xl font-bold tracking-tight text-foreground">
-                Consulta de Servicios Digitales
-              </h1>
-              <p className="text-sm text-muted-foreground whitespace-nowrap">
-                Explora las instituciones, fuentes, servicios y campos publicados disponibles en el Catálogo de Interoperabilidad.
-              </p>
-            </div>
-
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={handleStartTour}
-              className="text-xs gap-1.5 self-start sm:self-center shrink-0 border-border shadow-2xs hover:bg-muted"
-            >
-              <HelpCircle className="size-3.5" />
-              <span>Ver recorrido</span>
-            </Button>
+        <div className="border border-border rounded-xl bg-surface p-6 sm:p-8 flex flex-col gap-5 sm:gap-6 shadow-xs">
+          <div className="flex flex-col gap-1 min-w-0">
+            <h1 className="font-heading text-2xl md:text-3xl font-bold tracking-tight text-foreground">
+              Consulta de Servicios Digitales
+            </h1>
+            <p className="text-sm text-muted-foreground whitespace-nowrap">
+              Explora las instituciones, fuentes, servicios y campos publicados disponibles en el Catálogo de Interoperabilidad.
+            </p>
           </div>
 
           {/* Featured Cards para las 3 Métricas */}
@@ -255,71 +236,68 @@ export default function CatalogoConsultaPage() {
             {/* 1. Instituciones */}
             <Card
               variant="featured"
-              className="bg-card hover:bg-muted/40 border border-border shadow-xs transition-all"
-              innerClassName="p-5 items-start text-left gap-1"
+              className="bg-card hover:bg-muted/40 border border-border shadow-none transition-all"
+              innerClassName="p-4 items-start text-left gap-1"
             >
-              <span className="font-heading font-extrabold text-3xl sm:text-4xl text-foreground tracking-tight block">
+              <span className="font-heading font-extrabold text-2xl sm:text-3xl text-foreground tracking-tight block">
                 {totalInstitucionesPublicadoras}
               </span>
-              <span className="text-xs font-semibold text-foreground block">
+              <span className="text-sm font-semibold text-foreground block">
                 Instituciones
               </span>
-              <span className="text-[11px] text-muted-foreground font-normal">
-                Entidades con servicios publicados
+              <span className="text-xs text-muted-foreground font-normal">
+                Entidades con información publicada
               </span>
-              <CardDecorativeIcon>
-                <Building2 className="size-24 text-muted-foreground" />
+              <CardDecorativeIcon className="opacity-10 right-[-10px] bottom-[-10px] [&>svg]:size-24">
+                <Building2 />
               </CardDecorativeIcon>
             </Card>
 
             {/* 2. Fuentes publicadas */}
             <Card
               variant="featured"
-              className="bg-card hover:bg-muted/40 border border-border shadow-xs transition-all"
-              innerClassName="p-5 items-start text-left gap-1"
+              className="bg-card hover:bg-muted/40 border border-border shadow-none transition-all"
+              innerClassName="p-4 items-start text-left gap-1"
             >
-              <span className="font-heading font-extrabold text-3xl sm:text-4xl text-foreground tracking-tight block">
+              <span className="font-heading font-extrabold text-2xl sm:text-3xl text-foreground tracking-tight block">
                 {totalFuentesPublicadas}
               </span>
-              <span className="text-xs font-semibold text-foreground block">
+              <span className="text-sm font-semibold text-foreground block">
                 Fuentes publicadas
               </span>
-              <span className="text-[11px] text-muted-foreground font-normal">
-                Servicios disponibles en catálogo
+              <span className="text-xs text-muted-foreground font-normal">
+                Fuentes disponibles en el catálogo
               </span>
-              <CardDecorativeIcon>
-                <Database className="size-24 text-muted-foreground" />
+              <CardDecorativeIcon className="opacity-10 right-[-10px] bottom-[-10px] [&>svg]:size-24">
+                <Database />
               </CardDecorativeIcon>
             </Card>
 
-            {/* 3. Campos clasificados */}
+            {/* 3. Campos disponibles */}
             <Card
               variant="featured"
-              className="bg-card hover:bg-muted/40 border border-border shadow-xs transition-all"
-              innerClassName="p-5 items-start text-left gap-1"
+              className="bg-card hover:bg-muted/40 border border-border shadow-none transition-all"
+              innerClassName="p-4 items-start text-left gap-1"
             >
-              <span className="font-heading font-extrabold text-3xl sm:text-4xl text-foreground tracking-tight block">
+              <span className="font-heading font-extrabold text-2xl sm:text-3xl text-foreground tracking-tight block">
                 {totalCamposClasificados}
               </span>
-              <span className="text-xs font-semibold text-foreground block">
-                Campos clasificados
+              <span className="text-sm font-semibold text-foreground block">
+                Campos disponibles
               </span>
-              <span className="text-[11px] text-muted-foreground font-normal">
-                Definidos por DPI (Accesible / Confidencial)
+              <span className="text-xs text-muted-foreground font-normal">
+                Clasificados como accesibles o confidenciales
               </span>
-              <CardDecorativeIcon>
-                <Layers className="size-24 text-muted-foreground" />
+              <CardDecorativeIcon className="opacity-10 right-[-10px] bottom-[-10px] [&>svg]:size-24">
+                <Layers />
               </CardDecorativeIcon>
             </Card>
           </div>
-        </div>
 
-        {/* ═══════════════════════════════════════════════════════════
-            CONTENEDOR UNIFICADO: BÚSQUEDA/FILTROS + LÍNEA + RESULTADOS
-           ═══════════════════════════════════════════════════════════ */}
-        <div className="border border-border rounded-2xl bg-card overflow-hidden shadow-xs">
-          {/* Bloque Superior: Barra de Filtros y Búsqueda */}
-          <div className="p-4 sm:p-5 bg-card flex flex-col gap-3">
+          <div className="border-t border-border/80 my-2 w-full"></div>
+
+          {/* Bloque: Barra de Filtros y Búsqueda */}
+          <div className="flex flex-col gap-3">
             <div className="grid grid-cols-1 sm:grid-cols-12 gap-3.5 sm:gap-4 items-end">
               <div data-tour="tour-search" className="sm:col-span-12 lg:col-span-5 space-y-1.5">
                 <label className="text-xs font-medium text-muted-foreground whitespace-nowrap block">Búsqueda general</label>
@@ -516,10 +494,10 @@ export default function CatalogoConsultaPage() {
                 </div>
                 <div className="flex flex-col items-center gap-1.5">
                   <h3 className="font-heading text-lg sm:text-xl font-bold text-foreground">
-                    No se encontraron fuentes publicadas
+                    {searchTerm ? `No encontramos resultados para "${searchTerm}".` : "No se encontraron resultados."}
                   </h3>
                   <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed max-w-md">
-                    No existen fuentes ni servicios disponibles que coincidan con el término de búsqueda o filtros seleccionados.
+                    Intenta buscar por institución, fuente, servicio o campo.
                   </p>
                 </div>
 
@@ -604,7 +582,7 @@ export default function CatalogoConsultaPage() {
 
                     {/* Nivel 2: FUENTE / SERVICIO */}
                     {isInstExpanded && (
-                      <div className="p-4 sm:p-6 flex flex-col gap-5 bg-muted/10 border-t border-border">
+                      <div className="p-4 sm:p-6 flex flex-col gap-8 bg-card border-t border-border">
                         {institucion.fuentes.map(fuente => {
                           const isFuenteExpanded = (expandedFuentes[fuente.id] ?? false) || searchTerm.trim().length > 0 || selectedClasificacion !== "ALL";
                           const camposAccesibles = fuente.campos.filter(c => c.clasificacion === "Accesible").length;
@@ -626,289 +604,254 @@ export default function CatalogoConsultaPage() {
                             <div
                               key={fuente.id}
                               data-tour={fuente.id === "FNT-001" ? "tour-fuente-card" : undefined}
-                              className="border border-border/80 rounded-xl bg-card overflow-hidden shadow-xs hover:border-border transition-colors"
+                              className="flex flex-col gap-4 border-l-[3px] border-primary/30 pl-4 sm:pl-5"
                             >
-                              {/* Cabecera de la Fuente */}
-                              <div className="p-4 sm:p-5 flex flex-col gap-3">
-                                <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-3">
-                                  <div className="space-y-1 min-w-0">
-                                    <div className="flex items-center gap-2">
-                                      <h3 className="font-heading text-sm sm:text-base font-bold text-foreground">
-                                        {fuente.nombre}
-                                      </h3>
-                                    </div>
-                                    <p className="text-xs text-muted-foreground leading-relaxed">
-                                      {fuente.descripcion}
-                                    </p>
-                                  </div>
-
-                                  <div className="flex items-center gap-2 shrink-0">
-                                    <Button
-                                      variant="outline"
-                                      size="sm"
-                                      data-tour={fuente.id === "FNT-001" ? "tour-ver-campos" : undefined}
-                                      onClick={() => toggleFuente(fuente.id)}
-                                      className="text-xs h-8 gap-1.5 font-medium border-border/80 hover:bg-muted"
-                                    >
-                                      <Layers className="size-3.5 text-muted-foreground" />
-                                      <span>{isFuenteExpanded ? "Ocultar campos" : "Ver campos"}</span>
-                                      {isFuenteExpanded ? (
-                                        <ChevronUp className="size-3 text-muted-foreground" />
-                                      ) : (
-                                        <ChevronDown className="size-3 text-muted-foreground" />
-                                      )}
-                                    </Button>
-                                  </div>
-                                </div>
-
-                                {/* Metadatos Técnicos (Badges secundarios sutiles con Tooltips ⓘ) */}
-                                <div className="flex flex-wrap items-center gap-1.5 pt-0.5">
-                                  {/* Código */}
-                                  <Tooltip>
-                                    <TooltipTrigger asChild>
-                                      <Badge
-                                        tone="neutral"
-                                        appearance="soft"
-                                        className="h-5 px-1.5 text-[10.5px] gap-1 font-normal rounded-md border border-border/40 bg-muted/30 text-muted-foreground hover:text-foreground transition-colors cursor-help"
-                                      >
-                                        <span className="opacity-75 font-sans">Código:</span>
-                                        <span className="font-mono font-medium text-foreground/80">{meta.codigo}</span>
-                                        <Info className="size-2.5 opacity-40 ml-0.5" />
-                                      </Badge>
-                                    </TooltipTrigger>
-                                    <TooltipContent side="top" sideOffset={6}>
-                                      <p>Identificador único de la fuente o servicio.</p>
-                                    </TooltipContent>
-                                  </Tooltip>
-
-                                  {/* Versión */}
-                                  <Tooltip>
-                                    <TooltipTrigger asChild>
-                                      <Badge
-                                        tone="neutral"
-                                        appearance="soft"
-                                        className="h-5 px-1.5 text-[10.5px] gap-1 font-normal rounded-md border border-border/40 bg-muted/30 text-muted-foreground hover:text-foreground transition-colors cursor-help"
-                                      >
-                                        <span className="opacity-75">Versión:</span>
-                                        <span className="font-medium text-foreground/80">{meta.version}</span>
-                                        <Info className="size-2.5 opacity-40 ml-0.5" />
-                                      </Badge>
-                                    </TooltipTrigger>
-                                    <TooltipContent side="top" sideOffset={6}>
-                                      <p>Versión vigente de la integración.</p>
-                                    </TooltipContent>
-                                  </Tooltip>
-
-                                  {/* Tipo */}
-                                  <Tooltip>
-                                    <TooltipTrigger asChild>
-                                      <Badge
-                                        tone="neutral"
-                                        appearance="soft"
-                                        className="h-5 px-1.5 text-[10.5px] gap-1 font-normal rounded-md border border-border/40 bg-muted/30 text-muted-foreground hover:text-foreground transition-colors cursor-help"
-                                      >
-                                        <span className="opacity-75">Tipo:</span>
-                                        <span className="font-medium text-foreground/80">{meta.tipo}</span>
-                                        <Info className="size-2.5 opacity-40 ml-0.5" />
-                                      </Badge>
-                                    </TooltipTrigger>
-                                    <TooltipContent side="top" sideOffset={6}>
-                                      <p>Forma en que la fuente expone la información.</p>
-                                    </TooltipContent>
-                                  </Tooltip>
-
-                                  {/* Tecnología */}
-                                  <Tooltip>
-                                    <TooltipTrigger asChild>
-                                      <Badge
-                                        tone="neutral"
-                                        appearance="soft"
-                                        className="h-5 px-1.5 text-[10.5px] gap-1 font-normal rounded-md border border-border/40 bg-muted/30 text-muted-foreground hover:text-foreground transition-colors cursor-help"
-                                      >
-                                        <span className="opacity-75">Tecnología:</span>
-                                        <span className="font-medium text-foreground/80">{meta.tecnologia}</span>
-                                        <Info className="size-2.5 opacity-40 ml-0.5" />
-                                      </Badge>
-                                    </TooltipTrigger>
-                                    <TooltipContent side="top" sideOffset={6}>
-                                      <p>Mecanismo utilizado para la integración.</p>
-                                    </TooltipContent>
-                                  </Tooltip>
-
-                                  {/* Formato */}
-                                  <Tooltip>
-                                    <TooltipTrigger asChild>
-                                      <Badge
-                                        tone="neutral"
-                                        appearance="soft"
-                                        className="h-5 px-1.5 text-[10.5px] gap-1 font-normal rounded-md border border-border/40 bg-muted/30 text-muted-foreground hover:text-foreground transition-colors cursor-help"
-                                      >
-                                        <span className="opacity-75">Formato:</span>
-                                        <span className="font-medium text-foreground/80">{meta.formato}</span>
-                                        <Info className="size-2.5 opacity-40 ml-0.5" />
-                                      </Badge>
-                                    </TooltipTrigger>
-                                    <TooltipContent side="top" sideOffset={6}>
-                                      <p>Estructura en la que se intercambian los datos.</p>
-                                    </TooltipContent>
-                                  </Tooltip>
-
-                                  <div className="h-3 w-px bg-border/60 mx-1 hidden sm:block" />
-
-                                  {/* Resumen de Campos */}
-                                  <span className="text-xs text-muted-foreground">
-                                    <strong>{fuente.campos.length}</strong> campos ·{" "}
-                                    <span className="text-foreground font-medium">{camposAccesibles} accesibles</span> ·{" "}
-                                    <span className="text-foreground font-medium">{camposConfidenciales} confidenciales</span>
+                              {/* Identificador de Fuente */}
+                              <div className="flex flex-col gap-3">
+                                <div>
+                                  <span className="text-[11px] font-semibold text-muted-foreground/70 uppercase tracking-wider mb-1 block">
+                                    Fuente: {institucion.nombre}
                                   </span>
+                                  
+                                  <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-3">
+                                    <div className="space-y-1.5 min-w-0">
+                                      <h3 className="font-heading text-base sm:text-lg font-bold text-foreground/80 flex items-center gap-2">
+                                        <Database className="size-4.5 text-muted-foreground/60" />
+                                        Servicio: {fuente.nombre}
+                                      </h3>
+                                      <p className="text-xs text-muted-foreground leading-relaxed">
+                                        {fuente.descripcion}
+                                      </p>
+                                    </div>
+
+                                    <div className="flex items-center gap-2 shrink-0">
+                                      <Button
+                                        variant="outline"
+                                        size="sm"
+                                        data-tour={fuente.id === "FNT-001" ? "tour-ver-campos" : undefined}
+                                        onClick={() => toggleFuente(fuente.id)}
+                                        className="text-xs h-8 gap-1.5 font-medium border-border/80 hover:bg-muted"
+                                      >
+                                        <Layers className="size-3.5 text-muted-foreground" />
+                                        <span>{isFuenteExpanded ? "Ocultar campos" : "Ver campos"}</span>
+                                        {isFuenteExpanded ? (
+                                          <ChevronUp className="size-3 text-muted-foreground" />
+                                        ) : (
+                                          <ChevronDown className="size-3 text-muted-foreground" />
+                                        )}
+                                      </Button>
+                                    </div>
+                                  </div>
                                 </div>
 
-                                {/* Información secundaria: Base Legal y Última Actualización */}
-                                <div className="pt-2 border-t border-border/60 flex flex-wrap items-center justify-between text-[11px] text-muted-foreground gap-2">
-                                  <span>Base legal: <strong className="text-foreground/90 font-normal">{fuente.baseLegal}</strong></span>
-                                  <span>Última actualización: {fuente.ultimaActualizacion}</span>
+                                {/* Metadatos Técnicos Reducidos */}
+                                <div className="flex flex-wrap items-center gap-2.5 text-[11px] text-muted-foreground bg-muted/20 p-2.5 rounded-lg border border-border/40">
+                                  <Badge appearance="outline" className="h-5 px-1.5 text-[10px] font-mono font-medium text-foreground/80 bg-background">
+                                    {meta.codigo}
+                                  </Badge>
+                                  <Badge appearance="outline" className="h-5 px-1.5 text-[10px] font-mono font-medium text-foreground/80 bg-background">
+                                    {meta.version}
+                                  </Badge>
+                                  <span className="text-border/80 hidden sm:inline">•</span>
+                                  
+                                  <Tooltip>
+                                    <TooltipTrigger asChild>
+                                      <span className="cursor-help underline decoration-dotted underline-offset-2 opacity-80 hover:opacity-100 flex items-center gap-1">
+                                        Ficha técnica <Info className="size-2.5" />
+                                      </span>
+                                    </TooltipTrigger>
+                                    <TooltipContent side="top" sideOffset={6} className="w-[260px] p-3 shadow-xl">
+                                      <div className="space-y-3">
+                                        <div className="font-semibold text-sm pb-2 border-b border-current/10">Detalles de integración</div>
+                                        <div className="grid grid-cols-2 gap-y-3 gap-x-4">
+                                          <div className="space-y-1">
+                                            <p className="text-[10px] uppercase tracking-wider opacity-70">Tipo</p>
+                                            <p className="font-medium text-xs">{meta.tipo}</p>
+                                          </div>
+                                          <div className="space-y-1">
+                                            <p className="text-[10px] uppercase tracking-wider opacity-70">Tecnología</p>
+                                            <p className="font-medium text-xs">{meta.tecnologia}</p>
+                                          </div>
+                                          <div className="space-y-1 col-span-2 border-t border-current/10 pt-2">
+                                            <p className="text-[10px] uppercase tracking-wider opacity-70">Formato</p>
+                                            <p className="font-medium text-xs break-words">{meta.formato}</p>
+                                          </div>
+                                        </div>
+                                      </div>
+                                    </TooltipContent>
+                                  </Tooltip>
+
+                                  <span className="text-border/80 hidden sm:inline">•</span>
+                                  <span>Marco normativo: <strong className="text-foreground/90 font-normal">{fuente.baseLegal}</strong></span>
+                                  <span className="text-border/80 hidden sm:inline">•</span>
+                                  <span>
+                                    <strong>{fuente.campos.length}</strong> campos
+                                  </span>
                                 </div>
                               </div>
 
                               {/* Nivel 3: TABLA DE CAMPOS DESPLEGABLE */}
                               {isFuenteExpanded && (
-                                <div className="border-t border-border bg-muted/20 p-4 sm:p-5">
-                                  <div className="flex items-center justify-between mb-3">
-                                    <h4 className="text-xs font-semibold text-foreground flex items-center gap-1.5">
-                                      <Database className="size-3.5 text-muted-foreground" />
-                                      <span>Campos disponibles ({camposFiltrados.length})</span>
-                                    </h4>
+                                <div className="mt-2 bg-surface rounded-xl overflow-hidden border border-border/60 shadow-xs">
 
-                                    {/* Leyenda general con tooltips para evitar repetir en cada fila */}
-                                    <div className="hidden sm:flex items-center gap-3 text-xs text-muted-foreground">
-                                      <span className="text-[11px] font-medium text-muted-foreground/80">Clasificación:</span>
-                                      <Tooltip>
-                                        <TooltipTrigger asChild>
-                                          <button type="button" className="flex items-center gap-1 hover:text-foreground transition-colors cursor-help">
-                                            <Check className="size-3 text-muted-foreground" />
-                                            <span>Accesible</span>
-                                            <Info className="size-3 opacity-60" />
-                                          </button>
-                                        </TooltipTrigger>
-                                        <TooltipContent side="top" sideOffset={6}>
-                                          <p>Campo identificado como disponible para consulta dentro del catálogo.</p>
-                                        </TooltipContent>
-                                      </Tooltip>
 
-                                      <Tooltip>
-                                        <TooltipTrigger asChild>
-                                          <button type="button" className="flex items-center gap-1 hover:text-foreground transition-colors cursor-help">
-                                            <Lock className="size-3 text-muted-foreground" />
-                                            <span>Confidencial</span>
-                                            <Info className="size-3 opacity-60" />
-                                          </button>
-                                        </TooltipTrigger>
-                                        <TooltipContent side="top" sideOffset={6}>
-                                          <p>Campo identificado con restricciones de acceso o validación adicional.</p>
-                                        </TooltipContent>
-                                      </Tooltip>
-                                    </div>
-                                  </div>
-
-                                  <div className="overflow-x-auto rounded-lg border border-border bg-surface">
-                                    <table className="w-full text-xs text-left">
-                                      <thead className="bg-muted/60 text-muted-foreground font-semibold border-b border-border">
-                                        <tr>
-                                          <th className="px-3.5 py-2.5">Campo</th>
-                                          <th className="px-3.5 py-2.5">Tipo de dato</th>
-                                          <th className="px-3.5 py-2.5">
-                                            <div className="flex items-center gap-1.5">
-                                              <span>Clasificación</span>
-                                              <Tooltip>
-                                                <TooltipTrigger asChild>
-                                                  <button type="button" className="inline-flex cursor-help focus:outline-hidden">
-                                                    <Info className="size-3 text-muted-foreground hover:text-foreground" />
-                                                  </button>
-                                                </TooltipTrigger>
-                                                <TooltipContent side="top" sideOffset={6} className="w-72 p-3 text-left space-y-2.5">
-                                                  <p className="font-semibold text-xs text-foreground">Criterios de Clasificación</p>
-                                                  <div className="space-y-2 text-xs">
-                                                    <div className="space-y-0.5">
-                                                      <div className="flex items-center gap-1.5 font-medium text-foreground">
-                                                        <Check className="size-3 text-muted-foreground" />
-                                                        <span>Accesible</span>
-                                                      </div>
-                                                      <p className="text-[11px] text-muted-foreground leading-relaxed pl-4.5">
-                                                        Disponible para consulta directa dentro del catálogo.
-                                                      </p>
-                                                    </div>
-
-                                                    <div className="border-t border-border/60" />
-
-                                                    <div className="space-y-0.5">
-                                                      <div className="flex items-center gap-1.5 font-medium text-foreground">
-                                                        <Lock className="size-3 text-muted-foreground" />
-                                                        <span>Confidencial</span>
-                                                      </div>
-                                                      <p className="text-[11px] text-muted-foreground leading-relaxed pl-4.5">
-                                                        Restricciones de acceso o validación adicional por DPI.
-                                                      </p>
-                                                    </div>
-                                                  </div>
-                                                </TooltipContent>
-                                              </Tooltip>
-                                            </div>
-                                          </th>
-                                          <th className="px-3.5 py-2.5">Descripción</th>
-                                        </tr>
-                                      </thead>
-                                      <tbody className="divide-y divide-border/60">
-                                        {camposFiltrados.length === 0 ? (
+                                  <div className="rounded-lg border border-border bg-surface">
+                                    {/* Vista Desktop: Tabla */}
+                                    <div className="hidden sm:block overflow-x-auto">
+                                      <table className="w-full text-xs text-left">
+                                        <thead className="bg-muted/60 text-muted-foreground font-semibold border-b border-border">
                                           <tr>
-                                            <td colSpan={4} className="px-4 py-6 text-center text-muted-foreground">
-                                              No hay campos que coincidan con la clasificación o búsqueda seleccionada.
-                                            </td>
+                                            <th className="px-3.5 py-2.5">Campo</th>
+                                            <th className="px-3.5 py-2.5">Tipo de dato</th>
+                                            <th className="px-3.5 py-2.5">
+                                              <div className="flex items-center gap-1.5">
+                                                <span>Clasificación</span>
+                                                <Tooltip>
+                                                  <TooltipTrigger asChild>
+                                                    <button type="button" className="inline-flex cursor-help focus:outline-hidden">
+                                                      <Info className="size-3 text-muted-foreground hover:text-foreground" />
+                                                    </button>
+                                                  </TooltipTrigger>
+                                                  <TooltipContent side="top" sideOffset={6} className="w-[280px] p-3 shadow-xl">
+                                                    <div className="space-y-3">
+                                                      <div className="font-semibold text-sm pb-2 border-b border-current/10">Criterios de Clasificación</div>
+                                                      <div className="space-y-3">
+                                                        <div className="flex gap-2.5">
+                                                          <div className="mt-0.5 opacity-70 shrink-0">
+                                                            <Check className="size-3.5" />
+                                                          </div>
+                                                          <div className="space-y-0.5">
+                                                            <p className="font-medium text-xs">Accesible</p>
+                                                            <p className="text-[11px] leading-relaxed opacity-80">
+                                                              Información que no tiene carácter confidencial conforme al ordenamiento jurídico.
+                                                            </p>
+                                                          </div>
+                                                        </div>
+                                                        <div className="border-t border-current/10" />
+                                                        <div className="flex gap-2.5">
+                                                          <div className="mt-0.5 opacity-70 shrink-0">
+                                                            <Lock className="size-3.5" />
+                                                          </div>
+                                                          <div className="space-y-0.5">
+                                                            <p className="font-medium text-xs">Confidencial</p>
+                                                            <p className="text-[11px] leading-relaxed opacity-80">
+                                                              Este campo requiere condiciones adicionales de legitimidad para su consumo.
+                                                            </p>
+                                                          </div>
+                                                        </div>
+                                                      </div>
+                                                    </div>
+                                                  </TooltipContent>
+                                                </Tooltip>
+                                              </div>
+                                            </th>
+                                            <th className="px-3.5 py-2.5">Descripción</th>
                                           </tr>
-                                        ) : (
-                                          camposFiltrados.map((campo, cIdx) => (
-                                            <tr key={cIdx} className="hover:bg-muted/30 transition-colors">
-                                              <td className="px-3.5 py-2.5 font-medium font-mono text-foreground">
-                                                {campo.nombre}
-                                              </td>
-                                               <td className="px-3.5 py-2.5">
-                                                 <Badge
-                                                   tone="neutral"
-                                                   appearance="outline"
-                                                   size="sm"
-                                                   className="font-mono text-[11px] font-normal border-border/80 bg-muted/40 text-muted-foreground px-2 py-0.5"
-                                                 >
-                                                   {campo.tipo}
-                                                 </Badge>
-                                               </td>
-                                              <td className="px-3.5 py-2.5">
-                                                {campo.clasificacion === "Accesible" ? (
-                                                  <Badge
-                                                    tone="neutral"
-                                                    appearance="soft"
-                                                    className="text-[11px] font-medium gap-1 bg-muted/80 text-foreground border border-border"
-                                                  >
-                                                    <Check className="size-2.5 text-muted-foreground" />
-                                                    <span>Accesible</span>
-                                                  </Badge>
-                                                ) : (
-                                                  <Badge
-                                                    tone="neutral"
-                                                    appearance="soft"
-                                                    className="text-[11px] font-medium gap-1 bg-muted/80 text-foreground border border-border"
-                                                  >
-                                                    <Lock className="size-2.5 text-muted-foreground" />
-                                                    <span>Confidencial</span>
-                                                  </Badge>
-                                                )}
-                                              </td>
-                                              <td className="px-3.5 py-2.5 text-muted-foreground max-w-sm leading-relaxed">
-                                                {campo.descripcion}
+                                        </thead>
+                                        <tbody className="divide-y divide-border/60">
+                                          {camposFiltrados.length === 0 ? (
+                                            <tr>
+                                              <td colSpan={4} className="px-4 py-6 text-center text-muted-foreground">
+                                                No hay campos que coincidan con la clasificación o búsqueda seleccionada.
                                               </td>
                                             </tr>
-                                          ))
-                                        )}
-                                      </tbody>
-                                    </table>
+                                          ) : (
+                                            camposFiltrados.map((campo, cIdx) => (
+                                              <tr key={cIdx} className="hover:bg-muted/30 transition-colors">
+                                                <td className="px-3.5 py-2.5 font-medium font-mono text-foreground">
+                                                  {campo.nombre}
+                                                </td>
+                                                <td className="px-3.5 py-2.5">
+                                                  <Badge
+                                                    tone="neutral"
+                                                    appearance="outline"
+                                                    size="sm"
+                                                    className="font-mono text-[11px] font-normal border-border/80 bg-muted/40 text-muted-foreground px-2 py-0.5"
+                                                  >
+                                                    {campo.tipo}
+                                                  </Badge>
+                                                </td>
+                                                <td className="px-3.5 py-2.5">
+                                                  {campo.clasificacion === "Accesible" ? (
+                                                    <Badge
+                                                      tone="neutral"
+                                                      appearance="soft"
+                                                      className="text-[11px] font-medium gap-1 bg-muted/80 text-foreground border border-border"
+                                                    >
+                                                      <Check className="size-2.5 text-muted-foreground" />
+                                                      <span>Accesible</span>
+                                                    </Badge>
+                                                  ) : (
+                                                    <Badge
+                                                      tone="neutral"
+                                                      appearance="soft"
+                                                      className="text-[11px] font-medium gap-1 bg-muted/80 text-foreground border border-border"
+                                                    >
+                                                      <Lock className="size-2.5 text-muted-foreground" />
+                                                      <span>Confidencial</span>
+                                                    </Badge>
+                                                  )}
+                                                </td>
+                                                <td className="px-3.5 py-2.5 text-muted-foreground max-w-sm leading-relaxed">
+                                                  {campo.descripcion}
+                                                </td>
+                                              </tr>
+                                            ))
+                                          )}
+                                        </tbody>
+                                      </table>
+                                    </div>
+
+                                    {/* Vista Mobile: Cards */}
+                                    <div className="sm:hidden flex flex-col divide-y divide-border/60">
+                                      {camposFiltrados.length === 0 ? (
+                                        <div className="px-4 py-6 text-center text-xs text-muted-foreground">
+                                          No hay campos que coincidan con la clasificación o búsqueda seleccionada.
+                                        </div>
+                                      ) : (
+                                        camposFiltrados.map((campo, cIdx) => (
+                                          <div key={cIdx} className="flex flex-col gap-2.5 p-4 hover:bg-muted/30 transition-colors">
+                                            <div className="flex items-start justify-between gap-2">
+                                              <span className="font-medium font-mono text-xs text-foreground break-all">
+                                                {campo.nombre}
+                                              </span>
+                                              {campo.clasificacion === "Accesible" ? (
+                                                <Badge
+                                                  tone="neutral"
+                                                  appearance="soft"
+                                                  className="text-[10px] font-medium gap-1 bg-muted/80 text-foreground border border-border shrink-0"
+                                                >
+                                                  <Check className="size-2.5 text-muted-foreground" />
+                                                  <span>Accesible</span>
+                                                </Badge>
+                                              ) : (
+                                                <Badge
+                                                  tone="neutral"
+                                                  appearance="soft"
+                                                  className="text-[10px] font-medium gap-1 bg-muted/80 text-foreground border border-border shrink-0"
+                                                >
+                                                  <Lock className="size-2.5 text-muted-foreground" />
+                                                  <span>Confidencial</span>
+                                                </Badge>
+                                              )}
+                                            </div>
+                                            <p className="text-xs text-muted-foreground leading-relaxed">
+                                              {campo.descripcion}
+                                            </p>
+                                            <div>
+                                              <Badge
+                                                tone="neutral"
+                                                appearance="outline"
+                                                size="sm"
+                                                className="font-mono text-[10px] font-normal border-border/80 bg-muted/40 text-muted-foreground px-2 py-0.5"
+                                              >
+                                                {campo.tipo}
+                                              </Badge>
+                                            </div>
+                                          </div>
+                                        ))
+                                      )}
+                                    </div>
                                   </div>
                                 </div>
                               )}
