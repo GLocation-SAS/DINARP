@@ -689,13 +689,10 @@ export default function CatalogoConsultaPage() {
 
                               {/* Nivel 3: TABLA DE CAMPOS DESPLEGABLE */}
                               {isFuenteExpanded && (
-                                <div className="mt-2 bg-surface rounded-xl overflow-hidden border border-border/60 shadow-xs">
-
-
-                                  <div className="rounded-lg border border-border bg-surface">
-                                    {/* Vista Desktop: Tabla */}
-                                    <div className="hidden sm:block overflow-x-auto">
-                                      <table className="w-full text-xs text-left">
+                                <div className="mt-2 overflow-hidden shadow-xs rounded-lg border border-border bg-surface">
+                                  {/* Vista Desktop: Tabla */}
+                                  <div className="hidden sm:block overflow-x-auto">
+                                    <table className="w-full text-xs text-left">
                                         <thead className="bg-muted/60 text-muted-foreground font-semibold border-b border-border">
                                           <tr>
                                             <th className="px-3.5 py-2.5">Campo</th>
@@ -849,7 +846,6 @@ export default function CatalogoConsultaPage() {
                                         ))
                                       )}
                                     </div>
-                                  </div>
                                 </div>
                               )}
                             </div>
