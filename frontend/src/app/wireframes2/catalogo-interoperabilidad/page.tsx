@@ -482,9 +482,6 @@ export default function CatalogoConsultaPage() {
             )}
           </div>
 
-          {/* Línea divisoria entre filtros/búsqueda y resultados */}
-          <div className="border-t border-border" />
-
           {/* Bloque Inferior: Resultados (Instituciones) */}
           <div className="divide-y divide-border">
             {institucionesFiltradas.length === 0 ? (
