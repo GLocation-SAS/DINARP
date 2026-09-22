@@ -139,25 +139,25 @@ export default function CatalogoConsultaPage() {
   const [isTourOpen, setIsTourOpen] = useState(false);
   const [tourStep, setTourStep] = useState(0);
 
-  // Auto-lanzar solo en primera visita
+  // Auto-lanzar al ingresar a la ruta
   useEffect(() => {
     try {
-      const hasSeenTour = localStorage.getItem("catalogo-consulta-tour-completed");
+      const hasSeenTour = localStorage.getItem("catalogo-consulta-tour-v2");
       if (!hasSeenTour) {
         const timer = setTimeout(() => {
           setIsTourOpen(true);
-        }, 600);
+        }, 800);
         return () => clearTimeout(timer);
       }
     } catch {
-      // Fallback si localStorage no está disponible
+      // Fallback
     }
   }, []);
 
   const handleCloseTour = () => {
     setIsTourOpen(false);
     try {
-      localStorage.setItem("catalogo-consulta-tour-completed", "true");
+      localStorage.setItem("catalogo-consulta-tour-v2", "true");
     } catch {}
   };
 
