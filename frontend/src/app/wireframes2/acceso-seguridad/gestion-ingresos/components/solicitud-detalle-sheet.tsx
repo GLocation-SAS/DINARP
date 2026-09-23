@@ -50,16 +50,8 @@ export function SolicitudDetalleSheet({
   const isAprobada = solicitud.estado === "Aprobada";
   const isRechazada = solicitud.estado === "Rechazada";
 
-  const getBadgeTone = (estado: SolicitudIngreso["estado"]) => {
-    switch (estado) {
-      case "Aprobada":
-        return "success";
-      case "Rechazada":
-        return "danger";
-      case "Pendiente":
-      default:
-        return "neutral";
-    }
+  const getBadgeTone = (_estado: SolicitudIngreso["estado"]) => {
+    return "neutral" as const;
   };
 
   return (
@@ -75,14 +67,14 @@ export function SolicitudDetalleSheet({
               {solicitud.id}
             </span>
             <Badge
-              tone={getBadgeTone(solicitud.estado)}
+              tone="neutral"
               appearance="soft"
               size="sm"
-              className="font-semibold gap-1 text-xs"
+              className="font-semibold gap-1 text-xs border border-border text-foreground"
             >
-              {isAprobada && <CheckCircle2 className="size-3" />}
-              {isRechazada && <XCircle className="size-3" />}
-              {isPendiente && <Clock className="size-3" />}
+              {isAprobada && <CheckCircle2 className="size-3 text-foreground" />}
+              {isRechazada && <XCircle className="size-3 text-muted-foreground" />}
+              {isPendiente && <Clock className="size-3 text-muted-foreground" />}
               {solicitud.estado}
             </Badge>
           </div>
@@ -99,37 +91,37 @@ export function SolicitudDetalleSheet({
         <div className="flex-1 overflow-y-auto p-6 space-y-6">
           {/* Bloque Estado Dinámico (Aprobada / Rechazada / Pendiente) */}
           {isAprobada && (
-            <div className="p-4 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-950 dark:text-emerald-200 space-y-2">
-              <div className="flex items-center gap-2 font-bold text-sm text-emerald-700 dark:text-emerald-300">
-                <CheckCircle2 className="size-4 shrink-0" />
+            <div className="p-4 rounded-2xl bg-muted/40 border border-border text-foreground space-y-2">
+              <div className="flex items-center gap-2 font-bold text-sm text-foreground">
+                <CheckCircle2 className="size-4 shrink-0 text-foreground" />
                 <span>Solicitud aprobada</span>
               </div>
-              <p className="text-xs leading-relaxed opacity-90">
+              <p className="text-xs leading-relaxed text-muted-foreground">
                 El acceso fue autorizado. El usuario puede iniciar sesión en la plataforma utilizando su número de cédula y contraseña registrada.
               </p>
-              <div className="pt-2 border-t border-emerald-500/20 grid grid-cols-1 sm:grid-cols-2 gap-2 text-[11px]">
+              <div className="pt-2 border-t border-border/80 grid grid-cols-1 sm:grid-cols-2 gap-2 text-[11px]">
                 <div>
                   <span className="text-muted-foreground">Fecha de aprobación:</span>
-                  <p className="font-semibold">{solicitud.fechaRevision || "No registrada"}</p>
+                  <p className="font-semibold text-foreground">{solicitud.fechaRevision || "No registrada"}</p>
                 </div>
                 <div>
                   <span className="text-muted-foreground">Aprobado por:</span>
-                  <p className="font-semibold">{solicitud.revisor || "Dirección de Gestión y Registro"}</p>
+                  <p className="font-semibold text-foreground">{solicitud.revisor || "Dirección de Gestión y Registro"}</p>
                 </div>
               </div>
             </div>
           )}
 
           {isRechazada && (
-            <div className="p-4 rounded-2xl bg-rose-500/10 border border-rose-500/20 text-rose-950 dark:text-rose-200 space-y-3">
-              <div className="flex items-center gap-2 font-bold text-sm text-rose-700 dark:text-rose-300">
-                <XCircle className="size-4 shrink-0" />
+            <div className="p-4 rounded-2xl bg-muted/40 border border-border text-foreground space-y-3">
+              <div className="flex items-center gap-2 font-bold text-sm text-foreground">
+                <XCircle className="size-4 shrink-0 text-muted-foreground" />
                 <span>Solicitud rechazada</span>
               </div>
 
               {/* Motivo del Rechazo Destacado */}
-              <div className="p-3 bg-surface rounded-xl border border-rose-500/20 text-xs">
-                <span className="font-semibold text-rose-600 dark:text-rose-400 block mb-1">
+              <div className="p-3 bg-surface rounded-xl border border-border text-xs">
+                <span className="font-semibold text-foreground block mb-1">
                   Motivo del rechazo:
                 </span>
                 <p className="text-foreground leading-relaxed whitespace-pre-wrap">
@@ -137,14 +129,14 @@ export function SolicitudDetalleSheet({
                 </p>
               </div>
 
-              <div className="pt-2 border-t border-rose-500/20 grid grid-cols-1 sm:grid-cols-2 gap-2 text-[11px]">
+              <div className="pt-2 border-t border-border/80 grid grid-cols-1 sm:grid-cols-2 gap-2 text-[11px]">
                 <div>
                   <span className="text-muted-foreground">Fecha de rechazo:</span>
-                  <p className="font-semibold">{solicitud.fechaRevision || "No registrada"}</p>
+                  <p className="font-semibold text-foreground">{solicitud.fechaRevision || "No registrada"}</p>
                 </div>
                 <div>
                   <span className="text-muted-foreground">Revisado por:</span>
-                  <p className="font-semibold">{solicitud.revisor || "Dirección de Gestión y Registro"}</p>
+                  <p className="font-semibold text-foreground">{solicitud.revisor || "Dirección de Gestión y Registro"}</p>
                 </div>
               </div>
             </div>
@@ -228,9 +220,9 @@ export function SolicitudDetalleSheet({
           <div className="space-y-3">
             <h3 className="text-xs font-bold uppercase tracking-wider text-muted-foreground flex items-center justify-between pb-1 border-b border-border/60">
               <span className="flex items-center gap-2">
-                <FileText className="size-3.5 text-primary" /> Documentación Habilitante (3 Requeridos)
+                <FileText className="size-3.5 text-foreground" /> Documentación Habilitante (3 Requeridos)
               </span>
-              <Badge tone="success" appearance="soft" size="sm" className="text-[10px]">
+              <Badge tone="neutral" appearance="soft" size="sm" className="text-[10px] border border-border text-foreground">
                 3 de 3 cargados
               </Badge>
             </h3>
@@ -242,7 +234,7 @@ export function SolicitudDetalleSheet({
               ]).map((docName: string, idx: number) => (
                 <div key={idx} className="p-3 rounded-xl bg-muted/20 border border-border/60 flex items-center justify-between gap-3">
                   <div className="flex items-center gap-2.5 min-w-0">
-                    <span className="size-7 rounded-lg bg-red-500/10 text-red-600 dark:text-red-400 font-bold text-[10px] flex items-center justify-center shrink-0">
+                    <span className="size-7 rounded-lg bg-muted text-foreground border border-border font-bold text-[10px] flex items-center justify-center shrink-0">
                       PDF
                     </span>
                     <div className="truncate">
@@ -250,7 +242,7 @@ export function SolicitudDetalleSheet({
                       <span className="text-[10px] text-muted-foreground">Formato PDF firmado electrónicamente</span>
                     </div>
                   </div>
-                  <Badge tone="success" appearance="soft" size="sm" className="shrink-0 text-[10px]">
+                  <Badge tone="neutral" appearance="soft" size="sm" className="shrink-0 text-[10px] border border-border text-foreground">
                     <Check className="size-3 mr-1" /> Adjunto
                   </Badge>
                 </div>
@@ -260,7 +252,7 @@ export function SolicitudDetalleSheet({
 
           {/* Nota de Seguridad de Contraseña */}
           <div className="p-3 rounded-xl bg-surface border border-border/60 text-[11px] text-muted-foreground flex items-center gap-2">
-            <ShieldCheck className="size-4 text-primary shrink-0" />
+            <ShieldCheck className="size-4 text-foreground shrink-0" />
             <span>
               <strong className="text-foreground">Protección de credenciales:</strong> Por razones de seguridad y privacidad, la contraseña registrada en el prerregistro se almacena cifrada y no es visible para el revisor.
             </span>
@@ -275,7 +267,7 @@ export function SolicitudDetalleSheet({
               variant="outline"
               size="sm"
               onClick={() => onRejectClick(solicitud)}
-              className="text-xs font-semibold text-rose-600 hover:text-rose-700 hover:bg-rose-500/10 border-rose-500/30 gap-1.5"
+              className="text-xs font-semibold border-border text-foreground hover:bg-muted gap-1.5"
             >
               <XCircle className="size-3.5" />
               <span>Rechazar</span>
@@ -286,7 +278,7 @@ export function SolicitudDetalleSheet({
               variant="primary"
               size="sm"
               onClick={() => onApproveClick(solicitud)}
-              className="text-xs font-semibold gap-1.5 shadow-xs"
+              className="text-xs font-semibold gap-1.5 shadow-xs bg-foreground text-background hover:bg-foreground/90"
             >
               <CheckCircle2 className="size-3.5" />
               <span>Aprobar acceso</span>

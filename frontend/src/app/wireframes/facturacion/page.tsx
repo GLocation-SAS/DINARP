@@ -44,6 +44,14 @@ import {
   TableCell,
 } from "@/components/ui/table";
 import {
+  Breadcrumb,
+  BreadcrumbList,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbSeparator,
+  BreadcrumbPage,
+} from "@/components/ui/breadcrumb";
+import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
@@ -186,6 +194,23 @@ export default function WireframeListadoFacturacionPage() {
       <main className="relative p-4 sm:p-6 lg:p-8 w-full space-y-6 sm:space-y-8">
         {/* Background subtle effect */}
         <div className="absolute top-0 right-0 w-96 h-96 bg-radial from-muted/20 to-transparent pointer-events-none -z-10 blur-3xl opacity-60" />
+
+        {/* ── 0. Miga de pan ── */}
+        <Breadcrumb className="mb-2">
+          <BreadcrumbList className="text-xs">
+            <BreadcrumbItem>
+              <BreadcrumbLink href="/wireframes/dashboard">Inicio</BreadcrumbLink>
+            </BreadcrumbItem>
+            <BreadcrumbSeparator />
+            <BreadcrumbItem>
+              <BreadcrumbLink href="/wireframes/solicitudes">Bandeja de solicitudes</BreadcrumbLink>
+            </BreadcrumbItem>
+            <BreadcrumbSeparator />
+            <BreadcrumbItem>
+              <BreadcrumbPage className="font-semibold text-foreground">Facturación</BreadcrumbPage>
+            </BreadcrumbItem>
+          </BreadcrumbList>
+        </Breadcrumb>
 
         {/* ── 1. Header Title & Description ── */}
         <div className="space-y-1">

@@ -47,8 +47,8 @@ export function AprobarSolicitudDialog({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-md p-6">
         <DialogHeader className="space-y-2">
-          <div className="size-10 rounded-full bg-emerald-500/10 text-emerald-600 flex items-center justify-center mb-1">
-            <CheckCircle2 className="size-5" />
+          <div className="size-10 rounded-full bg-muted text-foreground border border-border flex items-center justify-center mb-1">
+            <CheckCircle2 className="size-5 text-foreground" />
           </div>
           <DialogTitle className="text-lg font-bold text-foreground">
             Aprobar solicitud de acceso
@@ -91,7 +91,7 @@ export function AprobarSolicitudDialog({
 
         {/* Mensaje Informativo de Correo Simulado */}
         <div className="p-3 bg-muted/20 rounded-xl border border-border/50 text-[11px] text-muted-foreground flex items-start gap-2">
-          <Mail className="size-4 text-primary shrink-0 mt-0.5" />
+          <Mail className="size-4 text-foreground shrink-0 mt-0.5" />
           <span>
             Se enviará un correo con el enlace directo al acceso de la plataforma para que el usuario inicie sesión con su cédula, contraseña y autenticación 2FA.
           </span>

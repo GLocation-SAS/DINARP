@@ -132,7 +132,7 @@ export default function NovedadDetallePage() {
                 <div className="rounded-lg border p-4 bg-slate-50 dark:bg-slate-900/50">
                   <h4 className="font-medium text-slate-900 dark:text-slate-50 mb-2">Motivo de Supresión</h4>
                   <p className="text-sm text-slate-600 dark:text-slate-300">
-                    La institución informa la obsolescencia del servicio de consulta v1, el cual ha sido reemplazado en su totalidad por el servicio de Registro de Hechos Vitales v2. Se solicita dar de baja el endpoint antiguo para evitar consultas inconsistentes por parte de las entidades consumidoras.
+                    La institución informa la obsolescencia de la fuente de consulta v1, la cual ha sido reemplazada en su totalidad por la fuente de Registro de Hechos Vitales v2. Se solicita dar de baja el endpoint antiguo para evitar consultas inconsistentes por parte de las entidades consumidoras.
                   </p>
                 </div>
               </CardContent>
@@ -179,7 +179,7 @@ export default function NovedadDetallePage() {
               <CardContent>
                 <div className="flex flex-col items-center justify-center py-12 text-slate-500">
                   <Settings2 className="h-12 w-12 mb-4 text-slate-300" />
-                  <p>El servicio WS_DEF_01 ha sido marcado como INACTIVO en la base de datos.</p>
+                  <p>La fuente WS_DEF_01 ha sido marcada como INACTIVA en la base de datos.</p>
                 </div>
               </CardContent>
             </Card>

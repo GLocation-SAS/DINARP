@@ -1,5 +1,4 @@
 import { Montserrat, Poppins } from "next/font/google";
-import Script from "next/script";
 import "./globals.css";
 
 import { cn } from "@/lib/utils";
@@ -74,12 +73,8 @@ export default async function RootLayout({
       suppressHydrationWarning
     >
       <head>
-      </head>
-
-      <body>
-        <Script
+        <script
           id="theme-script"
-          strategy="beforeInteractive"
           dangerouslySetInnerHTML={{
             __html: `
               (function() {
@@ -103,6 +98,9 @@ export default async function RootLayout({
             `,
           }}
         />
+      </head>
+
+      <body>
         <NextIntlClientProvider
           locale="es"
           messages={messages}

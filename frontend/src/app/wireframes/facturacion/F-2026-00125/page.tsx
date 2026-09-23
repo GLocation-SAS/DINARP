@@ -24,6 +24,14 @@ import {
   CardContent,
 } from "@/components/ui/card";
 import {
+  Breadcrumb,
+  BreadcrumbList,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbSeparator,
+  BreadcrumbPage,
+} from "@/components/ui/breadcrumb";
+import {
   Table,
   TableHeader,
   TableBody,
@@ -81,13 +89,41 @@ export default function WireframeDetalleFacturaPage() {
         {/* Background subtle effect */}
         <div className="absolute top-0 right-0 w-96 h-96 bg-radial from-muted/20 to-transparent pointer-events-none -z-10 blur-3xl opacity-60" />
 
-        {/* ── 1. Acción Volver a Facturas ── */}
-        <div>
+        {/* ── 0. Miga de pan ── */}
+        <Breadcrumb className="mb-1">
+          <BreadcrumbList className="text-xs">
+            <BreadcrumbItem>
+              <BreadcrumbLink href="/wireframes/dashboard">Inicio</BreadcrumbLink>
+            </BreadcrumbItem>
+            <BreadcrumbSeparator />
+            <BreadcrumbItem>
+              <BreadcrumbLink href="/wireframes/solicitudes">Bandeja de solicitudes</BreadcrumbLink>
+            </BreadcrumbItem>
+            <BreadcrumbSeparator />
+            <BreadcrumbItem>
+              <BreadcrumbLink href="/wireframes/facturacion">Facturación</BreadcrumbLink>
+            </BreadcrumbItem>
+            <BreadcrumbSeparator />
+            <BreadcrumbItem>
+              <BreadcrumbPage className="font-semibold text-foreground">F-2026-00125</BreadcrumbPage>
+            </BreadcrumbItem>
+          </BreadcrumbList>
+        </Breadcrumb>
+
+        {/* ── 1. Acción Volver ── */}
+        <div className="flex flex-wrap items-center gap-4">
           <Link
-            href="/wireframes/facturacion"
+            href="/wireframes/solicitudes"
             className="inline-flex items-center gap-1.5 text-xs font-semibold text-primary hover:underline group"
           >
             <ArrowLeft className="size-3.5 group-hover:-translate-x-0.5 transition-transform" />
+            <span>Volver a la bandeja de solicitudes</span>
+          </Link>
+          <span className="text-muted-foreground/40">•</span>
+          <Link
+            href="/wireframes/facturacion"
+            className="inline-flex items-center gap-1.5 text-xs font-medium text-muted-foreground hover:text-foreground hover:underline"
+          >
             <span>Volver a facturas</span>
           </Link>
         </div>

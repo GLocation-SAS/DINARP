@@ -354,9 +354,9 @@ export function CorregirSolicitudFlow({
   const prevStep = () => setStep((prev) => (prev > 1 ? prev - 1 : prev));
 
   const stepperSteps: Step[] = [
-    { id: "1", title: "Seleccionar información", icon: Database },
-    { id: "2", title: "Justificar campos", icon: FileText },
-    { id: "3", title: "Revisar y enviar", icon: Send },
+    { id: "1", title: "Campos de la fuente", icon: Database },
+    { id: "2", title: "Justificación de campos", icon: FileText },
+    { id: "3", title: "Resumen de la solicitud", icon: Send },
   ];
 
   const handleFinalizarEnvio = () => {
@@ -467,6 +467,15 @@ export function CorregirSolicitudFlow({
           {/* PASO 1: SELECCIONAR INFORMACIÓN */}
           {step === 1 && (
             <div className="flex flex-col gap-6" id="seleccion-info">
+              <div>
+                <h2 className="text-xl font-bold text-foreground flex items-center gap-2">
+                  <Database className="size-5 text-primary" />
+                  Campos de la fuente
+                </h2>
+                <p className="text-xs text-muted-foreground mt-0.5">
+                  Ajuste o seleccione los campos requeridos para subsanar las observaciones del Aprobador.
+                </p>
+              </div>
               {/* Alerta de restricción si intenta cambiar de fuente */}
               {restrictionAlert && (
                 <div className="p-3.5 rounded-xl border border-amber-500/40 bg-amber-500/10 flex items-start gap-3 text-xs">
@@ -484,7 +493,7 @@ export function CorregirSolicitudFlow({
                   <div className="sm:col-span-12 lg:col-span-5 space-y-1.5">
                     <label className="text-xs font-medium text-muted-foreground whitespace-nowrap block">Búsqueda general</label>
                     <SearchInput
-                      placeholder="Buscar por institución, fuente, servicio o campo..."
+                      placeholder="Buscar por institución, fuente o campo..."
                       value={searchTerm}
                       onChange={(e) => setSearchTerm(e.target.value)}
                       onClear={() => setSearchTerm("")}
@@ -686,7 +695,7 @@ export function CorregirSolicitudFlow({
                                   <div className="flex-1 min-w-0">
                                     <div className="flex items-center gap-2 flex-wrap">
                                       <Badge tone="neutral" appearance="outline" size="sm" className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
-                                        Servicio
+                                        Fuente
                                       </Badge>
                                       <h3 className="font-bold text-sm text-foreground">{servicio.nombre}</h3>
                                       {selectedInServicio > 0 && (
@@ -800,6 +809,15 @@ export function CorregirSolicitudFlow({
           {/* PASO 2: JUSTIFICAR CAMPOS (EDITAR FINALIDAD Y FUNDAMENTO) */}
           {step === 2 && (
             <div className="flex flex-col gap-6" id="justificacion-step">
+              <div>
+                <h2 className="text-xl font-bold text-foreground flex items-center gap-2">
+                  <FileText className="size-5 text-primary" />
+                  Justificación de campos
+                </h2>
+                <p className="text-xs text-muted-foreground mt-0.5">
+                  Declare o ajuste la finalidad de uso para cada campo seleccionado y el fundamento legal habilitante en los campos confidenciales.
+                </p>
+              </div>
               {/* Recordatorio de la observación en Paso 2 */}
               <div className="p-4 rounded-xl border border-amber-500/40 bg-amber-500/10 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs shadow-2xs">
                 <div className="flex items-start gap-2.5">
@@ -868,13 +886,13 @@ export function CorregirSolicitudFlow({
                     )}
                   </div>
 
-                  {/* Campos por servicio */}
+                  {/* Campos por fuente */}
                   <div className="p-4 sm:p-6 flex flex-col gap-6 bg-card divide-y divide-border/60">
                     {selectedCamposByServicio.map((group, groupIdx) => (
                       <div key={group.servicioId} className={`flex flex-col gap-4 ${groupIdx > 0 ? "pt-6" : ""}`}>
                         <div className="flex items-center gap-2.5 flex-wrap">
                           <Badge tone="neutral" appearance="outline" size="sm" className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
-                            Servicio
+                            Fuente
                           </Badge>
                           <h3 className="font-heading text-sm sm:text-base font-bold text-foreground flex items-center gap-2">
                             <Database className="size-4 text-primary" />
@@ -970,12 +988,12 @@ export function CorregirSolicitudFlow({
                                       <div className="space-y-1.5">
                                         <label className="text-xs font-semibold text-foreground flex items-center gap-1.5">
                                           <Scale className="size-3.5 text-amber-600 dark:text-amber-400" />
-                                          Fundamento legal habilitante (Requerido para datos confidenciales)
+                                          Justificación jurídica (Requerido para datos confidenciales)
                                           <span className="text-destructive">*</span>
                                         </label>
                                         <Textarea
                                           rows={2}
-                                          placeholder="Indique los artículos y leyes específicas que respaldan el acceso..."
+                                          placeholder="Indique los artículos y leyes específicas que justifican jurídicamente el acceso..."
                                           value={justificaciones[item.campo.id]?.fundamento || ""}
                                           onChange={(e) =>
                                             setJustificaciones((prev) => ({
@@ -1102,10 +1120,10 @@ export function CorregirSolicitudFlow({
                     </span>
                     <div>
                       <h3 className="font-bold text-base text-foreground">
-                        Paso 2: Justificaciones y fundamentos corregidos
+                        Paso 2: Finalidad de uso y justificación jurídica
                       </h3>
                       <p className="text-xs text-muted-foreground mt-0.5">
-                        Finalidad de uso y fundamentación legal declarada para cada campo
+                        Finalidad de uso (campos accesibles) y justificación jurídica (campos confidenciales)
                       </p>
                     </div>
                   </div>
@@ -1135,16 +1153,16 @@ export function CorregirSolicitudFlow({
 
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs">
                         <div className="space-y-1">
-                          <span className="font-semibold text-muted-foreground">Finalidad corregida:</span>
+                          <span className="font-semibold text-muted-foreground">Finalidad de uso:</span>
                           <p className="p-2 rounded-lg bg-background border border-border text-foreground">
                             {justificaciones[item.campo.id]?.finalidad || "Sin finalidad"}
                           </p>
                         </div>
                         {item.campo.clasificacion === "Confidencial" && (
                           <div className="space-y-1">
-                            <span className="font-semibold text-muted-foreground">Fundamento legal corregido:</span>
+                            <span className="font-semibold text-muted-foreground">Justificación jurídica:</span>
                             <p className="p-2 rounded-lg bg-background border border-amber-500/30 text-foreground">
-                              {justificaciones[item.campo.id]?.fundamento || "Sin fundamento"}
+                              {justificaciones[item.campo.id]?.fundamento || "Sin justificación jurídica"}
                             </p>
                           </div>
                         )}

@@ -45,10 +45,21 @@ import {
   ComboboxList,
   ComboboxItem,
 } from "@/components/ui/combobox";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogFooter,
+} from "@/components/ui/dialog";
+import { useSolicitudesStore } from "../../data/solicitudes-store";
 
 export default function NuevaSolicitudAccesoPage() {
   const router = useRouter();
+  const { crearNuevaSolicitud } = useSolicitudesStore();
   const [step, setStep] = useState(1);
+  const [isModalConfirmacionOpen, setIsModalConfirmacionOpen] = useState(false);
 
   // Step 1 State
   const [searchTerm, setSearchTerm] = useState("");
@@ -278,7 +289,7 @@ export default function NuevaSolicitudAccesoPage() {
       id: "step4",
       target: "#justificacion-step",
       title: "Justificación de campos",
-      description: "Cada campo seleccionado debe quedar asociado a una finalidad de uso. Los campos confidenciales requieren fundamento legal.",
+      description: "Cada campo seleccionado debe quedar asociado a una finalidad de uso. Los campos confidenciales requieren justificación jurídica.",
       onBeforeStep: () => setStep(2)
     },
     {
@@ -374,7 +385,7 @@ export default function NuevaSolicitudAccesoPage() {
                       <div className="sm:col-span-12 lg:col-span-5 space-y-1.5">
                         <label className="text-xs font-medium text-muted-foreground whitespace-nowrap block">Búsqueda general</label>
                         <SearchInput
-                          placeholder="Buscar por institución, fuente, servicio o campo..."
+                          placeholder="Buscar por institución, fuente o campo..."
                           value={searchTerm}
                           onChange={e => setSearchTerm(e.target.value)}
                           onClear={() => setSearchTerm("")}
@@ -636,7 +647,7 @@ export default function NuevaSolicitudAccesoPage() {
                                       <div className="flex-1 min-w-0">
                                         <div className="flex items-center gap-2 flex-wrap">
                                           <Badge tone="neutral" appearance="outline" size="sm" className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
-                                            Servicio
+                                            Fuente
                                           </Badge>
                                           <h3 className="font-bold text-sm text-foreground">{servicio.nombre}</h3>
                                           {selectedInServicio > 0 && (
@@ -831,15 +842,32 @@ export default function NuevaSolicitudAccesoPage() {
                       )}
                     </div>
 
-                    {/* Nivel 2 y 3: Servicios y Campos dentro del Contenedor */}
+                    {/* Nota de distinción clara y documento de respaldo */}
+                    <div className="mx-4 sm:mx-6 mt-4 p-3.5 rounded-xl border border-primary/20 bg-primary/5 flex items-start gap-3">
+                      <Info className="size-4 text-primary shrink-0 mt-0.5" />
+                      <div className="text-xs space-y-1">
+                        <p className="font-semibold text-foreground">
+                          Requisitos según clasificación del campo:
+                        </p>
+                        <ul className="text-muted-foreground list-disc list-inside space-y-0.5">
+                          <li><strong className="text-foreground">Campos Accesibles:</strong> Requieren únicamente <span className="text-foreground font-medium">Finalidad de uso</span>.</li>
+                          <li><strong className="text-foreground">Campos Confidenciales:</strong> Requieren <span className="text-foreground font-medium">Finalidad de uso</span> y <span className="text-foreground font-medium">Justificación jurídica</span> obligatoria.</li>
+                        </ul>
+                        <p className="text-[11px] text-muted-foreground pt-0.5 italic">
+                          * Nota: Queda pendiente de confirmar si en este paso será obligatorio cargar algún documento de respaldo jurídico adicional.
+                        </p>
+                      </div>
+                    </div>
+
+                    {/* Nivel 2 y 3: Fuentes y Campos dentro del Contenedor */}
                     <div className="p-4 sm:p-6 flex flex-col gap-6 bg-card divide-y divide-border/60">
                       {selectedCamposByServicio.map((group, groupIdx) => (
                         <div key={group.servicioId} className={`flex flex-col gap-4 ${groupIdx > 0 ? "pt-6" : ""}`}>
-                          {/* Identificador de Servicio */}
+                          {/* Identificador de Fuente */}
                           <div className="flex items-center justify-between gap-3">
                             <div className="flex items-center gap-2.5 flex-wrap">
                               <Badge tone="neutral" appearance="outline" size="sm" className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
-                                Servicio
+                                Fuente
                               </Badge>
                               <h3 className="font-heading text-sm sm:text-base font-bold text-foreground flex items-center gap-2">
                                 <Database className="size-4 text-primary" />
@@ -1044,6 +1072,61 @@ export default function NuevaSolicitudAccesoPage() {
                   </p>
                 </div>
 
+                {/* Ficha Resumen de la Solicitud */}
+                <Card className="p-6 bg-surface border-border shadow-xs space-y-4 rounded-2xl">
+                  <div className="flex items-center justify-between pb-3 border-b border-border/70">
+                    <div className="flex items-center gap-2.5">
+                      <div className="size-8 rounded-lg bg-primary/10 text-primary flex items-center justify-center">
+                        <Building2 className="size-4" />
+                      </div>
+                      <div>
+                        <h3 className="font-bold text-base text-foreground">
+                          Ficha ejecutiva de la solicitud
+                        </h3>
+                        <p className="text-xs text-muted-foreground">
+                          Datos institucionales consolidados para emisión y revisión
+                        </p>
+                      </div>
+                    </div>
+                    <Badge tone="info" appearance="soft" size="sm" className="font-semibold text-xs">
+                      Trámite de Interoperabilidad
+                    </Badge>
+                  </div>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 text-xs">
+                    <div className="p-3 rounded-xl bg-muted/30 border border-border/60">
+                      <span className="text-muted-foreground block text-[11px] mb-0.5">Institución solicitante:</span>
+                      <strong className="text-foreground text-xs sm:text-sm block">Ministerio de Salud Pública</strong>
+                      <span className="text-[10px] text-muted-foreground">Entidad del sector público</span>
+                    </div>
+
+                    <div className="p-3 rounded-xl bg-muted/30 border border-border/60">
+                      <span className="text-muted-foreground block text-[11px] mb-0.5">Fuente seleccionada:</span>
+                      <strong className="text-foreground text-xs sm:text-sm truncate block" title={activeFuente ? activeFuente.nombre : (selectedCamposDetails[0]?.fuenteNombre || "Registro Civil")}>
+                        {activeFuente ? activeFuente.nombre : (selectedCamposDetails[0]?.fuenteNombre || "Registro Civil")}
+                      </strong>
+                      <span className="text-[10px] text-muted-foreground">Fuente única autorizada</span>
+                    </div>
+
+                    <div className="p-3 rounded-xl bg-muted/30 border border-border/60">
+                      <span className="text-muted-foreground block text-[11px] mb-0.5">Fuente solicitada:</span>
+                      <strong className="text-foreground text-xs sm:text-sm truncate block" title={selectedCamposDetails[0]?.servicioNombre || "Consulta de Datos de Identidad"}>
+                        {selectedCamposDetails[0]?.servicioNombre || "Consulta de Datos de Identidad"}
+                      </strong>
+                      <span className="text-[10px] text-muted-foreground">Acceso vía API segura</span>
+                    </div>
+
+                    <div className="p-3 rounded-xl bg-muted/30 border border-border/60">
+                      <span className="text-muted-foreground block text-[11px] mb-0.5">Documentos adjuntos:</span>
+                      <div className="flex items-center gap-1.5 text-foreground font-semibold">
+                        <FileText className="size-3.5 text-primary shrink-0" />
+                        <span className="truncate">Oficio_Solicitud.pdf</span>
+                      </div>
+                      <span className="text-[10px] text-muted-foreground">Firma electrónica incorporada</span>
+                    </div>
+                  </div>
+                </Card>
+
                 {/* PASO 1: Campos seleccionados en el Paso 1 */}
                 <Card className="p-6 bg-card border-border shadow-xs space-y-4 rounded-2xl">
                   <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-3 border-b border-border/70 gap-2">
@@ -1056,9 +1139,9 @@ export default function NuevaSolicitudAccesoPage() {
                           Paso 1: Campos seleccionados
                         </h3>
                         <p className="text-xs text-muted-foreground mt-0.5">
-                          Fuente consultada: <strong className="text-foreground font-semibold">{activeFuente ? activeFuente.nombre : (selectedCamposDetails[0]?.fuenteNombre || "Registro Civil")}</strong>
+                          Institución: <strong className="text-foreground font-semibold">{activeFuente ? activeFuente.nombre : (selectedCamposDetails[0]?.fuenteNombre || "Registro Civil")}</strong>
                           {selectedCamposDetails[0]?.servicioNombre && (
-                            <span className="text-muted-foreground font-normal"> · Servicio: <strong className="text-foreground font-semibold">{selectedCamposDetails[0].servicioNombre}</strong></span>
+                            <span className="text-muted-foreground font-normal"> · Fuente: <strong className="text-foreground font-semibold">{selectedCamposDetails[0].servicioNombre}</strong></span>
                           )}
                         </p>
                       </div>
@@ -1127,10 +1210,10 @@ export default function NuevaSolicitudAccesoPage() {
                       </span>
                       <div>
                         <h3 className="font-bold text-base text-foreground">
-                          Paso 2: Justificaciones y Fundamentos declarados
+                          Paso 2: Finalidad de uso y justificación jurídica declaradas
                         </h3>
                         <p className="text-xs text-muted-foreground mt-0.5">
-                          Finalidad de uso y fundamentación legal declarada para cada campo
+                          Finalidad de uso (campos accesibles) y justificación jurídica (campos confidenciales)
                         </p>
                       </div>
                     </div>
@@ -1218,14 +1301,96 @@ export default function NuevaSolicitudAccesoPage() {
                   <Button
                     variant="primary"
                     size="sm"
-                    onClick={() => router.push('/wireframes2/acceso-interoperabilidad/solicitudes')}
-                    id="btn-enviar-solicitud"
-                    className="gap-2"
+                    onClick={() => setIsModalConfirmacionOpen(true)}
+                    id="btn-enviar-firmas"
+                    className="gap-2 font-semibold shadow-sm"
                   >
                     <Send className="size-4" />
-                    <span>Enviar solicitud</span>
+                    <span>Enviar a firmas</span>
                   </Button>
                 </div>
+
+                {/* MODAL DE CONFIRMACIÓN: ENVÍO A FIRMAS */}
+                <Dialog open={isModalConfirmacionOpen} onOpenChange={setIsModalConfirmacionOpen}>
+                  <DialogContent size="sm">
+                    <DialogHeader>
+                      <DialogTitle className="text-lg font-bold text-foreground flex items-center gap-2">
+                        <Check className="size-5 text-emerald-600" />
+                        Solicitud enviada correctamente
+                      </DialogTitle>
+                      <DialogDescription className="text-xs text-muted-foreground mt-2 leading-relaxed">
+                        Tu solicitud fue enviada correctamente y continuará con el proceso de revisión y firma por parte del Aprobador.
+                      </DialogDescription>
+                    </DialogHeader>
+
+                    <div className="p-3.5 my-2 rounded-xl bg-muted/40 border border-border text-xs space-y-2">
+                      <div className="flex justify-between">
+                        <span className="text-muted-foreground">Institución solicitante:</span>
+                        <strong className="text-foreground">Ministerio de Salud Pública</strong>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-muted-foreground">Institución:</span>
+                        <strong className="text-foreground truncate max-w-[200px]">
+                          {activeFuente ? activeFuente.nombre : (selectedCamposDetails[0]?.fuenteNombre || "Registro Civil")}
+                        </strong>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-muted-foreground">Fuente:</span>
+                        <strong className="text-foreground truncate max-w-[200px]">
+                          {selectedCamposDetails[0]?.servicioNombre || "Consulta de Datos de Identidad"}
+                        </strong>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-muted-foreground">Campos solicitados:</span>
+                        <strong className="text-foreground">{selectedCamposDetails.length} campo(s)</strong>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-muted-foreground">Estado inicial:</span>
+                        <Badge tone="info" appearance="soft" size="sm">Por revisar</Badge>
+                      </div>
+                    </div>
+
+                    <DialogFooter className="pt-2 border-t border-border/60">
+                      <Button
+                        size="sm"
+                        onClick={() => {
+                          const fuenteNombre = activeFuente ? activeFuente.nombre : (selectedCamposDetails[0]?.fuenteNombre || "Dirección General de Registro Civil, Identificación y Cedulación");
+                          const servicioNombre = selectedCamposDetails[0]?.servicioNombre || "Consulta de Datos de Identidad";
+                          
+                          crearNuevaSolicitud({
+                            institucion: "Ministerio de Salud Pública",
+                            tipoInstitucion: "Pública",
+                            fuentePrincipal: fuenteNombre,
+                            servicioPrincipal: servicioNombre,
+                            camposCount: selectedCamposDetails.length,
+                            fuentes: [
+                              {
+                                id: activeFuente?.id || "f-regciv",
+                                nombre: fuenteNombre,
+                                institucion: fuenteNombre,
+                                campos: selectedCamposDetails.map(c => ({
+                                  id: c.campo.id,
+                                  nombre: c.campo.nombre,
+                                  descripcion: c.campo.descripcion || "",
+                                  tipo: c.campo.tipo,
+                                  clasificacion: (c.campo.clasificacion === "Confidencial" ? "Confidencial" : "Accesible") as "Accesible" | "Confidencial",
+                                  finalidad: justificaciones[c.campo.id]?.finalidad || "Finalidad institucional requerida.",
+                                  fundamento: justificaciones[c.campo.id]?.fundamento || "Base legal de interoperabilidad."
+                                }))
+                              }
+                            ]
+                          });
+                          setIsModalConfirmacionOpen(false);
+                          toast.success("Solicitud radicada y enviada a firmas exitosamente");
+                          router.push('/wireframes2/acceso-interoperabilidad/solicitudes');
+                        }}
+                        className="w-full bg-primary text-primary-foreground font-semibold"
+                      >
+                        Ir a Gestión de solicitudes
+                      </Button>
+                    </DialogFooter>
+                  </DialogContent>
+                </Dialog>
               </div>
             )}
           </div>

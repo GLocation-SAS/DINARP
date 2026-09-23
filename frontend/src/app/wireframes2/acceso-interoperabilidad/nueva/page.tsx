@@ -175,24 +175,22 @@ export default function NuevaSolicitudAccesoPage() {
                                             ) : (
                                               <Badge tone="warning" appearance="outline" size="sm">Confidencial</Badge>
                                             )}
-                                          </div>                   </div>
-                                        <p className="text-xs text-muted-foreground">{campo.descripcion}</p>
-                                      </div>
-                                    </label>
-                                ))}
+                                          </div>
+                                          <p className="text-xs text-muted-foreground">{campo.descripcion}</p>
+                                        </div>
+                                      </label>
+                                    ))}
+                                  </div>
+                                )}
                               </div>
-                            )
-                          }
-                            </div>
-                      );
-                        })}
+                            );
+                          })}
+                        </div>
+                      )}
                     </div>
-                  )
-                }
-                  </div>
-              );
-              })}
-            </div>
+                  );
+                })}
+              </div>
 
             {/* Persistent bottom bar */}
           <div className="sticky bottom-0 bg-card border-t border-border p-4 flex items-center justify-between rounded-t-xl shadow-lg mt-4">
@@ -218,9 +216,9 @@ export default function NuevaSolicitudAccesoPage() {
                     <div className="flex items-center gap-2 mt-1">
                       <h3 className="font-bold">{item.campo.nombre}</h3>
                       {item.campo.clasificacion === "Accesible" ? (
-                        <Badge variant="outline" className="text-xs gap-1"><Check className="size-3" /> Accesible</Badge>
+                        <Badge appearance="outline" tone="neutral" className="text-xs gap-1"><Check className="size-3" /> Accesible</Badge>
                       ) : (
-                        <Badge variant="outline" className="text-xs gap-1"><Lock className="size-3" /> Confidencial</Badge>
+                        <Badge appearance="outline" tone="neutral" className="text-xs gap-1"><Lock className="size-3" /> Confidencial</Badge>
                       )}
                     </div>
                     <p className="text-xs text-muted-foreground">{item.campo.descripcion}</p>

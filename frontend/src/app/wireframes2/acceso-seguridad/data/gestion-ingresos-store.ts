@@ -45,7 +45,7 @@ export const INITIAL_SOLICITUDES_INGRESO: SolicitudIngreso[] = [
   },
   {
     id: "SOL-ING-002",
-    cedula: "1712345678",
+    cedula: "1712345602",
     nombres: "Paula Andrea",
     apellidos: "Mendoza Zambrano",
     nombreCompleto: "Paula Andrea Mendoza Zambrano",
@@ -125,7 +125,22 @@ export function getStoredSolicitudesIngreso(): SolicitudIngreso[] {
       localStorage.setItem(STORAGE_KEY_INGRESOS, JSON.stringify(INITIAL_SOLICITUDES_INGRESO));
       return INITIAL_SOLICITUDES_INGRESO;
     }
-    const parsed: SolicitudIngreso[] = JSON.parse(raw);
+    let parsed: SolicitudIngreso[] = JSON.parse(raw);
+    let updatedNeeded = false;
+    const has02 = parsed.some((s) => s.cedula === "1712345602");
+    if (!has02) {
+      const idxOld = parsed.findIndex((s) => s.cedula === "1712345678");
+      if (idxOld >= 0) {
+        parsed[idxOld].cedula = "1712345602";
+        parsed[idxOld].estado = "Aprobada";
+      } else {
+        parsed.unshift(INITIAL_SOLICITUDES_INGRESO[1]);
+      }
+      updatedNeeded = true;
+    }
+    if (updatedNeeded) {
+      localStorage.setItem(STORAGE_KEY_INGRESOS, JSON.stringify(parsed));
+    }
     return parsed.map((item) => ({
       ...item,
       documentos: item.documentos && item.documentos.length > 0 ? item.documentos : DEFAULT_DOCUMENTOS_SOLICITUD,

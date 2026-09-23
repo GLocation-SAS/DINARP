@@ -117,7 +117,7 @@ export default function DetallePaquetePage({ params }: { params: Promise<{ id: s
             </div>
             <div className="text-sm text-muted-foreground mt-4 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-x-8 gap-y-3">
               <p>Institución consumidora: <strong className="text-foreground block">{paquete.institucion}</strong></p>
-              <p>Fuente / servicio: <strong className="text-foreground block">{paquete.fuente}</strong></p>
+              <p>Fuente: <strong className="text-foreground block">{paquete.fuente}</strong></p>
               <p>Fecha de creación: <strong className="text-foreground block">{paquete.fechaCreacion}</strong></p>
               <p>Responsable actual: <strong className="text-foreground block">{paquete.responsableActual}</strong></p>
             </div>
@@ -272,7 +272,7 @@ export default function DetallePaquetePage({ params }: { params: Promise<{ id: s
               <Card className="p-5">
                 <h3 className="font-semibold text-foreground mb-4">Pruebas de consumo</h3>
                 <p className="text-sm text-muted-foreground mb-6">
-                  Registre los resultados de sus pruebas de integración con el servicio expuesto.
+                  Registre los resultados de sus pruebas de integración con la fuente expuesta.
                 </p>
                 
                 {estadoPaquete === "Disponible para consumo" && (

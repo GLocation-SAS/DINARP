@@ -15,6 +15,7 @@ import {
   EyeOff,
   ArrowRight,
   AlertCircle,
+  User,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
@@ -33,7 +34,9 @@ export default function LoginPage() {
   const [emailState, setEmailState] = useState<"default" | "success" | "error">("default");
   const [hasInteracted, setHasInteracted] = useState(false);
 
-  const isEmailValid = (val: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val);
+  const isCedulaValid = (val: string) => /^\d{10}$/.test(val.trim());
+  const isEmailValid = (val: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val.trim());
+  const isIdentifierValid = (val: string) => isCedulaValid(val) || isEmailValid(val);
 
   const handleEmailChange = (val: string) => {
     setEmail(val);
@@ -42,7 +45,11 @@ export default function LoginPage() {
       return;
     }
 
-    if (isEmailValid(val)) {
+    if (val.trim() === "1712345602" && !password) {
+      setPassword("Dinarp2026*");
+    }
+
+    if (isIdentifierValid(val)) {
       setEmailState("success");
     } else if (hasInteracted) {
       setEmailState("error");
@@ -56,23 +63,26 @@ export default function LoginPage() {
       return;
     }
 
-    if (isEmailValid(email)) {
+    if (isIdentifierValid(email)) {
       setEmailState("success");
     } else {
       setEmailState("error");
     }
   };
 
-  const isFormValid = email.trim() !== "" && isEmailValid(email) && password.trim() !== "";
+  const isFormValid = email.trim() === "1712345602" || (email.trim() !== "" && isIdentifierValid(email) && (password.trim() !== "" || isCedulaValid(email)));
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!isEmailValid(email)) {
+    if (!isIdentifierValid(email)) {
       setEmailState("error");
       setHasInteracted(true);
       return;
     }
-    router.push("/uikit");
+    toast.success("Acceso concedido", {
+      description: "Bienvenida, Paula Andrea Mendoza Zambrano.",
+    });
+    router.push("/wireframes2/catalogo-interoperabilidad");
   };
 
   const handleGoogleLogin = () => {
@@ -248,11 +258,11 @@ export default function LoginPage() {
                     htmlFor="institutional-email"
                     className="text-xs sm:text-sm font-semibold text-foreground cursor-pointer"
                   >
-                    Correo institucional
+                    Cédula o correo institucional
                   </Label>
                   <InputGroup
                     state={emailState}
-                    leftIcon={<Mail className="size-4 text-muted-foreground" />}
+                    leftIcon={<User className="size-4 text-muted-foreground" />}
                     rightIcon={
                       emailState === "success" ? (
                         <CheckCircle2 className="size-4 text-success animate-in fade-in" />
@@ -264,8 +274,8 @@ export default function LoginPage() {
                   >
                     <InputGroupInput
                       id="institutional-email"
-                      type="email"
-                      placeholder="nombre@institucion.gob.ec"
+                      type="text"
+                      placeholder="1712345602 o nombre@institucion.gob.ec"
                       value={email}
                       onChange={(e) => handleEmailChange(e.target.value)}
                       onBlur={handleEmailBlur}
@@ -274,12 +284,12 @@ export default function LoginPage() {
                   </InputGroup>
                   {emailState === "error" && (
                     <p className="text-xs text-danger font-medium mt-0.5 animate-in fade-in slide-in-from-top-1">
-                      Ingresa un correo institucional válido (ej. nombre@institucion.gob.ec).
+                      Ingresa una cédula de 10 dígitos (ej. 1712345602) o correo institucional válido.
                     </p>
                   )}
                   {emailState === "success" && (
                     <p className="text-xs text-success font-medium mt-0.5 animate-in fade-in slide-in-from-top-1">
-                      Formato de correo válido.
+                      Identificación válida.
                     </p>
                   )}
                 </div>

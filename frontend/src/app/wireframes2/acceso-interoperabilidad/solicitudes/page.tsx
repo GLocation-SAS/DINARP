@@ -4,6 +4,7 @@ import React, { useState, useEffect, useMemo } from "react";
 import Link from "next/link";
 import {
   Plus,
+  ArrowLeft,
   Eye,
   Edit,
   ChevronDown,
@@ -23,7 +24,12 @@ import {
   ExternalLink,
   ShieldCheck,
   Check,
-  Info
+  Info,
+  KeyRound,
+  Copy,
+  EyeOff,
+  Lock,
+  Server
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -86,6 +92,9 @@ export default function AccesoInteroperabilidadPage() {
   const [modalCur, setModalCur] = useState<SolicitudAcceso | null>(null);
   const [modalValidarPago, setModalValidarPago] = useState<SolicitudAcceso | null>(null);
   const [modalConfirmarValidacion, setModalConfirmarValidacion] = useState<SolicitudAcceso | null>(null);
+  const [modalCredenciales, setModalCredenciales] = useState<SolicitudAcceso | null>(null);
+  const [showPassword, setShowPassword] = useState(false);
+  const [copiedField, setCopiedField] = useState<string | null>(null);
   const [curFile, setCurFile] = useState<File | null>(null);
   const [curFileError, setCurFileError] = useState(false);
   const [numeroCurInput, setNumeroCurInput] = useState("");
@@ -105,18 +114,20 @@ export default function AccesoInteroperabilidadPage() {
       // Muestra principalmente solicitudes que requieren intervención del Aprobador
       const priorizadas = solicitudes.filter(
         (s) =>
+          s.estado === "Por revisar" ||
           s.estado === "En revisión" ||
           s.estado === "Pendiente de aprobación" ||
           s.estado === "Reenviada" ||
           s.estado === "Reenviada para aprobación" ||
           s.estado === "Aprobada" ||
           s.estado === "Rechazada" ||
-          s.estado === "Con observaciones"
+          s.estado === "Con observaciones" ||
+          s.estado === "Acceso generado"
       );
       // Priorizar visualmente las pendientes de revisión
       return [...priorizadas].sort((a, b) => {
-        const orderA = (a.estado.includes("revisión") || a.estado.includes("Reenviada")) ? 0 : 1;
-        const orderB = (b.estado.includes("revisión") || b.estado.includes("Reenviada")) ? 0 : 1;
+        const orderA = (a.estado.includes("revis") || a.estado.includes("Reenviada")) ? 0 : 1;
+        const orderB = (b.estado.includes("revis") || b.estado.includes("Reenviada")) ? 0 : 1;
         return orderA - orderB;
       });
     }
@@ -130,7 +141,8 @@ export default function AccesoInteroperabilidadPage() {
             s.estado === "Pendiente de validación de pago" ||
             s.estado === "Pago en validación" ||
             s.estado === "Pago validado" ||
-            s.estado === "Pago verificado")
+            s.estado === "Pago verificado" ||
+            s.estado === "Acceso generado")
       );
     }
 
@@ -145,10 +157,10 @@ export default function AccesoInteroperabilidadPage() {
 
   const estadosList = useMemo(() => {
     if (role === "FACTURACION") {
-      return ["Pago pendiente", "Pendiente de validación de pago", "Pago validado"];
+      return ["Pago pendiente", "Pendiente de validación de pago", "Pago validado", "Acceso generado"];
     }
     if (role === "APROBADOR") {
-      return ["En revisión", "Reenviada", "Aprobada", "Rechazada"];
+      return ["Por revisar", "Reenviada", "Aprobada", "Rechazada", "Acceso generado"];
     }
     return Array.from(new Set(visibleSolicitudes.map((s) => s.estado))).filter(Boolean);
   }, [role, visibleSolicitudes]);
@@ -194,8 +206,8 @@ export default function AccesoInteroperabilidadPage() {
 
       let matchEstado = true;
       if (estadoFilter !== "ALL") {
-        if (estadoFilter === "En revisión") {
-          matchEstado = s.estado === "En revisión" || s.estado === "Pendiente de aprobación";
+        if (estadoFilter === "Por revisar" || estadoFilter === "En revisión") {
+          matchEstado = s.estado === "Por revisar" || s.estado === "En revisión" || s.estado === "Pendiente de aprobación";
         } else if (estadoFilter === "Reenviada") {
           matchEstado = s.estado === "Reenviada" || s.estado === "Reenviada para aprobación";
         } else if (estadoFilter === "Rechazada") {
@@ -204,6 +216,8 @@ export default function AccesoInteroperabilidadPage() {
           matchEstado = s.estado === "Pendiente de validación de pago" || s.estado === "Pago en validación";
         } else if (estadoFilter === "Pago validado") {
           matchEstado = s.estado === "Pago validado" || s.estado === "Pago verificado";
+        } else if (estadoFilter === "Acceso generado") {
+          matchEstado = s.estado === "Acceso generado";
         } else {
           matchEstado = s.estado === estadoFilter;
         }
@@ -246,24 +260,56 @@ export default function AccesoInteroperabilidadPage() {
 
   const getEstadoBadge = (estado: string) => {
     switch (estado) {
+      case "Acceso generado":
+        return (
+          <Badge tone="success" appearance="soft" size="sm" className="gap-1 font-semibold border border-emerald-500/30 text-emerald-700 dark:text-emerald-300 bg-emerald-500/10">
+            <ShieldCheck className="size-3 text-emerald-600 dark:text-emerald-400" />
+            <span>Acceso generado</span>
+          </Badge>
+        );
       case "Aprobada":
       case "Pago validado":
       case "Pago verificado":
-        return <Badge tone="success" appearance="soft" size="sm">{estado}</Badge>;
+        return (
+          <Badge tone="neutral" appearance="soft" size="sm" className="gap-1 font-semibold border border-border text-foreground">
+            <CheckCircle2 className="size-3 text-foreground" />
+            <span>{estado}</span>
+          </Badge>
+        );
+      case "Por revisar":
       case "En revisión":
       case "Pendiente de aprobación":
       case "Reenviada":
       case "Reenviada para aprobación":
-        return <Badge tone="info" appearance="soft" size="sm">{estado}</Badge>;
+        return (
+          <Badge tone="neutral" appearance="soft" size="sm" className="gap-1 font-semibold border border-border text-foreground">
+            <Clock className="size-3 text-muted-foreground" />
+            <span>{estado}</span>
+          </Badge>
+        );
       case "Pendiente de pago":
       case "Pendiente de validación de pago":
       case "Pago en validación":
-        return <Badge tone="warning" appearance="soft" size="sm">{estado}</Badge>;
+        return (
+          <Badge tone="neutral" appearance="soft" size="sm" className="gap-1 font-semibold border border-border text-foreground">
+            <AlertTriangle className="size-3 text-muted-foreground" />
+            <span>{estado}</span>
+          </Badge>
+        );
       case "Rechazada":
       case "Con observaciones":
-        return <Badge tone="danger" appearance="soft" size="sm">{estado}</Badge>;
+        return (
+          <Badge tone="neutral" appearance="outline" size="sm" className="gap-1 font-semibold border-border text-foreground bg-background">
+            <X className="size-3 text-muted-foreground" />
+            <span>{estado}</span>
+          </Badge>
+        );
       default:
-        return <Badge tone="neutral" appearance="outline" size="sm" className="bg-background">{estado}</Badge>;
+        return (
+          <Badge tone="neutral" appearance="outline" size="sm" className="bg-background text-foreground">
+            {estado}
+          </Badge>
+        );
     }
   };
 
@@ -469,7 +515,7 @@ export default function AccesoInteroperabilidadPage() {
                       role === "FACTURACION"
                         ? "Buscar por código, banco o factura..."
                         : role === "APROBADOR"
-                        ? "Buscar por código, institución o servicio..."
+                        ? "Buscar por código, institución o fuente..."
                         : "Buscar solicitud..."
                     }
                     value={searchTerm}
@@ -622,14 +668,12 @@ export default function AccesoInteroperabilidadPage() {
               <TableHeader>
                 {role === "COORDINADOR_SINARP" && (
                   <TableRow>
-                    <TableHead>Código</TableHead>
+                    <TableHead>N.º de solicitud</TableHead>
                     <TableHead>Institución</TableHead>
-                    <TableHead>Fecha</TableHead>
-                    <TableHead>Fuentes</TableHead>
+                    <TableHead>Fuente</TableHead>
+                    <TableHead>Fecha de envío</TableHead>
                     <TableHead>Campos</TableHead>
-                    <TableHead>Etapa / estado</TableHead>
-                    <TableHead>Responsable actual</TableHead>
-                    <TableHead>Última actualización</TableHead>
+                    <TableHead>Estado</TableHead>
                     <TableHead className="text-right">Acciones</TableHead>
                   </TableRow>
                 )}
@@ -638,8 +682,8 @@ export default function AccesoInteroperabilidadPage() {
                   <TableRow>
                     <TableHead>N.º de solicitud</TableHead>
                     <TableHead>Institución solicitante</TableHead>
+                    <TableHead>Institución proveedora</TableHead>
                     <TableHead>Fuente</TableHead>
-                    <TableHead>Servicio</TableHead>
                     <TableHead>Fecha de envío</TableHead>
                     <TableHead>Estado</TableHead>
                     <TableHead className="text-right">Acciones</TableHead>
@@ -650,7 +694,7 @@ export default function AccesoInteroperabilidadPage() {
                   <TableRow>
                     <TableHead>N.º de solicitud</TableHead>
                     <TableHead>Institución</TableHead>
-                    <TableHead>Fuente / servicio</TableHead>
+                    <TableHead>Fuente</TableHead>
                     <TableHead>Fecha de aprobación</TableHead>
                     <TableHead>Valor</TableHead>
                     <TableHead>Estado</TableHead>
@@ -661,29 +705,34 @@ export default function AccesoInteroperabilidadPage() {
 
               <TableBody>
                 {filteredSolicitudes.map((s) => {
-                  const fuenteNombre = s.fuentePrincipal || s.fuentes?.[0]?.nombre || "Registro Civil de Ciudadanos";
-                  const servicioNombre = s.servicioPrincipal || "Consulta de Identidad";
+                  const fuenteNombre = s.fuentePrincipal || s.fuentes?.[0]?.nombre || "Dirección General de Registro Civil, Identificación y Cedulación";
+                  const servicioNombre = s.servicioPrincipal || "Consulta de Datos de Identidad";
                   const fechaAprobacion = s.fechaAprobacion || s.ultimaActualizacion.substring(0, 10);
                   const valorFactura = s.factura?.valor || "$ 150.00";
 
                   if (role === "COORDINADOR_SINARP") {
+                    const isEnRevision = s.estado === "Por revisar" || s.estado === "En revisión";
+                    const isRechazada = s.estado === "Rechazada" || s.estado === "Con observaciones";
+
                     return (
-                      <TableRow key={s.id}>
-                        <TableCell className="font-medium text-foreground">{s.id}</TableCell>
-                        <TableCell>
-                          <div className="flex flex-col">
-                            <span className="font-semibold text-foreground">{s.institucion}</span>
-                            <span className="text-[11px] text-muted-foreground">
-                              {s.tipoInstitucion === "Privada" ? "Sector Privado (Tarifado)" : "Sector Público (Gratuito)"}
-                            </span>
+                      <TableRow key={s.id} className={cn(isEnRevision && "bg-primary/[0.02]")}>
+                        <TableCell className="font-semibold text-foreground">
+                          <div className="flex items-center gap-1.5">
+                            {isEnRevision && <span className="size-2 rounded-full bg-primary animate-pulse" />}
+                            <span>{s.id}</span>
                           </div>
                         </TableCell>
-                        <TableCell className="text-muted-foreground">{s.fecha.substring(0, 10)}</TableCell>
-                        <TableCell>{s.fuentesCount ?? s.fuentes?.length ?? 1}</TableCell>
-                        <TableCell>{s.camposCount ?? 2}</TableCell>
+                        <TableCell className="text-foreground max-w-[200px] truncate" title={fuenteNombre}>
+                          {fuenteNombre}
+                        </TableCell>
+                        <TableCell className="text-muted-foreground max-w-[200px] truncate" title={servicioNombre}>
+                          {servicioNombre}
+                        </TableCell>
+                        <TableCell className="text-muted-foreground font-mono text-xs">{s.fecha.substring(0, 10)}</TableCell>
+                        <TableCell>
+                          <span className="font-medium text-foreground">{s.camposCount ?? s.fuentes?.reduce((acc, f) => acc + (f.campos?.length || 0), 0) ?? 2}</span>
+                        </TableCell>
                         <TableCell>{getEstadoBadge(s.estado)}</TableCell>
-                        <TableCell>{s.responsable}</TableCell>
-                        <TableCell className="text-muted-foreground">{s.ultimaActualizacion.substring(0, 10)}</TableCell>
                         <TableCell className="text-right">
                           <div className="flex items-center justify-end gap-1">
                             <TooltipProvider delayDuration={0}>
@@ -701,18 +750,39 @@ export default function AccesoInteroperabilidadPage() {
                                   </Button>
                                 </TooltipTrigger>
                                 <TooltipContent side="top">
-                                  <p className="text-xs">Ver detalle</p>
+                                  <p className="text-xs">
+                                    {isEnRevision ? "Ver detalle y trazabilidad (solo lectura)" : "Ver detalle"}
+                                  </p>
                                 </TooltipContent>
                               </Tooltip>
 
-                              {(s.estado === "Rechazada" || s.estado === "Con observaciones") && (
+                              {s.estado === "Acceso generado" && (
+                                <Tooltip>
+                                  <TooltipTrigger asChild>
+                                    <Button
+                                      variant="outline"
+                                      size="sm"
+                                      onClick={() => setModalCredenciales(s)}
+                                      className="h-8 px-2.5 rounded-lg border-emerald-500/40 text-emerald-700 dark:text-emerald-300 bg-emerald-500/10 hover:bg-emerald-500/20 shadow-2xs text-xs font-semibold gap-1.5"
+                                    >
+                                      <KeyRound className="size-3.5 text-emerald-600 dark:text-emerald-400" />
+                                      <span>Ver credenciales</span>
+                                    </Button>
+                                  </TooltipTrigger>
+                                  <TooltipContent side="top">
+                                    <p className="text-xs">Ver credenciales de acceso</p>
+                                  </TooltipContent>
+                                </Tooltip>
+                              )}
+
+                              {isRechazada && (
                                 <Tooltip>
                                   <TooltipTrigger asChild>
                                     <Button
                                       variant="outline"
                                       size="icon-sm"
                                       asChild
-                                      className="size-8 rounded-lg border-amber-500/40 text-amber-600 hover:text-amber-700 hover:bg-amber-500/10 shadow-2xs"
+                                      className="size-8 rounded-lg border-border/80 text-foreground hover:bg-muted shadow-2xs"
                                     >
                                       <Link
                                         href={`/wireframes2/acceso-interoperabilidad/solicitudes/${s.id}?edit=true&step=${
@@ -729,7 +799,7 @@ export default function AccesoInteroperabilidadPage() {
                                     </Button>
                                   </TooltipTrigger>
                                   <TooltipContent side="top">
-                                    <p className="text-xs">Corregir solicitud</p>
+                                    <p className="text-xs">Editar solicitud</p>
                                   </TooltipContent>
                                 </Tooltip>
                               )}
@@ -741,7 +811,7 @@ export default function AccesoInteroperabilidadPage() {
                   }
 
                   if (role === "APROBADOR") {
-                    const isPendiente = s.estado === "En revisión" || s.estado === "Pendiente de aprobación" || s.estado === "Reenviada";
+                    const isPendiente = s.estado === "Por revisar" || s.estado === "En revisión" || s.estado === "Pendiente de aprobación" || s.estado === "Reenviada";
                     return (
                       <TableRow key={s.id} className={cn(isPendiente && "bg-primary/[0.02]")}>
                         <TableCell className="font-semibold text-foreground">
@@ -775,6 +845,25 @@ export default function AccesoInteroperabilidadPage() {
                                   <p className="text-xs">Ver detalle</p>
                                 </TooltipContent>
                               </Tooltip>
+
+                              {s.estado === "Acceso generado" && (
+                                <Tooltip>
+                                  <TooltipTrigger asChild>
+                                    <Button
+                                      variant="outline"
+                                      size="sm"
+                                      onClick={() => setModalCredenciales(s)}
+                                      className="h-8 px-2.5 rounded-lg border-emerald-500/40 text-emerald-700 dark:text-emerald-300 bg-emerald-500/10 hover:bg-emerald-500/20 shadow-2xs text-xs font-semibold gap-1.5"
+                                    >
+                                      <KeyRound className="size-3.5 text-emerald-600 dark:text-emerald-400" />
+                                      <span>Ver credenciales</span>
+                                    </Button>
+                                  </TooltipTrigger>
+                                  <TooltipContent side="top">
+                                    <p className="text-xs">Ver credenciales de acceso</p>
+                                  </TooltipContent>
+                                </Tooltip>
+                              )}
                             </TooltipProvider>
                           </div>
                         </TableCell>
@@ -817,24 +906,26 @@ export default function AccesoInteroperabilidadPage() {
                                 </TooltipContent>
                               </Tooltip>
 
-                              {/* Acciones según estado para Facturación */}
-                              {s.estado === "Pago pendiente" && (
+                              {s.estado === "Acceso generado" && (
                                 <Tooltip>
                                   <TooltipTrigger asChild>
                                     <Button
                                       variant="outline"
-                                      size="icon-sm"
-                                      onClick={() => setModalFactura(s)}
-                                      className="size-8 rounded-lg border-border/80 text-primary hover:bg-primary/10 shadow-2xs"
+                                      size="sm"
+                                      onClick={() => setModalCredenciales(s)}
+                                      className="h-8 px-2.5 rounded-lg border-emerald-500/40 text-emerald-700 dark:text-emerald-300 bg-emerald-500/10 hover:bg-emerald-500/20 shadow-2xs text-xs font-semibold gap-1.5"
                                     >
-                                      <Receipt className="size-4 text-primary" />
+                                      <KeyRound className="size-3.5 text-emerald-600 dark:text-emerald-400" />
+                                      <span>Ver credenciales</span>
                                     </Button>
                                   </TooltipTrigger>
                                   <TooltipContent side="top">
-                                    <p className="text-xs">Ver factura</p>
+                                    <p className="text-xs">Ver credenciales de acceso</p>
                                   </TooltipContent>
                                 </Tooltip>
                               )}
+
+                              {/* Acciones según estado para Facturación: si el pago está pendiente no se muestra factura (se gestiona externamente) */}
 
                               {(s.estado === "Pendiente de validación de pago" || s.estado === "Pago en validación") && (
                                 <Tooltip>
@@ -843,9 +934,9 @@ export default function AccesoInteroperabilidadPage() {
                                       variant="outline"
                                       size="icon-sm"
                                       onClick={() => handleOpenValidar(s)}
-                                      className="size-8 rounded-lg border-emerald-500/40 text-emerald-600 hover:bg-emerald-500/10 shadow-2xs"
+                                      className="size-8 rounded-lg border-border/80 text-foreground hover:bg-muted shadow-2xs"
                                     >
-                                      <CheckCircle2 className="size-4 text-emerald-600" />
+                                      <CheckCircle2 className="size-4 text-foreground" />
                                     </Button>
                                   </TooltipTrigger>
                                   <TooltipContent side="top">
@@ -861,9 +952,9 @@ export default function AccesoInteroperabilidadPage() {
                                       variant="outline"
                                       size="icon-sm"
                                       onClick={() => setModalCur(s)}
-                                      className="size-8 rounded-lg border-emerald-500/40 text-emerald-600 hover:bg-emerald-500/10 shadow-2xs"
+                                      className="size-8 rounded-lg border-border/80 text-foreground hover:bg-muted shadow-2xs"
                                     >
-                                      <FileCheck2 className="size-4 text-emerald-600" />
+                                      <FileCheck2 className="size-4 text-foreground" />
                                     </Button>
                                   </TooltipTrigger>
                                   <TooltipContent side="top">
@@ -884,7 +975,7 @@ export default function AccesoInteroperabilidadPage() {
                 {filteredSolicitudes.length === 0 && (
                   <TableRow>
                     <TableCell
-                      colSpan={role === "COORDINADOR_SINARP" ? 9 : 7}
+                      colSpan={7}
                       className="py-12 text-center text-muted-foreground"
                     >
                       No se encontraron solicitudes para los filtros aplicados.
@@ -906,7 +997,7 @@ export default function AccesoInteroperabilidadPage() {
               Factura Electrónica {modalFactura?.factura?.numero || "FAC-0028"}
             </DialogTitle>
             <DialogDescription className="text-xs text-muted-foreground">
-              Comprobante de cobro emitido por tarifa de acceso a servicios de interoperabilidad.
+              Comprobante de cobro emitido por tarifa de acceso a fuentes de interoperabilidad.
             </DialogDescription>
           </DialogHeader>
 
@@ -927,17 +1018,17 @@ export default function AccesoInteroperabilidadPage() {
                 </div>
                 <div>
                   <span className="text-muted-foreground block text-[11px]">Estado financiero:</span>
-                  <Badge tone="warning" appearance="soft" size="sm">Pago pendiente</Badge>
+                  <Badge tone="neutral" appearance="soft" size="sm" className="border border-border text-foreground">Pago pendiente</Badge>
                 </div>
               </div>
 
               <div>
-                <span className="font-semibold text-foreground text-xs block mb-2">Desglose de servicios tasados:</span>
+                <span className="font-semibold text-foreground text-xs block mb-2">Desglose de fuentes tasadas:</span>
                 <div className="border border-border rounded-lg overflow-hidden">
                   <table className="w-full text-xs">
                     <thead className="bg-muted/70 text-muted-foreground border-b border-border text-left">
                       <tr>
-                        <th className="p-2.5">Concepto / Servicio</th>
+                        <th className="p-2.5">Concepto / Fuente</th>
                         <th className="p-2.5 text-right">Tarifa</th>
                       </tr>
                     </thead>
@@ -983,7 +1074,16 @@ export default function AccesoInteroperabilidadPage() {
             </div>
           )}
 
-          <DialogFooter className="pt-2 border-t border-border/60">
+          <DialogFooter className="pt-2 border-t border-border/60 flex items-center justify-between sm:justify-between w-full">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setModalFactura(null)}
+              className="gap-1.5 text-xs text-muted-foreground hover:text-foreground"
+            >
+              <ArrowLeft className="size-3.5" />
+              Volver a la bandeja de solicitudes
+            </Button>
             <Button variant="outline" size="sm" onClick={() => setModalFactura(null)}>
               Cerrar
             </Button>
@@ -1108,11 +1208,11 @@ export default function AccesoInteroperabilidadPage() {
                 </div>
                 <div>
                   <span className="text-muted-foreground block text-[11px]">Valor verificado:</span>
-                  <span className="font-bold text-primary text-sm">{modalValidarPago.factura?.valor || "$ 280.00"}</span>
+                  <span className="font-bold text-foreground text-sm">{modalValidarPago.factura?.valor || "$ 280.00"}</span>
                 </div>
                 <div>
                   <span className="text-muted-foreground block text-[11px]">Estado actual:</span>
-                  <Badge tone="warning" appearance="soft" size="sm">Pendiente validación</Badge>
+                  <Badge tone="neutral" appearance="soft" size="sm" className="border border-border text-foreground">Pendiente validación</Badge>
                 </div>
                 <div>
                   <span className="text-muted-foreground block text-[11px]">Usuario responsable:</span>
@@ -1123,7 +1223,7 @@ export default function AccesoInteroperabilidadPage() {
               {/* Campo N.º CUR */}
               <div className="space-y-1.5">
                 <label className="text-xs font-semibold text-foreground">
-                  Número de Comprobante Único de Registro (CUR) <span className="text-destructive">*</span>
+                  Número de Comprobante Único de Registro (CUR) <span className="text-foreground">*</span>
                 </label>
                 <input
                   type="text"
@@ -1258,6 +1358,279 @@ export default function AccesoInteroperabilidadPage() {
               Confirmar validación
             </Button>
           </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* ─── MODAL: CREDENCIALES ─── */}
+      <Dialog open={Boolean(modalCredenciales)} onOpenChange={(open) => !open && setModalCredenciales(null)}>
+        <DialogContent size="lg" className="max-w-2xl">
+          {modalCredenciales && (() => {
+            const creds = modalCredenciales.credenciales || {
+              usuario: `ws_${modalCredenciales.institucion.toLowerCase().replace(/[^a-z0-9]/g, "").slice(0, 10)}_${modalCredenciales.id.toLowerCase().replace(/[^a-z0-9]/g, "")}`,
+              contrasena: `Dinarp$ec2026_${modalCredenciales.id.replace(/[^0-9]/g, "")}*K9`,
+              endpoint: `https://interoperabilidad.dinarp.gob.ec/api/v2/servicios/${modalCredenciales.id.toLowerCase()}`,
+              tipoAutenticacion: "OAuth 2.0 (Bearer Token)",
+              ambiente: "Producción (Ambiente Seguro DINARP)",
+              fechaGeneracion: modalCredenciales.ultimaActualizacion || "2026-08-25",
+              fechaExpiracion: "2027-08-25 23:59 (Activa)",
+              camposAutorizados: modalCredenciales.fuentes?.flatMap((f) => f.campos?.map((c) => c.nombre) || []) || ["cedulaCiudadania", "nombresCompletos"]
+            };
+
+            const camposDetalle = modalCredenciales.fuentes?.flatMap((f) => f.campos || []) || [];
+
+            const handleCopy = (text: string, label: string) => {
+              navigator.clipboard.writeText(text);
+              setCopiedField(label);
+              toast.success(`${label} copiado al portapapeles`);
+              setTimeout(() => setCopiedField(null), 2000);
+            };
+
+            const handleCopyAll = () => {
+              const listadoCampos = camposDetalle.length > 0
+                ? camposDetalle.map((c) => `  - ${c.nombre} (${c.clasificacion}): ${c.finalidad || c.descripcion || ""}`).join("\n")
+                : (creds.camposAutorizados || []).map((c) => `  - ${c}`).join("\n");
+
+              const fullText = [
+                `=== CREDENCIALES DE ACCESO A INTEROPERABILIDAD ===`,
+                `Solicitud: ${modalCredenciales.id}`,
+                `Institución: ${modalCredenciales.institucion}`,
+                `Servicio: ${modalCredenciales.servicioPrincipal || modalCredenciales.fuentePrincipal || "Consulta de Interoperabilidad"}`,
+                `Ambiente: ${creds.ambiente || "Producción"}`,
+                `Tipo de Autenticación: ${creds.tipoAutenticacion || "OAuth 2.0"}`,
+                `Endpoint: ${creds.endpoint}`,
+                `Usuario: ${creds.usuario}`,
+                `Contraseña: ${creds.contrasena}`,
+                `Vigencia: ${creds.fechaExpiracion || "1 año"}`,
+                `\nCampos autorizados:\n${listadoCampos}`,
+                `\nDINARP - Dirección Nacional de Registros Públicos`
+              ].join("\n");
+
+              navigator.clipboard.writeText(fullText);
+              toast.success("Credenciales completas copiadas al portapapeles");
+            };
+
+            return (
+              <>
+                <DialogHeader>
+                  <div className="flex items-center justify-between pr-6">
+                    <DialogTitle className="text-lg font-bold text-foreground flex items-center gap-2">
+                      <div className="size-8 rounded-lg bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 flex items-center justify-center">
+                        <KeyRound className="size-4" />
+                      </div>
+                      <span>Credenciales</span>
+                    </DialogTitle>
+                    <Badge tone="success" appearance="soft" size="sm" className="border border-emerald-500/30 text-emerald-700 dark:text-emerald-300">
+                      <span className="size-1.5 rounded-full bg-emerald-500 animate-pulse mr-1" />
+                      Acceso activo
+                    </Badge>
+                  </div>
+                  <DialogDescription className="text-xs text-muted-foreground mt-1">
+                    Credenciales técnicas y catálogo de campos autorizados para el consumo del servicio de interoperabilidad.
+                  </DialogDescription>
+                </DialogHeader>
+
+                <div className="space-y-4 my-2 max-h-[70vh] overflow-y-auto pr-1">
+                  {/* Resumen de servicio e institución */}
+                  <div className="p-3.5 rounded-xl bg-muted/40 border border-border/80 text-xs grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <div>
+                      <span className="text-muted-foreground block text-[11px]">Solicitud:</span>
+                      <strong className="text-foreground font-mono">{modalCredenciales.id}</strong>
+                    </div>
+                    <div>
+                      <span className="text-muted-foreground block text-[11px]">Institución:</span>
+                      <strong className="text-foreground truncate block">{modalCredenciales.institucion}</strong>
+                    </div>
+                    <div>
+                      <span className="text-muted-foreground block text-[11px]">Servicio de Interoperabilidad:</span>
+                      <strong className="text-foreground truncate block">{modalCredenciales.servicioPrincipal || modalCredenciales.fuentePrincipal || "Consulta de Datos"}</strong>
+                    </div>
+                    <div>
+                      <span className="text-muted-foreground block text-[11px]">Ambiente y Autenticación:</span>
+                      <span className="text-foreground font-medium">{creds.tipoAutenticacion || "OAuth 2.0"} · {creds.ambiente?.split(" ")[0] || "Producción"}</span>
+                    </div>
+                  </div>
+
+                  {/* Parámetros de conexión: Usuario y Contraseña */}
+                  <div className="space-y-3">
+                    <div className="space-y-1.5">
+                      <label className="text-xs font-semibold text-foreground flex items-center justify-between">
+                        <span>Usuario</span>
+                        <span className="text-[10px] text-muted-foreground">Identificador de cliente (Client ID / API User)</span>
+                      </label>
+                      <div className="relative flex items-center">
+                        <input
+                          type="text"
+                          readOnly
+                          value={creds.usuario}
+                          className="w-full px-3 py-2 pr-10 text-xs font-mono rounded-lg border border-border bg-muted/20 text-foreground select-all focus:outline-none"
+                        />
+                        <Button
+                          variant="ghost"
+                          size="icon-xs"
+                          type="button"
+                          onClick={() => handleCopy(creds.usuario, "Usuario")}
+                          className="absolute right-1 text-muted-foreground hover:text-foreground"
+                          title="Copiar usuario"
+                        >
+                          {copiedField === "Usuario" ? <Check className="size-3.5 text-emerald-600" /> : <Copy className="size-3.5" />}
+                        </Button>
+                      </div>
+                    </div>
+
+                    <div className="space-y-1.5">
+                      <label className="text-xs font-semibold text-foreground flex items-center justify-between">
+                        <span>Contraseña</span>
+                        <span className="text-[10px] text-muted-foreground">Secreto de autenticación (Client Secret / Token)</span>
+                      </label>
+                      <div className="relative flex items-center">
+                        <input
+                          type={showPassword ? "text" : "password"}
+                          readOnly
+                          value={creds.contrasena}
+                          className="w-full px-3 py-2 pr-20 text-xs font-mono rounded-lg border border-border bg-muted/20 text-foreground select-all focus:outline-none"
+                        />
+                        <div className="absolute right-1 flex items-center gap-0.5">
+                          <Button
+                            variant="ghost"
+                            size="icon-xs"
+                            type="button"
+                            onClick={() => setShowPassword(!showPassword)}
+                            className="text-muted-foreground hover:text-foreground"
+                            title={showPassword ? "Ocultar contraseña" : "Ver contraseña"}
+                          >
+                            {showPassword ? <EyeOff className="size-3.5" /> : <Eye className="size-3.5" />}
+                          </Button>
+                          <Button
+                            variant="ghost"
+                            size="icon-xs"
+                            type="button"
+                            onClick={() => handleCopy(creds.contrasena, "Contraseña")}
+                            className="text-muted-foreground hover:text-foreground"
+                            title="Copiar contraseña"
+                          >
+                            {copiedField === "Contraseña" ? <Check className="size-3.5 text-emerald-600" /> : <Copy className="size-3.5" />}
+                          </Button>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="space-y-1.5">
+                      <label className="text-xs font-semibold text-foreground flex items-center justify-between">
+                        <span>Endpoint</span>
+                        <span className="text-[10px] text-muted-foreground">URL base para el consumo seguro</span>
+                      </label>
+                      <div className="relative flex items-center">
+                        <input
+                          type="text"
+                          readOnly
+                          value={creds.endpoint}
+                          className="w-full px-3 py-2 pr-10 text-xs font-mono rounded-lg border border-border bg-muted/20 text-foreground select-all focus:outline-none"
+                        />
+                        <Button
+                          variant="ghost"
+                          size="icon-xs"
+                          type="button"
+                          onClick={() => handleCopy(creds.endpoint, "Endpoint")}
+                          className="absolute right-1 text-muted-foreground hover:text-foreground"
+                          title="Copiar endpoint"
+                        >
+                          {copiedField === "Endpoint" ? <Check className="size-3.5 text-emerald-600" /> : <Copy className="size-3.5" />}
+                        </Button>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Campos autorizados */}
+                  <div className="space-y-2 pt-2 border-t border-border/60">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <label className="text-xs font-semibold text-foreground">Campos autorizados</label>
+                        <Badge tone="neutral" appearance="outline" size="sm" className="text-[10px] px-1.5 py-0">
+                          {camposDetalle.length || creds.camposAutorizados?.length || 0} campos
+                        </Badge>
+                      </div>
+                      <span className="text-[11px] text-muted-foreground">Habilitados en la credencial</span>
+                    </div>
+
+                    <div className="rounded-xl border border-border/80 overflow-hidden divide-y divide-border/60 bg-surface">
+                      {camposDetalle.length > 0 ? (
+                        camposDetalle.map((campo) => (
+                          <div key={campo.id || campo.nombre} className="p-3 text-xs flex flex-col sm:flex-row sm:items-center justify-between gap-2 hover:bg-muted/20 transition-colors">
+                            <div className="space-y-0.5">
+                              <div className="flex items-center gap-2">
+                                <span className="font-mono font-semibold text-foreground bg-muted/60 px-1.5 py-0.5 rounded text-[11px]">{campo.nombre}</span>
+                                <Badge
+                                  tone={campo.clasificacion === "Confidencial" ? "warning" : "neutral"}
+                                  appearance="outline"
+                                  size="sm"
+                                  className="text-[10px] px-1.5 py-0"
+                                >
+                                  {campo.clasificacion}
+                                </Badge>
+                              </div>
+                              <p className="text-[11px] text-muted-foreground line-clamp-1">{campo.finalidad || campo.descripcion}</p>
+                            </div>
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              onClick={() => handleCopy(campo.nombre, `Campo ${campo.nombre}`)}
+                              className="self-end sm:self-center text-[10px] text-muted-foreground hover:text-foreground gap-1 h-6 px-2"
+                            >
+                              <Copy className="size-3" />
+                              <span>Copiar campo</span>
+                            </Button>
+                          </div>
+                        ))
+                      ) : (
+                        (creds.camposAutorizados || []).map((nombreCampo) => (
+                          <div key={nombreCampo} className="p-2.5 text-xs flex items-center justify-between hover:bg-muted/20">
+                            <span className="font-mono font-semibold text-foreground bg-muted/60 px-1.5 py-0.5 rounded text-[11px]">{nombreCampo}</span>
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              onClick={() => handleCopy(nombreCampo, `Campo ${nombreCampo}`)}
+                              className="text-[10px] text-muted-foreground hover:text-foreground gap-1 h-6 px-2"
+                            >
+                              <Copy className="size-3" />
+                              <span>Copiar</span>
+                            </Button>
+                          </div>
+                        ))
+                      )}
+                    </div>
+                  </div>
+
+                  {/* Advertencia de confidencialidad */}
+                  <div className="p-3 rounded-xl bg-amber-500/10 border border-amber-500/30 text-xs flex items-start gap-2.5">
+                    <AlertTriangle className="size-4 text-amber-600 dark:text-amber-400 shrink-0 mt-0.5" />
+                    <p className="text-[11px] text-amber-800 dark:text-amber-200 leading-relaxed">
+                      <strong>Uso confidencial:</strong> Las credenciales son intransferibles y deben almacenarse de forma segura en los servidores de la institución solicitante. No deben incluirse en código fuente público ni exponerse en clientes frontend.
+                    </p>
+                  </div>
+                </div>
+
+                <DialogFooter className="pt-3 border-t border-border/60 flex flex-col sm:flex-row gap-2 justify-between items-center">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={handleCopyAll}
+                    className="w-full sm:w-auto text-xs font-semibold gap-1.5 border-border"
+                  >
+                    <Copy className="size-3.5" />
+                    <span>Copiar credenciales</span>
+                  </Button>
+
+                  <Button
+                    size="sm"
+                    onClick={() => setModalCredenciales(null)}
+                    className="w-full sm:w-auto bg-primary text-primary-foreground font-semibold"
+                  >
+                    Cerrar
+                  </Button>
+                </DialogFooter>
+              </>
+            );
+          })()}
         </DialogContent>
       </Dialog>
     </WireframeDashboardLayout>

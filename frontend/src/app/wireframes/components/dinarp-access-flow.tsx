@@ -262,6 +262,9 @@ export function DinarpAccessFlow({
     const clean = val.replace(/\D/g, "").slice(0, 10);
     setCedula(clean);
     setLoginError({ type: "", message: "" });
+    if (clean === "1712345602" && !password) {
+      setPassword("Dinarp2026*");
+    }
   };
 
   const handlePreCedulaInput = (val: string) => {
@@ -279,10 +282,25 @@ export function DinarpAccessFlow({
     setHasInteractedCedula(true);
     setHasInteractedPassword(true);
 
-    if (!isCedulaValid(cedula) || !password) return;
+    if (!isCedulaValid(cedula)) return;
+    if (!password && cedula !== "1712345602") return;
 
     setIsSubmittingLogin(true);
     setLoginError({ type: "", message: "" });
+
+    // Cédula aprobada autorizada para ingreso directo
+    if (cedula.trim() === "1712345602") {
+      setTimeout(() => {
+        setIsSubmittingLogin(false);
+        toast.success("Identidad verificada", {
+          description: "Bienvenida, Paula Andrea Mendoza Zambrano. Acceso concedido al sistema.",
+        });
+        setTimeout(() => {
+          router.push(dashboardRoute);
+        }, 500);
+      }, 500);
+      return;
+    }
 
     setTimeout(() => {
       setIsSubmittingLogin(false);
@@ -558,11 +576,11 @@ export function DinarpAccessFlow({
     setStep("login");
 
     if (type === "aprobado") {
-      setCedula("1712345678");
+      setCedula("1712345602");
       setPassword("Dinarp2026*");
       setPreEmail("paula.mendoza@dinarp.gob.ec");
-      toast.info("Escenario cargado: Usuario aprobado", {
-        description: "Haz clic en 'Iniciar sesión' para avanzar a 2FA.",
+      toast.info("Escenario cargado: Usuario aprobado (1712345602)", {
+        description: "Haz clic en 'Iniciar sesión' para ingresar directamente al sistema.",
       });
     } else if (type === "pendiente") {
       setCedula("1799999999");
@@ -584,7 +602,7 @@ export function DinarpAccessFlow({
         description: "Verás el mensaje de solicitud no encontrada con CTA a Prerregistro.",
       });
     } else if (type === "error_cred") {
-      setCedula("1712345678");
+      setCedula("1712345602");
       setPassword("error");
       toast.info("Escenario cargado: Credenciales erróneas", {
         description: "Verás el mensaje genérico de error de autenticación.",
@@ -814,7 +832,7 @@ export function DinarpAccessFlow({
                   id="login-cedula"
                   type="text"
                   inputMode="numeric"
-                  placeholder="Ej. 1712345678"
+                  placeholder="Ej. 1712345602"
                   value={cedula}
                   onChange={(e) => handleCedulaInput(e.target.value)}
                   onBlur={() => {
@@ -842,7 +860,7 @@ export function DinarpAccessFlow({
               <InputGroup
                 size="default"
                 state={
-                  hasInteractedPassword && !password ? "error" : "default"
+                  hasInteractedPassword && !password && cedula !== "1712345602" ? "error" : "default"
                 }
                 leftIcon={<Lock className="size-4 text-muted-foreground" />}
                 className="bg-background"
@@ -878,7 +896,7 @@ export function DinarpAccessFlow({
                   )}
                 </InputGroupButton>
               </InputGroup>
-              {hasInteractedPassword && !password && (
+              {hasInteractedPassword && !password && cedula !== "1712345602" && (
                 <p className="text-xs text-destructive font-medium mt-0.5 animate-in fade-in flex items-center gap-1">
                   <AlertCircle className="size-3 shrink-0" />
                   La contraseña es requerida.
@@ -891,7 +909,7 @@ export function DinarpAccessFlow({
               type="submit"
               variant="primary"
               size="lg"
-              disabled={isSubmittingLogin || !isCedulaValid(cedula) || !password}
+              disabled={isSubmittingLogin || !isCedulaValid(cedula) || (!password && cedula !== "1712345602")}
               className="w-full mt-2 font-semibold justify-center gap-2 h-11 text-sm rounded-xl disabled:opacity-50"
             >
               {isSubmittingLogin ? (
@@ -1021,7 +1039,7 @@ export function DinarpAccessFlow({
                       id="pre-cedula"
                       type="text"
                       inputMode="numeric"
-                      placeholder="Ej. 1712345678"
+                      placeholder="Ej. 1712345602"
                       value={preCedula}
                       onChange={(e) => handlePreCedulaInput(e.target.value)}
                       onBlur={() => markTouched("cedula")}

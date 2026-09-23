@@ -21,7 +21,8 @@ import {
   AlertCircle,
   UserCheck,
   HelpCircle,
-  X
+  X,
+  ChevronRight
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -39,7 +40,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { WireframeDashboardLayout } from "../../components/wireframe-dashboard-layout";
 import { WireframeBreadcrumbs } from "../../components/wireframe-breadcrumbs";
-import { CatalogoTour, type TourStep } from "../components/catalogo-tour";
+import { WireframeTour as CatalogoTour, type TourStep } from "../../components/wireframe-tour";
 import {
   INITIAL_EXPEDIENTES,
   ETAPAS_EXPEDIENTE_CONFIG,

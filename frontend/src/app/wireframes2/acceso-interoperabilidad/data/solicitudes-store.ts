@@ -37,6 +37,7 @@ export interface TrazabilidadEvento {
 }
 
 export type SolicitudEstado =
+  | "Por revisar"
   | "En revisión"
   | "Pendiente de aprobación"
   | "Reenviada"
@@ -49,7 +50,19 @@ export type SolicitudEstado =
   | "Pago en validación"
   | "Pago validado"
   | "Pago verificado"
-  | "Creación de paquetes";
+  | "Creación de paquetes"
+  | "Acceso generado";
+
+export interface CredencialesAcceso {
+  usuario: string;
+  contrasena: string;
+  endpoint: string;
+  tipoAutenticacion?: string;
+  ambiente?: string;
+  fechaGeneracion?: string;
+  fechaExpiracion?: string;
+  camposAutorizados?: string[];
+}
 
 export interface SolicitudAcceso {
   id: string;
@@ -90,12 +103,92 @@ export interface SolicitudAcceso {
     fechaRegistro: string;
     usuarioResponsable: string;
   };
+  credenciales?: CredencialesAcceso;
   historial: TrazabilidadEvento[];
 }
 
-const STORAGE_KEY = "dinarp_solicitudes_v3";
+const STORAGE_KEY = "dinarp_solicitudes_v6";
 
 export const INITIAL_SOLICITUDES: SolicitudAcceso[] = [
+  {
+    id: "SOL-2026-001",
+    institucion: "Ministerio de Telecomunicaciones y de la Sociedad de la Información (MINTEL)",
+    tipoInstitucion: "Pública",
+    coordinador: "Andrea López",
+    fecha: "2026-09-20 09:00",
+    fechaAprobacion: "2026-09-22",
+    ultimaActualizacion: "2026-09-23 10:30",
+    estado: "Acceso generado",
+    responsable: "Coordinador SINARP",
+    fuentesCount: 1,
+    camposCount: 3,
+    fuentePrincipal: "Registro Civil de Ciudadanos",
+    servicioPrincipal: "Validación de Identidad y Filiación",
+    instrumento: "Convenio",
+    fuentes: [
+      {
+        id: "FNT-001",
+        nombre: "Registro Civil de Ciudadanos",
+        institucion: "Dirección General de Registro Civil",
+        campos: [
+          {
+            id: "cmp-01",
+            nombre: "cedulaCiudadania",
+            descripcion: "Número oficial de cédula de ciudadanía.",
+            clasificacion: "Accesible",
+            finalidad: "Validación de identidad ciudadana para trámites digitales del Portal Único gob.ec."
+          },
+          {
+            id: "cmp-02",
+            nombre: "nombresCompletos",
+            descripcion: "Nombres y apellidos completos del ciudadano.",
+            clasificacion: "Accesible",
+            finalidad: "Autocompletado seguro en servicios gubernamentales en línea."
+          },
+          {
+            id: "cmp-03",
+            nombre: "fechaNacimiento",
+            descripcion: "Fecha oficial de nacimiento registrada en acta.",
+            clasificacion: "Accesible",
+            finalidad: "Comprobación de mayoría de edad para firma electrónica ciudadana."
+          }
+        ]
+      }
+    ],
+    documentos: [
+      {
+        id: "doc-mintel-1",
+        nombre: "Convenio_MINTEL_DINARP_2026.pdf",
+        tipo: "PDF",
+        tamano: "3.8 MB",
+        fechaCarga: "2026-08-15 09:00",
+        categoria: "Convenio Marco"
+      }
+    ],
+    informeJustificacion: {
+      nombre: "Informe_Aprobacion_MINTEL.pdf",
+      tamano: "2.1 MB",
+      fecha: "2026-08-20 14:00",
+      firmadoPor: "Dr. Roberto Méndez (Aprobador)"
+    },
+    credenciales: {
+      usuario: "ws_mintel_interop_01",
+      contrasena: "Dinarp$ec2026_Mintel*K9",
+      endpoint: "https://interoperabilidad.dinarp.gob.ec/api/v2/registro-civil/identidad",
+      tipoAutenticacion: "OAuth 2.0 (Bearer Token)",
+      ambiente: "Producción (Ambiente Seguro DINARP)",
+      fechaGeneracion: "2026-08-25 10:30",
+      fechaExpiracion: "2027-08-25 23:59 (Activa)",
+      camposAutorizados: ["cedulaCiudadania", "nombresCompletos", "fechaNacimiento"]
+    },
+    historial: [
+      { fecha: "2026-08-15 09:00", evento: "Solicitud creada", actor: "Coordinador SINARP" },
+      { fecha: "2026-08-15 11:00", evento: "Enviada a revisión", actor: "Coordinador SINARP" },
+      { fecha: "2026-08-16 10:00", evento: "En revisión", actor: "Aprobador" },
+      { fecha: "2026-08-20 14:00", evento: "Aprobada", actor: "Aprobador", detalle: "Informe técnico de justificación aprobado y suscrito digitalmente." },
+      { fecha: "2026-08-25 10:30", evento: "Acceso generado", actor: "Administrador DINARP", detalle: "Credenciales de interoperabilidad generadas y vinculadas al catálogo de campos autorizados." }
+    ]
+  },
   {
     id: "SOL-2026-006",
     institucion: "Ministerio de Salud Pública",
@@ -103,7 +196,7 @@ export const INITIAL_SOLICITUDES: SolicitudAcceso[] = [
     coordinador: "Andrea López",
     fecha: "2026-09-22 09:30",
     ultimaActualizacion: "2026-09-22 11:00",
-    estado: "En revisión",
+    estado: "Por revisar",
     responsable: "Aprobador",
     fuentesCount: 1,
     camposCount: 2,
@@ -155,7 +248,7 @@ export const INITIAL_SOLICITUDES: SolicitudAcceso[] = [
     historial: [
       { fecha: "2026-09-22 09:30", evento: "Solicitud creada", actor: "Coordinador SINARP", detalle: "Registro formal de requerimiento de interoperabilidad con 2 campos solicitados." },
       { fecha: "2026-09-22 10:15", evento: "Enviada a revisión", actor: "Coordinador SINARP", detalle: "Expediente formal remitido para dictamen técnico y legal." },
-      { fecha: "2026-09-22 11:00", evento: "En revisión", actor: "Aprobador", detalle: "Asignado para validación de justificación y finalidad de uso de datos." }
+      { fecha: "2026-09-22 11:00", evento: "Por revisar", actor: "Aprobador", detalle: "Asignado para validación de justificación y finalidad de uso de datos." }
     ]
   },
   {
@@ -339,7 +432,7 @@ export const INITIAL_SOLICITUDES: SolicitudAcceso[] = [
       { fecha: "2026-09-01 10:00", evento: "Solicitud creada", actor: "Coordinador SINARP" },
       { fecha: "2026-09-01 11:30", evento: "Enviada a revisión", actor: "Coordinador SINARP" },
       { fecha: "2026-09-02 09:00", evento: "En revisión", actor: "Aprobador" },
-      { fecha: "2026-09-05 16:30", evento: "Aprobada", actor: "Aprobador", detalle: "Informe de justificación firmado digitalmente. Continuación de habilitación de servicio mediante Convenio interinstitucional (sin componente de pago)." }
+      { fecha: "2026-09-05 16:30", evento: "Aprobada", actor: "Aprobador", detalle: "Informe de justificación firmado digitalmente. Continuación de habilitación de fuente mediante Convenio interinstitucional (sin componente de pago)." }
     ]
   },
   {
@@ -495,7 +588,7 @@ export const INITIAL_SOLICITUDES: SolicitudAcceso[] = [
     fuentesCount: 2,
     camposCount: 4,
     fuentePrincipal: "Registro Civil / SRI",
-    servicioPrincipal: "Servicio Integrado de Autenticación Bancaria",
+    servicioPrincipal: "Fuente Integrada de Autenticación Bancaria",
     instrumento: "Contrato",
     contrato: "CONTR-2026-0015",
     factura: {
@@ -557,6 +650,103 @@ export const INITIAL_SOLICITUDES: SolicitudAcceso[] = [
       { fecha: "2026-09-19 14:00", evento: "Pago validado", actor: "Facturación", detalle: "Acreditación de fondos verificada satisfactoriamente en plataforma SIGEF." },
       { fecha: "2026-09-19 14:15", evento: "CUR anexado", actor: "Facturación", detalle: "Comprobante Único de Registro CUR-008814 anexado al expediente por Lcda. Patricia Morales." }
     ]
+  },
+  {
+    id: "SOL-2026-010",
+    institucion: "Banco Bolivariano C.A.",
+    tipoInstitucion: "Privada",
+    coordinador: "Andrea López",
+    fecha: "2026-08-10 11:00",
+    fechaAprobacion: "2026-08-14",
+    ultimaActualizacion: "2026-08-18 16:45",
+    estado: "Acceso generado",
+    responsable: "Facturación",
+    fuentesCount: 2,
+    camposCount: 3,
+    fuentePrincipal: "Registro Civil / SRI",
+    servicioPrincipal: "Autenticación Biométrica y Validación Tributaria",
+    instrumento: "Contrato",
+    contrato: "CONTR-2026-0008",
+    factura: {
+      numero: "FAC-0015",
+      fechaEmision: "2026-08-14",
+      valor: "$ 350.00",
+      detalleServicios: [
+        { servicio: "autenticacionBiometrica (Registro Civil)", valor: "$ 250.00" },
+        { servicio: "estadoContribuyente (SRI)", valor: "$ 100.00" }
+      ]
+    },
+    cur: {
+      numeroCur: "CUR-007204",
+      nombreArchivo: "CUR_SIGEF_BancoBolivariano.pdf",
+      tamano: "1.2 MB",
+      fechaRegistro: "2026-08-16 11:20",
+      usuarioResponsable: "Lcda. Patricia Morales (Facturación)"
+    },
+    fuentes: [
+      {
+        id: "FNT-001",
+        nombre: "Registro Civil de Ciudadanos",
+        institucion: "Dirección General de Registro Civil",
+        campos: [
+          {
+            id: "cmp-101",
+            nombre: "cedulaCiudadania",
+            descripcion: "Número de cédula de ciudadanía.",
+            clasificacion: "Accesible",
+            finalidad: "Verificación en ventanilla bancaria."
+          },
+          {
+            id: "cmp-102",
+            nombre: "fotografiaFacial",
+            descripcion: "Registro biométrico facial digitalizado.",
+            clasificacion: "Confidencial",
+            finalidad: "Validación biométrica contra suplantación en apertura remota.",
+            fundamento: "Resolución SB-2025-042 de Prevención de Fraude Bancario."
+          }
+        ]
+      },
+      {
+        id: "FNT-002",
+        nombre: "Registro Único de Contribuyentes (RUC)",
+        institucion: "SRI",
+        campos: [
+          {
+            id: "cmp-103",
+            nombre: "estadoContribuyente",
+            descripcion: "Estado de actividad tributaria.",
+            clasificacion: "Accesible",
+            finalidad: "Constatación de estado activo para apertura de cuentas."
+          }
+        ]
+      }
+    ],
+    documentos: [
+      {
+        id: "doc-bb-1",
+        nombre: "Contrato_Servicios_BancoBolivariano.pdf",
+        tipo: "PDF",
+        tamano: "3.2 MB",
+        fechaCarga: "2026-08-10 11:00",
+        categoria: "Contrato Privado"
+      }
+    ],
+    credenciales: {
+      usuario: "ws_bbolivariano_dinarp_prod",
+      contrasena: "B0l1v@r1an0_Sec#2026*Prod",
+      endpoint: "https://interoperabilidad.dinarp.gob.ec/api/v2/bancos/autenticacion",
+      tipoAutenticacion: "OAuth 2.0 (mTLS + Bearer)",
+      ambiente: "Producción (Ambiente Seguro DINARP)",
+      fechaGeneracion: "2026-08-18 16:45",
+      fechaExpiracion: "2027-08-18 23:59 (Activa)",
+      camposAutorizados: ["cedulaCiudadania", "fotografiaFacial", "estadoContribuyente"]
+    },
+    historial: [
+      { fecha: "2026-08-10 11:00", evento: "Solicitud creada", actor: "Coordinador SINARP" },
+      { fecha: "2026-08-14 15:00", evento: "Aprobada", actor: "Aprobador" },
+      { fecha: "2026-08-16 11:20", evento: "Pago validado y CUR anexado", actor: "Facturación" },
+      { fecha: "2026-08-18 16:45", evento: "Acceso generado", actor: "Administrador DINARP", detalle: "Credenciales de consumo emitidas formalmente para ambiente bancario." }
+    ]
   }
 ];
 
@@ -565,10 +755,20 @@ export function getStoredSolicitudes(): SolicitudAcceso[] {
   try {
     const raw = sessionStorage.getItem(STORAGE_KEY);
     if (!raw) {
+      // Limpiar versiones anteriores obsoletas
+      ["dinarp_solicitudes_v1", "dinarp_solicitudes_v2", "dinarp_solicitudes_v3", "dinarp_solicitudes_v4", "dinarp_solicitudes_v5"].forEach(k => {
+        try { sessionStorage.removeItem(k); } catch (_) {}
+      });
       sessionStorage.setItem(STORAGE_KEY, JSON.stringify(INITIAL_SOLICITUDES));
       return INITIAL_SOLICITUDES;
     }
-    return JSON.parse(raw);
+    const parsed: SolicitudAcceso[] = JSON.parse(raw);
+    // Si la sesión no tiene el caso de uso con "Acceso generado", refrescar con INITIAL_SOLICITUDES
+    if (!parsed.some(s => s.estado === "Acceso generado")) {
+      sessionStorage.setItem(STORAGE_KEY, JSON.stringify(INITIAL_SOLICITUDES));
+      return INITIAL_SOLICITUDES;
+    }
+    return parsed;
   } catch (e) {
     return INITIAL_SOLICITUDES;
   }
@@ -583,7 +783,12 @@ export function saveStoredSolicitudes(data: SolicitudAcceso[]) {
 }
 
 export function useSolicitudesStore() {
-  const [solicitudes, setSolicitudes] = useState<SolicitudAcceso[]>([]);
+  const [solicitudes, setSolicitudes] = useState<SolicitudAcceso[]>(() => {
+    if (typeof window !== "undefined") {
+      return getStoredSolicitudes();
+    }
+    return INITIAL_SOLICITUDES;
+  });
 
   useEffect(() => {
     setSolicitudes(getStoredSolicitudes());
@@ -601,9 +806,8 @@ export function useSolicitudesStore() {
   }, []);
 
   const getSolicitudById = useCallback((id: string): SolicitudAcceso | undefined => {
-    const list = getStoredSolicitudes();
-    return list.find(s => s.id === id) || INITIAL_SOLICITUDES.find(s => s.id === id);
-  }, []);
+    return solicitudes.find(s => s.id === id) || INITIAL_SOLICITUDES.find(s => s.id === id);
+  }, [solicitudes]);
 
   // Flujo Aprobador: Aprobar solicitud
   const aprobarSolicitud = useCallback((id: string, informeFileName: string, fileSize = "2.4 MB") => {
@@ -649,7 +853,7 @@ export function useSolicitudesStore() {
                 numero: `FAC-00${Math.floor(Math.random() * 50 + 30)}`,
                 fechaEmision: dateOnly,
                 valor: "$ 150.00",
-                detalleServicios: [{ servicio: s.servicioPrincipal || "Servicio de Interoperabilidad", valor: "$ 150.00" }]
+                detalleServicios: [{ servicio: s.servicioPrincipal || "Fuente de Interoperabilidad", valor: "$ 150.00" }]
               }
             : undefined,
           informeJustificacion: {
@@ -720,6 +924,12 @@ export function useSolicitudesStore() {
             evento: "Ajustes subsanados y reenviada",
             actor: "Coordinador SINARP",
             detalle: comentarioSubsanacion || "Se realizaron las correcciones y precisiones solicitadas por el Aprobador."
+          },
+          {
+            fecha: now,
+            evento: "Por revisar",
+            actor: "Aprobador",
+            detalle: "La solicitud volvió al estado Por revisar y regresa a la bandeja del Aprobador."
           }
         ];
         return {
@@ -729,7 +939,7 @@ export function useSolicitudesStore() {
           camposCount: nuevasFuentes
             ? nuevasFuentes.reduce((acc, f) => acc + (f.campos?.length || 0), 0)
             : s.camposCount,
-          estado: "Reenviada" as const,
+          estado: "Por revisar" as const,
           responsable: "Aprobador",
           ultimaActualizacion: dateOnly,
           historial: nuevoHistorial
@@ -740,6 +950,60 @@ export function useSolicitudesStore() {
 
     saveStoredSolicitudes(updated);
     setSolicitudes(updated);
+  }, []);
+
+  // Flujo Coordinador: Crear nueva solicitud y enviar a firmas
+  const crearNuevaSolicitud = useCallback((nueva: Partial<SolicitudAcceso>) => {
+    const current = getStoredSolicitudes();
+    const now = new Date().toISOString().replace("T", " ").substring(0, 16);
+    const dateOnly = now.substring(0, 10);
+    const newId = `SOL-2026-0${current.length + 10}`;
+
+    const solicitudCompleta: SolicitudAcceso = {
+      id: nueva.id || newId,
+      institucion: nueva.institucion || "Ministerio de Salud Pública",
+      tipoInstitucion: nueva.tipoInstitucion || "Pública",
+      coordinador: nueva.coordinador || "Andrea López",
+      fecha: now,
+      ultimaActualizacion: dateOnly,
+      estado: "Por revisar",
+      responsable: "Aprobador",
+      fuentesCount: nueva.fuentes?.length || 1,
+      camposCount: nueva.camposCount || 2,
+      fuentePrincipal: nueva.fuentePrincipal || nueva.fuentes?.[0]?.nombre || "Dirección General de Registro Civil, Identificación y Cedulación",
+      servicioPrincipal: nueva.servicioPrincipal || "Consulta de Datos de Identidad",
+      instrumento: nueva.tipoInstitucion === "Privada" ? "Contrato" : "Convenio",
+      fuentes: nueva.fuentes || [],
+      documentos: nueva.documentos || [
+        {
+          id: `doc-${Date.now()}`,
+          nombre: "Oficio_Solicitud_Interoperabilidad_Firmado.pdf",
+          tipo: "PDF",
+          tamano: "1.8 MB",
+          fechaCarga: now,
+          categoria: "Oficio de Solicitud"
+        }
+      ],
+      historial: [
+        {
+          fecha: now,
+          evento: "Solicitud creada y enviada a firmas",
+          actor: "Coordinador SINARP",
+          detalle: "Solicitud registrada mediante el asistente de 3 pasos y enviada formalmente al Aprobador."
+        },
+        {
+          fecha: now,
+          evento: "Por revisar",
+          actor: "Aprobador",
+          detalle: "Expediente disponible para revisión de pertinencia, finalidad y justificación jurídica."
+        }
+      ]
+    };
+
+    const updated = [solicitudCompleta, ...current];
+    saveStoredSolicitudes(updated);
+    setSolicitudes(updated);
+    return solicitudCompleta;
   }, []);
 
   // Simulación: entidad privada realiza pago externamente
@@ -834,6 +1098,55 @@ export function useSolicitudesStore() {
     setSolicitudes(updated);
   }, []);
 
+  // Flujo Técnico / Administrador: Generar credenciales de acceso
+  const generarAcceso = useCallback((
+    id: string,
+    credencialesPersonalizadas?: Partial<CredencialesAcceso>
+  ) => {
+    const current = getStoredSolicitudes();
+    const now = new Date().toISOString().replace("T", " ").substring(0, 16);
+    const dateOnly = now.substring(0, 10);
+
+    const updated = current.map(s => {
+      if (s.id === id) {
+        const defaultCampos = s.fuentes?.flatMap(f => f.campos?.map(c => c.nombre) || []) || [];
+        const cleanName = s.institucion.toLowerCase().replace(/[^a-z0-9]/g, "").slice(0, 10);
+        const creds: CredencialesAcceso = {
+          usuario: credencialesPersonalizadas?.usuario || `ws_${cleanName}_${s.id.toLowerCase().replace(/[^a-z0-9]/g, "")}`,
+          contrasena: credencialesPersonalizadas?.contrasena || `Dinarp$ec_${Math.random().toString(36).slice(-6)}*2026`,
+          endpoint: credencialesPersonalizadas?.endpoint || `https://interoperabilidad.dinarp.gob.ec/api/v2/servicios/${s.id.toLowerCase()}`,
+          tipoAutenticacion: credencialesPersonalizadas?.tipoAutenticacion || "OAuth 2.0 (Bearer Token)",
+          ambiente: credencialesPersonalizadas?.ambiente || "Producción (Ambiente Seguro DINARP)",
+          fechaGeneracion: now,
+          fechaExpiracion: "2027-09-23 23:59 (Activa)",
+          camposAutorizados: credencialesPersonalizadas?.camposAutorizados || (defaultCampos.length > 0 ? defaultCampos : ["cedulaCiudadania", "nombresCompletos"])
+        };
+
+        const nuevosEventos: TrazabilidadEvento[] = [
+          ...s.historial,
+          {
+            fecha: now,
+            evento: "Acceso generado",
+            actor: "Administrador DINARP",
+            detalle: `Credenciales de interoperabilidad generadas y emitidas satisfactoriamente para el usuario ${creds.usuario}.`
+          }
+        ];
+
+        return {
+          ...s,
+          estado: "Acceso generado" as const,
+          ultimaActualizacion: dateOnly,
+          credenciales: creds,
+          historial: nuevosEventos
+        };
+      }
+      return s;
+    });
+
+    saveStoredSolicitudes(updated);
+    setSolicitudes(updated);
+  }, []);
+
   return {
     solicitudes,
     getSolicitudById,
@@ -841,7 +1154,9 @@ export function useSolicitudesStore() {
     rechazarSolicitud,
     solicitarAjustes,
     reenviarSolicitud,
+    crearNuevaSolicitud,
     simularPagoRealizado,
-    validarPagoConCur
+    validarPagoConCur,
+    generarAcceso
   };
 }

@@ -292,23 +292,23 @@ export default function GestionIngresosPage() {
     switch (estado) {
       case "Aprobada":
         return (
-          <Badge tone="success" appearance="soft" size="sm" className="font-semibold gap-1 text-xs">
-            <CheckCircle2 className="size-3" />
+          <Badge tone="neutral" appearance="soft" size="sm" className="font-semibold gap-1 text-xs border border-border text-foreground">
+            <CheckCircle2 className="size-3 text-foreground" />
             Aprobada
           </Badge>
         );
       case "Rechazada":
         return (
-          <Badge tone="danger" appearance="soft" size="sm" className="font-semibold gap-1 text-xs">
-            <XCircle className="size-3" />
+          <Badge tone="neutral" appearance="outline" size="sm" className="font-semibold gap-1 text-xs border-border text-foreground bg-background">
+            <XCircle className="size-3 text-muted-foreground" />
             Rechazada
           </Badge>
         );
       case "Pendiente":
       default:
         return (
-          <Badge tone="neutral" appearance="soft" size="sm" className="font-semibold gap-1 text-xs">
-            <Clock className="size-3" />
+          <Badge tone="neutral" appearance="soft" size="sm" className="font-semibold gap-1 text-xs border border-border text-foreground">
+            <Clock className="size-3 text-muted-foreground" />
             Pendiente
           </Badge>
         );
@@ -381,7 +381,7 @@ export default function GestionIngresosPage() {
                       variant="outline"
                       size="sm"
                       onClick={() => handleOpenReject(selectedSolicitud)}
-                      className="h-9 px-3.5 text-xs font-semibold gap-1.5 text-rose-600 hover:text-rose-700 hover:bg-rose-500/10 border-rose-300 dark:border-rose-900/50 rounded-xl"
+                      className="h-9 px-3.5 text-xs font-semibold gap-1.5 border-border text-foreground hover:bg-muted rounded-xl"
                     >
                       <XCircle className="size-4" />
                       <span>Rechazar</span>
@@ -391,20 +391,20 @@ export default function GestionIngresosPage() {
                       variant="primary"
                       size="sm"
                       onClick={() => handleOpenApprove(selectedSolicitud)}
-                      className="h-9 px-3.5 text-xs font-semibold gap-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl shadow-xs"
+                      className="h-9 px-3.5 text-xs font-semibold gap-1.5 bg-foreground text-background hover:bg-foreground/90 rounded-xl shadow-xs"
                     >
                       <CheckCircle2 className="size-4" />
                       <span>Aprobar acceso</span>
                     </Button>
                   </>
                 ) : selectedSolicitud.estado === "Aprobada" ? (
-                  <Badge tone="success" appearance="soft" size="lg" className="gap-1.5 text-xs font-semibold py-1 px-3">
-                    <CheckCircle2 className="size-3.5" />
+                  <Badge tone="neutral" appearance="soft" size="lg" className="gap-1.5 text-xs font-semibold py-1 px-3 border border-border text-foreground">
+                    <CheckCircle2 className="size-3.5 text-foreground" />
                     Acceso autorizado
                   </Badge>
                 ) : (
-                  <Badge tone="danger" appearance="soft" size="lg" className="gap-1.5 text-xs font-semibold py-1 px-3">
-                    <XCircle className="size-3.5" />
+                  <Badge tone="neutral" appearance="outline" size="lg" className="gap-1.5 text-xs font-semibold py-1 px-3 border-border text-foreground bg-background">
+                    <XCircle className="size-3.5 text-muted-foreground" />
                     Solicitud rechazada
                   </Badge>
                 )}
@@ -413,15 +413,15 @@ export default function GestionIngresosPage() {
 
             {/* Banners contextuales según estado */}
             {selectedSolicitud.estado === "Aprobada" && (
-              <div className="p-4 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-950 dark:text-emerald-200">
-                <div className="flex items-center gap-2 font-bold text-sm text-emerald-700 dark:text-emerald-300">
-                  <CheckCircle2 className="size-4 shrink-0" />
+              <div className="p-4 rounded-2xl bg-muted/40 border border-border text-foreground">
+                <div className="flex items-center gap-2 font-bold text-sm text-foreground">
+                  <CheckCircle2 className="size-4 shrink-0 text-foreground" />
                   <span>Acceso institucional concedido</span>
                 </div>
-                <p className="text-xs mt-1 leading-relaxed opacity-90">
+                <p className="text-xs mt-1 leading-relaxed text-muted-foreground">
                   El usuario fue validado y tiene credenciales activas en la plataforma.
                 </p>
-                <div className="pt-2 mt-2 border-t border-emerald-500/20 grid grid-cols-1 sm:grid-cols-2 gap-2 text-[11px]">
+                <div className="pt-2 mt-2 border-t border-border/80 grid grid-cols-1 sm:grid-cols-2 gap-2 text-[11px]">
                   <div>
                     <span className="text-muted-foreground">Fecha de aprobación: </span>
                     <strong className="text-foreground">{selectedSolicitud.fechaRevision || "Reciente"}</strong>
@@ -435,20 +435,20 @@ export default function GestionIngresosPage() {
             )}
 
             {selectedSolicitud.estado === "Rechazada" && (
-              <div className="p-4 rounded-2xl bg-rose-500/10 border border-rose-500/20 text-rose-950 dark:text-rose-200 space-y-2">
-                <div className="flex items-center gap-2 font-bold text-sm text-rose-700 dark:text-rose-300">
-                  <XCircle className="size-4 shrink-0" />
+              <div className="p-4 rounded-2xl bg-muted/40 border border-border text-foreground space-y-2">
+                <div className="flex items-center gap-2 font-bold text-sm text-foreground">
+                  <XCircle className="size-4 shrink-0 text-muted-foreground" />
                   <span>Solicitud denegada</span>
                 </div>
-                <div className="p-3 bg-surface rounded-xl border border-rose-500/20 text-xs">
-                  <span className="font-semibold text-rose-600 dark:text-rose-400 block mb-1">
+                <div className="p-3 bg-surface rounded-xl border border-border text-xs">
+                  <span className="font-semibold text-foreground block mb-1">
                     Motivo registrado:
                   </span>
                   <p className="text-foreground leading-relaxed">
                     {selectedSolicitud.motivoRechazo || "No se especificó motivo de rechazo."}
                   </p>
                 </div>
-                <div className="pt-2 border-t border-rose-500/20 grid grid-cols-1 sm:grid-cols-2 gap-2 text-[11px]">
+                <div className="pt-2 border-t border-border/80 grid grid-cols-1 sm:grid-cols-2 gap-2 text-[11px]">
                   <div>
                     <span className="text-muted-foreground">Fecha de rechazo: </span>
                     <strong className="text-foreground">{selectedSolicitud.fechaRevision || "Reciente"}</strong>
@@ -520,14 +520,14 @@ export default function GestionIngresosPage() {
                   <div className="flex items-center justify-between border-b border-border/60 pb-3">
                     <div>
                       <h2 className="text-sm font-bold font-heading text-foreground flex items-center gap-2">
-                        <FileCheck2 className="size-4 text-emerald-600" />
+                        <FileCheck2 className="size-4 text-foreground" />
                         2. Documentos Habilitantes Cargados
                       </h2>
                       <p className="text-[11px] text-muted-foreground mt-0.5">
                         Los 3 documentos obligatorios suscritos y enviados en formato PDF.
                       </p>
                     </div>
-                    <Badge tone="success" appearance="soft" size="sm" className="font-semibold gap-1">
+                    <Badge tone="neutral" appearance="soft" size="sm" className="font-semibold gap-1 border border-border text-foreground">
                       <Check className="size-3" />
                       3 de 3 completados
                     </Badge>
@@ -546,7 +546,7 @@ export default function GestionIngresosPage() {
                           className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-3.5 rounded-xl border border-border/80 bg-muted/20 hover:bg-muted/40 transition-colors"
                         >
                           <div className="flex items-start gap-3 min-w-0">
-                            <div className="size-9 rounded-lg bg-emerald-500/10 text-emerald-600 flex items-center justify-center shrink-0 mt-0.5">
+                            <div className="size-9 rounded-lg bg-muted text-foreground border border-border flex items-center justify-center shrink-0 mt-0.5">
                               <FileText className="size-4" />
                             </div>
                             <div className="min-w-0">
@@ -554,7 +554,7 @@ export default function GestionIngresosPage() {
                                 <span className="font-bold text-xs text-foreground">
                                   {idx + 1}. {doc.titulo}
                                 </span>
-                                <Badge tone="success" appearance="soft" size="sm" className="text-[10px] h-4.5 px-1.5 gap-1">
+                                <Badge tone="neutral" appearance="soft" size="sm" className="text-[10px] h-4.5 px-1.5 gap-1 border border-border text-foreground">
                                   <Check className="size-2.5" />
                                   Firma válida
                                 </Badge>
@@ -594,10 +594,10 @@ export default function GestionIngresosPage() {
                 <div className="rounded-2xl border border-border/80 bg-surface p-5 space-y-4 shadow-2xs">
                   <div className="flex items-center justify-between border-b border-border/60 pb-3">
                     <h2 className="text-sm font-bold font-heading text-foreground flex items-center gap-2">
-                      <ShieldCheck className="size-4 text-primary" />
+                      <ShieldCheck className="size-4 text-foreground" />
                       3. Parámetros de Credenciales Registradas
                     </h2>
-                    <Badge tone="success" appearance="soft" size="sm">
+                    <Badge tone="neutral" appearance="soft" size="sm" className="border border-border text-foreground">
                       Checklist Aprobado
                     </Badge>
                   </div>
@@ -615,9 +615,9 @@ export default function GestionIngresosPage() {
                     ].map((rule) => (
                       <div
                         key={rule}
-                        className="flex items-center gap-1.5 p-2 rounded-lg bg-emerald-500/5 border border-emerald-500/20 text-emerald-700 dark:text-emerald-400 text-[11px] font-semibold"
+                        className="flex items-center gap-1.5 p-2 rounded-lg bg-muted/30 border border-border text-foreground text-[11px] font-semibold"
                       >
-                        <Check className="size-3 text-emerald-600 shrink-0" />
+                        <Check className="size-3 text-foreground shrink-0" />
                         <span>{rule}</span>
                       </div>
                     ))}
@@ -644,7 +644,7 @@ export default function GestionIngresosPage() {
                           type="button"
                           variant="primary"
                           onClick={() => handleOpenApprove(selectedSolicitud)}
-                          className="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-semibold text-xs h-10 gap-2 rounded-xl shadow-xs"
+                          className="w-full bg-foreground hover:bg-foreground/90 text-background font-semibold text-xs h-10 gap-2 rounded-xl shadow-xs"
                         >
                           <CheckCircle2 className="size-4" />
                           <span>Aprobar acceso institucional</span>
@@ -654,7 +654,7 @@ export default function GestionIngresosPage() {
                           type="button"
                           variant="outline"
                           onClick={() => handleOpenReject(selectedSolicitud)}
-                          className="w-full text-rose-600 hover:text-rose-700 hover:bg-rose-500/10 border-rose-300 dark:border-rose-900/50 font-semibold text-xs h-10 gap-2 rounded-xl"
+                          className="w-full border-border text-foreground hover:bg-muted font-semibold text-xs h-10 gap-2 rounded-xl"
                         >
                           <XCircle className="size-4" />
                           <span>Rechazar solicitud</span>
@@ -673,7 +673,7 @@ export default function GestionIngresosPage() {
                   <div className="space-y-4 relative before:absolute before:inset-0 before:left-3.5 before:w-0.5 before:bg-border/60">
                     {/* Hito 1 */}
                     <div className="relative flex items-start gap-3 text-xs">
-                      <span className="size-7 rounded-full bg-emerald-500/10 text-emerald-600 flex items-center justify-center shrink-0 border border-emerald-500/20">
+                      <span className="size-7 rounded-full bg-muted text-foreground flex items-center justify-center shrink-0 border border-border">
                         <Check className="size-3.5" />
                       </span>
                       <div>
@@ -686,7 +686,7 @@ export default function GestionIngresosPage() {
 
                     {/* Hito 2 */}
                     <div className="relative flex items-start gap-3 text-xs">
-                      <span className="size-7 rounded-full bg-emerald-500/10 text-emerald-600 flex items-center justify-center shrink-0 border border-emerald-500/20">
+                      <span className="size-7 rounded-full bg-muted text-foreground flex items-center justify-center shrink-0 border border-border">
                         <Check className="size-3.5" />
                       </span>
                       <div>
@@ -699,15 +699,7 @@ export default function GestionIngresosPage() {
 
                     {/* Hito 3 */}
                     <div className="relative flex items-start gap-3 text-xs">
-                      <span
-                        className={`size-7 rounded-full flex items-center justify-center shrink-0 border ${
-                          selectedSolicitud.estado === "Aprobada"
-                            ? "bg-emerald-500/10 text-emerald-600 border-emerald-500/20"
-                            : selectedSolicitud.estado === "Rechazada"
-                            ? "bg-rose-500/10 text-rose-600 border-rose-500/20"
-                            : "bg-muted text-muted-foreground border-border"
-                        }`}
-                      >
+                      <span className="size-7 rounded-full flex items-center justify-center shrink-0 border border-border bg-muted text-foreground">
                         {selectedSolicitud.estado === "Aprobada" ? (
                           <Check className="size-3.5" />
                         ) : selectedSolicitud.estado === "Rechazada" ? (
@@ -719,15 +711,7 @@ export default function GestionIngresosPage() {
                       <div>
                         <p className="font-bold text-foreground">
                           3. Dictamen DGR:{" "}
-                          <span
-                            className={
-                              selectedSolicitud.estado === "Aprobada"
-                                ? "text-emerald-600"
-                                : selectedSolicitud.estado === "Rechazada"
-                                ? "text-rose-600"
-                                : "text-muted-foreground"
-                            }
-                          >
+                          <span className="text-foreground font-semibold">
                             {selectedSolicitud.estado}
                           </span>
                         </p>
@@ -817,15 +801,15 @@ export default function GestionIngresosPage() {
                 }}
                 className={`cursor-pointer transition-all border ${
                   filterEstado === "Aprobada"
-                    ? "bg-card border-emerald-500/60 ring-2 ring-emerald-500/20 shadow-sm"
+                    ? "bg-muted border-foreground ring-2 ring-foreground/20 shadow-sm"
                     : "bg-card hover:bg-muted/40 border-border shadow-xs"
                 }`}
                 innerClassName="p-5 items-start text-left gap-1"
               >
-                <span className="font-heading font-extrabold text-3xl sm:text-4xl text-emerald-600 tracking-tight block">
+                <span className="font-heading font-extrabold text-3xl sm:text-4xl text-foreground tracking-tight block">
                   {kpis.aprobadas}
                 </span>
-                <span className="text-xs font-semibold text-emerald-600 block">
+                <span className="text-xs font-semibold text-foreground block">
                   Aprobadas
                 </span>
                 <span className="text-[11px] text-muted-foreground font-normal">
@@ -854,15 +838,15 @@ export default function GestionIngresosPage() {
                 }}
                 className={`cursor-pointer transition-all border ${
                   filterEstado === "Rechazada"
-                    ? "bg-card border-rose-500/60 ring-2 ring-rose-500/20 shadow-sm"
+                    ? "bg-muted border-foreground ring-2 ring-foreground/20 shadow-sm"
                     : "bg-card hover:bg-muted/40 border-border shadow-xs"
                 }`}
                 innerClassName="p-5 items-start text-left gap-1"
               >
-                <span className="font-heading font-extrabold text-3xl sm:text-4xl text-rose-600 tracking-tight block">
+                <span className="font-heading font-extrabold text-3xl sm:text-4xl text-foreground tracking-tight block">
                   {kpis.rechazadas}
                 </span>
-                <span className="text-xs font-semibold text-rose-600 block">
+                <span className="text-xs font-semibold text-foreground block">
                   Rechazadas
                 </span>
                 <span className="text-[11px] text-muted-foreground font-normal">
@@ -947,11 +931,11 @@ export default function GestionIngresosPage() {
                           Pendiente
                         </DropdownMenuRadioItem>
                         <DropdownMenuRadioItem value="Aprobada" className="text-xs">
-                          <span className="size-2 rounded-full bg-emerald-500 mr-2 shrink-0" />
+                          <span className="size-2 rounded-full bg-foreground mr-2 shrink-0" />
                           Aprobada
                         </DropdownMenuRadioItem>
                         <DropdownMenuRadioItem value="Rechazada" className="text-xs">
-                          <span className="size-2 rounded-full bg-rose-500 mr-2 shrink-0" />
+                          <span className="size-2 rounded-full border border-foreground mr-2 shrink-0" />
                           Rechazada
                         </DropdownMenuRadioItem>
                       </DropdownMenuRadioGroup>
@@ -1192,28 +1176,28 @@ export default function GestionIngresosPage() {
 
             {/* ── 4. Tabla de Solicitudes de Acceso ── */}
             <div className="rounded-2xl border border-border/80 bg-surface overflow-hidden shadow-2xs">
-              <Table className="table-fixed w-full">
+              <Table className="w-full min-w-[1000px]">
                 <TableHeader>
                   <TableRow className="bg-muted/20 hover:bg-muted/20">
-                    <TableHead className="w-[12%] px-2.5 first:pl-4 font-bold text-xs uppercase tracking-wider text-muted-foreground whitespace-nowrap">
+                    <TableHead className="w-[12%] min-w-[110px] px-2.5 first:pl-4 font-bold text-xs uppercase tracking-wider text-muted-foreground whitespace-nowrap">
                       CÉDULA
                     </TableHead>
-                    <TableHead className="w-[22%] px-2.5 font-bold text-xs uppercase tracking-wider text-muted-foreground whitespace-nowrap">
+                    <TableHead className="w-[20%] min-w-[180px] px-2.5 font-bold text-xs uppercase tracking-wider text-muted-foreground whitespace-nowrap">
                       USUARIO
                     </TableHead>
-                    <TableHead className="w-[21%] px-2.5 font-bold text-xs uppercase tracking-wider text-muted-foreground whitespace-nowrap">
+                    <TableHead className="w-[22%] min-w-[210px] px-2.5 font-bold text-xs uppercase tracking-wider text-muted-foreground whitespace-nowrap">
                       CORREO INSTITUCIONAL
                     </TableHead>
-                    <TableHead className="w-[19%] px-2.5 font-bold text-xs uppercase tracking-wider text-muted-foreground whitespace-nowrap">
+                    <TableHead className="w-[18%] min-w-[180px] px-2.5 font-bold text-xs uppercase tracking-wider text-muted-foreground whitespace-nowrap">
                       INSTITUCIÓN
                     </TableHead>
-                    <TableHead className="w-[12%] px-2.5 font-bold text-xs uppercase tracking-wider text-muted-foreground whitespace-nowrap">
+                    <TableHead className="w-[12%] min-w-[130px] px-2.5 font-bold text-xs uppercase tracking-wider text-muted-foreground whitespace-nowrap">
                       FECHA SOLICITUD
                     </TableHead>
-                    <TableHead className="w-[10%] px-2.5 font-bold text-xs uppercase tracking-wider text-muted-foreground whitespace-nowrap">
+                    <TableHead className="w-[10%] min-w-[110px] px-2.5 font-bold text-xs uppercase tracking-wider text-muted-foreground whitespace-nowrap">
                       ESTADO
                     </TableHead>
-                    <TableHead className="w-[4%] px-2.5 last:pr-4 text-right font-bold text-xs uppercase tracking-wider text-muted-foreground whitespace-nowrap">
+                    <TableHead className="w-[6%] min-w-[70px] px-2.5 last:pr-4 text-right font-bold text-xs uppercase tracking-wider text-muted-foreground whitespace-nowrap">
                       ACCIONES
                     </TableHead>
                   </TableRow>
@@ -1311,19 +1295,19 @@ export default function GestionIngresosPage() {
                               <TooltipTrigger asChild>
                                 <Button
                                   type="button"
-                                  variant="ghost"
+                                  variant="outline"
                                   size="icon-sm"
                                   onClick={(e) => {
                                     e.stopPropagation();
                                     setSelectedSolicitud(row);
                                   }}
-                                  className="size-8 text-primary hover:text-primary hover:bg-primary/10 rounded-lg"
-                                  aria-label={`Gestionar solicitud ${row.id}`}
+                                  className="size-8 rounded-lg border-border/80 text-foreground hover:bg-muted shadow-2xs"
+                                  aria-label={`Ver detalle de solicitud ${row.id}`}
                                 >
-                                  <SlidersHorizontal className="size-4" />
+                                  <Eye className="size-4" />
                                 </Button>
                               </TooltipTrigger>
-                              <TooltipContent>Gestionar solicitud</TooltipContent>
+                              <TooltipContent side="top">Ver detalle</TooltipContent>
                             </Tooltip>
                           </div>
                         </TableCell>
@@ -1418,7 +1402,7 @@ export default function GestionIngresosPage() {
                     </div>
                     <div className="flex items-center justify-between">
                       <span className="text-muted-foreground">Firma digital:</span>
-                      <Badge tone="success" appearance="soft" size="sm" className="gap-1 text-[10px]">
+                      <Badge tone="neutral" appearance="soft" size="sm" className="gap-1 text-[10px] border border-border text-foreground">
                         <Check className="size-2.5" />
                         Válida y Vigente
                       </Badge>
@@ -1429,8 +1413,8 @@ export default function GestionIngresosPage() {
                     </div>
                   </div>
 
-                  <div className="p-3 bg-emerald-500/5 rounded-xl border border-emerald-500/20 text-emerald-800 dark:text-emerald-300 text-[11px] flex items-start gap-2">
-                    <ShieldCheck className="size-4 shrink-0 mt-0.5 text-emerald-600" />
+                  <div className="p-3 bg-muted/40 rounded-xl border border-border text-foreground text-[11px] flex items-start gap-2">
+                    <ShieldCheck className="size-4 shrink-0 mt-0.5 text-foreground" />
                     <span>
                       La firma electrónica cumple con las especificaciones técnicas del esquema gubernamental de interoperabilidad y cuenta con estampa cronológica (timestamp).
                     </span>

@@ -167,7 +167,7 @@ export default function NuevaIntegracionPage() {
     {
       id: "1",
       title: "Datos de la fuente",
-      description: "Institución y servicio",
+      description: "Institución y fuente",
       icon: Building2,
     },
     {
@@ -293,7 +293,7 @@ export default function NuevaIntegracionPage() {
                         1. Datos de la Institución y Fuente
                       </h2>
                       <p className="text-xs text-muted-foreground">
-                        Información institucional y propósito del servicio a incorporar
+                        Información institucional y propósito de la fuente a incorporar
                       </p>
                     </div>
                   </div>
@@ -336,7 +336,7 @@ export default function NuevaIntegracionPage() {
                     {/* Código sugerido */}
                     <div className="flex flex-col gap-1.5">
                       <Label htmlFor="codigo-sugerido" className="text-xs font-semibold text-foreground">
-                        Código de servicio sugerido
+                        Código de fuente sugerido
                       </Label>
                       <Input
                         id="codigo-sugerido"

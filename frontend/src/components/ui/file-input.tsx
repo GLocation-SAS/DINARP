@@ -161,11 +161,14 @@ function FileItem({ item, disabled, onRemove, onRetry, onCancel }: { item: FileI
         )}
         
         {/* File Name & Error Message */}
-        <div className="flex flex-col min-w-0">
-          <span className={cn(
-            "text-[13px] font-medium truncate max-w-[200px] sm:max-w-[300px]", 
-            isUploading && progress > 30 ? "text-white mix-blend-difference" : isError ? "text-danger-700 dark:text-danger-400" : "text-foreground"
-          )}>
+        <div className="flex flex-col min-w-0 flex-1">
+          <span 
+            title={file.name}
+            className={cn(
+              "text-[13px] font-medium truncate", 
+              isUploading && progress > 30 ? "text-white mix-blend-difference" : isError ? "text-danger-700 dark:text-danger-400" : "text-foreground"
+            )}
+          >
             {file.name}
           </span>
           {isError && (
@@ -399,7 +402,7 @@ export function FileUpload({
       />
 
       {/* Left Side: Dropzone */}
-      <div className="flex-1 w-full max-w-2xl shrink-0">
+      <div className="flex-1 w-full min-w-0">
         {label && (
           <label className={cn("text-sm font-semibold text-foreground block mb-2", disabled && "opacity-50")}>
             {label}

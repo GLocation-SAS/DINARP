@@ -42,10 +42,10 @@ export default function FacturacionPage({ params }: { params: Promise<{ id: stri
     <WireframeDashboardLayout
       activeMenu="acceso-interoperabilidad"
       breadcrumbs={[
-        { label: "Acceso a Interoperabilidad", href: "/wireframes2/acceso-interoperabilidad" },
-        { label: "Gestión de solicitudes", href: "/wireframes2/acceso-interoperabilidad/solicitudes" },
+        { label: "Acceso a Interoperabilidad", href: "/wireframes2/acceso-interoperabilidad/solicitudes" },
+        { label: "Bandeja de solicitudes", href: "/wireframes2/acceso-interoperabilidad/solicitudes" },
         { label: resolvedParams.id, href: `/wireframes2/acceso-interoperabilidad/solicitudes/${resolvedParams.id}` },
-        { label: "Facturación" }
+        { label: `Factura ${factura.numero}` }
       ]}
       headerSlot={
         <Combobox
@@ -70,14 +70,22 @@ export default function FacturacionPage({ params }: { params: Promise<{ id: stri
     >
       <div className="w-full max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex flex-col gap-6">
         <div>
-          <Link href={`/wireframes2/acceso-interoperabilidad/solicitudes/${resolvedParams.id}`}>
-            <Button variant="ghost" size="sm" className="mb-4 pl-0">
-              <ArrowLeft className="w-4 h-4 mr-2" />
-              Volver a la solicitud
-            </Button>
-          </Link>
+          <div className="flex flex-wrap items-center gap-3 mb-4">
+            <Link href="/wireframes2/acceso-interoperabilidad/solicitudes">
+              <Button variant="ghost" size="sm" className="pl-0 gap-1.5 text-xs text-primary font-semibold hover:underline">
+                <ArrowLeft className="w-3.5 h-3.5" />
+                Volver a la bandeja de solicitudes
+              </Button>
+            </Link>
+            <span className="text-muted-foreground/40">•</span>
+            <Link href={`/wireframes2/acceso-interoperabilidad/solicitudes/${resolvedParams.id}`}>
+              <Button variant="ghost" size="sm" className="text-xs text-muted-foreground hover:text-foreground">
+                Ver detalle de solicitud ({resolvedParams.id})
+              </Button>
+            </Link>
+          </div>
           <h1 className="font-heading text-2xl md:text-3xl font-bold tracking-tight text-foreground">Facturación</h1>
-          <p className="text-muted-foreground text-sm mt-1">Gestión de pago para habilitación de servicios de interoperabilidad.</p>
+          <p className="text-muted-foreground text-sm mt-1">Gestión de pago para habilitación de fuentes de interoperabilidad.</p>
         </div>
 
         <Card className="p-0 overflow-hidden">
@@ -128,14 +136,14 @@ export default function FacturacionPage({ params }: { params: Promise<{ id: stri
           )}
 
           <div className="p-6">
-            <h3 className="text-sm font-bold text-foreground mb-4">Detalle de servicios aprobados</h3>
+            <h3 className="text-sm font-bold text-foreground mb-4">Detalle de fuentes aprobadas</h3>
             
             <div className="border border-border rounded-lg overflow-hidden">
               <table className="w-full text-sm">
                 <thead className="bg-muted/50 border-b border-border text-left">
                   <tr>
-                    <th className="px-4 py-3 font-medium text-muted-foreground">Servicio / Campo</th>
-                    <th className="px-4 py-3 font-medium text-muted-foreground">Fuente de datos</th>
+                    <th className="px-4 py-3 font-medium text-muted-foreground">Fuente / Campo</th>
+                    <th className="px-4 py-3 font-medium text-muted-foreground">Institución proveedora</th>
                     <th className="px-4 py-3 font-medium text-muted-foreground text-right">Valor</th>
                   </tr>
                 </thead>

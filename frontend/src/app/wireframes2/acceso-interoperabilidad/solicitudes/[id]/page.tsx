@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect, use, useMemo } from "react";
+import React, { useState, useEffect, use } from "react";
 import Link from "next/link";
 import {
   ArrowLeft,
@@ -33,7 +33,10 @@ import {
   CreditCard,
   UploadCloud,
   X,
-  Info
+  Info,
+  KeyRound,
+  Copy,
+  EyeOff
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -103,31 +106,25 @@ export default function SolicitudDetailPage({ params, searchParams }: PageProps)
     if (resolvedSearchParams?.edit === "true") {
       setModoCorreccion(true);
     }
-  }, [resolvedSearchParams]);
+  }, [resolvedSearchParams?.edit]);
 
   // Obtener la solicitud activa del store
   const solicitud: SolicitudAcceso =
-    getSolicitudById(resolvedParams.id) ||
     solicitudes.find((s) => s.id === resolvedParams.id) ||
+    getSolicitudById(resolvedParams.id) ||
     INITIAL_SOLICITUDES[0];
 
   // Detección automática del paso al que debe dirigirse la corrección
-  const targetCorrectionStep = useMemo(() => {
-    const obs = `${solicitud?.motivoRechazo || ""} ${solicitud?.observaciones || ""}`.toLowerCase();
-    if (
-      obs.includes("eliminar campo") ||
-      obs.includes("quitar campo") ||
-      obs.includes("cambiar fuente") ||
-      obs.includes("campo no autorizado") ||
-      obs.includes("seleccionar otro")
-    ) {
-      return 1;
-    }
-    if (solicitud?.fuentes && solicitud.fuentes.length > 0) {
-      return 2;
-    }
-    return 1;
-  }, [solicitud]);
+  const obsCorrection = `${solicitud?.motivoRechazo || ""} ${solicitud?.observaciones || ""}`.toLowerCase();
+  const targetCorrectionStep = (
+    obsCorrection.includes("eliminar campo") ||
+    obsCorrection.includes("quitar campo") ||
+    obsCorrection.includes("cambiar fuente") ||
+    obsCorrection.includes("campo no autorizado") ||
+    obsCorrection.includes("seleccionar otro")
+  )
+    ? 1
+    : (solicitud?.fuentes && solicitud.fuentes.length > 0 ? 2 : 1);
 
   const [correctionStep, setCorrectionStep] = useState<number>(() => {
     if (resolvedSearchParams?.step) {
@@ -147,14 +144,28 @@ export default function SolicitudDetailPage({ params, searchParams }: PageProps)
       const s = parseInt(resolvedSearchParams.step, 10);
       if (s >= 1 && s <= 3) setCorrectionStep(s);
     }
-  }, [resolvedSearchParams]);
+  }, [resolvedSearchParams?.step]);
 
   // Tabs de detalle
   const [activeTab, setActiveTab] = useState<string>("resumen");
   const [expandedJustificaciones, setExpandedJustificaciones] = useState<Record<string, boolean>>({});
 
   // Archivos de subida de informe para aprobación
-  const [uploadedFiles, setUploadedFiles] = useState<FileItemData[]>([]);
+  const informeExistenteNombre = solicitud?.informeJustificacion?.nombre;
+  const [uploadedFiles, setUploadedFiles] = useState<FileItemData[]>(() => {
+    if (solicitud?.informeJustificacion?.nombre) {
+      return [
+        {
+          id: "informe-existente",
+          file: new File([""], solicitud.informeJustificacion.nombre),
+          status: "success",
+          errorType: null,
+          progress: 100,
+        }
+      ];
+    }
+    return [];
+  });
 
   // Modales Aprobador
   const [isAprobarModalOpen, setIsAprobarModalOpen] = useState(false);
@@ -172,23 +183,33 @@ export default function SolicitudDetailPage({ params, searchParams }: PageProps)
   const [curFileError, setCurFileError] = useState(false);
   const [numeroCurInput, setNumeroCurInput] = useState("");
 
+  // Modal Credenciales
+  const [isModalCredencialesOpen, setIsModalCredencialesOpen] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [copiedField, setCopiedField] = useState<string | null>(null);
+
   // Mensaje de feedback
   const [feedbackMessage, setFeedbackMessage] = useState<{ tipo: "success" | "warning"; texto: string } | null>(null);
 
   // Cargar informe existente si la solicitud ya está aprobada
   useEffect(() => {
-    if (solicitud.informeJustificacion) {
-      setUploadedFiles([
-        {
-          id: "informe-existente",
-          file: new File([""], solicitud.informeJustificacion.nombre),
-          status: "success",
-          errorType: null,
-          progress: 100,
+    if (informeExistenteNombre) {
+      setUploadedFiles(prev => {
+        if (prev.length === 1 && prev[0].id === "informe-existente" && prev[0].file.name === informeExistenteNombre) {
+          return prev;
         }
-      ]);
+        return [
+          {
+            id: "informe-existente",
+            file: new File([""], informeExistenteNombre),
+            status: "success",
+            errorType: null,
+            progress: 100,
+          }
+        ];
+      });
     }
-  }, [solicitud.informeJustificacion]);
+  }, [informeExistenteNombre]);
 
   const handleSelectInforme = (files: File[]) => {
     const newItems: FileItemData[] = files.map((f, idx) => ({
@@ -305,7 +326,8 @@ export default function SolicitudDetailPage({ params, searchParams }: PageProps)
 
   const isAprobadorPending =
     role === "APROBADOR" &&
-    (solicitud.estado === "En revisión" ||
+    (solicitud.estado === "Por revisar" ||
+      solicitud.estado === "En revisión" ||
       solicitud.estado === "Pendiente de aprobación" ||
       solicitud.estado === "Reenviada" ||
       solicitud.estado === "Reenviada para aprobación");
@@ -323,9 +345,9 @@ export default function SolicitudDetailPage({ params, searchParams }: PageProps)
         { label: getBreadcrumbTitle(), href: "/wireframes2/acceso-interoperabilidad/solicitudes" },
         {
           label: solicitud.id,
-          ...(modoCorreccion ? { href: `/wireframes2/acceso-interoperabilidad/solicitudes/${solicitud.id}` } : {})
+          ...(modoCorreccion && isRechazada ? { href: `/wireframes2/acceso-interoperabilidad/solicitudes/${solicitud.id}` } : {})
         },
-        ...(modoCorreccion ? [{ label: "Corregir solicitud" }] : [])
+        ...(modoCorreccion && isRechazada ? [{ label: "Corregir solicitud" }] : [])
       ]}
       headerSlot={
         <div className="flex items-center gap-2">
@@ -350,7 +372,7 @@ export default function SolicitudDetailPage({ params, searchParams }: PageProps)
         </div>
       }
     >
-      {modoCorreccion && role === "COORDINADOR_SINARP" ? (
+      {modoCorreccion && role === "COORDINADOR_SINARP" && isRechazada ? (
         <CorregirSolicitudFlow
           solicitud={solicitud}
           initialStep={correctionStep}
@@ -437,6 +459,29 @@ export default function SolicitudDetailPage({ params, searchParams }: PageProps)
             </div>
           )}
 
+          {/* Banner de Solicitud Reenviada tras Subsanación */}
+          {(solicitud.estado === "Reenviada" || solicitud.estado === "Reenviada para aprobación") && (
+            <div className="p-4 rounded-xl border border-blue-500/40 bg-blue-500/10 flex items-start gap-3">
+              <CheckCircle2 className="size-5 text-blue-600 dark:text-blue-400 shrink-0 mt-0.5" />
+              <div>
+                <div className="flex items-center gap-2 flex-wrap">
+                  <p className="text-sm font-bold text-foreground">Solicitud subsanada y reenviada</p>
+                  <Badge tone="info" appearance="soft" className="text-[11px] font-semibold">
+                    Por revisar por el Aprobador
+                  </Badge>
+                </div>
+                <p className="text-xs text-muted-foreground mt-0.5">
+                  Las subsanaciones y justificaciones corregidas fueron remitidas al Aprobador para emisión de dictamen.
+                  {solicitud.observaciones && (
+                    <span className="block mt-1 font-medium text-foreground">
+                      Nota de subsanación: {solicitud.observaciones}
+                    </span>
+                  )}
+                </p>
+              </div>
+            </div>
+          )}
+
           {/* Banner SIGEF para Rol Facturación cuando está en "Pendiente de validación de pago" */}
           {role === "FACTURACION" && (solicitud.estado === "Pendiente de validación de pago" || solicitud.estado === "Pago en validación") && (
             <div className="p-4 rounded-xl border border-amber-500/40 bg-amber-500/10 flex items-start gap-3">
@@ -461,7 +506,9 @@ export default function SolicitudDetailPage({ params, searchParams }: PageProps)
                 </h1>
                 <Badge
                   tone={
-                    solicitud.estado === "Aprobada" || solicitud.estado === "Pago validado"
+                    solicitud.estado === "Acceso generado"
+                      ? "success"
+                      : solicitud.estado === "Aprobada" || solicitud.estado === "Pago validado"
                       ? "success"
                       : isRechazada
                       ? "danger"
@@ -470,9 +517,13 @@ export default function SolicitudDetailPage({ params, searchParams }: PageProps)
                       : "info"
                   }
                   appearance="soft"
-                  className="px-3 py-1 text-xs font-semibold"
+                  className={cn(
+                    "px-3 py-1 text-xs font-semibold gap-1.5",
+                    solicitud.estado === "Acceso generado" && "border border-emerald-500/30 text-emerald-700 dark:text-emerald-300 bg-emerald-500/10"
+                  )}
                 >
-                  {solicitud.estado}
+                  {solicitud.estado === "Acceso generado" && <ShieldCheck className="size-3.5 text-emerald-600 dark:text-emerald-400" />}
+                  <span>{solicitud.estado}</span>
                 </Badge>
               </div>
 
@@ -536,28 +587,17 @@ export default function SolicitudDetailPage({ params, searchParams }: PageProps)
               {role === "FACTURACION" && (
                 <>
                   {solicitud.estado === "Pago pendiente" && (
-                    <>
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => setModalFactura(true)}
-                        className="gap-1.5 border-border"
-                      >
-                        <Receipt className="size-4 text-primary" />
-                        Ver factura
-                      </Button>
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => {
-                          simularPagoRealizado(solicitud.id);
-                          toast.success("Pago registrado externamente. Solicitud pasó a Pendiente de validación de pago.");
-                        }}
-                        className="text-xs text-muted-foreground hover:text-foreground"
-                      >
-                        Simular pago bancario
-                      </Button>
-                    </>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => {
+                        simularPagoRealizado(solicitud.id);
+                        toast.success("Pago registrado externamente. Solicitud pasó a Pendiente de validación de pago.");
+                      }}
+                      className="text-xs text-muted-foreground hover:text-foreground"
+                    >
+                      Simular pago bancario (externo)
+                    </Button>
                   )}
 
                   {(solicitud.estado === "Pendiente de validación de pago" || solicitud.estado === "Pago en validación") && (
@@ -607,16 +647,45 @@ export default function SolicitudDetailPage({ params, searchParams }: PageProps)
                 </>
               )}
 
-              {/* Rol Coordinador: si es privada con factura */}
-              {role === "COORDINADOR_SINARP" && solicitud.tipoInstitucion === "Privada" && solicitud.factura && (
+              {/* Rol Coordinador: si es privada con factura o corregir solicitud cuando está rechazada */}
+              {role === "COORDINADOR_SINARP" && (
+                <>
+                  {solicitud.tipoInstitucion === "Privada" && solicitud.factura && solicitud.estado !== "Pago pendiente" && (
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => setModalFactura(true)}
+                      className="gap-1.5 border-border"
+                    >
+                      <Receipt className="size-4 text-primary" />
+                      Ver factura
+                    </Button>
+                  )}
+                  {isRechazada && (
+                    <Button
+                      size="sm"
+                      onClick={() => {
+                        setCorrectionStep(targetCorrectionStep);
+                        setModoCorreccion(true);
+                      }}
+                      className="gap-2 font-semibold shadow-sm bg-primary text-primary-foreground"
+                    >
+                      <Edit className="size-4" />
+                      Corregir solicitud
+                    </Button>
+                  )}
+                </>
+              )}
+
+              {/* Acción para Acceso generado (disponible para todos los roles) */}
+              {solicitud.estado === "Acceso generado" && (
                 <Button
-                  variant="outline"
                   size="sm"
-                  onClick={() => setModalFactura(true)}
-                  className="gap-1.5 border-border"
+                  onClick={() => setIsModalCredencialesOpen(true)}
+                  className="gap-2 font-semibold shadow-sm bg-emerald-600 hover:bg-emerald-700 text-white"
                 >
-                  <Receipt className="size-4 text-primary" />
-                  Ver factura
+                  <KeyRound className="size-4" />
+                  Ver credenciales
                 </Button>
               )}
             </div>
@@ -676,7 +745,7 @@ export default function SolicitudDetailPage({ params, searchParams }: PageProps)
                         </div>
 
                         <div className="flex items-center gap-2">
-                          {solicitud.factura && (
+                          {solicitud.factura && solicitud.estado !== "Pago pendiente" && (
                             <Button
                               variant="outline"
                               size="sm"
@@ -708,9 +777,13 @@ export default function SolicitudDetailPage({ params, searchParams }: PageProps)
                           <span className="text-[10px] text-muted-foreground block font-mono">{solicitud.contrato || "CONTR-2026-0019"}</span>
                         </div>
                         <div className="p-3 rounded-lg border border-border bg-muted/20">
-                          <span className="text-muted-foreground block text-[11px]">Factura Emitida:</span>
-                          <span className="font-bold text-foreground font-mono">{solicitud.factura?.numero || "FAC-0028"}</span>
-                          <span className="text-[10px] text-muted-foreground block">{solicitud.factura?.fechaEmision || solicitud.fecha.substring(0, 10)}</span>
+                          <span className="text-muted-foreground block text-[11px]">Facturación:</span>
+                          <span className="font-bold text-foreground font-mono">
+                            {solicitud.estado === "Pago pendiente" ? "Sistema externo (SIGEF)" : (solicitud.factura?.numero || "FAC-0028")}
+                          </span>
+                          <span className="text-[10px] text-muted-foreground block">
+                            {solicitud.estado === "Pago pendiente" ? "Emisión y pago externo" : (solicitud.factura?.fechaEmision || solicitud.fecha.substring(0, 10))}
+                          </span>
                         </div>
                         <div className="p-3 rounded-lg border border-border bg-muted/20">
                           <span className="text-muted-foreground block text-[11px]">Valor Liquidado:</span>
@@ -779,16 +852,32 @@ export default function SolicitudDetailPage({ params, searchParams }: PageProps)
                             Paso 1: Campos seleccionados
                           </h3>
                           <p className="text-xs text-muted-foreground mt-0.5">
-                            Fuente consultada: <strong className="text-foreground font-semibold">{solicitud.fuentes?.[0]?.nombre || solicitud.fuentePrincipal || "Registro Civil de Ciudadanos"}</strong>
+                            Institución: <strong className="text-foreground font-semibold">{solicitud.fuentes?.[0]?.nombre || solicitud.fuentePrincipal || "Registro Civil de Ciudadanos"}</strong>
                             {solicitud.servicioPrincipal && (
-                              <span className="text-muted-foreground font-normal"> · Servicio: <strong className="text-foreground font-semibold">{solicitud.servicioPrincipal}</strong></span>
+                              <span className="text-muted-foreground font-normal"> · Fuente: <strong className="text-foreground font-semibold">{solicitud.servicioPrincipal}</strong></span>
                             )}
                           </p>
                         </div>
                       </div>
-                      <Badge tone="neutral" appearance="outline" className="text-xs font-semibold w-fit">
-                        {todosLosCampos.length} campo(s)
-                      </Badge>
+                      <div className="flex items-center gap-2">
+                        <Badge tone="neutral" appearance="outline" className="text-xs font-semibold w-fit">
+                          {todosLosCampos.length} campo(s)
+                        </Badge>
+                        {role === "COORDINADOR_SINARP" && isRechazada && (
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => {
+                              setCorrectionStep(1);
+                              setModoCorreccion(true);
+                            }}
+                            className="h-7 text-xs gap-1 text-muted-foreground hover:text-foreground"
+                          >
+                            <Edit className="size-3" />
+                            Editar campos
+                          </Button>
+                        )}
+                      </div>
                     </div>
 
                     {/* Campos seleccionados */}
@@ -850,16 +939,32 @@ export default function SolicitudDetailPage({ params, searchParams }: PageProps)
                         </span>
                         <div>
                           <h3 className="font-bold text-base text-foreground">
-                            Paso 2: Justificaciones y Fundamentos declarados
+                            Paso 2: Finalidad de uso y justificación jurídica declaradas
                           </h3>
                           <p className="text-xs text-muted-foreground mt-0.5">
-                            Finalidad de uso y fundamentación legal declarada para cada campo
+                            Finalidad de uso (campos accesibles) y justificación jurídica (campos confidenciales)
                           </p>
                         </div>
                       </div>
-                      <Badge tone="neutral" appearance="outline" className="text-xs font-semibold w-fit">
-                        {todosLosCampos.length} justificado(s)
-                      </Badge>
+                      <div className="flex items-center gap-2">
+                        <Badge tone="neutral" appearance="outline" className="text-xs font-semibold w-fit">
+                          {todosLosCampos.length} justificado(s)
+                        </Badge>
+                        {role === "COORDINADOR_SINARP" && isRechazada && (
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => {
+                              setCorrectionStep(2);
+                              setModoCorreccion(true);
+                            }}
+                            className="h-7 text-xs gap-1 text-muted-foreground hover:text-foreground"
+                          >
+                            <Edit className="size-3" />
+                            Editar justificaciones
+                          </Button>
+                        )}
+                      </div>
                     </div>
 
                     <div className="flex flex-col gap-4">
@@ -1042,6 +1147,32 @@ export default function SolicitudDetailPage({ params, searchParams }: PageProps)
                       </div>
                     )}
                   </Card>
+
+                  {/* Banner de acción de corrección si la solicitud está rechazada o con observaciones */}
+                  {role === "COORDINADOR_SINARP" && isRechazada && (
+                    <div className="p-4 sm:p-5 rounded-2xl border border-destructive/40 bg-destructive/5 flex flex-col sm:flex-row sm:items-center justify-between gap-4 mt-2">
+                      <div className="flex items-start gap-3">
+                        <AlertTriangle className="size-5 text-destructive shrink-0 mt-0.5" />
+                        <div>
+                          <p className="text-sm font-bold text-foreground">Solicitud pendiente de corrección y subsanación</p>
+                          <p className="text-xs text-muted-foreground mt-0.5">
+                            {solicitud.motivoRechazo || solicitud.observaciones || "Ajuste los campos o justificaciones observadas y remita nuevamente la solicitud para aprobación."}
+                          </p>
+                        </div>
+                      </div>
+                      <Button
+                        size="sm"
+                        onClick={() => {
+                          setCorrectionStep(targetCorrectionStep);
+                          setModoCorreccion(true);
+                        }}
+                        className="gap-2 bg-primary text-primary-foreground font-semibold shrink-0 shadow-sm"
+                      >
+                        <Edit className="size-4" />
+                        Corregir solicitud ahora
+                      </Button>
+                    </div>
+                  )}
                 </div>
               )}
 
@@ -1084,7 +1215,7 @@ export default function SolicitudDetailPage({ params, searchParams }: PageProps)
 
       {/* ─── MODAL 1: APROBAR SOLICITUD (ROL APROBADOR - CARGA DE INFORME) ─── */}
       <Dialog open={isAprobarModalOpen} onOpenChange={setIsAprobarModalOpen}>
-        <DialogContent size="lg">
+        <DialogContent size="4xl">
           <DialogHeader>
             <DialogTitle className="text-xl font-bold text-foreground flex items-center gap-2">
               <FileSignature className="size-5 text-primary" />
@@ -1246,7 +1377,7 @@ export default function SolicitudDetailPage({ params, searchParams }: PageProps)
               Factura Electrónica {solicitud.factura?.numero || "FAC-0028"}
             </DialogTitle>
             <DialogDescription className="text-xs text-muted-foreground">
-              Comprobante de cobro oficial por acceso a servicios de interoperabilidad.
+              Comprobante de cobro oficial por acceso a fuentes de interoperabilidad.
             </DialogDescription>
           </DialogHeader>
 
@@ -1277,12 +1408,12 @@ export default function SolicitudDetailPage({ params, searchParams }: PageProps)
             </div>
 
             <div>
-              <span className="font-semibold text-foreground text-xs block mb-2">Desglose de servicios tasados:</span>
+              <span className="font-semibold text-foreground text-xs block mb-2">Desglose de fuentes tasadas:</span>
               <div className="border border-border rounded-lg overflow-hidden">
                 <table className="w-full text-xs">
                   <thead className="bg-muted/70 text-muted-foreground border-b border-border text-left">
                     <tr>
-                      <th className="p-2.5">Concepto / Servicio</th>
+                      <th className="p-2.5">Concepto / Fuente</th>
                       <th className="p-2.5 text-right">Tarifa</th>
                     </tr>
                   </thead>
@@ -1305,7 +1436,18 @@ export default function SolicitudDetailPage({ params, searchParams }: PageProps)
             </div>
           </div>
 
-          <DialogFooter className="pt-2 border-t border-border/60">
+          <DialogFooter className="pt-2 border-t border-border/60 flex items-center justify-between sm:justify-between w-full">
+            <Link href="/wireframes2/acceso-interoperabilidad/solicitudes">
+              <Button
+                variant="outline"
+                size="sm"
+                className="gap-1.5 text-xs text-muted-foreground hover:text-foreground"
+                onClick={() => setModalFactura(false)}
+              >
+                <ArrowLeft className="size-3.5" />
+                Volver a la bandeja de solicitudes
+              </Button>
+            </Link>
             <Button variant="outline" size="sm" onClick={() => setModalFactura(false)}>
               Cerrar
             </Button>
@@ -1554,6 +1696,279 @@ export default function SolicitudDetailPage({ params, searchParams }: PageProps)
               Confirmar validación
             </Button>
           </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* ─── MODAL: CREDENCIALES ─── */}
+      <Dialog open={isModalCredencialesOpen} onOpenChange={setIsModalCredencialesOpen}>
+        <DialogContent size="lg" className="max-w-2xl">
+          {(() => {
+            const creds = solicitud.credenciales || {
+              usuario: `ws_${solicitud.institucion.toLowerCase().replace(/[^a-z0-9]/g, "").slice(0, 10)}_${solicitud.id.toLowerCase().replace(/[^a-z0-9]/g, "")}`,
+              contrasena: `Dinarp$ec2026_${solicitud.id.replace(/[^0-9]/g, "")}*K9`,
+              endpoint: `https://interoperabilidad.dinarp.gob.ec/api/v2/servicios/${solicitud.id.toLowerCase()}`,
+              tipoAutenticacion: "OAuth 2.0 (Bearer Token)",
+              ambiente: "Producción (Ambiente Seguro DINARP)",
+              fechaGeneracion: solicitud.ultimaActualizacion || "2026-08-25",
+              fechaExpiracion: "2027-08-25 23:59 (Activa)",
+              camposAutorizados: solicitud.fuentes?.flatMap((f) => f.campos?.map((c) => c.nombre) || []) || ["cedulaCiudadania", "nombresCompletos"]
+            };
+
+            const camposDetalle = solicitud.fuentes?.flatMap((f) => f.campos || []) || [];
+
+            const handleCopy = (text: string, label: string) => {
+              navigator.clipboard.writeText(text);
+              setCopiedField(label);
+              toast.success(`${label} copiado al portapapeles`);
+              setTimeout(() => setCopiedField(null), 2000);
+            };
+
+            const handleCopyAll = () => {
+              const listadoCampos = camposDetalle.length > 0
+                ? camposDetalle.map((c) => `  - ${c.nombre} (${c.clasificacion}): ${c.finalidad || c.descripcion || ""}`).join("\n")
+                : (creds.camposAutorizados || []).map((c) => `  - ${c}`).join("\n");
+
+              const fullText = [
+                `=== CREDENCIALES DE ACCESO A INTEROPERABILIDAD ===`,
+                `Solicitud: ${solicitud.id}`,
+                `Institución: ${solicitud.institucion}`,
+                `Servicio: ${solicitud.servicioPrincipal || solicitud.fuentePrincipal || "Consulta de Interoperabilidad"}`,
+                `Ambiente: ${creds.ambiente || "Producción"}`,
+                `Tipo de Autenticación: ${creds.tipoAutenticacion || "OAuth 2.0"}`,
+                `Endpoint: ${creds.endpoint}`,
+                `Usuario: ${creds.usuario}`,
+                `Contraseña: ${creds.contrasena}`,
+                `Vigencia: ${creds.fechaExpiracion || "1 año"}`,
+                `\nCampos autorizados:\n${listadoCampos}`,
+                `\nDINARP - Dirección Nacional de Registros Públicos`
+              ].join("\n");
+
+              navigator.clipboard.writeText(fullText);
+              toast.success("Credenciales completas copiadas al portapapeles");
+            };
+
+            return (
+              <>
+                <DialogHeader>
+                  <div className="flex items-center justify-between pr-6">
+                    <DialogTitle className="text-lg font-bold text-foreground flex items-center gap-2">
+                      <div className="size-8 rounded-lg bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 flex items-center justify-center">
+                        <KeyRound className="size-4" />
+                      </div>
+                      <span>Credenciales</span>
+                    </DialogTitle>
+                    <Badge tone="success" appearance="soft" size="sm" className="border border-emerald-500/30 text-emerald-700 dark:text-emerald-300">
+                      <span className="size-1.5 rounded-full bg-emerald-500 animate-pulse mr-1" />
+                      Acceso activo
+                    </Badge>
+                  </div>
+                  <DialogDescription className="text-xs text-muted-foreground mt-1">
+                    Credenciales técnicas y catálogo de campos autorizados para el consumo del servicio de interoperabilidad.
+                  </DialogDescription>
+                </DialogHeader>
+
+                <div className="space-y-4 my-2 max-h-[70vh] overflow-y-auto pr-1">
+                  {/* Resumen de servicio e institución */}
+                  <div className="p-3.5 rounded-xl bg-muted/40 border border-border/80 text-xs grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <div>
+                      <span className="text-muted-foreground block text-[11px]">Solicitud:</span>
+                      <strong className="text-foreground font-mono">{solicitud.id}</strong>
+                    </div>
+                    <div>
+                      <span className="text-muted-foreground block text-[11px]">Institución:</span>
+                      <strong className="text-foreground truncate block">{solicitud.institucion}</strong>
+                    </div>
+                    <div>
+                      <span className="text-muted-foreground block text-[11px]">Servicio de Interoperabilidad:</span>
+                      <strong className="text-foreground truncate block">{solicitud.servicioPrincipal || solicitud.fuentePrincipal || "Consulta de Datos"}</strong>
+                    </div>
+                    <div>
+                      <span className="text-muted-foreground block text-[11px]">Ambiente y Autenticación:</span>
+                      <span className="text-foreground font-medium">{creds.tipoAutenticacion || "OAuth 2.0"} · {creds.ambiente?.split(" ")[0] || "Producción"}</span>
+                    </div>
+                  </div>
+
+                  {/* Parámetros de conexión: Usuario y Contraseña */}
+                  <div className="space-y-3">
+                    <div className="space-y-1.5">
+                      <label className="text-xs font-semibold text-foreground flex items-center justify-between">
+                        <span>Usuario</span>
+                        <span className="text-[10px] text-muted-foreground">Identificador de cliente (Client ID / API User)</span>
+                      </label>
+                      <div className="relative flex items-center">
+                        <input
+                          type="text"
+                          readOnly
+                          value={creds.usuario}
+                          className="w-full px-3 py-2 pr-10 text-xs font-mono rounded-lg border border-border bg-muted/20 text-foreground select-all focus:outline-none"
+                        />
+                        <Button
+                          variant="ghost"
+                          size="icon-xs"
+                          type="button"
+                          onClick={() => handleCopy(creds.usuario, "Usuario")}
+                          className="absolute right-1 text-muted-foreground hover:text-foreground"
+                          title="Copiar usuario"
+                        >
+                          {copiedField === "Usuario" ? <Check className="size-3.5 text-emerald-600" /> : <Copy className="size-3.5" />}
+                        </Button>
+                      </div>
+                    </div>
+
+                    <div className="space-y-1.5">
+                      <label className="text-xs font-semibold text-foreground flex items-center justify-between">
+                        <span>Contraseña</span>
+                        <span className="text-[10px] text-muted-foreground">Secreto de autenticación (Client Secret / Token)</span>
+                      </label>
+                      <div className="relative flex items-center">
+                        <input
+                          type={showPassword ? "text" : "password"}
+                          readOnly
+                          value={creds.contrasena}
+                          className="w-full px-3 py-2 pr-20 text-xs font-mono rounded-lg border border-border bg-muted/20 text-foreground select-all focus:outline-none"
+                        />
+                        <div className="absolute right-1 flex items-center gap-0.5">
+                          <Button
+                            variant="ghost"
+                            size="icon-xs"
+                            type="button"
+                            onClick={() => setShowPassword(!showPassword)}
+                            className="text-muted-foreground hover:text-foreground"
+                            title={showPassword ? "Ocultar contraseña" : "Ver contraseña"}
+                          >
+                            {showPassword ? <EyeOff className="size-3.5" /> : <Eye className="size-3.5" />}
+                          </Button>
+                          <Button
+                            variant="ghost"
+                            size="icon-xs"
+                            type="button"
+                            onClick={() => handleCopy(creds.contrasena, "Contraseña")}
+                            className="text-muted-foreground hover:text-foreground"
+                            title="Copiar contraseña"
+                          >
+                            {copiedField === "Contraseña" ? <Check className="size-3.5 text-emerald-600" /> : <Copy className="size-3.5" />}
+                          </Button>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="space-y-1.5">
+                      <label className="text-xs font-semibold text-foreground flex items-center justify-between">
+                        <span>Endpoint</span>
+                        <span className="text-[10px] text-muted-foreground">URL base para el consumo seguro</span>
+                      </label>
+                      <div className="relative flex items-center">
+                        <input
+                          type="text"
+                          readOnly
+                          value={creds.endpoint}
+                          className="w-full px-3 py-2 pr-10 text-xs font-mono rounded-lg border border-border bg-muted/20 text-foreground select-all focus:outline-none"
+                        />
+                        <Button
+                          variant="ghost"
+                          size="icon-xs"
+                          type="button"
+                          onClick={() => handleCopy(creds.endpoint, "Endpoint")}
+                          className="absolute right-1 text-muted-foreground hover:text-foreground"
+                          title="Copiar endpoint"
+                        >
+                          {copiedField === "Endpoint" ? <Check className="size-3.5 text-emerald-600" /> : <Copy className="size-3.5" />}
+                        </Button>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Campos autorizados */}
+                  <div className="space-y-2 pt-2 border-t border-border/60">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <label className="text-xs font-semibold text-foreground">Campos autorizados</label>
+                        <Badge tone="neutral" appearance="outline" size="sm" className="text-[10px] px-1.5 py-0">
+                          {camposDetalle.length || creds.camposAutorizados?.length || 0} campos
+                        </Badge>
+                      </div>
+                      <span className="text-[11px] text-muted-foreground">Habilitados en la credencial</span>
+                    </div>
+
+                    <div className="rounded-xl border border-border/80 overflow-hidden divide-y divide-border/60 bg-surface">
+                      {camposDetalle.length > 0 ? (
+                        camposDetalle.map((campo) => (
+                          <div key={campo.id || campo.nombre} className="p-3 text-xs flex flex-col sm:flex-row sm:items-center justify-between gap-2 hover:bg-muted/20 transition-colors">
+                            <div className="space-y-0.5">
+                              <div className="flex items-center gap-2">
+                                <span className="font-mono font-semibold text-foreground bg-muted/60 px-1.5 py-0.5 rounded text-[11px]">{campo.nombre}</span>
+                                <Badge
+                                  tone={campo.clasificacion === "Confidencial" ? "warning" : "neutral"}
+                                  appearance="outline"
+                                  size="sm"
+                                  className="text-[10px] px-1.5 py-0"
+                                >
+                                  {campo.clasificacion}
+                                </Badge>
+                              </div>
+                              <p className="text-[11px] text-muted-foreground line-clamp-1">{campo.finalidad || campo.descripcion}</p>
+                            </div>
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              onClick={() => handleCopy(campo.nombre, `Campo ${campo.nombre}`)}
+                              className="self-end sm:self-center text-[10px] text-muted-foreground hover:text-foreground gap-1 h-6 px-2"
+                            >
+                              <Copy className="size-3" />
+                              <span>Copiar campo</span>
+                            </Button>
+                          </div>
+                        ))
+                      ) : (
+                        (creds.camposAutorizados || []).map((nombreCampo) => (
+                          <div key={nombreCampo} className="p-2.5 text-xs flex items-center justify-between hover:bg-muted/20">
+                            <span className="font-mono font-semibold text-foreground bg-muted/60 px-1.5 py-0.5 rounded text-[11px]">{nombreCampo}</span>
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              onClick={() => handleCopy(nombreCampo, `Campo ${nombreCampo}`)}
+                              className="text-[10px] text-muted-foreground hover:text-foreground gap-1 h-6 px-2"
+                            >
+                              <Copy className="size-3" />
+                              <span>Copiar</span>
+                            </Button>
+                          </div>
+                        ))
+                      )}
+                    </div>
+                  </div>
+
+                  {/* Advertencia de confidencialidad */}
+                  <div className="p-3 rounded-xl bg-amber-500/10 border border-amber-500/30 text-xs flex items-start gap-2.5">
+                    <AlertTriangle className="size-4 text-amber-600 dark:text-amber-400 shrink-0 mt-0.5" />
+                    <p className="text-[11px] text-amber-800 dark:text-amber-200 leading-relaxed">
+                      <strong>Uso confidencial:</strong> Las credenciales son intransferibles y deben almacenarse de forma segura en los servidores de la institución solicitante. No deben incluirse en código fuente público ni exponerse en clientes frontend.
+                    </p>
+                  </div>
+                </div>
+
+                <DialogFooter className="pt-3 border-t border-border/60 flex flex-col sm:flex-row gap-2 justify-between items-center">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={handleCopyAll}
+                    className="w-full sm:w-auto text-xs font-semibold gap-1.5 border-border"
+                  >
+                    <Copy className="size-3.5" />
+                    <span>Copiar credenciales</span>
+                  </Button>
+
+                  <Button
+                    size="sm"
+                    onClick={() => setIsModalCredencialesOpen(false)}
+                    className="w-full sm:w-auto bg-primary text-primary-foreground font-semibold"
+                  >
+                    Cerrar
+                  </Button>
+                </DialogFooter>
+              </>
+            );
+          })()}
         </DialogContent>
       </Dialog>
     </WireframeDashboardLayout>

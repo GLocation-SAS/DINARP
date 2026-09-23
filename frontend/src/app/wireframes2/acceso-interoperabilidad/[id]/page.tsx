@@ -118,7 +118,7 @@ export default function DetalleSolicitudAccesoPage({ params }: { params: { id: s
                   <p className="text-xs text-muted-foreground">{c.institucion} &gt; {c.fuente}</p>
                   <div className="flex items-center gap-2 mt-1">
                     <h3 className="font-bold">{c.nombre}</h3>
-                    <Badge variant="outline" className="text-[10px]">{c.clasificacion}</Badge>
+                    <Badge appearance="outline" tone="neutral" className="text-[10px]">{c.clasificacion}</Badge>
                   </div>
                   <p className="text-sm mt-2 text-muted-foreground">Estado de revisión: <strong>{c.estado}</strong></p>
                 </Card>

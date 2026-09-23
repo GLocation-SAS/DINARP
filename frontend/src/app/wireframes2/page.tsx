@@ -26,7 +26,7 @@ export default function Wireframes2HubPage() {
     {
       titulo: "Consulta",
       ruta: "/wireframes2/catalogo-interoperabilidad",
-      descripcion: "Explora las instituciones, fuentes, servicios y campos publicados disponibles en el Catálogo de Interoperabilidad.",
+      descripcion: "Explora las instituciones, fuentes y campos publicados disponibles en el Catálogo de Interoperabilidad.",
       icon: Search,
       tag: "Solo Publicados"
     },
@@ -96,7 +96,7 @@ export default function Wireframes2HubPage() {
                   </Badge>
                 </div>
                 <p className="text-xs text-muted-foreground mt-1 max-w-3xl leading-relaxed">
-                  Módulo integral para la gobernanza, consulta, gestión técnica y ciclo de vida de las fuentes de datos y servicios de interoperabilidad del Estado ecuatoriano.
+                  Módulo integral para la gobernanza, consulta, gestión técnica y ciclo de vida de las fuentes de datos de interoperabilidad del Estado ecuatoriano.
                 </p>
               </div>
             </div>

@@ -245,10 +245,10 @@ export default function CatalogoConsultaPage() {
         <div className="border border-border rounded-xl bg-surface p-6 sm:p-8 flex flex-col gap-5 sm:gap-6 shadow-xs">
           <div className="flex flex-col gap-1 min-w-0">
             <h1 className="font-heading text-2xl md:text-3xl font-bold tracking-tight text-foreground">
-              Consulta de Servicios Digitales
+              Consulta de Fuentes de Datos
             </h1>
             <p className="text-sm text-muted-foreground whitespace-nowrap">
-              Explora las instituciones, fuentes, servicios y campos publicados disponibles en el Catálogo de Interoperabilidad.
+              Explora las instituciones, fuentes y campos publicados disponibles en el Catálogo de Interoperabilidad.
             </p>
           </div>
 
@@ -323,7 +323,7 @@ export default function CatalogoConsultaPage() {
               <div data-tour="tour-search" className="sm:col-span-12 lg:col-span-5 space-y-1.5">
                 <label className="text-xs font-medium text-muted-foreground whitespace-nowrap block">Búsqueda general</label>
                 <SearchInput
-                  placeholder="Buscar por institución, fuente, servicio o campo..."
+                  placeholder="Buscar por institución, fuente o campo..."
                   value={searchTerm}
                   onChange={e => setSearchTerm(e.target.value)}
                   onClear={() => setSearchTerm("")}
@@ -477,7 +477,7 @@ export default function CatalogoConsultaPage() {
                     {searchTerm ? `No encontramos resultados para "${searchTerm}".` : "No se encontraron resultados."}
                   </h3>
                   <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed max-w-md">
-                    Intenta buscar por institución, fuente, servicio o campo.
+                    Intenta buscar por institución, fuente o campo.
                   </p>
                 </div>
 
@@ -522,7 +522,7 @@ export default function CatalogoConsultaPage() {
                               {institucion.sigla}
                             </span>
                             <span className="text-muted-foreground/60 text-xs">•</span>
-                            <Badge appearance="soft" tone={institucion.sector.toLowerCase().includes("público") ? "info" : "neutral"} className="h-5 px-1.5 text-[10px] uppercase tracking-wider font-semibold">
+                            <Badge appearance="soft" tone="neutral" className="h-5 px-1.5 text-[10px] uppercase tracking-wider font-semibold">
                               Sector {institucion.sector.toLowerCase().includes("público") ? "público" : "privado"}
                             </Badge>
                             {institucion.sector.includes("-") && (
@@ -578,7 +578,7 @@ export default function CatalogoConsultaPage() {
                       </div>
                     </div>
 
-                    {/* Nivel 2: FUENTE / SERVICIO */}
+                    {/* Nivel 2: FUENTE */}
                     {isInstExpanded && (
                       <div className="p-4 sm:p-6 flex flex-col gap-8 bg-card border-t border-border">
                         {institucion.fuentes.map(fuente => {
@@ -608,9 +608,9 @@ export default function CatalogoConsultaPage() {
                               <div className="flex flex-col gap-3">
                                 <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-3">
                                   <div className="space-y-1.5 min-w-0">
-                                    <h3 className="font-heading text-base sm:text-lg font-bold text-foreground/80 flex items-center gap-2">
-                                      <Database className="size-4.5 text-muted-foreground/60" />
-                                      Servicio: {fuente.nombre}
+                                    <h3 className="font-heading text-base sm:text-lg font-bold text-foreground flex items-center gap-2">
+                                      <Database className="size-4.5 text-muted-foreground" />
+                                      Fuente: {fuente.nombre}
                                     </h3>
                                     <p className="text-xs text-muted-foreground leading-relaxed">
                                       {fuente.descripcion}
@@ -623,7 +623,7 @@ export default function CatalogoConsultaPage() {
                                       size="sm"
                                       data-tour={fuente.id === "FNT-001" ? "tour-ver-campos" : undefined}
                                       onClick={() => toggleFuente(fuente.id)}
-                                      className="text-xs h-8 gap-1.5 font-medium border-border/80 hover:bg-muted"
+                                      className="text-xs h-8 gap-1.5 font-medium border-border/80 hover:bg-muted text-foreground"
                                     >
                                       <Layers className="size-3.5 text-muted-foreground" />
                                       <span>{isFuenteExpanded ? "Ocultar campos" : "Ver campos"}</span>
@@ -638,10 +638,10 @@ export default function CatalogoConsultaPage() {
 
                                 {/* Metadatos Técnicos Reducidos */}
                                 <div className="flex flex-wrap items-center gap-2.5 text-[11px] text-muted-foreground bg-muted/20 p-2.5 rounded-lg border border-border/40">
-                                  <Badge appearance="outline" className="h-5 px-1.5 text-[10px] font-mono font-medium text-foreground/80 bg-background">
+                                  <Badge appearance="outline" tone="neutral" className="h-5 px-1.5 text-[10px] font-mono font-medium text-foreground bg-background">
                                     {meta.codigo}
                                   </Badge>
-                                  <Badge appearance="outline" className="h-5 px-1.5 text-[10px] font-mono font-medium text-foreground/80 bg-background">
+                                  <Badge appearance="outline" tone="neutral" className="h-5 px-1.5 text-[10px] font-mono font-medium text-foreground bg-background">
                                     {meta.version}
                                   </Badge>
                                   <span className="text-border/80 hidden sm:inline">•</span>

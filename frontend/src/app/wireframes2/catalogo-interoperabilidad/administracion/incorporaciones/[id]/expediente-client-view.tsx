@@ -1028,7 +1028,7 @@ export function ExpedienteClientView({ initialExpediente }: ExpedienteClientView
                 <span className="text-foreground text-sm font-mono font-medium">{expediente.codigoFuente}</span>
               </div>
               <div className="flex flex-col gap-1 sm:col-span-2">
-                <span className="text-muted-foreground font-semibold">Descripción del servicio:</span>
+                <span className="text-muted-foreground font-semibold">Descripción de la fuente:</span>
                 <p className="text-foreground leading-relaxed">{expediente.descripcion}</p>
               </div>
               <div className="flex flex-col gap-1">

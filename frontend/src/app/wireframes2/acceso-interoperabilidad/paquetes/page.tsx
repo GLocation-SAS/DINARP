@@ -143,7 +143,7 @@ export default function PaquetesConsumoPage() {
                   <TableHead>Código de paquete</TableHead>
                   <TableHead>Solicitud relacionada</TableHead>
                   <TableHead>Institución</TableHead>
-                  <TableHead>Fuente / servicio</TableHead>
+                  <TableHead>Fuente</TableHead>
                   <TableHead>Campos</TableHead>
                   <TableHead>Estado</TableHead>
                   <TableHead>Responsable actual</TableHead>
@@ -172,10 +172,10 @@ export default function PaquetesConsumoPage() {
                           <Tooltip>
                             <TooltipTrigger asChild>
                               <Button
-                                variant="ghost"
+                                variant="outline"
                                 size="icon-sm"
                                 asChild
-                                className="size-8 rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted"
+                                className="size-8 rounded-lg border-border/80 text-foreground hover:bg-muted hover:text-foreground shadow-2xs"
                               >
                                 <Link href={`/wireframes2/acceso-interoperabilidad/paquetes/${p.id}`}>
                                   <Eye className="size-4" />
