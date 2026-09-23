@@ -59,8 +59,6 @@ function TableRow({ className, ...props }: React.ComponentProps<"tr">) {
       className={cn(
         "bg-primary/[0.07] dark:bg-muted-foreground/10",
         "transition-colors hover:bg-primary/10 dark:hover:bg-muted-foreground/20 data-[state=selected]:bg-primary/20",
-        "[&>td:first-child]:rounded-l-md [&>td:last-child]:rounded-r-md",
-        "[&>th:first-child]:rounded-l-md [&>th:last-child]:rounded-r-md",
         className
       )}
       {...props}
@@ -73,7 +71,7 @@ function TableHead({ className, ...props }: React.ComponentProps<"th">) {
     <th
       data-slot="table-head"
       className={cn(
-        "px-4 first:pl-6 last:pr-6 py-4 text-left align-middle bg-primary text-white dark:bg-surface-raised dark:text-foreground font-semibold [&:has([role=checkbox])]:pr-0 border-b border-primary/30 dark:border-border/60",
+        "px-4 first:pl-6 last:pr-6 first:rounded-l-xl last:rounded-r-xl py-4 text-left align-middle bg-primary text-white dark:bg-surface-raised dark:text-foreground font-semibold [&:has([role=checkbox])]:pr-0 border-b border-primary/30 dark:border-border/60",
         className
       )}
       {...props}
@@ -86,7 +84,7 @@ function TableCell({ className, ...props }: React.ComponentProps<"td">) {
     <td
       data-slot="table-cell"
       className={cn(
-        "px-4 first:pl-6 last:pr-6 py-3 h-[70px] align-middle [&:has([role=checkbox])]:pr-0",
+        "px-4 first:pl-6 last:pr-6 first:rounded-l-xl last:rounded-r-xl py-3 h-[70px] align-middle [&:has([role=checkbox])]:pr-0",
         className
       )}
       {...props}

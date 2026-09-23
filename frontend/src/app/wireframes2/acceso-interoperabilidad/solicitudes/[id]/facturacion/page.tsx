@@ -7,15 +7,29 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import Link from "next/link";
 import { ArrowLeft, FileText, Download, CreditCard, CheckCircle2, Clock } from "lucide-react";
+import {
+  Combobox,
+  ComboboxSelectTrigger,
+  ComboboxContent,
+  ComboboxList,
+  ComboboxItem,
+} from "@/components/ui/combobox";
 
-export default function FacturacionPage({ params }: { params: { id: string } }) {
+const estadoPagoOptions = [
+  { value: "Pendiente de pago", label: "Simular: Pendiente de pago" },
+  { value: "Pago en validación", label: "Simular: Pago en validación" },
+  { value: "Pago verificado", label: "Simular: Pago verificado" },
+];
+
+export default function FacturacionPage({ params }: { params: Promise<{ id: string }> }) {
+  const resolvedParams = React.use(params);
   const [estadoPago, setEstadoPago] = useState("Pendiente de pago");
 
   // Mock data
   const factura = {
     numero: "FAC-0028",
     institucion: "Banco Pichincha",
-    solicitud: params.id,
+    solicitud: resolvedParams.id,
     fechaEmision: "2026-09-22",
     valor: "$ 150.00",
     servicios: [
@@ -30,24 +44,33 @@ export default function FacturacionPage({ params }: { params: { id: string } }) 
       breadcrumbs={[
         { label: "Acceso a Interoperabilidad", href: "/wireframes2/acceso-interoperabilidad" },
         { label: "Gestión de solicitudes", href: "/wireframes2/acceso-interoperabilidad/solicitudes" },
-        { label: params.id, href: `/wireframes2/acceso-interoperabilidad/solicitudes/${params.id}` },
+        { label: resolvedParams.id, href: `/wireframes2/acceso-interoperabilidad/solicitudes/${resolvedParams.id}` },
         { label: "Facturación" }
       ]}
       headerSlot={
-        <select
-          className="h-8 text-xs px-2 py-1 rounded-md border border-border bg-surface text-foreground"
-          value={estadoPago}
-          onChange={(e) => setEstadoPago(e.target.value)}
+        <Combobox
+          items={estadoPagoOptions}
+          value={estadoPagoOptions.find(opt => opt.value === estadoPago) || estadoPagoOptions[0]}
+          onValueChange={(val) => {
+            if (val) setEstadoPago(val.value);
+          }}
         >
-          <option value="Pendiente de pago">Simular: Pendiente de pago</option>
-          <option value="Pago en validación">Simular: Pago en validación</option>
-          <option value="Pago verificado">Simular: Pago verificado</option>
-        </select>
+          <ComboboxSelectTrigger className="h-8 text-xs min-w-[190px]" />
+          <ComboboxContent align="start" className="min-w-[200px]">
+            <ComboboxList>
+              {estadoPagoOptions.map((opt) => (
+                <ComboboxItem key={opt.value} value={opt}>
+                  {opt.label}
+                </ComboboxItem>
+              ))}
+            </ComboboxList>
+          </ComboboxContent>
+        </Combobox>
       }
     >
       <div className="w-full max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex flex-col gap-6">
         <div>
-          <Link href={`/wireframes2/acceso-interoperabilidad/solicitudes/${params.id}`}>
+          <Link href={`/wireframes2/acceso-interoperabilidad/solicitudes/${resolvedParams.id}`}>
             <Button variant="ghost" size="sm" className="mb-4 pl-0">
               <ArrowLeft className="w-4 h-4 mr-2" />
               Volver a la solicitud
@@ -67,7 +90,7 @@ export default function FacturacionPage({ params }: { params: { id: string } }) 
                 <p>Fecha de emisión: <strong className="text-foreground">{factura.fechaEmision}</strong></p>
                 <p>
                   Solicitud asociada: <strong className="text-foreground">{factura.solicitud}</strong>{" "}
-                  <Link href={`/wireframes2/acceso-interoperabilidad/solicitudes/${params.id}`} className="text-primary hover:underline ml-1">[Ver solicitud]</Link>
+                  <Link href={`/wireframes2/acceso-interoperabilidad/solicitudes/${resolvedParams.id}`} className="text-primary hover:underline ml-1">[Ver solicitud]</Link>
                 </p>
               </div>
             </div>
@@ -97,7 +120,7 @@ export default function FacturacionPage({ params }: { params: { id: string } }) 
               <div>
                 <h3 className="font-medium text-success-foreground text-sm">El pago fue verificado correctamente</h3>
                 <p className="text-sm text-success-foreground/80 mt-1">La solicitud continuará con la creación y habilitación de los paquetes de consumo.</p>
-                <Link href={`/wireframes2/acceso-interoperabilidad/solicitudes/${params.id}`}>
+                <Link href={`/wireframes2/acceso-interoperabilidad/solicitudes/${resolvedParams.id}`}>
                   <Button size="sm" variant="outline" className="mt-3 bg-background">Volver a la solicitud</Button>
                 </Link>
               </div>

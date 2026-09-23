@@ -15,7 +15,6 @@ import {
   Eye,
   FileCheck2,
   ChevronDown,
-  ChevronRight,
   Info,
   Building2,
   ArrowLeftRight,
@@ -29,14 +28,6 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDecorativeIcon } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import {
-  Table,
-  TableHeader,
-  TableRow,
-  TableHead,
-  TableBody,
-  TableCell
-} from "@/components/ui/table";
-import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
@@ -46,11 +37,9 @@ import {
   DropdownMenuRadioGroup,
   DropdownMenuRadioItem
 } from "@/components/ui/dropdown-menu";
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { WireframeDashboardLayout } from "../../components/wireframe-dashboard-layout";
 import { WireframeBreadcrumbs } from "../../components/wireframe-breadcrumbs";
-import { WireframeTour, type TourStep } from "../../components/wireframe-tour";
-import { useSimulatedRole } from "../hooks/use-simulated-role";
+import { CatalogoTour, type TourStep } from "../components/catalogo-tour";
 import {
   INITIAL_EXPEDIENTES,
   ETAPAS_EXPEDIENTE_CONFIG,
@@ -62,7 +51,7 @@ import {
 } from "../data/catalogo-data";
 
 export default function IntegracionesListPage() {
-  const [activeRole, setActiveRole] = useSimulatedRole("COORDINADOR_SINARP");
+  const [activeRole, setActiveRole] = useState<UserRole>("COORDINADOR_SINARP");
   const [searchTerm, setSearchTerm] = useState("");
   const [institucionFilter, setInstitucionFilter] = useState<string>("ALL");
   const [estadoFilter, setEstadoFilter] = useState<string>("ALL");
@@ -106,7 +95,7 @@ export default function IntegracionesListPage() {
   const stats = useMemo(() => {
     return {
       total: INITIAL_EXPEDIENTES.length,
-      enRevisionDGR: INITIAL_EXPEDIENTES.filter(e => e.estadoGeneral === "En revisión DGR").length,
+      enRevision: INITIAL_EXPEDIENTES.filter(e => e.estadoGeneral === "En revisión DGR").length,
       enProceso: INITIAL_EXPEDIENTES.filter(e =>
         e.estadoGeneral === "En validación técnica DTD" ||
         e.estadoGeneral === "En integración y clasificación" ||
@@ -196,12 +185,15 @@ export default function IntegracionesListPage() {
       activeMenu="integracion-fuentes"
       currentRole={activeRole}
       currentUser={currentUser}
-      breadcrumbs={[
-        { label: "Catálogo de Interoperabilidad", href: "/wireframes2/catalogo-interoperabilidad" },
-        { label: "Integración de Fuentes" }
-      ]}
     >
       <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex flex-col gap-6">
+        {/* Breadcrumb */}
+        <WireframeBreadcrumbs
+          segments={[
+            { label: "Catálogo de Interoperabilidad", href: "/wireframes2/catalogo-interoperabilidad" },
+            { label: "Integración de Fuentes" }
+          ]}
+        />
 
         {/* Contenedor Principal de Encabezado y Métricas */}
         <div className="border border-border rounded-xl bg-surface p-6 flex flex-col gap-6 shadow-xs">
@@ -245,71 +237,157 @@ export default function IntegracionesListPage() {
             </div>
           </div>
 
+          {/* DEMO ROLE SWITCHER BANNER */}
+          <div data-tour="tour-roles" className="bg-muted/40 border border-border rounded-xl p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div className="flex items-center gap-3">
+              <div className="size-9 rounded-lg bg-background flex items-center justify-center shrink-0 border border-border shadow-xs">
+                <UserCheck className="size-5 text-foreground" />
+              </div>
+              <div>
+                <div className="flex items-center gap-2">
+                  <span className="text-xs font-bold text-foreground uppercase tracking-wider">
+                    Simulación de Perfil Activo:
+                  </span>
+                  <Badge tone="neutral" appearance="soft" size="sm" className="font-semibold">
+                    {ROLES_CONFIG[activeRole].shortName}
+                  </Badge>
+                </div>
+                <p className="text-xs text-muted-foreground mt-0.5">
+                  {ROLES_CONFIG[activeRole].description}
+                </p>
+              </div>
+            </div>
+
+            <div className="flex items-center gap-1.5 flex-wrap">
+              {(["COORDINADOR_SINARP", "DGR", "DTD", "DPI"] as UserRole[]).map(roleKey => {
+                const r = ROLES_CONFIG[roleKey];
+                const isSelected = activeRole === roleKey;
+                return (
+                  <Button
+                    key={roleKey}
+                    variant={isSelected ? "primary" : "outline"}
+                    size="sm"
+                    onClick={() => setActiveRole(roleKey)}
+                    className={`text-xs h-8 ${isSelected ? "shadow-xs" : "bg-background"}`}
+                  >
+                    {r.shortName}
+                  </Button>
+                );
+              })}
+            </div>
+          </div>
+
           {/* Cards de Resumen */}
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3.5">
             <Card
               variant="featured"
               className="bg-card hover:bg-muted/40 border border-border shadow-xs transition-all"
-              innerClassName="p-5 items-start text-left gap-1"
+              innerClassName="p-4 items-start text-left gap-1"
             >
-              <span className="font-heading font-extrabold text-3xl sm:text-4xl text-foreground tracking-tight block">
+              <div className="flex items-center justify-between w-full">
+                <span className="text-[11px] font-medium text-muted-foreground uppercase tracking-wider">
+                  Total
+                </span>
+                <CardDecorativeIcon>
+                  <ArrowLeftRight className="size-4 text-muted-foreground" />
+                </CardDecorativeIcon>
+              </div>
+              <div className="text-2xl sm:text-3xl font-bold font-heading text-foreground mt-1">
                 {stats.total}
-              </span>
-              <span className="text-xs font-semibold text-foreground block">
-                Total de integraciones
-              </span>
-              <span className="text-[11px] text-muted-foreground font-normal">
-                Todas las solicitudes registradas
-              </span>
-              <CardDecorativeIcon>
-                <Layers className="size-24 text-muted-foreground" />
-              </CardDecorativeIcon>
+              </div>
+              <p className="text-[11px] text-muted-foreground">
+                Fuentes en trámite
+              </p>
             </Card>
-
             <Card
               variant="featured"
               className="bg-card hover:bg-muted/40 border border-border shadow-xs transition-all"
-              innerClassName="p-5 items-start text-left gap-1"
+              innerClassName="p-4 items-start text-left gap-1"
             >
-              <span className="font-heading font-extrabold text-3xl sm:text-4xl text-amber-600 tracking-tight block">
-                {stats.conObservaciones + stats.enRevisionDGR + stats.enProceso}
-              </span>
-              <span className="text-xs font-semibold text-amber-600 block">
-                En proceso
-              </span>
-              <span className="text-[11px] text-muted-foreground font-normal">
-                Revisiones, observaciones o validaciones técnicas
-              </span>
-              <CardDecorativeIcon>
-                <Clock className="size-24 text-muted-foreground" />
-              </CardDecorativeIcon>
+              <div className="flex items-center justify-between w-full">
+                <span className="text-[11px] font-medium text-muted-foreground uppercase tracking-wider">
+                  En revisión
+                </span>
+                <CardDecorativeIcon>
+                  <FileText className="size-4 text-blue-600" />
+                </CardDecorativeIcon>
+              </div>
+              <div className="text-2xl sm:text-3xl font-bold font-heading text-blue-600 mt-1">
+                {stats.enRevision}
+              </div>
+              <p className="text-[11px] text-muted-foreground">
+                Revisión formal DGR
+              </p>
             </Card>
-
             <Card
               variant="featured"
               className="bg-card hover:bg-muted/40 border border-border shadow-xs transition-all"
-              innerClassName="p-5 items-start text-left gap-1"
+              innerClassName="p-4 items-start text-left gap-1"
             >
-              <span className="font-heading font-extrabold text-3xl sm:text-4xl text-emerald-600 tracking-tight block">
+              <div className="flex items-center justify-between w-full">
+                <span className="text-[11px] font-medium text-muted-foreground uppercase tracking-wider">
+                  En proceso
+                </span>
+                <CardDecorativeIcon>
+                  <Layers className="size-4 text-purple-600" />
+                </CardDecorativeIcon>
+              </div>
+              <div className="text-2xl sm:text-3xl font-bold font-heading text-purple-600 mt-1">
+                {stats.enProceso}
+              </div>
+              <p className="text-[11px] text-muted-foreground">
+                DTD & DPI en paralelo
+              </p>
+            </Card>
+            <Card
+              variant="featured"
+              className="bg-card hover:bg-muted/40 border border-border shadow-xs transition-all"
+              innerClassName="p-4 items-start text-left gap-1"
+            >
+              <div className="flex items-center justify-between w-full">
+                <span className="text-[11px] font-medium text-muted-foreground uppercase tracking-wider">
+                  Observaciones
+                </span>
+                <CardDecorativeIcon>
+                  <AlertCircle className="size-4 text-amber-600" />
+                </CardDecorativeIcon>
+              </div>
+              <div className="text-2xl sm:text-3xl font-bold font-heading text-amber-600 mt-1">
+                {stats.conObservaciones}
+              </div>
+              <p className="text-[11px] text-muted-foreground">
+                Subsanación requerida
+              </p>
+            </Card>
+            <Card
+              variant="featured"
+              className="bg-card hover:bg-muted/40 border border-border shadow-xs transition-all"
+              innerClassName="p-4 items-start text-left gap-1"
+            >
+              <div className="flex items-center justify-between w-full">
+                <span className="text-[11px] font-medium text-muted-foreground uppercase tracking-wider">
+                  Finalizadas
+                </span>
+                <CardDecorativeIcon>
+                  <CheckCircle2 className="size-4 text-emerald-600" />
+                </CardDecorativeIcon>
+              </div>
+              <div className="text-2xl sm:text-3xl font-bold font-heading text-emerald-600 mt-1">
                 {stats.finalizadas}
-              </span>
-              <span className="text-xs font-semibold text-emerald-600 block">
-                Finalizadas
-              </span>
-              <span className="text-[11px] text-muted-foreground font-normal">
-                Aprobadas y desplegadas en catálogo
-              </span>
-              <CardDecorativeIcon>
-                <CheckCircle2 className="size-24 text-muted-foreground" />
-              </CardDecorativeIcon>
+              </div>
+              <p className="text-[11px] text-muted-foreground">
+                Aprobadas y desplegadas
+              </p>
             </Card>
           </div>
         </div>
 
-        {/* Bloque de Inventario: Filtros y Tabla */}
-        <div className="border border-border rounded-xl bg-surface p-6 flex flex-col gap-6 shadow-xs">
-          {/* Barra de Filtros */}
-          <div className="flex flex-col gap-3">
+        {/* ═══════════════════════════════════════════════════════════
+            CONTENEDOR UNIFICADO: BÚSQUEDA/FILTROS + LÍNEA + RESULTADOS
+           ═══════════════════════════════════════════════════════════ */}
+        <div className="border border-border rounded-2xl bg-card overflow-hidden shadow-xs">
+          {/* Bloque Superior: Barra de Filtros y Búsqueda */}
+          <div className="p-4 sm:p-5 bg-card flex flex-col gap-3">
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5 sm:gap-4 items-end">
               {/* Búsqueda general */}
               <div className="space-y-1.5">
@@ -443,83 +521,76 @@ export default function IntegracionesListPage() {
             )}
           </div>
 
-          {/* Encabezado de Resultados y Conteo */}
-          <div className="flex items-center justify-between border-t border-border/60 pt-4">
-            <span className="text-xs text-muted-foreground">
-              Mostrando <strong className="text-foreground font-semibold">{expedientesFiltrados.length}</strong> de{" "}
-              <strong className="text-foreground font-semibold">{INITIAL_EXPEDIENTES.length}</strong> integraciones
-            </span>
-          </div>
-
           {/* Tabla de Integraciones */}
-          <div data-tour="tour-etapas" className="overflow-x-auto border-y border-border bg-card mt-2">
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>N.º integración</TableHead>
-                  <TableHead>Fuente</TableHead>
-                  <TableHead>Institución</TableHead>
-                  <TableHead>Estado</TableHead>
-                  <TableHead>Etapa actual</TableHead>
-                  <TableHead>Responsable actual</TableHead>
-                  <TableHead>Última actualización</TableHead>
-                  <TableHead className="text-right">Acciones</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
+          <div data-tour="tour-etapas" className="overflow-x-auto border-t border-border bg-surface">
+            <table className="w-full text-left text-sm border-collapse">
+              <thead>
+                <tr className="border-b border-border bg-muted/40 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                  <th className="py-3.5 px-4">N.º integración</th>
+                  <th className="py-3.5 px-4">Fuente</th>
+                  <th className="py-3.5 px-4">Institución</th>
+                  <th className="py-3.5 px-4">Estado</th>
+                  <th className="py-3.5 px-4">Etapa actual</th>
+                  <th className="py-3.5 px-4">Responsable actual</th>
+                  <th className="py-3.5 px-4">Última actualización</th>
+                  <th className="py-3.5 px-4 text-right">Acciones</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-border">
                 {expedientesFiltrados.length === 0 ? (
-                  <TableRow>
-                    <TableCell colSpan={8} className="py-12 text-center text-muted-foreground">
+                  <tr>
+                    <td colSpan={8} className="py-12 text-center text-muted-foreground">
                       <ArrowLeftRight className="size-8 mx-auto mb-2 opacity-40" />
                       <p className="font-medium text-foreground">No se encontraron integraciones</p>
                       <p className="text-xs mt-1">Ajusta los filtros o criterios de búsqueda.</p>
-                    </TableCell>
-                  </TableRow>
+                    </td>
+                  </tr>
                 ) : (
                   expedientesFiltrados.map(exp => {
                     const isMyTask = exp.responsableActualRol === activeRole;
 
                     return (
-                      <TableRow
+                      <tr
                         key={exp.id}
-                        className={isMyTask ? "bg-muted/30 dark:bg-muted/10 font-medium" : ""}
+                        className={`hover:bg-muted/30 transition-colors ${isMyTask ? "bg-muted/10 font-medium" : ""
+                          }`}
                       >
-                        <TableCell className="font-mono font-medium text-foreground">
+                        <td className="py-3.5 px-4 font-mono font-medium text-foreground whitespace-nowrap">
                           <div className="flex items-center gap-2">
                             <Layers className="size-4 text-muted-foreground" />
                             {exp.codigoExpediente}
                           </div>
-                        </TableCell>
-                        <TableCell className="max-w-xs whitespace-normal">
+                        </td>
+                        <td className="py-3.5 px-4 max-w-xs">
                           <div className="flex flex-col">
                             <span className="font-semibold text-foreground text-xs line-clamp-1">
                               {exp.nombreFuente}
                             </span>
-                            <span className="text-[11px] text-muted-foreground font-mono mt-0.5">
+                            <span className="text-[11px] text-muted-foreground font-mono">
                               {exp.codigoFuente} • {exp.camposCandidatos.length} campos
                             </span>
                           </div>
-                        </TableCell>
-                        <TableCell className="text-xs text-muted-foreground max-w-[180px] whitespace-normal">
-                          <span className="line-clamp-1 font-medium text-foreground">{exp.institucionSigla}</span>
-                          <span className="text-[11px] text-muted-foreground/80 line-clamp-1 mt-0.5">
+                        </td>
+                        <td className="py-3.5 px-4 text-xs text-muted-foreground max-w-[180px]">
+                          <span className="line-clamp-1">{exp.institucionSigla}</span>
+                          <span className="text-[11px] text-muted-foreground/80 line-clamp-1">
                             {exp.institucionNombre}
                           </span>
-                        </TableCell>
-                        <TableCell>
+                        </td>
+                        <td className="py-3.5 px-4 whitespace-nowrap">
                           {getBadgeEstadoGeneral(exp.estadoGeneral)}
-                        </TableCell>
-                        <TableCell className="text-xs max-w-[200px] whitespace-normal">
+                        </td>
+                        <td className="py-3.5 px-4 text-xs max-w-[200px]">
                           <div className="flex flex-col">
-                            <span className="text-foreground line-clamp-1 font-medium">
+                            <span className="text-foreground line-clamp-1">
                               {getEtapaNombreCorto(exp.etapaActual)}
                             </span>
-                            <span className="text-[10px] text-muted-foreground font-mono mt-0.5">
+                            <span className="text-[10px] text-muted-foreground font-mono">
                               {ETAPAS_EXPEDIENTE_CONFIG[exp.etapaActual]?.huRef}
                             </span>
                           </div>
-                        </TableCell>
-                        <TableCell className="text-xs">
+                        </td>
+                        <td className="py-3.5 px-4 text-xs whitespace-nowrap">
                           <div className="flex items-center gap-1.5">
                             <Badge
                               tone={isMyTask ? "warning" : "neutral"}
@@ -530,87 +601,77 @@ export default function IntegracionesListPage() {
                               {ROLES_CONFIG[exp.responsableActualRol]?.shortName || exp.responsableActualRol}
                             </Badge>
                             {isMyTask && (
-                              <span className="size-2 rounded-full bg-amber-500 shrink-0 shadow-sm" title="Tarea activa asignada a tu perfil" />
+                              <span className="size-2 rounded-full bg-amber-500 shrink-0" title="Tarea activa asignada a tu perfil" />
                             )}
                           </div>
-                        </TableCell>
-                        <TableCell className="text-xs text-muted-foreground">
+                        </td>
+                        <td className="py-3.5 px-4 text-xs text-muted-foreground whitespace-nowrap">
                           {exp.ultimaActualizacion}
-                        </TableCell>
-                        <TableCell className="text-right">
+                        </td>
+                        <td className="py-3.5 px-4 text-right whitespace-nowrap">
                           <div className="flex items-center justify-end gap-1.5" data-tour="tour-expediente">
-                            <TooltipProvider delayDuration={0}>
-                              {isMyTask ? (
-                                <Tooltip>
-                                  <TooltipTrigger asChild>
-                                    <Button
-                                      variant="primary"
-                                      size="icon-sm"
-                                      asChild
-                                      className="size-8 rounded-lg shadow-sm font-semibold"
-                                    >
-                                      <Link href={`/wireframes2/catalogo-interoperabilidad/integraciones/${exp.id}`}>
-                                        <ArrowRight className="size-4" />
-                                      </Link>
-                                    </Button>
-                                  </TooltipTrigger>
-                                  <TooltipContent side="top">
-                                    <p className="text-xs">Continuar trámite</p>
-                                  </TooltipContent>
-                                </Tooltip>
-                              ) : (
-                                <Tooltip>
-                                  <TooltipTrigger asChild>
-                                    <Button
-                                      variant="ghost"
-                                      size="icon-sm"
-                                      asChild
-                                      className="size-8 rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted"
-                                    >
-                                      <Link href={`/wireframes2/catalogo-interoperabilidad/integraciones/${exp.id}`}>
-                                        <Eye className="size-4" />
-                                      </Link>
-                                    </Button>
-                                  </TooltipTrigger>
-                                  <TooltipContent side="top">
-                                    <p className="text-xs">Ver detalle</p>
-                                  </TooltipContent>
-                                </Tooltip>
-                              )}
+                            {isMyTask ? (
+                              <Button
+                                variant="primary"
+                                size="sm"
+                                asChild
+                                className="h-8 gap-1 text-xs font-semibold"
+                              >
+                                <Link href={`/wireframes2/catalogo-interoperabilidad/integraciones/${exp.id}`}>
+                                  Continuar tarea
+                                  <ArrowRight className="size-3" />
+                                </Link>
+                              </Button>
+                            ) : (
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                asChild
+                                className="h-8 gap-1 text-xs"
+                              >
+                                <Link href={`/wireframes2/catalogo-interoperabilidad/integraciones/${exp.id}`}>
+                                  Ver expediente
+                                  <ChevronRight className="size-3" />
+                                </Link>
+                              </Button>
+                            )}
 
-                              {exp.validacionTecnicaDTD?.estadoCatalogoAsignado === "OCULTO" && (
-                                <Tooltip>
-                                  <TooltipTrigger asChild>
-                                    <Button
-                                      variant="ghost"
-                                      size="icon-sm"
-                                      asChild
-                                      className="size-8 rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted"
-                                    >
-                                      <Link href={`/wireframes2/catalogo-interoperabilidad/gestion`}>
-                                        <Layers className="size-4" />
-                                      </Link>
-                                    </Button>
-                                  </TooltipTrigger>
-                                  <TooltipContent side="top">
-                                    <p className="text-xs">Ver en Gestión</p>
-                                  </TooltipContent>
-                                </Tooltip>
-                              )}
-                            </TooltipProvider>
+                            <DropdownMenu>
+                              <DropdownMenuTrigger asChild>
+                                <Button variant="ghost" size="icon" className="size-8">
+                                  <MoreHorizontal className="size-4" />
+                                </Button>
+                              </DropdownMenuTrigger>
+                              <DropdownMenuContent align="end" className="w-48">
+                                <DropdownMenuItem asChild>
+                                  <Link href={`/wireframes2/catalogo-interoperabilidad/integraciones/${exp.id}`}>
+                                    <Eye className="size-4 mr-2" />
+                                    Ver expediente
+                                  </Link>
+                                </DropdownMenuItem>
+                                {exp.validacionTecnicaDTD?.estadoCatalogoAsignado === "OCULTO" && (
+                                  <DropdownMenuItem asChild>
+                                    <Link href="/wireframes2/catalogo-interoperabilidad/gestion">
+                                      <Layers className="size-4 mr-2" />
+                                      Ver fuente en Gestión
+                                    </Link>
+                                  </DropdownMenuItem>
+                                )}
+                              </DropdownMenuContent>
+                            </DropdownMenu>
                           </div>
-                        </TableCell>
-                      </TableRow>
+                        </td>
+                      </tr>
                     );
                   })
                 )}
-              </TableBody>
-            </Table>
+              </tbody>
+            </table>
           </div>
         </div>
 
         {/* Product Tour Modal Component */}
-        <WireframeTour
+        <CatalogoTour
           isOpen={isTourOpen}
           onClose={() => setIsTourOpen(false)}
           steps={tourSteps}

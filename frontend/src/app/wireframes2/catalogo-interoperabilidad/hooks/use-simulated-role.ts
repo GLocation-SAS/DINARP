@@ -1,20 +1,22 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { type UserRole } from "../data/catalogo-data";
+import { type UserRole, ROLES_CONFIG } from "../data/catalogo-data";
 
 export const useSimulatedRole = (initialRole: UserRole = "COORDINADOR_SINARP"): [UserRole, (role: UserRole) => void] => {
-  const [role, setRole] = useState<UserRole>(initialRole);
+  const safeInitialRole: UserRole = (initialRole && initialRole in ROLES_CONFIG) ? initialRole : "COORDINADOR_SINARP";
+  const [role, setRole] = useState<UserRole>(safeInitialRole);
 
   useEffect(() => {
     // 1. Initial read from sessionStorage on mount
     try {
       const storedRole = sessionStorage.getItem("dinarp_simulated_role") as UserRole | null;
-      if (storedRole) {
+      if (storedRole && storedRole in ROLES_CONFIG) {
         setRole(storedRole);
       } else {
-        // Init sessionStorage with provided default if empty
-        sessionStorage.setItem("dinarp_simulated_role", initialRole);
+        // Init sessionStorage with provided default if empty or invalid
+        sessionStorage.setItem("dinarp_simulated_role", safeInitialRole);
+        setRole(safeInitialRole);
       }
     } catch (e) {
       // Ignore if sessionStorage is not available
@@ -22,7 +24,9 @@ export const useSimulatedRole = (initialRole: UserRole = "COORDINADOR_SINARP"): 
 
     // 2. Listen for changes from other components (like Header Menu)
     const handleRoleChanged = (e: CustomEvent<{ role: UserRole }>) => {
-      setRole(e.detail.role);
+      if (e.detail?.role && e.detail.role in ROLES_CONFIG) {
+        setRole(e.detail.role);
+      }
     };
 
     window.addEventListener("simulatedRoleChanged", handleRoleChanged as EventListener);
@@ -30,17 +34,18 @@ export const useSimulatedRole = (initialRole: UserRole = "COORDINADOR_SINARP"): 
     return () => {
       window.removeEventListener("simulatedRoleChanged", handleRoleChanged as EventListener);
     };
-  }, [initialRole]);
+  }, [safeInitialRole]);
 
   // 3. Setter that updates local state, sessionStorage, and broadcasts
   const setSimulatedRole = (newRole: UserRole) => {
-    setRole(newRole);
+    const safeRole = (newRole && newRole in ROLES_CONFIG) ? newRole : "COORDINADOR_SINARP";
+    setRole(safeRole);
     try {
-      sessionStorage.setItem("dinarp_simulated_role", newRole);
+      sessionStorage.setItem("dinarp_simulated_role", safeRole);
     } catch (e) {}
 
     window.dispatchEvent(
-      new CustomEvent("simulatedRoleChanged", { detail: { role: newRole } })
+      new CustomEvent("simulatedRoleChanged", { detail: { role: safeRole } })
     );
   };
 

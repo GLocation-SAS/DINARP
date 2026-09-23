@@ -65,6 +65,7 @@ interface NavItem {
   href?: string;
   children?: NavSubItem[];
   pathPrefix?: string;
+  allowedRoles?: UserRole[];
 }
 
 const navItems: NavItem[] = [
@@ -79,21 +80,6 @@ const navItems: NavItem[] = [
         label: "Consulta",
         href: "/wireframes2/catalogo-interoperabilidad",
         exact: true
-      },
-      {
-        id: "gestion-catalogo",
-        label: "Gestión",
-        href: "/wireframes2/catalogo-interoperabilidad/gestion"
-      },
-      {
-        id: "integraciones",
-        label: "Integración de Fuentes",
-        href: "/wireframes2/catalogo-interoperabilidad/integraciones"
-      },
-      {
-        id: "novedades",
-        label: "Novedades",
-        href: "/wireframes2/catalogo-interoperabilidad/novedades"
       }
     ]
   },
@@ -108,11 +94,20 @@ const navItems: NavItem[] = [
         label: "Gestión de solicitudes",
         href: "/wireframes2/acceso-interoperabilidad/solicitudes",
         exact: false
-      },
+      }
+    ]
+  },
+  {
+    id: "acceso-seguridad-group",
+    label: "Acceso y seguridad",
+    icon: ShieldCheck,
+    pathPrefix: "/wireframes2/acceso-seguridad",
+    children: [
       {
-        id: "paquetes-consumo",
-        label: "Paquetes de consumo",
-        href: "/wireframes2/acceso-interoperabilidad/paquetes"
+        id: "gestion-ingresos",
+        label: "Gestión de ingresos",
+        href: "/wireframes2/acceso-seguridad/gestion-ingresos",
+        exact: false
       }
     ]
   }
@@ -131,15 +126,21 @@ export function WireframeDashboardLayout({
   const [themeMode, setThemeMode] = useState<"claro" | "oscuro">("claro");
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
-  const [catalogoOpen, setCatalogoOpen] = useState(true);
+  const [openGroups, setOpenGroups] = useState<Record<string, boolean>>({
+    "catalogo-interoperabilidad-group": true,
+    "acceso-interoperabilidad-group": true,
+    "acceso-seguridad-group": true,
+  });
 
   // Determinar usuario activo de acuerdo a props o ruta específica
   const resolvedUser: MockUser = currentUser || (currentRole ? MOCK_USERS_BY_ROLE[currentRole] : undefined) || (() => {
-    if (pathname && (pathname.includes("/catalogo-interoperabilidad/gestion") || pathname.includes("/catalogo-interoperabilidad/novedades"))) {
+    if (pathname && (pathname.includes("/catalogo-interoperabilidad/gestion") || pathname.includes("/catalogo-interoperabilidad/novedades") || pathname.includes("/acceso-seguridad"))) {
       return MOCK_USERS_BY_ROLE.DGR;
     }
     return MOCK_USERS_BY_ROLE.COORDINADOR_SINARP;
   })();
+
+  const isAprobador = (currentRole || resolvedUser?.role) === "APROBADOR";
 
   useEffect(() => {
     const stored = getStoredTheme();
@@ -277,84 +278,113 @@ export function WireframeDashboardLayout({
 
         {/* Sidebar Navigation */}
         <div className={cn("flex-1 overflow-y-auto py-4 space-y-1.5", sidebarCollapsed ? "px-2" : "px-3.5")}>
-          {navItems.map((item) => {
-            const Icon = item.icon;
-            const hasChildren = item.children && item.children.length > 0;
-            const groupActive = isGroupActive(item);
+          {(() => {
+            const activeUserRole = currentRole || resolvedUser?.role;
+            const visibleNavItems = navItems.filter((item) => {
+              if (!item.allowedRoles) return true;
+              return activeUserRole ? item.allowedRoles.includes(activeUserRole) : false;
+            });
 
-            // Collapsed Mode (Icon only with Tooltips)
-            if (sidebarCollapsed) {
-              const active = groupActive || (item.href && pathname ? pathname.startsWith(item.href) : false);
-              return (
-                <Tooltip key={item.id}>
-                  <TooltipTrigger asChild>
-                    <Link
-                      href={item.href || (hasChildren && item.children ? item.children[0].href : "#")}
+            return visibleNavItems.map((item) => {
+              const Icon = item.icon;
+              const hasChildren = item.children && item.children.length > 0;
+              const groupActive = isGroupActive(item);
+
+              // Collapsed Mode (Icon only with Tooltips)
+              if (sidebarCollapsed) {
+                const active = groupActive || (item.href && pathname ? pathname.startsWith(item.href) : false);
+                return (
+                  <Tooltip key={item.id}>
+                    <TooltipTrigger asChild>
+                      <Link
+                        href={item.href || (hasChildren && item.children ? item.children[0].href : "#")}
+                        className={cn(
+                          "w-full flex items-center justify-center p-2.5 rounded-xl transition-all",
+                          active
+                            ? "bg-muted text-foreground font-semibold border border-border/80 shadow-2xs"
+                            : "text-muted-foreground hover:text-foreground hover:bg-muted/40"
+                        )}
+                      >
+                        <Icon className={cn("size-5", active ? "text-foreground" : "text-muted-foreground")} />
+                      </Link>
+                    </TooltipTrigger>
+                    <TooltipContent side="right">
+                      <p className="font-medium">{item.label}</p>
+                    </TooltipContent>
+                  </Tooltip>
+                );
+              }
+
+              // Expanded Mode
+              if (hasChildren) {
+                const isGroupOpen = openGroups[item.id] !== false;
+                return (
+                  <div key={item.id} className="space-y-1">
+                    {/* Encabezado de Módulo Padre */}
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setOpenGroups((prev) => ({
+                          ...prev,
+                          [item.id]: !isGroupOpen,
+                        }));
+                      }}
                       className={cn(
-                        "w-full flex items-center justify-center p-2.5 rounded-xl transition-all",
-                        active
-                          ? "bg-muted text-foreground font-semibold border border-border/80 shadow-2xs"
-                          : "text-muted-foreground hover:text-foreground hover:bg-muted/40"
+                        "w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-semibold transition-all text-left",
+                        groupActive
+                          ? "bg-muted/70 text-foreground font-bold"
+                          : "text-muted-foreground hover:text-foreground hover:bg-muted/30"
                       )}
                     >
-                      <Icon className={cn("size-5", active ? "text-foreground" : "text-muted-foreground")} />
-                    </Link>
-                  </TooltipTrigger>
-                  <TooltipContent side="right">
-                    <p className="font-medium">{item.label}</p>
-                  </TooltipContent>
-                </Tooltip>
-              );
-            }
+                      <div className="flex items-center gap-2.5 min-w-0">
+                        <Icon className={cn("size-4.5 shrink-0", groupActive ? "text-foreground" : "text-muted-foreground")} />
+                        <span className="leading-snug">{item.label}</span>
+                      </div>
+                      {isGroupOpen ? (
+                        <ChevronDown className="size-3.5 text-muted-foreground shrink-0 ml-1.5" />
+                      ) : (
+                        <ChevronRight className="size-3.5 text-muted-foreground shrink-0 ml-1.5" />
+                      )}
+                    </button>
 
-            // Expanded Mode
-            if (hasChildren) {
-              const isOpen = item.id === "catalogo-interoperabilidad-group" ? catalogoOpen : true; // Keep acceso always open for now since we didn't add a state for it, or we can just add a state if needed. But this is a wireframe. Let's just do a generic approach if possible. Wait, we don't have generic states.
-              return (
-                <div key={item.id} className="space-y-1">
-                  {/* Encabezado de Módulo Padre */}
-                  <button
-                    type="button"
-                    onClick={() => {
-                      if (item.id === "catalogo-interoperabilidad-group") setCatalogoOpen(!catalogoOpen);
-                    }}
-                    className={cn(
-                      "w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-semibold transition-all text-left",
-                      groupActive
-                        ? "bg-muted/70 text-foreground font-bold"
-                        : "text-muted-foreground hover:text-foreground hover:bg-muted/30"
-                    )}
-                  >
-                    <div className="flex items-center gap-2.5 min-w-0">
-                      <Icon className={cn("size-4.5 shrink-0", groupActive ? "text-foreground" : "text-muted-foreground")} />
-                      <span className="leading-snug">{item.label}</span>
-                    </div>
-                    {isOpen ? (
-                      <ChevronDown className="size-3.5 text-muted-foreground shrink-0 ml-1.5" />
-                    ) : (
-                      <ChevronRight className="size-3.5 text-muted-foreground shrink-0 ml-1.5" />
-                    )}
-                  </button>
-
-                  {/* Subsecciones Internas */}
-                  {isOpen && (
+                    {/* Subsecciones Internas */}
+                    {isGroupOpen && (
                     <div className="pl-4 pr-1 py-1 space-y-1 border-l-2 border-border/60 ml-4">
                       {item.children?.map((sub) => {
                         const isSubActive = isSubItemActive(sub);
+                        const subLabel = (sub.id === "acceso-interoperabilidad" && isAprobador)
+                          ? "Gestión de solicitudes pendientes"
+                          : sub.label;
+                        const subDescription = (sub.id === "acceso-interoperabilidad")
+                          ? (!isAprobador
+                              ? "Crea nuevas solicitudes de interoperabilidad, consulta las solicitudes realizadas y da seguimiento a su estado durante todo el proceso."
+                              : "Revisa las solicitudes de interoperabilidad pendientes y gestiona su aprobación o rechazo según la información presentada.")
+                          : undefined;
+
                         return (
-                          <Link
-                            key={sub.id}
-                            href={sub.href}
-                            onClick={() => setMobileMenuOpen(false)}
-                            className={cn(
-                              "w-full flex items-center gap-2 px-3 py-2 rounded-lg text-xs font-medium transition-all text-left",
-                              isSubActive
-                                ? "bg-muted text-foreground font-semibold border border-border/80 shadow-2xs"
-                                : "text-muted-foreground hover:text-foreground hover:bg-muted/40"
+                          <Tooltip key={sub.id}>
+                            <TooltipTrigger asChild>
+                              <Link
+                                href={sub.href}
+                                onClick={() => setMobileMenuOpen(false)}
+                                title={subDescription || subLabel}
+                                className={cn(
+                                  "w-full flex items-center gap-2 px-3 py-2 rounded-lg text-xs font-medium transition-all text-left",
+                                  isSubActive
+                                    ? "bg-muted text-foreground font-semibold border border-border/80 shadow-2xs"
+                                    : "text-muted-foreground hover:text-foreground hover:bg-muted/40"
+                                )}
+                              >
+                                <span className="truncate">{subLabel}</span>
+                              </Link>
+                            </TooltipTrigger>
+                            {subDescription && (
+                              <TooltipContent side="right" className="max-w-xs text-xs">
+                                <p className="font-semibold mb-0.5">{subLabel}</p>
+                                <p className="text-muted-foreground">{subDescription}</p>
+                              </TooltipContent>
                             )}
-                          >
-                            <span className="truncate">{sub.label}</span>
-                          </Link>
+                          </Tooltip>
                         );
                       })}
                     </div>
@@ -381,7 +411,8 @@ export function WireframeDashboardLayout({
                 <span className="leading-snug">{item.label}</span>
               </Link>
             );
-          })}
+          });
+        })()}
         </div>
 
         {/* Theme Toggle Footer */}
@@ -455,13 +486,21 @@ export function WireframeDashboardLayout({
               <Menu className="size-5" />
             </Button>
 
-            {/* Breadcrumbs en el Header */}
-            {breadcrumbs && breadcrumbs.length > 0 && (
-              <div className="hidden sm:flex items-center min-w-0 overflow-hidden gap-4">
-                <WireframeBreadcrumbs segments={breadcrumbs} className="text-xs" />
-                {headerSlot}
+            {/* Breadcrumbs y Header Slot */}
+            {(breadcrumbs && breadcrumbs.length > 0) || headerSlot ? (
+              <div className="flex items-center flex-wrap gap-2 sm:gap-4 min-w-0 flex-1 pl-1">
+                {breadcrumbs && breadcrumbs.length > 0 && (
+                  <div className="hidden sm:block truncate">
+                    <WireframeBreadcrumbs segments={breadcrumbs} className="text-xs" />
+                  </div>
+                )}
+                {headerSlot && (
+                  <div className="flex shrink-0">
+                    {headerSlot}
+                  </div>
+                )}
               </div>
-            )}
+            ) : null}
 
             <Link href="/wireframes2" className="lg:hidden flex items-center shrink-0">
               <img
@@ -474,7 +513,6 @@ export function WireframeDashboardLayout({
 
           {/* User Profile, Notifications & Theme Toggle */}
           <div className="flex items-center gap-2 sm:gap-3 ml-auto">
-            <ThemeToggle />
             <NotificationsMenu />
             <WireframeUserMenu user={resolvedUser} onRoleChange={onRoleChange} />
           </div>

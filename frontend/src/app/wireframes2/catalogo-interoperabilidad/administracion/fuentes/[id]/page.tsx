@@ -97,7 +97,7 @@ export default async function DetalleFuenteAdminPage({ params }: PageProps) {
         currentUser={MOCK_USERS_BY_ROLE.DGR}
         breadcrumbs={[
           { label: "Catálogo de Interoperabilidad", href: "/wireframes2/catalogo-interoperabilidad" },
-          { label: "Gestión", href: "/wireframes2/catalogo-interoperabilidad/gestion" },
+          { label: "Administración y Gestión del Catálogo", href: "/wireframes2/catalogo-interoperabilidad/administracion" },
           { label: fuente.nombre }
         ]}
       >
@@ -105,9 +105,9 @@ export default async function DetalleFuenteAdminPage({ params }: PageProps) {
           {/* Barra Superior de Navegación */}
           <div className="flex items-center justify-between -mt-2">
             <Button variant="ghost" size="sm" asChild className="gap-1.5 -ml-2 text-muted-foreground hover:text-foreground">
-              <Link href="/wireframes2/catalogo-interoperabilidad/gestion">
+              <Link href="/wireframes2/catalogo-interoperabilidad/administracion">
                 <ArrowLeft className="size-4" />
-                Volver a Gestión
+                Volver a Administración
               </Link>
             </Button>
           </div>
@@ -146,7 +146,7 @@ export default async function DetalleFuenteAdminPage({ params }: PageProps) {
 
                 <div className="flex items-center gap-2 pt-1">
                   <Button variant="outline" size="sm" asChild className="text-xs gap-1.5 shadow-2xs">
-                    <Link href={`/wireframes2/catalogo-interoperabilidad/integraciones/${expedienteId}`}>
+                    <Link href={`/wireframes2/catalogo-interoperabilidad/administracion/incorporaciones/${expedienteId}`}>
                       <ExternalLink className="size-3.5" />
                       <span>Ver integración</span>
                     </Link>
@@ -280,7 +280,7 @@ export default async function DetalleFuenteAdminPage({ params }: PageProps) {
                     <div>
                       <span className="text-muted-foreground block text-[11px]">Expediente de Integración:</span>
                       <Link
-                        href={`/wireframes2/catalogo-interoperabilidad/integraciones/${expedienteId}`}
+                        href={`/wireframes2/catalogo-interoperabilidad/administracion/incorporaciones/${expedienteId}`}
                         className="font-mono font-medium text-foreground hover:underline inline-flex items-center gap-1 mt-0.5"
                       >
                         {expedienteId}
@@ -365,7 +365,7 @@ export default async function DetalleFuenteAdminPage({ params }: PageProps) {
                   </div>
 
                   <Button variant="outline" size="sm" asChild className="text-xs gap-1.5 shrink-0">
-                    <Link href={`/wireframes2/catalogo-interoperabilidad/integraciones/${expedienteId}`}>
+                    <Link href={`/wireframes2/catalogo-interoperabilidad/administracion/incorporaciones/${expedienteId}`}>
                       <ExternalLink className="size-3.5" />
                       <span>Ver integración</span>
                     </Link>
@@ -436,7 +436,7 @@ export default async function DetalleFuenteAdminPage({ params }: PageProps) {
                   </div>
 
                   <Button variant="outline" size="sm" asChild className="text-xs gap-1.5 shrink-0">
-                    <Link href={`/wireframes2/catalogo-interoperabilidad/integraciones/${expedienteId}`}>
+                    <Link href={`/wireframes2/catalogo-interoperabilidad/administracion/incorporaciones/${expedienteId}`}>
                       <ExternalLink className="size-3.5" />
                       <span>Ver expediente de integración</span>
                     </Link>

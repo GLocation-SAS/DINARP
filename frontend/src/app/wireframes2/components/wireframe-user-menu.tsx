@@ -114,29 +114,44 @@ export function WireframeUserMenu({ user, onRoleChange }: WireframeUserMenuProps
           </div>
         </div>
 
-        <DropdownMenuSeparator className="bg-border/60" />
-
-        {onRoleChange && (
-          <div className="py-1">
-            <span className="px-2 text-[10px] font-semibold text-muted-foreground uppercase tracking-wider mb-1 block">
-              Cambiar rol de visualización
-            </span>
-            {(["COORDINADOR_SINARP", "DGR", "DTD", "DPI"] as UserRole[]).map(role => (
-              <DropdownMenuItem
-                key={role}
-                onClick={() => onRoleChange(role)}
-                className={cn(
-                  "text-xs cursor-pointer justify-between",
-                  user.role === role && "bg-muted font-medium text-foreground"
-                )}
-              >
-                <span>{ROLES_CONFIG[role].shortName}</span>
-                {user.role === role && <CheckCircle2 className="size-3.5 text-foreground" />}
-              </DropdownMenuItem>
-            ))}
-            <DropdownMenuSeparator className="bg-border/60 mt-1" />
+        {/* Conmutador de Roles en Prototipo */}
+        <div className="p-2 space-y-1.5 border-t border-border/60">
+          <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider px-1 block">
+            Simular Rol en Wireframe:
+          </span>
+          <div className="flex flex-col gap-0.5">
+            {(["DGR", "COORDINADOR_SINARP", "APROBADOR", "FACTURACION", "DTD", "DPI"] as UserRole[]).map((r) => {
+              const isCurrent = user.role === r;
+              return (
+                <button
+                  key={r}
+                  type="button"
+                  onClick={() => {
+                    try {
+                      sessionStorage.setItem("dinarp_simulated_role", r);
+                    } catch {}
+                    window.dispatchEvent(
+                      new CustomEvent("simulatedRoleChanged", { detail: { role: r } })
+                    );
+                    if (onRoleChange) onRoleChange(r);
+                    setOpen(false);
+                  }}
+                  className={cn(
+                    "w-full flex items-center justify-between px-2.5 py-1.5 rounded-lg text-xs transition-colors text-left",
+                    isCurrent
+                      ? "bg-foreground text-background font-semibold"
+                      : "text-muted-foreground hover:text-foreground hover:bg-muted/60"
+                  )}
+                >
+                  <span className="truncate pr-2">{ROLES_CONFIG[r]?.name || r}</span>
+                  {isCurrent && <CheckCircle2 className="size-3.5 shrink-0" />}
+                </button>
+              );
+            })}
           </div>
-        )}
+        </div>
+
+        <DropdownMenuSeparator className="bg-border/60" />
 
         <DropdownMenuItem asChild className="text-xs cursor-pointer">
           <Link href="/wireframes2" className="flex items-center gap-2">

@@ -2,7 +2,9 @@ export type UserRole =
   | "COORDINADOR_SINARP"
   | "DGR"
   | "DTD"
-  | "DPI";
+  | "DPI"
+  | "APROBADOR"
+  | "FACTURACION";
 
 export interface RoleInfo {
   id: UserRole;
@@ -66,6 +68,32 @@ export const ROLES_CONFIG: Record<UserRole, RoleInfo> = {
       "Cargar el Informe Técnico de Clasificación (PDF)",
       "Vincular clasificación como atributo inmutable del catálogo"
     ]
+  },
+  APROBADOR: {
+    id: "APROBADOR",
+    name: "Aprobador",
+    shortName: "Aprobador",
+    badgeTone: "neutral",
+    description: "Revisa las solicitudes de interoperabilidad pendientes y gestiona su aprobación o rechazo según la información presentada.",
+    responsibilities: [
+      "Revisar solicitudes en estado Pendiente de aprobación y Reenviada para aprobación",
+      "Evaluar pertinencia de Finalidad de uso y Justificación jurídica",
+      "Cargar Informe de justificación y firmar para aprobación definitiva",
+      "Solicitar ajustes y devolver solicitudes al Coordinador SINARP"
+    ]
+  },
+  FACTURACION: {
+    id: "FACTURACION",
+    name: "Facturación",
+    shortName: "Facturación",
+    badgeTone: "neutral",
+    description: "Consulta las solicitudes privadas aprobadas, valida los pagos registrados en SIGEF y anexa los comprobantes financieros al proceso.",
+    responsibilities: [
+      "Consultar solicitudes privadas con componente financiero",
+      "Validar pagos registrados en plataforma externa SIGEF",
+      "Anexar Comprobante Único de Registro (CUR) en PDF",
+      "Emitir validación formal del pago para habilitación técnica"
+    ]
   }
 };
 
@@ -110,6 +138,22 @@ export const MOCK_USERS_BY_ROLE: Record<UserRole, MockUser> = {
     roleTitle: "Dirección de Protección de la Información (DPI)",
     institution: "DINARP",
     initials: "DR"
+  },
+  APROBADOR: {
+    id: "USR-005",
+    name: "Dr. Roberto Méndez",
+    role: "APROBADOR",
+    roleTitle: "Aprobador Institucional",
+    institution: "DINARP",
+    initials: "RM"
+  },
+  FACTURACION: {
+    id: "USR-006",
+    name: "Lcda. Patricia Morales",
+    role: "FACTURACION",
+    roleTitle: "Analista de Facturación y Cobranzas",
+    institution: "DINARP - Dirección Financiera",
+    initials: "PM"
   }
 };
 
@@ -573,14 +617,13 @@ export const INITIAL_INSTITUCIONES: Institucion[] = [
         ],
         trazabilidadEventos: [
           {
-            evento: "Fuente incorporada al catálogo",
-            estadoAnterior: "Borrador",
+            evento: "Fuente incorporada al catálogo interno",
             estadoNuevo: "OCULTO",
             usuario: "Carlos Mena",
             rol: "Dirección de Tecnología y Desarrollo (DTD)",
             fecha: "10/01/2026",
             hora: "11:30",
-            observacion: "Validación técnica aprobada (HU-INT-07). Fuente registrada internamente.",
+            observacion: "Validación técnica aprobada. Fuente registrada internamente en el catálogo.",
             huRef: "HU-INT-07"
           },
           {
@@ -602,14 +645,13 @@ export const INITIAL_INSTITUCIONES: Institucion[] = [
             huRef: "HU-INT-12"
           },
           {
-            evento: "Paso a producción y publicación",
-            estadoAnterior: "OCULTO",
+            evento: "Fuente disponible en el catálogo",
             estadoNuevo: "PUBLICADO",
             usuario: "Carlos Mena",
             rol: "Dirección de Tecnología y Desarrollo (DTD)",
             fecha: "14/01/2026",
             hora: "10:15",
-            observacion: "Microservicio desplegado en producción (HU-INT-13). Fuente visible para consulta.",
+            observacion: "Fuente habilitada para consulta y selección por instituciones consumidoras.",
             huRef: "HU-INT-15"
           }
         ]

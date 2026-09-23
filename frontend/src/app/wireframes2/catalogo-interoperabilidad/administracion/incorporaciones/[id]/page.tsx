@@ -1,7 +1,7 @@
 import React from "react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { INITIAL_EXPEDIENTES } from "../../data/catalogo-data";
+import { INITIAL_EXPEDIENTES } from "../../../data/catalogo-data";
 import { ExpedienteClientView } from "./expediente-client-view";
 
 export function generateStaticParams() {

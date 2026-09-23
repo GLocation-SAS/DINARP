@@ -19,6 +19,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { WireframeDashboardLayout } from "../components/wireframe-dashboard-layout";
 import { WireframeBreadcrumbs } from "../components/wireframe-breadcrumbs";
+import { useSimulatedRole } from "../catalogo-interoperabilidad/hooks/use-simulated-role";
+import { MOCK_USERS_BY_ROLE } from "../catalogo-interoperabilidad/data/catalogo-data";
 
 const NOVEDADES = [
   {

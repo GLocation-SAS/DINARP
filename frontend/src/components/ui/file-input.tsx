@@ -65,6 +65,7 @@ export interface FileUploadProps {
   className?: string
   allowedFormats?: string
   items?: FileItemData[]
+  compact?: boolean
   onFileSelect?: (files: File[]) => void
   onRemove?: (id: string) => void
   onRetry?: (id: string) => void
@@ -229,6 +230,7 @@ function DropZone({
   onDragLeave,
   onDrop,
   onClick,
+  compact = false,
 }: any) {
   return (
     <div
@@ -246,8 +248,8 @@ function DropZone({
       }}
       className={cn(
         "group relative w-full rounded-2xl transition-all duration-500 outline-none overflow-hidden cursor-pointer",
-        "flex flex-col items-center justify-center gap-5 text-center",
-        "py-12 px-6 sm:py-16 sm:px-8",
+        "flex flex-col items-center justify-center text-center",
+        compact ? "py-6 px-4 gap-3" : "py-12 px-6 sm:py-16 sm:px-8 gap-5",
         "border-2 border-dashed",
         isDragging 
           ? "border-primary bg-primary/5 scale-[1.02] shadow-[0_0_30px_-5px_var(--color-primary)]" 
@@ -268,7 +270,7 @@ function DropZone({
       />
 
       {/* Floating Icon Graphic */}
-      <div className="relative flex items-center justify-center size-24 z-10">
+      <div className={cn("relative flex items-center justify-center z-10", compact ? "size-14" : "size-24")}>
         <div className={cn(
           "absolute inset-0 rounded-full blur-2xl transition-all duration-700 ease-out pointer-events-none",
           isDragging ? "bg-primary/40 scale-150" : "bg-primary/20 group-hover:bg-primary/30 group-hover:scale-125"
@@ -280,31 +282,33 @@ function DropZone({
         )} />
 
         <div className={cn(
-          "relative flex items-center justify-center size-16 rounded-full transition-all duration-500 border-2",
+          "relative flex items-center justify-center rounded-full transition-all duration-500 border-2",
+          compact ? "size-11" : "size-16",
           isDragging 
             ? "bg-primary border-primary text-primary-foreground scale-110 shadow-primary/30 shadow-lg" 
-            : "bg-surface border-primary/20 text-primary shadow-sm group-hover:bg-primary group-hover:border-primary group-hover:text-primary-foreground group-hover:-translate-y-2 group-hover:shadow-lg group-hover:shadow-primary/25"
+            : "bg-surface border-primary/20 text-primary shadow-sm group-hover:bg-primary group-hover:border-primary group-hover:text-primary-foreground group-hover:-translate-y-1 group-hover:shadow-lg group-hover:shadow-primary/25"
         )}>
-          <FileUp className={cn("size-7 transition-all duration-300", isDragging ? "animate-bounce" : "")} strokeWidth={2.5} />
+          <FileUp className={cn(compact ? "size-5" : "size-7", "transition-all duration-300", isDragging ? "animate-bounce" : "")} strokeWidth={2.5} />
         </div>
       </div>
 
-      <div className="space-y-1.5 z-10 mt-2">
-        <h4 className={cn("text-[17px] font-bold transition-colors duration-300", isDragging ? "text-primary" : "text-foreground")}>
+      <div className={cn("space-y-1 z-10", compact ? "mt-0" : "mt-2")}>
+        <h4 className={cn("font-bold transition-colors duration-300", compact ? "text-[14px]" : "text-[17px]", isDragging ? "text-primary" : "text-foreground")}>
           {isDragging ? "¡Suelta para cargar!" : "Arrastra y suelta aquí, o"}
         </h4>
-        <p className="text-[13px] text-muted-foreground font-medium max-w-sm mx-auto">
+        <p className={cn("text-muted-foreground font-medium max-w-sm mx-auto", compact ? "text-[11px]" : "text-[13px]")}>
           {allowedFormats || "Soporta imágenes, documentos y archivos comprimidos."}
         </p>
       </div>
 
       {/* Action Button (shown when not dragging) */}
       {!isDragging && (
-        <div className="z-10 mt-3 transition-all duration-500 group-hover:scale-105">
+        <div className={cn("z-10 transition-all duration-500 group-hover:scale-105", compact ? "mt-1" : "mt-3")}>
           <Button 
             type="button" 
             variant="primary" 
-            className="rounded-full px-8 font-semibold shadow-md pointer-events-none"
+            size={compact ? "sm" : "default"}
+            className={cn("rounded-full font-semibold shadow-md pointer-events-none", compact ? "px-5 h-8 text-xs" : "px-8")}
             tabIndex={-1}
           >
             Seleccionar archivo
@@ -313,12 +317,18 @@ function DropZone({
       )}
 
       {/* Badges Ribbon */}
-      <div className="flex flex-wrap items-center justify-center gap-2 mt-4 z-10 opacity-70 group-hover:opacity-100 transition-opacity duration-300">
-        <Badge tone="secondary" appearance="outline" size="sm">.jpeg</Badge>
-        <Badge tone="primary" appearance="outline" size="sm">.png</Badge>
-        <Badge tone="success" appearance="outline" size="sm">.csv</Badge>
-        <Badge tone="danger" appearance="outline" size="sm">.pdf</Badge>
-        <Badge tone="info" appearance="outline" size="sm">.mp4</Badge>
+      <div className={cn("flex flex-wrap items-center justify-center gap-1.5 z-10 opacity-70 group-hover:opacity-100 transition-opacity duration-300", compact ? "mt-2" : "mt-4")}>
+        {compact ? (
+          <Badge tone="danger" appearance="soft" size="sm" className="text-[10px] px-2 py-0.5">PDF firmado</Badge>
+        ) : (
+          <>
+            <Badge tone="secondary" appearance="outline" size="sm">.jpeg</Badge>
+            <Badge tone="primary" appearance="outline" size="sm">.png</Badge>
+            <Badge tone="success" appearance="outline" size="sm">.csv</Badge>
+            <Badge tone="danger" appearance="outline" size="sm">.pdf</Badge>
+            <Badge tone="info" appearance="outline" size="sm">.mp4</Badge>
+          </>
+        )}
       </div>
     </div>
   )
@@ -335,6 +345,7 @@ export function FileUpload({
   className,
   allowedFormats,
   items = [],
+  compact = false,
   onFileSelect,
   onRemove,
   onRetry,
@@ -406,6 +417,7 @@ export function FileUpload({
           onDragLeave={handleDragLeave}
           onDrop={handleDrop}
           onClick={() => inputRef.current?.click()}
+          compact={compact}
         />
       </div>
 

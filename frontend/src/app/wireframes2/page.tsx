@@ -31,28 +31,12 @@ export default function Wireframes2HubPage() {
       tag: "Solo Publicados"
     },
     {
-      titulo: "Gestión",
-      ruta: "/wireframes2/catalogo-interoperabilidad/gestion",
-      descripcion: "Panel de control DINARP para inventario, fichas técnicas y estados PUBLICADO / OCULTO / DESACTIVADO.",
-      badge: "HU-INT-07 / 18",
-      icon: Layers,
-      tag: "Administración SURI"
-    },
-    {
       titulo: "Integración de Fuentes",
       ruta: "/wireframes2/catalogo-interoperabilidad/integraciones",
       descripcion: "Expediente de incorporación con stepper de 10 etapas y simulador de 4 roles (Coordinador, DGR, DTD, DPI).",
       badge: "HU-INT-01 a 14",
       icon: ArrowLeftRight,
       tag: "Ciclo de Vida"
-    },
-    {
-      titulo: "Novedades",
-      ruta: "/wireframes2/catalogo-interoperabilidad/novedades",
-      descripcion: "Trámite de Eliminación, Supresión y Fusión. Dictamen legal y pase a DESACTIVADO sin borrado físico.",
-      badge: "HU-INT-16 a 19",
-      icon: FileText,
-      tag: "Tratamiento Legal"
     }
   ];
 
@@ -127,7 +111,7 @@ export default function Wireframes2HubPage() {
             </div>
           </div>
 
-          {/* Subsecciones Internas: Consulta, Gestión, Integración de Fuentes, Novedades */}
+          {/* Subsecciones Internas: Consulta, Integración de Fuentes */}
           <div className="p-6">
             <div className="mb-4">
               <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
@@ -135,7 +119,7 @@ export default function Wireframes2HubPage() {
               </span>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {subseccionesCatalogo.map((sub, idx) => {
                 const Icon = sub.icon;
                 return (
@@ -179,6 +163,42 @@ export default function Wireframes2HubPage() {
                   </div>
                 );
               })}
+            </div>
+          </div>
+        </div>
+
+        {/* SEGUNDA TARJETA: Acceso y Seguridad */}
+        <div className="border border-border rounded-2xl bg-card overflow-hidden shadow-xs">
+          <div className="p-6 border-b border-border bg-muted/20 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+            <div className="flex items-start sm:items-center gap-4">
+              <div className="size-12 rounded-xl bg-foreground text-background flex items-center justify-center font-bold text-lg shrink-0 shadow-xs">
+                <ShieldCheck className="size-6" />
+              </div>
+              <div>
+                <div className="flex items-center gap-2 flex-wrap">
+                  <h2 className="font-heading text-xl font-bold text-foreground">
+                    Acceso y seguridad
+                  </h2>
+                  <Badge tone="neutral" appearance="soft" size="sm">
+                    Rol: DGR
+                  </Badge>
+                  <Badge tone="neutral" appearance="outline" size="sm">
+                    Prerregistro e Ingresos
+                  </Badge>
+                </div>
+                <p className="text-xs text-muted-foreground mt-1 max-w-3xl leading-relaxed">
+                  Módulo encargado de la revisión, evaluación y aprobación o rechazo de solicitudes de acceso generadas desde el portal de prerregistro institucional.
+                </p>
+              </div>
+            </div>
+
+            <div className="flex items-center gap-2 shrink-0">
+              <Button variant="secondary" size="sm" asChild className="text-xs font-semibold">
+                <Link href="/wireframes2/acceso-seguridad/gestion-ingresos">
+                  Gestionar ingresos
+                  <ChevronRight className="size-4 ml-1" />
+                </Link>
+              </Button>
             </div>
           </div>
         </div>

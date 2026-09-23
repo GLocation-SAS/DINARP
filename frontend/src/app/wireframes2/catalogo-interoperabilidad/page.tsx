@@ -42,6 +42,13 @@ import { WireframeDashboardLayout } from "../components/wireframe-dashboard-layo
 import { WireframeBreadcrumbs } from "../components/wireframe-breadcrumbs";
 import { INITIAL_INSTITUCIONES, type CampoClasificacion, type FuenteServicio } from "./data/catalogo-data";
 import { WireframeTour, type TourStep } from "../components/wireframe-tour";
+import {
+  Combobox,
+  ComboboxSelectTrigger,
+  ComboboxContent,
+  ComboboxList,
+  ComboboxItem,
+} from "@/components/ui/combobox";
 
 function getTechnicalMetadata(fuente: FuenteServicio) {
   let tipo = "Servicio Web";
@@ -125,6 +132,20 @@ export default function CatalogoConsultaPage() {
   const totalInstitucionesPublicadoras = useMemo(() => {
     return INITIAL_INSTITUCIONES.filter(i => i.fuentes.some(f => f.estado === "PUBLICADO")).length;
   }, []);
+
+  const institucionOptions = useMemo(() => [
+    { value: "ALL", label: "Todas las instituciones" },
+    ...INITIAL_INSTITUCIONES.map(inst => ({
+      value: inst.id,
+      label: `${inst.sigla} — ${inst.nombre}`
+    }))
+  ], []);
+
+  const clasificacionOptions = useMemo(() => [
+    { value: "ALL", label: "Todas las clasificaciones" },
+    { value: "Accesible", label: "Accesible" },
+    { value: "Confidencial", label: "Confidencial" }
+  ], []);
 
   const totalFuentesPublicadas = useMemo(() => {
     return INITIAL_INSTITUCIONES.flatMap(i => i.fuentes).filter(f => f.estado === "PUBLICADO").length;
@@ -306,98 +327,60 @@ export default function CatalogoConsultaPage() {
                   value={searchTerm}
                   onChange={e => setSearchTerm(e.target.value)}
                   onClear={() => setSearchTerm("")}
-                  className="w-full h-10 bg-background rounded-xl border-border/80"
+                  className="w-full h-10 bg-background rounded-full border-border/80"
                 />
               </div>
 
               <div data-tour="tour-filters" className="sm:col-span-6 lg:col-span-4 space-y-1.5">
                 <label className="text-xs font-medium text-muted-foreground whitespace-nowrap block">Institución proveedora</label>
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <Button
-                      variant="outline"
-                      className="w-full h-10 justify-between text-xs sm:text-sm font-normal bg-background rounded-xl border-border/80 px-3.5 hover:bg-muted/40"
-                    >
-                      <span className="truncate">
-                        {selectedInstitucion === "ALL"
-                          ? "Todas las instituciones"
-                          : INITIAL_INSTITUCIONES.find(i => i.id === selectedInstitucion)?.sigla +
-                            " — " +
-                            INITIAL_INSTITUCIONES.find(i => i.id === selectedInstitucion)?.nombre}
-                      </span>
-                      <ChevronDown className="size-4 opacity-60 ml-2 shrink-0" />
-                    </Button>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent align="start" className="w-80 max-w-[90vw]">
-                    <DropdownMenuLabel className="text-xs">Seleccionar Institución</DropdownMenuLabel>
-                    <DropdownMenuSeparator />
-                    <DropdownMenuRadioGroup
-                      value={selectedInstitucion}
-                      onValueChange={setSelectedInstitucion}
-                    >
-                      <DropdownMenuRadioItem value="ALL" className="text-xs">
-                        Todas las instituciones
-                      </DropdownMenuRadioItem>
-                      {INITIAL_INSTITUCIONES.map(inst => (
-                        <DropdownMenuRadioItem key={inst.id} value={inst.id} className="text-xs">
-                          <span className="font-semibold">{inst.sigla}</span>
-                          <span className="text-muted-foreground ml-1.5 truncate max-w-[200px]">
-                            {inst.nombre}
-                          </span>
-                        </DropdownMenuRadioItem>
+                <Combobox
+                  items={institucionOptions}
+                  value={institucionOptions.find(i => i.value === selectedInstitucion) || institucionOptions[0]}
+                  onValueChange={(val) => {
+                    if (val) setSelectedInstitucion(val.value);
+                  }}
+                >
+                  <ComboboxSelectTrigger className="w-full h-10 justify-between text-xs sm:text-sm font-normal bg-background rounded-xl border-border/80 px-3.5 hover:bg-muted/40 shadow-none">
+                    <span className="truncate">
+                      {institucionOptions.find(i => i.value === selectedInstitucion)?.label || "Todas las instituciones"}
+                    </span>
+                  </ComboboxSelectTrigger>
+                  <ComboboxContent align="start" className="w-80 max-w-[90vw]">
+                    <ComboboxList>
+                      {institucionOptions.map((opt) => (
+                        <ComboboxItem key={opt.value} value={opt} className="text-xs">
+                          {opt.label}
+                        </ComboboxItem>
                       ))}
-                    </DropdownMenuRadioGroup>
-                  </DropdownMenuContent>
-                </DropdownMenu>
+                    </ComboboxList>
+                  </ComboboxContent>
+                </Combobox>
               </div>
 
               <div className="sm:col-span-6 lg:col-span-3 space-y-1.5">
                 <label className="text-xs font-medium text-muted-foreground whitespace-nowrap block">Clasificación del campo</label>
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <Button
-                      variant="outline"
-                      className="w-full h-10 justify-between text-xs sm:text-sm font-normal bg-background rounded-xl border-border/80 px-3.5 hover:bg-muted/40"
-                    >
-                      <span className="truncate flex items-center gap-1.5">
-                        {selectedClasificacion === "ALL" && "Todas las clasificaciones"}
-                        {selectedClasificacion === "Accesible" && (
-                          <>
-                            <Check className="size-3.5 text-muted-foreground" />
-                            Accesible
-                          </>
-                        )}
-                        {selectedClasificacion === "Confidencial" && (
-                          <>
-                            <Lock className="size-3.5 text-muted-foreground" />
-                            Confidencial
-                          </>
-                        )}
-                      </span>
-                      <ChevronDown className="size-4 opacity-60 ml-2 shrink-0" />
-                    </Button>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent align="end" className="w-56">
-                    <DropdownMenuLabel className="text-xs">Clasificación DPI</DropdownMenuLabel>
-                    <DropdownMenuSeparator />
-                    <DropdownMenuRadioGroup
-                      value={selectedClasificacion}
-                      onValueChange={setSelectedClasificacion}
-                    >
-                      <DropdownMenuRadioItem value="ALL" className="text-xs">
-                        Todas las clasificaciones
-                      </DropdownMenuRadioItem>
-                      <DropdownMenuRadioItem value="Accesible" className="text-xs">
-                        <Check className="size-3.5 mr-1.5 text-muted-foreground" />
-                        Accesible
-                      </DropdownMenuRadioItem>
-                      <DropdownMenuRadioItem value="Confidencial" className="text-xs">
-                        <Lock className="size-3.5 mr-1.5 text-muted-foreground" />
-                        Confidencial
-                      </DropdownMenuRadioItem>
-                    </DropdownMenuRadioGroup>
-                  </DropdownMenuContent>
-                </DropdownMenu>
+                <Combobox
+                  items={clasificacionOptions}
+                  value={clasificacionOptions.find(c => c.value === selectedClasificacion) || clasificacionOptions[0]}
+                  onValueChange={(val) => {
+                    if (val) setSelectedClasificacion(val.value as any);
+                  }}
+                >
+                  <ComboboxSelectTrigger className="w-full h-10 justify-between text-xs sm:text-sm font-normal bg-background rounded-xl border-border/80 px-3.5 hover:bg-muted/40 shadow-none">
+                    <span className="truncate">
+                      {clasificacionOptions.find(c => c.value === selectedClasificacion)?.label || "Todas las clasificaciones"}
+                    </span>
+                  </ComboboxSelectTrigger>
+                  <ComboboxContent align="end" className="w-56">
+                    <ComboboxList>
+                      {clasificacionOptions.map((opt) => (
+                        <ComboboxItem key={opt.value} value={opt} className="text-xs">
+                          {opt.label}
+                        </ComboboxItem>
+                      ))}
+                    </ComboboxList>
+                  </ComboboxContent>
+                </Combobox>
               </div>
             </div>
 
@@ -623,39 +606,33 @@ export default function CatalogoConsultaPage() {
                             >
                               {/* Identificador de Fuente */}
                               <div className="flex flex-col gap-3">
-                                <div>
-                                  <span className="text-[11px] font-semibold text-muted-foreground/70 uppercase tracking-wider mb-1 block">
-                                    Fuente: {institucion.nombre}
-                                  </span>
-                                  
-                                  <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-3">
-                                    <div className="space-y-1.5 min-w-0">
-                                      <h3 className="font-heading text-base sm:text-lg font-bold text-foreground/80 flex items-center gap-2">
-                                        <Database className="size-4.5 text-muted-foreground/60" />
-                                        Servicio: {fuente.nombre}
-                                      </h3>
-                                      <p className="text-xs text-muted-foreground leading-relaxed">
-                                        {fuente.descripcion}
-                                      </p>
-                                    </div>
+                                <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-3">
+                                  <div className="space-y-1.5 min-w-0">
+                                    <h3 className="font-heading text-base sm:text-lg font-bold text-foreground/80 flex items-center gap-2">
+                                      <Database className="size-4.5 text-muted-foreground/60" />
+                                      Servicio: {fuente.nombre}
+                                    </h3>
+                                    <p className="text-xs text-muted-foreground leading-relaxed">
+                                      {fuente.descripcion}
+                                    </p>
+                                  </div>
 
-                                    <div className="flex items-center gap-2 shrink-0">
-                                      <Button
-                                        variant="outline"
-                                        size="sm"
-                                        data-tour={fuente.id === "FNT-001" ? "tour-ver-campos" : undefined}
-                                        onClick={() => toggleFuente(fuente.id)}
-                                        className="text-xs h-8 gap-1.5 font-medium border-border/80 hover:bg-muted"
-                                      >
-                                        <Layers className="size-3.5 text-muted-foreground" />
-                                        <span>{isFuenteExpanded ? "Ocultar campos" : "Ver campos"}</span>
-                                        {isFuenteExpanded ? (
-                                          <ChevronUp className="size-3 text-muted-foreground" />
-                                        ) : (
-                                          <ChevronDown className="size-3 text-muted-foreground" />
-                                        )}
-                                      </Button>
-                                    </div>
+                                  <div className="flex items-center gap-2 shrink-0">
+                                    <Button
+                                      variant="outline"
+                                      size="sm"
+                                      data-tour={fuente.id === "FNT-001" ? "tour-ver-campos" : undefined}
+                                      onClick={() => toggleFuente(fuente.id)}
+                                      className="text-xs h-8 gap-1.5 font-medium border-border/80 hover:bg-muted"
+                                    >
+                                      <Layers className="size-3.5 text-muted-foreground" />
+                                      <span>{isFuenteExpanded ? "Ocultar campos" : "Ver campos"}</span>
+                                      {isFuenteExpanded ? (
+                                        <ChevronUp className="size-3 text-muted-foreground" />
+                                      ) : (
+                                        <ChevronDown className="size-3 text-muted-foreground" />
+                                      )}
+                                    </Button>
                                   </div>
                                 </div>
 

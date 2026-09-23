@@ -1,10 +1,34 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import Link from "next/link";
-import { Plus, Search, FileText, Eye, Edit, ArrowRight } from "lucide-react";
+import {
+  Plus,
+  Eye,
+  Edit,
+  ChevronDown,
+  X,
+  Filter,
+  Receipt,
+  FileCheck2,
+  FileText,
+  CheckCircle2,
+  Clock,
+  AlertTriangle,
+  CreditCard,
+  History,
+  UploadCloud,
+  FileSpreadsheet,
+  Building2,
+  ExternalLink,
+  ShieldCheck,
+  Check,
+  Info
+} from "lucide-react";
+import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { Search } from "@/components/ui/search";
 import {
   Table,
   TableHeader,
@@ -19,155 +43,337 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogFooter
+} from "@/components/ui/dialog";
+import { toast } from "sonner";
 import { WireframeDashboardLayout } from "../../components/wireframe-dashboard-layout";
 import { useSimulatedRole } from "../../catalogo-interoperabilidad/hooks/use-simulated-role";
+import { MOCK_USERS_BY_ROLE, type UserRole } from "../../catalogo-interoperabilidad/data/catalogo-data";
+import { useSolicitudesStore, SolicitudAcceso } from "../data/solicitudes-store";
 import { WireframeTour, TourStep } from "../../components/wireframe-tour";
-import { useEffect } from "react";
+import {
+  Combobox,
+  ComboboxSelectTrigger,
+  ComboboxContent,
+  ComboboxList,
+  ComboboxItem,
+} from "@/components/ui/combobox";
 
-// Mock data
-const mockSolicitudes = [
-  {
-    id: "SOL-2026-001",
-    fecha: "2026-09-20",
-    institucion: "MIES",
-    fuentes: 2,
-    campos: 15,
-    estado: "En validación",
-    responsable: "DGR",
-    ultimaActualizacion: "2026-09-21"
-  },
-  {
-    id: "SOL-2026-002",
-    fecha: "2026-09-18",
-    institucion: "MIES",
-    fuentes: 1,
-    campos: 3,
-    estado: "Con observaciones",
-    responsable: "Coordinador SINARP",
-    ultimaActualizacion: "2026-09-19"
-  },
-  {
-    id: "SOL-2026-003",
-    fecha: "2026-09-10",
-    institucion: "MIES",
-    fuentes: 3,
-    campos: 20,
-    estado: "Revisión jurídica",
-    responsable: "DPI",
-    ultimaActualizacion: "2026-09-15"
-  },
-  {
-    id: "SOL-2026-004",
-    fecha: "2026-09-01",
-    institucion: "MIES",
-    fuentes: 1,
-    campos: 5,
-    estado: "Aprobada",
-    responsable: "Coordinador SINARP",
-    ultimaActualizacion: "2026-09-05"
-  },
-  {
-    id: "SOL-2026-005",
-    fecha: "2026-09-22",
-    institucion: "Banco Pichincha",
-    fuentes: 2,
-    campos: 2,
-    estado: "Pendiente de pago",
-    responsable: "Coordinador SINARP",
-    ultimaActualizacion: "2026-09-22"
-  }
+const roleOptions = [
+  { value: "COORDINADOR_SINARP", label: "Coordinador SINARP" },
+  { value: "APROBADOR", label: "Aprobador" },
+  { value: "FACTURACION", label: "Facturación" },
 ];
 
 export default function AccesoInteroperabilidadPage() {
   const [role, setRole] = useSimulatedRole("COORDINADOR_SINARP");
+  const { solicitudes, validarPagoConCur, simularPagoRealizado } = useSolicitudesStore();
+
   const [searchTerm, setSearchTerm] = useState("");
+  const [institucionFilter, setInstitucionFilter] = useState("ALL");
+  const [estadoFilter, setEstadoFilter] = useState("ALL");
+  const [responsableFilter, setResponsableFilter] = useState("ALL");
+  const [fechaFilter, setFechaFilter] = useState("ALL");
 
-  let visibleSolicitudes = mockSolicitudes;
+  // Modales de interacción
+  const [modalFactura, setModalFactura] = useState<SolicitudAcceso | null>(null);
+  const [modalCur, setModalCur] = useState<SolicitudAcceso | null>(null);
+  const [modalValidarPago, setModalValidarPago] = useState<SolicitudAcceso | null>(null);
+  const [modalConfirmarValidacion, setModalConfirmarValidacion] = useState<SolicitudAcceso | null>(null);
+  const [curFile, setCurFile] = useState<File | null>(null);
+  const [curFileError, setCurFileError] = useState(false);
+  const [numeroCurInput, setNumeroCurInput] = useState("");
 
-  if (role === "DPI") {
-    visibleSolicitudes = mockSolicitudes.filter(s => s.estado === "Revisión jurídica");
-  }
+  // Limpiar filtros al cambiar rol
+  useEffect(() => {
+    setSearchTerm("");
+    setInstitucionFilter("ALL");
+    setEstadoFilter("ALL");
+    setResponsableFilter("ALL");
+    setFechaFilter("ALL");
+  }, [role]);
 
-  const filteredSolicitudes = visibleSolicitudes.filter(
-    (s) =>
-      s.id.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      s.institucion.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  // Solicitudes visibles según rol
+  const visibleSolicitudes = useMemo(() => {
+    if (role === "APROBADOR") {
+      // Muestra principalmente solicitudes que requieren intervención del Aprobador
+      const priorizadas = solicitudes.filter(
+        (s) =>
+          s.estado === "En revisión" ||
+          s.estado === "Pendiente de aprobación" ||
+          s.estado === "Reenviada" ||
+          s.estado === "Reenviada para aprobación" ||
+          s.estado === "Aprobada" ||
+          s.estado === "Rechazada" ||
+          s.estado === "Con observaciones"
+      );
+      // Priorizar visualmente las pendientes de revisión
+      return [...priorizadas].sort((a, b) => {
+        const orderA = (a.estado.includes("revisión") || a.estado.includes("Reenviada")) ? 0 : 1;
+        const orderB = (b.estado.includes("revisión") || b.estado.includes("Reenviada")) ? 0 : 1;
+        return orderA - orderB;
+      });
+    }
 
-  const [showWelcome, setShowWelcome] = useState(false);
+    if (role === "FACTURACION") {
+      // Únicamente solicitudes de instituciones privadas en etapa financiera
+      return solicitudes.filter(
+        (s) =>
+          s.tipoInstitucion === "Privada" &&
+          (s.estado === "Pago pendiente" ||
+            s.estado === "Pendiente de validación de pago" ||
+            s.estado === "Pago en validación" ||
+            s.estado === "Pago validado" ||
+            s.estado === "Pago verificado")
+      );
+    }
+
+    // COORDINADOR_SINARP: todas las solicitudes institucionales
+    return solicitudes;
+  }, [role, solicitudes]);
+
+  // Listas para filtros dinámicos
+  const institucionesList = useMemo(() => {
+    return Array.from(new Set(visibleSolicitudes.map((s) => s.institucion))).filter(Boolean);
+  }, [visibleSolicitudes]);
+
+  const estadosList = useMemo(() => {
+    if (role === "FACTURACION") {
+      return ["Pago pendiente", "Pendiente de validación de pago", "Pago validado"];
+    }
+    if (role === "APROBADOR") {
+      return ["En revisión", "Reenviada", "Aprobada", "Rechazada"];
+    }
+    return Array.from(new Set(visibleSolicitudes.map((s) => s.estado))).filter(Boolean);
+  }, [role, visibleSolicitudes]);
+
+  const responsablesList = useMemo(() => {
+    return Array.from(new Set(visibleSolicitudes.map((s) => s.responsable))).filter(Boolean);
+  }, [visibleSolicitudes]);
+
+  const institucionOptions = useMemo(() => [
+    { value: "ALL", label: "Todas las instituciones" },
+    ...institucionesList.map((inst) => ({ value: inst, label: inst }))
+  ], [institucionesList]);
+
+  const estadoOptions = useMemo(() => [
+    { value: "ALL", label: "Todos los estados" },
+    ...estadosList.map((est) => ({ value: est, label: est }))
+  ], [estadosList]);
+
+  const responsableOptions = useMemo(() => [
+    { value: "ALL", label: "Todos los responsables" },
+    ...responsablesList.map((resp) => ({ value: resp, label: resp }))
+  ], [responsablesList]);
+
+  const fechaOptions = useMemo(() => [
+    { value: "ALL", label: "Todas las fechas" },
+    { value: "7d", label: "Últimos 7 días" },
+    { value: "30d", label: "Últimos 30 días" },
+  ], []);
+
+  const filteredSolicitudes = useMemo(() => {
+    return visibleSolicitudes.filter((s) => {
+      const matchSearch =
+        !searchTerm.trim() ||
+        s.id.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        s.institucion.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        s.estado.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        s.responsable.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        (s.servicioPrincipal && s.servicioPrincipal.toLowerCase().includes(searchTerm.toLowerCase())) ||
+        (s.fuentePrincipal && s.fuentePrincipal.toLowerCase().includes(searchTerm.toLowerCase()));
+
+      const matchInstitucion =
+        institucionFilter === "ALL" || s.institucion === institucionFilter;
+
+      let matchEstado = true;
+      if (estadoFilter !== "ALL") {
+        if (estadoFilter === "En revisión") {
+          matchEstado = s.estado === "En revisión" || s.estado === "Pendiente de aprobación";
+        } else if (estadoFilter === "Reenviada") {
+          matchEstado = s.estado === "Reenviada" || s.estado === "Reenviada para aprobación";
+        } else if (estadoFilter === "Rechazada") {
+          matchEstado = s.estado === "Rechazada" || s.estado === "Con observaciones";
+        } else if (estadoFilter === "Pendiente de validación de pago") {
+          matchEstado = s.estado === "Pendiente de validación de pago" || s.estado === "Pago en validación";
+        } else if (estadoFilter === "Pago validado") {
+          matchEstado = s.estado === "Pago validado" || s.estado === "Pago verificado";
+        } else {
+          matchEstado = s.estado === estadoFilter;
+        }
+      }
+
+      const matchResponsable =
+        responsableFilter === "ALL" || s.responsable === responsableFilter;
+
+      let matchFecha = true;
+      if (fechaFilter === "7d") {
+        const itemDate = new Date(s.fecha);
+        const refDate = new Date("2026-09-23");
+        const diffDays = Math.floor((refDate.getTime() - itemDate.getTime()) / (1000 * 3600 * 24));
+        matchFecha = diffDays <= 7 && diffDays >= 0;
+      } else if (fechaFilter === "30d") {
+        const itemDate = new Date(s.fecha);
+        const refDate = new Date("2026-09-23");
+        const diffDays = Math.floor((refDate.getTime() - itemDate.getTime()) / (1000 * 3600 * 24));
+        matchFecha = diffDays <= 30 && diffDays >= 0;
+      }
+
+      return matchSearch && matchInstitucion && matchEstado && matchResponsable && matchFecha;
+    });
+  }, [visibleSolicitudes, searchTerm, institucionFilter, estadoFilter, responsableFilter, fechaFilter]);
+
+  const hasActiveFilters =
+    searchTerm.trim() !== "" ||
+    institucionFilter !== "ALL" ||
+    estadoFilter !== "ALL" ||
+    responsableFilter !== "ALL" ||
+    fechaFilter !== "ALL";
+
+  const clearAllFilters = () => {
+    setSearchTerm("");
+    setInstitucionFilter("ALL");
+    setEstadoFilter("ALL");
+    setResponsableFilter("ALL");
+    setFechaFilter("ALL");
+  };
+
+  const getEstadoBadge = (estado: string) => {
+    switch (estado) {
+      case "Aprobada":
+      case "Pago validado":
+      case "Pago verificado":
+        return <Badge tone="success" appearance="soft" size="sm">{estado}</Badge>;
+      case "En revisión":
+      case "Pendiente de aprobación":
+      case "Reenviada":
+      case "Reenviada para aprobación":
+        return <Badge tone="info" appearance="soft" size="sm">{estado}</Badge>;
+      case "Pendiente de pago":
+      case "Pendiente de validación de pago":
+      case "Pago en validación":
+        return <Badge tone="warning" appearance="soft" size="sm">{estado}</Badge>;
+      case "Rechazada":
+      case "Con observaciones":
+        return <Badge tone="danger" appearance="soft" size="sm">{estado}</Badge>;
+      default:
+        return <Badge tone="neutral" appearance="outline" size="sm" className="bg-background">{estado}</Badge>;
+    }
+  };
+
+  // Títulos y descripciones dinámicos según rol
+  const getHeaderInfo = () => {
+    if (role === "FACTURACION") {
+      return {
+        title: "Gestión de solicitudes pendientes de pago",
+        desc: "Consulta las solicitudes privadas aprobadas, valida los pagos registrados en SIGEF y anexa los comprobantes financieros al proceso.",
+        breadcrumb: "Gestión de solicitudes pendientes de pago"
+      };
+    }
+    if (role === "APROBADOR") {
+      return {
+        title: "Gestión de solicitudes pendientes",
+        desc: "Revisa las solicitudes de interoperabilidad pendientes de aprobación y valida la justificación y finalidad de uso de los datos solicitados.",
+        breadcrumb: "Gestión de solicitudes pendientes"
+      };
+    }
+    return {
+      title: "Gestión de solicitudes",
+      desc: "Crea, consulta y realiza seguimiento a las solicitudes de acceso a servicios de interoperabilidad.",
+      breadcrumb: "Gestión de solicitudes"
+    };
+  };
+
+  const headerInfo = getHeaderInfo();
+
+  // Handlers para validar pago y CUR
+  const handleOpenValidar = (sol: SolicitudAcceso) => {
+    setModalValidarPago(sol);
+    setCurFile(null);
+    setCurFileError(false);
+    setNumeroCurInput(`CUR-${Math.floor(Math.random() * 80000 + 10000)}`);
+  };
+
+  const handleProcederConfirmacion = () => {
+    if (!curFile) {
+      setCurFileError(true);
+      return;
+    }
+    setModalConfirmarValidacion(modalValidarPago);
+  };
+
+  const handleConfirmarValidacionFinal = () => {
+    if (modalConfirmarValidacion && curFile) {
+      validarPagoConCur(modalConfirmarValidacion.id, {
+        numeroCur: numeroCurInput || "CUR-009412",
+        nombreArchivo: curFile.name,
+        tamano: `${(curFile.size / (1024 * 1024)).toFixed(1)} MB`,
+        usuarioResponsable: "Lcda. Patricia Morales (Facturación)"
+      });
+      toast.success("Pago validado y CUR anexado correctamente");
+      setModalConfirmarValidacion(null);
+      setModalValidarPago(null);
+      setCurFile(null);
+    }
+  };
+
+  // Tour guiado
   const [tourOpen, setTourOpen] = useState(false);
   const [currentStep, setCurrentStep] = useState(0);
 
-  useEffect(() => {
-    if (typeof window !== "undefined" && !localStorage.getItem("onboarding_solicitudes_visto")) {
-      setShowWelcome(true);
-    }
-  }, []);
-
-  const startTour = () => {
-    setShowWelcome(false);
-    setTourOpen(true);
-    setCurrentStep(0);
-    if (typeof window !== "undefined") {
-      localStorage.setItem("onboarding_solicitudes_visto", "true");
-    }
-  };
-
-  const skipTour = () => {
-    setShowWelcome(false);
-    if (typeof window !== "undefined") {
-      localStorage.setItem("onboarding_solicitudes_visto", "true");
-    }
-  };
-
   const getSteps = (): TourStep[] => {
-    if (role === "COORDINADOR_SINARP") {
+    if (role === "FACTURACION") {
       return [
         {
           id: "step1",
           target: "#header-title",
-          title: "Gestión de solicitudes",
-          description: "Aquí puedes consultar todas las solicitudes de acceso de tu institución y revisar en qué etapa se encuentra cada una."
+          title: "Gestión de solicitudes pendientes de pago",
+          description: "Visualiza solicitudes de instituciones privadas aprobadas que requieren verificación del pago en SIGEF y anexo de CUR."
         },
         {
           id: "step2",
-          target: "#btn-nueva-solicitud",
-          title: "Nueva solicitud",
-          description: "Desde aquí puedes iniciar una nueva solicitud para consumir información disponible en el Catálogo de Interoperabilidad."
-        },
-        {
-          id: "step3",
-          target: "#toolbar-filtros",
-          title: "Búsqueda y filtros",
-          description: "Utiliza los filtros para localizar solicitudes y consultar rápidamente las que requieren tu atención."
-        },
-        {
-          id: "step4",
-          target: "#role-selector-tour",
-          title: "Selector de rol",
-          description: "En este prototipo puedes cambiar el rol para visualizar cómo participa cada responsable durante el proceso."
-        }
-      ];
-    } else if (role === "DGR") {
-      return [
-        {
-          id: "step1",
           target: "#table-solicitudes",
-          title: "Solicitudes a validar",
-          description: "Aquí puedes consultar las solicitudes que requieren validación por parte de la Dirección de Gestión y Registro."
-        }
-      ];
-    } else if (role === "DPI") {
-      return [
-        {
-          id: "step1",
-          target: "#table-solicitudes",
-          title: "Revisión jurídica",
-          description: "Aquí se muestran las solicitudes que requieren revisión de justificación jurídica."
+          title: "Bandeja financiera",
+          description: "Consulta valores pendientes, emite comprobantes de factura y registra la validación de pagos acreditados."
         }
       ];
     }
-    return [];
+    if (role === "APROBADOR") {
+      return [
+        {
+          id: "step1",
+          target: "#header-title",
+          title: "Gestión de solicitudes pendientes",
+          description: "Revisa las solicitudes de interoperabilidad pendientes de aprobación y valida la justificación y finalidad de uso."
+        },
+        {
+          id: "step2",
+          target: "#table-solicitudes",
+          title: "Bandeja de aprobación",
+          description: "Accede al detalle técnico de campos y justificaciones para aprobar o solicitar ajustes."
+        }
+      ];
+    }
+    return [
+      {
+        id: "step1",
+        target: "#header-title",
+        title: "Gestión de solicitudes",
+        description: "Crea, consulta y realiza seguimiento a las solicitudes de interoperabilidad durante todo su ciclo."
+      },
+      {
+        id: "step2",
+        target: "#btn-nueva-solicitud",
+        title: "Nueva solicitud",
+        description: "Inicia el requerimiento institucional para consumir datos oficiales del Estado."
+      }
+    ];
   };
 
   const steps = getSteps();
@@ -175,45 +381,36 @@ export default function AccesoInteroperabilidadPage() {
   return (
     <WireframeDashboardLayout
       activeMenu="acceso-interoperabilidad"
+      currentUser={MOCK_USERS_BY_ROLE[role]}
+      currentRole={role}
+      onRoleChange={(r) => setRole(r)}
       breadcrumbs={[
         { label: "Acceso a Interoperabilidad", href: "/wireframes2/acceso-interoperabilidad/solicitudes" },
-        { label: "Gestión de solicitudes" }
+        { label: headerInfo.breadcrumb }
       ]}
       headerSlot={
         <div className="flex items-center gap-2" id="role-selector-tour">
-          <select
-            className="h-8 text-xs px-2 py-1 rounded-md border border-border bg-surface text-foreground"
-            value={role}
-            onChange={(e) => setRole(e.target.value as any)}
+          <Combobox
+            items={roleOptions}
+            value={roleOptions.find(opt => opt.value === role) || roleOptions[0]}
+            onValueChange={(val) => {
+              if (val) setRole(val.value as UserRole);
+            }}
           >
-            <option value="COORDINADOR_SINARP">Coordinador SINARP</option>
-            <option value="DGR">Profesional DGR</option>
-            <option value="DPI">Profesional DPI</option>
-            <option value="DSI">DSI / Tecnología</option>
-          </select>
-          <Button variant="ghost" size="sm" onClick={() => setTourOpen(true)} className="h-8 px-2 text-xs">
-            Ver guía
-          </Button>
+            <ComboboxSelectTrigger className="h-8 text-xs min-w-[185px]" />
+            <ComboboxContent align="start" className="min-w-[200px]">
+              <ComboboxList>
+                {roleOptions.map((opt) => (
+                  <ComboboxItem key={opt.value} value={opt}>
+                    {opt.label}
+                  </ComboboxItem>
+                ))}
+              </ComboboxList>
+            </ComboboxContent>
+          </Combobox>
         </div>
       }
     >
-      {/* Welcome Dialog */}
-      {showWelcome && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-background/80 backdrop-blur-sm">
-          <div className="bg-card border border-border p-6 rounded-xl max-w-md shadow-2xl flex flex-col gap-4">
-            <h2 className="text-xl font-bold">Conoce el proceso de Acceso a Interoperabilidad</h2>
-            <p className="text-sm text-muted-foreground">
-              Te mostraremos cómo crear, revisar y dar seguimiento a una solicitud de acceso a información.
-            </p>
-            <div className="flex justify-end gap-2 mt-2">
-              <Button variant="outline" onClick={skipTour}>Omitir</Button>
-              <Button onClick={startTour}>Comenzar</Button>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Tour Component */}
       <WireframeTour
         isOpen={tourOpen}
         onClose={() => setTourOpen(false)}
@@ -222,127 +419,847 @@ export default function AccesoInteroperabilidadPage() {
         onStepChange={setCurrentStep}
       />
 
-      <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex flex-col gap-6">
-        {/* Header */}
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-          <div className="flex flex-col gap-1" id="header-title">
-            <h1 className="font-heading text-2xl md:text-3xl font-bold tracking-tight text-foreground">
-              Gestión de solicitudes
-            </h1>
-            <p className="text-sm text-muted-foreground">
-              Consulta, revisa y da seguimiento a las solicitudes de acceso a interoperabilidad.
-            </p>
+      <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div className="border border-border rounded-2xl bg-card p-6 sm:p-8 flex flex-col gap-6 shadow-xs">
+          {/* Header dinámico */}
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-border/80 pb-5">
+            <div className="flex flex-col gap-1" id="header-title">
+              <h1 className="font-heading text-2xl md:text-3xl font-bold tracking-tight text-foreground">
+                {headerInfo.title}
+              </h1>
+              <p className="text-sm text-muted-foreground max-w-3xl">
+                {headerInfo.desc}
+              </p>
+            </div>
+
+            {/* Botón Nueva Solicitud SOLO para Coordinador SINARP */}
+            {role === "COORDINADOR_SINARP" && (
+              <Link href="/wireframes2/acceso-interoperabilidad/solicitudes/nueva">
+                <Button className="gap-2 shrink-0 shadow-sm" id="btn-nueva-solicitud">
+                  <Plus className="size-4" />
+                  Nueva solicitud
+                </Button>
+              </Link>
+            )}
           </div>
-          {role === "COORDINADOR_SINARP" && (
-            <Link href="/wireframes2/acceso-interoperabilidad/solicitudes/nueva">
-              <Button className="gap-2 shrink-0" id="btn-nueva-solicitud">
-                <Plus className="size-4" />
-                Nueva solicitud
-              </Button>
-            </Link>
+
+          {/* Banner de contexto informativo para Rol Facturación */}
+          {role === "FACTURACION" && (
+            <div className="p-4 rounded-xl border border-primary/30 bg-primary/5 flex items-start gap-3">
+              <Info className="size-5 text-primary shrink-0 mt-0.5" />
+              <div className="text-xs space-y-1">
+                <p className="font-bold text-foreground">
+                  Gestión económica de convenios y contratos privados
+                </p>
+                <p className="text-muted-foreground leading-relaxed">
+                  Las solicitudes privadas requieren validación de acreditación en <strong className="text-foreground">SIGEF (Sistema Integrado de Gestión Financiera)</strong>. Una vez corroborado el depósito bancario, adjunta el Comprobante Único de Registro (CUR) para que el equipo técnico habilite las credenciales de interoperabilidad.
+                </p>
+              </div>
+            </div>
           )}
-        </div>
 
-        {/* Toolbar */}
-        <div className="flex flex-col gap-3" id="toolbar-filtros">
-          <div className="relative w-full max-w-md">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
-            <input
-              type="text"
-              placeholder="Buscar solicitud..."
-              className="w-full pl-9 pr-4 h-10 bg-background border border-border/80 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/20"
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-            />
+          {/* Toolbar de Filtros */}
+          <div className="flex flex-col gap-3.5" id="toolbar-filtros">
+            <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-3">
+              <div className="flex flex-wrap items-center gap-2.5 flex-1">
+                {/* Search */}
+                <div className="w-full sm:w-72 md:w-80">
+                  <Search
+                    placeholder={
+                      role === "FACTURACION"
+                        ? "Buscar por código, banco o factura..."
+                        : role === "APROBADOR"
+                        ? "Buscar por código, institución o servicio..."
+                        : "Buscar solicitud..."
+                    }
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    onClear={() => setSearchTerm("")}
+                    className="w-full bg-background"
+                  />
+                </div>
+
+                {/* Filtro: Estado */}
+                <Combobox
+                  items={estadoOptions}
+                  value={estadoOptions.find((o) => o.value === estadoFilter) || estadoOptions[0]}
+                  onValueChange={(val) => {
+                    if (val) setEstadoFilter(val.value);
+                  }}
+                >
+                  <ComboboxSelectTrigger
+                    className={cn(
+                      "h-11 rounded-full px-4 text-xs sm:text-sm font-medium bg-background border-border/80 hover:bg-muted/40 transition-colors gap-1.5 shadow-none",
+                      estadoFilter !== "ALL" && "border-primary text-primary font-semibold bg-primary/5"
+                    )}
+                  >
+                    <span className="truncate max-w-[160px]">
+                      {estadoFilter === "ALL" ? "Estado: Todos" : `Estado: ${estadoFilter}`}
+                    </span>
+                  </ComboboxSelectTrigger>
+                  <ComboboxContent align="start" className="w-64 max-h-72 overflow-y-auto">
+                    <ComboboxList>
+                      {estadoOptions.map((opt) => (
+                        <ComboboxItem key={opt.value} value={opt} className="text-xs">
+                          {opt.label}
+                        </ComboboxItem>
+                      ))}
+                    </ComboboxList>
+                  </ComboboxContent>
+                </Combobox>
+
+                {/* Filtro: Institución */}
+                <Combobox
+                  items={institucionOptions}
+                  value={institucionOptions.find((o) => o.value === institucionFilter) || institucionOptions[0]}
+                  onValueChange={(val) => {
+                    if (val) setInstitucionFilter(val.value);
+                  }}
+                >
+                  <ComboboxSelectTrigger
+                    className={cn(
+                      "h-11 rounded-full px-4 text-xs sm:text-sm font-medium bg-background border-border/80 hover:bg-muted/40 transition-colors gap-1.5 shadow-none",
+                      institucionFilter !== "ALL" && "border-primary text-primary font-semibold bg-primary/5"
+                    )}
+                  >
+                    <span className="truncate max-w-[150px]">
+                      {institucionFilter === "ALL" ? "Institución: Todas" : institucionFilter}
+                    </span>
+                  </ComboboxSelectTrigger>
+                  <ComboboxContent align="start" className="w-64 max-h-72 overflow-y-auto">
+                    <ComboboxList>
+                      {institucionOptions.map((opt) => (
+                        <ComboboxItem key={opt.value} value={opt} className="text-xs">
+                          {opt.label}
+                        </ComboboxItem>
+                      ))}
+                    </ComboboxList>
+                  </ComboboxContent>
+                </Combobox>
+
+                {/* Filtro: Responsable (solo visible para Coordinador) */}
+                {role === "COORDINADOR_SINARP" && (
+                  <Combobox
+                    items={responsableOptions}
+                    value={responsableOptions.find((o) => o.value === responsableFilter) || responsableOptions[0]}
+                    onValueChange={(val) => {
+                      if (val) setResponsableFilter(val.value);
+                    }}
+                  >
+                    <ComboboxSelectTrigger
+                      className={cn(
+                        "h-11 rounded-full px-4 text-xs sm:text-sm font-medium bg-background border-border/80 hover:bg-muted/40 transition-colors gap-1.5 shadow-none",
+                        responsableFilter !== "ALL" && "border-primary text-primary font-semibold bg-primary/5"
+                      )}
+                    >
+                      <span className="truncate max-w-[150px]">
+                        {responsableFilter === "ALL" ? "Responsable: Todos" : responsableFilter}
+                      </span>
+                    </ComboboxSelectTrigger>
+                    <ComboboxContent align="start" className="w-56 max-h-72 overflow-y-auto">
+                      <ComboboxList>
+                        {responsableOptions.map((opt) => (
+                          <ComboboxItem key={opt.value} value={opt} className="text-xs">
+                            {opt.label}
+                          </ComboboxItem>
+                        ))}
+                      </ComboboxList>
+                    </ComboboxContent>
+                  </Combobox>
+                )}
+
+                {/* Filtro: Fecha */}
+                <Combobox
+                  items={fechaOptions}
+                  value={fechaOptions.find((o) => o.value === fechaFilter) || fechaOptions[0]}
+                  onValueChange={(val) => {
+                    if (val) setFechaFilter(val.value);
+                  }}
+                >
+                  <ComboboxSelectTrigger
+                    className={cn(
+                      "h-11 rounded-full px-4 text-xs sm:text-sm font-medium bg-background border-border/80 hover:bg-muted/40 transition-colors gap-1.5 shadow-none",
+                      fechaFilter !== "ALL" && "border-primary text-primary font-semibold bg-primary/5"
+                    )}
+                  >
+                    <span className="truncate">
+                      {fechaOptions.find((o) => o.value === fechaFilter)?.label || "Fecha: Todas"}
+                    </span>
+                  </ComboboxSelectTrigger>
+                  <ComboboxContent align="start" className="w-48">
+                    <ComboboxList>
+                      {fechaOptions.map((opt) => (
+                        <ComboboxItem key={opt.value} value={opt} className="text-xs">
+                          {opt.label}
+                        </ComboboxItem>
+                      ))}
+                    </ComboboxList>
+                  </ComboboxContent>
+                </Combobox>
+
+                {hasActiveFilters && (
+                  <Button
+                    variant="ghost"
+                    onClick={clearAllFilters}
+                    className="h-11 rounded-full text-xs text-muted-foreground hover:text-foreground hover:bg-muted px-3.5"
+                  >
+                    <X className="size-3.5 mr-1" />
+                    Limpiar filtros
+                  </Button>
+                )}
+              </div>
+
+              <span className="text-xs text-muted-foreground shrink-0 self-center">
+                Mostrando <strong className="text-foreground font-semibold">{filteredSolicitudes.length}</strong> de{" "}
+                <strong className="text-foreground font-semibold">{visibleSolicitudes.length}</strong> solicitudes
+              </span>
+            </div>
           </div>
-        </div>
 
-        <div className="overflow-x-auto rounded-lg border border-border bg-card mt-2" id="table-solicitudes">
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Código</TableHead>
-                <TableHead>Institución</TableHead>
-                <TableHead>Fecha</TableHead>
-                <TableHead>Fuentes</TableHead>
-                <TableHead>Campos</TableHead>
-                <TableHead>Etapa / estado</TableHead>
-                <TableHead>Responsable actual</TableHead>
-                <TableHead>Última actualización</TableHead>
-                <TableHead className="text-right">Acciones</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {filteredSolicitudes.map((s) => (
-                <TableRow key={s.id}>
-                  <TableCell className="font-medium text-foreground">{s.id}</TableCell>
-                  <TableCell>{s.institucion}</TableCell>
-                  <TableCell className="text-muted-foreground">{s.fecha}</TableCell>
-                  <TableCell>{s.fuentes}</TableCell>
-                  <TableCell>{s.campos}</TableCell>
-                  <TableCell>
-                    <Badge tone="neutral" appearance="outline" className="bg-background">
-                      {s.estado}
-                    </Badge>
-                  </TableCell>
-                  <TableCell>{s.responsable}</TableCell>
-                  <TableCell className="text-muted-foreground">{s.ultimaActualizacion}</TableCell>
-                  <TableCell className="text-right">
-                    <div className="flex items-center justify-end gap-1">
-                      <TooltipProvider delayDuration={0}>
-                        <Tooltip>
-                          <TooltipTrigger asChild>
-                            <Button
-                              variant="ghost"
-                              size="icon-sm"
-                              asChild
-                              className="size-8 rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted"
-                            >
-                              <Link href={`/wireframes2/acceso-interoperabilidad/solicitudes/${s.id}`}>
-                                <Eye className="size-4" />
-                              </Link>
-                            </Button>
-                          </TooltipTrigger>
-                          <TooltipContent side="top">
-                            <p className="text-xs">Ver detalle</p>
-                          </TooltipContent>
-                        </Tooltip>
+          {/* TABLA PRINCIPAL SEGÚN ROL */}
+          <div className="overflow-x-auto border-y border-border bg-card mt-2">
+            <Table id="table-solicitudes">
+              <TableHeader>
+                {role === "COORDINADOR_SINARP" && (
+                  <TableRow>
+                    <TableHead>Código</TableHead>
+                    <TableHead>Institución</TableHead>
+                    <TableHead>Fecha</TableHead>
+                    <TableHead>Fuentes</TableHead>
+                    <TableHead>Campos</TableHead>
+                    <TableHead>Etapa / estado</TableHead>
+                    <TableHead>Responsable actual</TableHead>
+                    <TableHead>Última actualización</TableHead>
+                    <TableHead className="text-right">Acciones</TableHead>
+                  </TableRow>
+                )}
 
-                        {role === "COORDINADOR_SINARP" && s.estado === "Con observaciones" && (
-                          <Tooltip>
-                            <TooltipTrigger asChild>
-                              <Button
-                                variant="ghost"
-                                size="icon-sm"
-                                asChild
-                                className="size-8 rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted"
-                              >
-                                <Link href={`/wireframes2/acceso-interoperabilidad/solicitudes/${s.id}?edit=true`}>
-                                  <Edit className="size-4" />
-                                </Link>
-                              </Button>
-                            </TooltipTrigger>
-                            <TooltipContent side="top">
-                              <p className="text-xs">Corregir solicitud</p>
-                            </TooltipContent>
-                          </Tooltip>
-                        )}
-                      </TooltipProvider>
-                    </div>
-                  </TableCell>
-                </TableRow>
-              ))}
-              {filteredSolicitudes.length === 0 && (
-                <TableRow>
-                  <TableCell colSpan={9} className="py-12 text-center text-muted-foreground">
-                    No se encontraron solicitudes.
-                  </TableCell>
-                </TableRow>
-              )}
-            </TableBody>
-          </Table>
+                {role === "APROBADOR" && (
+                  <TableRow>
+                    <TableHead>N.º de solicitud</TableHead>
+                    <TableHead>Institución solicitante</TableHead>
+                    <TableHead>Fuente</TableHead>
+                    <TableHead>Servicio</TableHead>
+                    <TableHead>Fecha de envío</TableHead>
+                    <TableHead>Estado</TableHead>
+                    <TableHead className="text-right">Acciones</TableHead>
+                  </TableRow>
+                )}
+
+                {role === "FACTURACION" && (
+                  <TableRow>
+                    <TableHead>N.º de solicitud</TableHead>
+                    <TableHead>Institución</TableHead>
+                    <TableHead>Fuente / servicio</TableHead>
+                    <TableHead>Fecha de aprobación</TableHead>
+                    <TableHead>Valor</TableHead>
+                    <TableHead>Estado</TableHead>
+                    <TableHead className="text-right">Acciones</TableHead>
+                  </TableRow>
+                )}
+              </TableHeader>
+
+              <TableBody>
+                {filteredSolicitudes.map((s) => {
+                  const fuenteNombre = s.fuentePrincipal || s.fuentes?.[0]?.nombre || "Registro Civil de Ciudadanos";
+                  const servicioNombre = s.servicioPrincipal || "Consulta de Identidad";
+                  const fechaAprobacion = s.fechaAprobacion || s.ultimaActualizacion.substring(0, 10);
+                  const valorFactura = s.factura?.valor || "$ 150.00";
+
+                  if (role === "COORDINADOR_SINARP") {
+                    return (
+                      <TableRow key={s.id}>
+                        <TableCell className="font-medium text-foreground">{s.id}</TableCell>
+                        <TableCell>
+                          <div className="flex flex-col">
+                            <span className="font-semibold text-foreground">{s.institucion}</span>
+                            <span className="text-[11px] text-muted-foreground">
+                              {s.tipoInstitucion === "Privada" ? "Sector Privado (Tarifado)" : "Sector Público (Gratuito)"}
+                            </span>
+                          </div>
+                        </TableCell>
+                        <TableCell className="text-muted-foreground">{s.fecha.substring(0, 10)}</TableCell>
+                        <TableCell>{s.fuentesCount ?? s.fuentes?.length ?? 1}</TableCell>
+                        <TableCell>{s.camposCount ?? 2}</TableCell>
+                        <TableCell>{getEstadoBadge(s.estado)}</TableCell>
+                        <TableCell>{s.responsable}</TableCell>
+                        <TableCell className="text-muted-foreground">{s.ultimaActualizacion.substring(0, 10)}</TableCell>
+                        <TableCell className="text-right">
+                          <div className="flex items-center justify-end gap-1">
+                            <TooltipProvider delayDuration={0}>
+                              <Tooltip>
+                                <TooltipTrigger asChild>
+                                  <Button
+                                    variant="outline"
+                                    size="icon-sm"
+                                    asChild
+                                    className="size-8 rounded-lg border-border/80 text-foreground hover:bg-muted hover:text-foreground shadow-2xs"
+                                  >
+                                    <Link href={`/wireframes2/acceso-interoperabilidad/solicitudes/${s.id}`}>
+                                      <Eye className="size-4" />
+                                    </Link>
+                                  </Button>
+                                </TooltipTrigger>
+                                <TooltipContent side="top">
+                                  <p className="text-xs">Ver detalle</p>
+                                </TooltipContent>
+                              </Tooltip>
+
+                              {(s.estado === "Rechazada" || s.estado === "Con observaciones") && (
+                                <Tooltip>
+                                  <TooltipTrigger asChild>
+                                    <Button
+                                      variant="outline"
+                                      size="icon-sm"
+                                      asChild
+                                      className="size-8 rounded-lg border-amber-500/40 text-amber-600 hover:text-amber-700 hover:bg-amber-500/10 shadow-2xs"
+                                    >
+                                      <Link
+                                        href={`/wireframes2/acceso-interoperabilidad/solicitudes/${s.id}?edit=true&step=${
+                                          (`${s.motivoRechazo || ""} ${s.observaciones || ""}`.toLowerCase().includes("eliminar campo") ||
+                                          `${s.motivoRechazo || ""} ${s.observaciones || ""}`.toLowerCase().includes("quitar campo") ||
+                                          `${s.motivoRechazo || ""} ${s.observaciones || ""}`.toLowerCase().includes("cambiar fuente") ||
+                                          `${s.motivoRechazo || ""} ${s.observaciones || ""}`.toLowerCase().includes("campo no autorizado"))
+                                            ? 1
+                                            : 2
+                                        }`}
+                                      >
+                                        <Edit className="size-4" />
+                                      </Link>
+                                    </Button>
+                                  </TooltipTrigger>
+                                  <TooltipContent side="top">
+                                    <p className="text-xs">Corregir solicitud</p>
+                                  </TooltipContent>
+                                </Tooltip>
+                              )}
+                            </TooltipProvider>
+                          </div>
+                        </TableCell>
+                      </TableRow>
+                    );
+                  }
+
+                  if (role === "APROBADOR") {
+                    const isPendiente = s.estado === "En revisión" || s.estado === "Pendiente de aprobación" || s.estado === "Reenviada";
+                    return (
+                      <TableRow key={s.id} className={cn(isPendiente && "bg-primary/[0.02]")}>
+                        <TableCell className="font-semibold text-foreground">
+                          <div className="flex items-center gap-1.5">
+                            {isPendiente && <span className="size-2 rounded-full bg-primary animate-pulse" />}
+                            <span>{s.id}</span>
+                          </div>
+                        </TableCell>
+                        <TableCell className="font-medium text-foreground">{s.institucion}</TableCell>
+                        <TableCell className="text-muted-foreground">{fuenteNombre}</TableCell>
+                        <TableCell className="text-foreground">{servicioNombre}</TableCell>
+                        <TableCell className="text-muted-foreground font-mono text-xs">{s.fecha.substring(0, 10)}</TableCell>
+                        <TableCell>{getEstadoBadge(s.estado)}</TableCell>
+                        <TableCell className="text-right">
+                          <div className="flex items-center justify-end gap-1">
+                            <TooltipProvider delayDuration={0}>
+                              <Tooltip>
+                                <TooltipTrigger asChild>
+                                  <Button
+                                    variant="outline"
+                                    size="icon-sm"
+                                    asChild
+                                    className="size-8 rounded-lg border-border/80 text-foreground hover:bg-muted hover:text-foreground shadow-2xs"
+                                  >
+                                    <Link href={`/wireframes2/acceso-interoperabilidad/solicitudes/${s.id}`}>
+                                      <Eye className="size-4" />
+                                    </Link>
+                                  </Button>
+                                </TooltipTrigger>
+                                <TooltipContent side="top">
+                                  <p className="text-xs">Ver detalle</p>
+                                </TooltipContent>
+                              </Tooltip>
+                            </TooltipProvider>
+                          </div>
+                        </TableCell>
+                      </TableRow>
+                    );
+                  }
+
+                  if (role === "FACTURACION") {
+                    return (
+                      <TableRow key={s.id}>
+                        <TableCell className="font-semibold text-foreground">{s.id}</TableCell>
+                        <TableCell className="font-medium text-foreground">{s.institucion}</TableCell>
+                        <TableCell>
+                          <div className="flex flex-col text-xs">
+                            <span className="font-semibold text-foreground">{fuenteNombre}</span>
+                            <span className="text-muted-foreground">{servicioNombre}</span>
+                          </div>
+                        </TableCell>
+                        <TableCell className="text-muted-foreground font-mono text-xs">{fechaAprobacion}</TableCell>
+                        <TableCell className="font-bold text-foreground">{valorFactura}</TableCell>
+                        <TableCell>{getEstadoBadge(s.estado)}</TableCell>
+                        <TableCell className="text-right">
+                          <div className="flex items-center justify-end gap-1.5">
+                            <TooltipProvider delayDuration={0}>
+                              <Tooltip>
+                                <TooltipTrigger asChild>
+                                  <Button
+                                    variant="outline"
+                                    size="icon-sm"
+                                    asChild
+                                    className="size-8 rounded-lg border-border/80 text-foreground hover:bg-muted hover:text-foreground shadow-2xs"
+                                  >
+                                    <Link href={`/wireframes2/acceso-interoperabilidad/solicitudes/${s.id}`}>
+                                      <Eye className="size-4" />
+                                    </Link>
+                                  </Button>
+                                </TooltipTrigger>
+                                <TooltipContent side="top">
+                                  <p className="text-xs">Ver detalle</p>
+                                </TooltipContent>
+                              </Tooltip>
+
+                              {/* Acciones según estado para Facturación */}
+                              {s.estado === "Pago pendiente" && (
+                                <Tooltip>
+                                  <TooltipTrigger asChild>
+                                    <Button
+                                      variant="outline"
+                                      size="icon-sm"
+                                      onClick={() => setModalFactura(s)}
+                                      className="size-8 rounded-lg border-border/80 text-primary hover:bg-primary/10 shadow-2xs"
+                                    >
+                                      <Receipt className="size-4 text-primary" />
+                                    </Button>
+                                  </TooltipTrigger>
+                                  <TooltipContent side="top">
+                                    <p className="text-xs">Ver factura</p>
+                                  </TooltipContent>
+                                </Tooltip>
+                              )}
+
+                              {(s.estado === "Pendiente de validación de pago" || s.estado === "Pago en validación") && (
+                                <Tooltip>
+                                  <TooltipTrigger asChild>
+                                    <Button
+                                      variant="outline"
+                                      size="icon-sm"
+                                      onClick={() => handleOpenValidar(s)}
+                                      className="size-8 rounded-lg border-emerald-500/40 text-emerald-600 hover:bg-emerald-500/10 shadow-2xs"
+                                    >
+                                      <CheckCircle2 className="size-4 text-emerald-600" />
+                                    </Button>
+                                  </TooltipTrigger>
+                                  <TooltipContent side="top">
+                                    <p className="text-xs">Validar pago</p>
+                                  </TooltipContent>
+                                </Tooltip>
+                              )}
+
+                              {(s.estado === "Pago validado" || s.estado === "Pago verificado") && (
+                                <Tooltip>
+                                  <TooltipTrigger asChild>
+                                    <Button
+                                      variant="outline"
+                                      size="icon-sm"
+                                      onClick={() => setModalCur(s)}
+                                      className="size-8 rounded-lg border-emerald-500/40 text-emerald-600 hover:bg-emerald-500/10 shadow-2xs"
+                                    >
+                                      <FileCheck2 className="size-4 text-emerald-600" />
+                                    </Button>
+                                  </TooltipTrigger>
+                                  <TooltipContent side="top">
+                                    <p className="text-xs">Ver CUR</p>
+                                  </TooltipContent>
+                                </Tooltip>
+                              )}
+                            </TooltipProvider>
+                          </div>
+                        </TableCell>
+                      </TableRow>
+                    );
+                  }
+
+                  return null;
+                })}
+
+                {filteredSolicitudes.length === 0 && (
+                  <TableRow>
+                    <TableCell
+                      colSpan={role === "COORDINADOR_SINARP" ? 9 : 7}
+                      className="py-12 text-center text-muted-foreground"
+                    >
+                      No se encontraron solicitudes para los filtros aplicados.
+                    </TableCell>
+                  </TableRow>
+                )}
+              </TableBody>
+            </Table>
+          </div>
         </div>
       </div>
+
+      {/* ─── MODAL: VER FACTURA (ROL FACTURACIÓN / COORDINADOR) ─── */}
+      <Dialog open={Boolean(modalFactura)} onOpenChange={(open) => !open && setModalFactura(null)}>
+        <DialogContent size="default">
+          <DialogHeader>
+            <DialogTitle className="text-xl font-bold text-foreground flex items-center gap-2">
+              <Receipt className="size-5 text-primary" />
+              Factura Electrónica {modalFactura?.factura?.numero || "FAC-0028"}
+            </DialogTitle>
+            <DialogDescription className="text-xs text-muted-foreground">
+              Comprobante de cobro emitido por tarifa de acceso a servicios de interoperabilidad.
+            </DialogDescription>
+          </DialogHeader>
+
+          {modalFactura && (
+            <div className="space-y-4 my-2 text-xs">
+              <div className="grid grid-cols-2 gap-4 p-4 rounded-xl bg-muted/40 border border-border/70">
+                <div>
+                  <span className="text-muted-foreground block text-[11px]">Institución Privada:</span>
+                  <span className="font-bold text-foreground text-sm">{modalFactura.institucion}</span>
+                </div>
+                <div>
+                  <span className="text-muted-foreground block text-[11px]">Contrato Asociado:</span>
+                  <span className="font-mono font-bold text-foreground text-sm">{modalFactura.contrato || "CONTR-2026-0019"}</span>
+                </div>
+                <div>
+                  <span className="text-muted-foreground block text-[11px]">Fecha de Emisión:</span>
+                  <span className="text-foreground">{modalFactura.factura?.fechaEmision || modalFactura.fecha.substring(0, 10)}</span>
+                </div>
+                <div>
+                  <span className="text-muted-foreground block text-[11px]">Estado financiero:</span>
+                  <Badge tone="warning" appearance="soft" size="sm">Pago pendiente</Badge>
+                </div>
+              </div>
+
+              <div>
+                <span className="font-semibold text-foreground text-xs block mb-2">Desglose de servicios tasados:</span>
+                <div className="border border-border rounded-lg overflow-hidden">
+                  <table className="w-full text-xs">
+                    <thead className="bg-muted/70 text-muted-foreground border-b border-border text-left">
+                      <tr>
+                        <th className="p-2.5">Concepto / Servicio</th>
+                        <th className="p-2.5 text-right">Tarifa</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-border/60">
+                      {(modalFactura.factura?.detalleServicios || [
+                        { servicio: modalFactura.servicioPrincipal || "Consulta de Interoperabilidad", valor: modalFactura.factura?.valor || "$ 150.00" }
+                      ]).map((item, idx) => (
+                        <tr key={idx}>
+                          <td className="p-2.5 text-foreground">{item.servicio}</td>
+                          <td className="p-2.5 text-right font-mono font-semibold text-foreground">{item.valor}</td>
+                        </tr>
+                      ))}
+                      <tr className="bg-muted/30 font-bold">
+                        <td className="p-2.5 text-foreground">Total a Liquidar</td>
+                        <td className="p-2.5 text-right text-foreground font-mono text-sm">{modalFactura.factura?.valor || "$ 150.00"}</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+
+              <div className="p-3 rounded-lg border border-border bg-background text-[11px] text-muted-foreground space-y-1">
+                <p className="font-semibold text-foreground">Instrucciones de pago para la entidad privada:</p>
+                <p>Transferencia a cuenta fiscal del Tesoro Nacional en Banco Central del Ecuador (Sublínea DINARP 130108). Notificar acreditación una vez efectuada.</p>
+              </div>
+
+              {/* Opción rápida de simular pago de entidad privada para pruebas */}
+              <div className="pt-2 border-t border-border flex items-center justify-between">
+                <span className="text-[11px] text-muted-foreground">¿Simular que el banco ya pagó?</span>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => {
+                    simularPagoRealizado(modalFactura.id);
+                    toast.success("Pago registrado externamente. La solicitud pasó a Pendiente de validación de pago.");
+                    setModalFactura(null);
+                  }}
+                  className="h-7 text-xs border-dashed"
+                >
+                  Simular pago realizado
+                </Button>
+              </div>
+            </div>
+          )}
+
+          <DialogFooter className="pt-2 border-t border-border/60">
+            <Button variant="outline" size="sm" onClick={() => setModalFactura(null)}>
+              Cerrar
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* ─── MODAL: VER CUR (ROL FACTURACIÓN) ─── */}
+      <Dialog open={Boolean(modalCur)} onOpenChange={(open) => !open && setModalCur(null)}>
+        <DialogContent size="default">
+          <DialogHeader>
+            <DialogTitle className="text-xl font-bold text-foreground flex items-center gap-2">
+              <FileCheck2 className="size-5 text-emerald-600" />
+              Comprobante Único de Registro — CUR
+            </DialogTitle>
+            <DialogDescription className="text-xs text-muted-foreground">
+              Documento financiero oficial verificado en SIGEF y anexado al expediente de interoperabilidad.
+            </DialogDescription>
+          </DialogHeader>
+
+          {modalCur && (
+            <div className="space-y-4 my-2 text-xs">
+              <div className="p-4 rounded-xl bg-emerald-500/10 border border-emerald-500/30 flex items-start gap-3">
+                <CheckCircle2 className="size-5 text-emerald-600 shrink-0 mt-0.5" />
+                <div className="space-y-0.5">
+                  <p className="font-bold text-emerald-800 dark:text-emerald-300">Pago Verificado y Validado</p>
+                  <p className="text-muted-foreground text-[11px]">
+                    El ingreso de fondos fue validado externamente en SIGEF y el CUR ha sido incorporado formalmente.
+                  </p>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-3 p-4 rounded-xl border border-border bg-muted/20">
+                <div>
+                  <span className="text-muted-foreground block text-[11px]">N.º de CUR:</span>
+                  <span className="font-mono font-bold text-foreground text-sm">{modalCur.cur?.numeroCur || "CUR-008814"}</span>
+                </div>
+                <div>
+                  <span className="text-muted-foreground block text-[11px]">Archivo anexo:</span>
+                  <span className="font-medium text-primary flex items-center gap-1">
+                    <FileText className="size-3.5" />
+                    {modalCur.cur?.nombreArchivo || "CUR_SIGEF_BancoGuayaquil.pdf"}
+                  </span>
+                </div>
+                <div>
+                  <span className="text-muted-foreground block text-[11px]">Fecha y hora de registro:</span>
+                  <span className="text-foreground font-mono">{modalCur.cur?.fechaRegistro || "2026-09-19 14:15"}</span>
+                </div>
+                <div>
+                  <span className="text-muted-foreground block text-[11px]">Responsable de validación:</span>
+                  <span className="text-foreground font-semibold">{modalCur.cur?.usuarioResponsable || "Lcda. Patricia Morales (Facturación)"}</span>
+                </div>
+              </div>
+
+              <div className="flex items-center justify-between p-3 rounded-xl border border-border/80 bg-surface">
+                <div className="flex items-center gap-2">
+                  <FileText className="size-4 text-primary" />
+                  <div>
+                    <p className="font-semibold text-foreground text-xs">{modalCur.cur?.nombreArchivo || "CUR_SIGEF_BancoGuayaquil.pdf"}</p>
+                    <p className="text-[10px] text-muted-foreground">{modalCur.cur?.tamano || "1.4 MB"} · PDF firmado digitalmente</p>
+                  </div>
+                </div>
+                <Button
+                  size="sm"
+                  variant="outline"
+                  onClick={() => toast.info("Descargando CUR oficial...")}
+                  className="h-8 text-xs gap-1.5"
+                >
+                  Descargar PDF
+                </Button>
+              </div>
+            </div>
+          )}
+
+          <DialogFooter className="pt-2 border-t border-border/60">
+            <Button variant="outline" size="sm" onClick={() => setModalCur(null)}>
+              Cerrar
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* ─── MODAL / DRAWER: VALIDAR PAGO Y ANEXAR CUR (ROL FACTURACIÓN) ─── */}
+      <Dialog open={Boolean(modalValidarPago)} onOpenChange={(open) => !open && setModalValidarPago(null)}>
+        <DialogContent size="lg">
+          <DialogHeader>
+            <DialogTitle className="text-xl font-bold text-foreground flex items-center gap-2">
+              <CheckCircle2 className="size-5 text-primary" />
+              Validar pago y anexar CUR
+            </DialogTitle>
+            <DialogDescription className="text-xs text-muted-foreground">
+              Ingresa el Comprobante Único de Registro (CUR) descargado desde SIGEF tras confirmar la acreditación de fondos.
+            </DialogDescription>
+          </DialogHeader>
+
+          {modalValidarPago && (
+            <div className="space-y-4 my-2 text-xs">
+              {/* Callout de validación externa SIGEF */}
+              <div className="p-3.5 rounded-xl border border-amber-500/40 bg-amber-500/10 flex items-start gap-3">
+                <AlertTriangle className="size-5 text-amber-600 shrink-0 mt-0.5" />
+                <div className="space-y-0.5">
+                  <p className="font-bold text-amber-900 dark:text-amber-300">Validación externa requerida</p>
+                  <p className="text-muted-foreground text-[11px] leading-relaxed">
+                    Verifica en <strong className="text-foreground">SIGEF</strong> que el pago de esta solicitud haya sido registrado antes de continuar. SIGEF es una plataforma externa de finanzas públicas.
+                  </p>
+                </div>
+              </div>
+
+              {/* Información de la solicitud */}
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 p-3.5 rounded-xl border border-border bg-muted/20">
+                <div>
+                  <span className="text-muted-foreground block text-[11px]">N.º de solicitud:</span>
+                  <span className="font-bold text-foreground">{modalValidarPago.id}</span>
+                </div>
+                <div>
+                  <span className="text-muted-foreground block text-[11px]">Institución:</span>
+                  <span className="font-semibold text-foreground truncate block">{modalValidarPago.institucion}</span>
+                </div>
+                <div>
+                  <span className="text-muted-foreground block text-[11px]">Factura asociada:</span>
+                  <span className="font-mono font-semibold text-foreground">{modalValidarPago.factura?.numero || "FAC-0031"}</span>
+                </div>
+                <div>
+                  <span className="text-muted-foreground block text-[11px]">Valor verificado:</span>
+                  <span className="font-bold text-primary text-sm">{modalValidarPago.factura?.valor || "$ 280.00"}</span>
+                </div>
+                <div>
+                  <span className="text-muted-foreground block text-[11px]">Estado actual:</span>
+                  <Badge tone="warning" appearance="soft" size="sm">Pendiente validación</Badge>
+                </div>
+                <div>
+                  <span className="text-muted-foreground block text-[11px]">Usuario responsable:</span>
+                  <span className="text-foreground font-semibold">Lcda. Patricia Morales</span>
+                </div>
+              </div>
+
+              {/* Campo N.º CUR */}
+              <div className="space-y-1.5">
+                <label className="text-xs font-semibold text-foreground">
+                  Número de Comprobante Único de Registro (CUR) <span className="text-destructive">*</span>
+                </label>
+                <input
+                  type="text"
+                  value={numeroCurInput}
+                  onChange={(e) => setNumeroCurInput(e.target.value)}
+                  placeholder="Ej: CUR-009412"
+                  className="w-full px-3 py-2 text-xs rounded-lg border border-border bg-background focus:outline-none focus:ring-2 focus:ring-primary/20 font-mono"
+                />
+              </div>
+
+              {/* Carga obligatoria del CUR */}
+              <div className="space-y-1.5">
+                <label className="text-xs font-semibold text-foreground flex items-center justify-between">
+                  <span>Comprobante Único de Registro — CUR (PDF obligatorio) <span className="text-destructive">*</span></span>
+                  <span className="text-[10px] text-muted-foreground">Formato PDF hasta 10 MB</span>
+                </label>
+
+                {!curFile ? (
+                  <label
+                    htmlFor="cur-file-input"
+                    className={cn(
+                      "border-2 border-dashed rounded-xl p-5 flex flex-col items-center justify-center cursor-pointer transition-colors bg-surface hover:bg-muted/40",
+                      curFileError ? "border-destructive bg-destructive/5" : "border-border hover:border-primary/50"
+                    )}
+                  >
+                    <UploadCloud className="size-8 text-primary mb-2" />
+                    <span className="text-xs font-semibold text-foreground">Haz clic para seleccionar el CUR emitido en SIGEF</span>
+                    <span className="text-[11px] text-muted-foreground mt-0.5">Archivo .pdf verificado con firma electrónica</span>
+                    <input
+                      id="cur-file-input"
+                      type="file"
+                      accept=".pdf"
+                      className="hidden"
+                      onChange={(e) => {
+                        const file = e.target.files?.[0];
+                        if (file) {
+                          setCurFile(file);
+                          setCurFileError(false);
+                        }
+                      }}
+                    />
+                  </label>
+                ) : (
+                  <div className="p-3.5 rounded-xl border border-primary/40 bg-primary/5 flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                      <div className="size-9 rounded-lg bg-primary/10 flex items-center justify-center text-primary">
+                        <FileCheck2 className="size-5" />
+                      </div>
+                      <div>
+                        <p className="text-xs font-bold text-foreground">{curFile.name}</p>
+                        <p className="text-[10px] text-muted-foreground">{(curFile.size / 1024).toFixed(1)} KB · PDF Listo para anexar</p>
+                      </div>
+                    </div>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => setCurFile(null)}
+                      className="text-xs text-muted-foreground hover:text-destructive"
+                    >
+                      Cambiar archivo
+                    </Button>
+                  </div>
+                )}
+
+                {curFileError && (
+                  <p className="text-xs text-destructive font-medium">
+                    Debes adjuntar el archivo PDF del CUR para poder validar el pago.
+                  </p>
+                )}
+              </div>
+            </div>
+          )}
+
+          <DialogFooter className="pt-3 border-t border-border/60 flex flex-col sm:flex-row gap-2 justify-end">
+            <Button variant="outline" size="sm" onClick={() => setModalValidarPago(null)}>
+              Cancelar
+            </Button>
+            <Button
+              size="sm"
+              onClick={handleProcederConfirmacion}
+              className="bg-primary text-primary-foreground font-semibold gap-1.5 shadow-sm"
+            >
+              <CheckCircle2 className="size-4" />
+              Anexar CUR y validar pago
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* ─── MODAL: CONFIRMAR VALIDACIÓN DE PAGO ─── */}
+      <Dialog open={Boolean(modalConfirmarValidacion)} onOpenChange={(open) => !open && setModalConfirmarValidacion(null)}>
+        <DialogContent size="sm">
+          <DialogHeader>
+            <DialogTitle className="text-lg font-bold text-foreground flex items-center gap-2">
+              <ShieldCheck className="size-5 text-primary" />
+              Confirmar validación de pago
+            </DialogTitle>
+            <DialogDescription className="text-xs text-muted-foreground mt-2 leading-relaxed">
+              Confirma que el pago fue verificado en SIGEF y que el CUR adjunto corresponde a esta solicitud.
+            </DialogDescription>
+          </DialogHeader>
+
+          <div className="p-3.5 my-2 rounded-xl bg-muted/30 border border-border text-xs space-y-1.5">
+            <div className="flex justify-between">
+              <span className="text-muted-foreground">Solicitud:</span>
+              <strong className="text-foreground">{modalConfirmarValidacion?.id}</strong>
+            </div>
+            <div className="flex justify-between">
+              <span className="text-muted-foreground">Institución:</span>
+              <strong className="text-foreground truncate max-w-[200px]">{modalConfirmarValidacion?.institucion}</strong>
+            </div>
+            <div className="flex justify-between">
+              <span className="text-muted-foreground">CUR adjunto:</span>
+              <strong className="text-foreground font-mono">{numeroCurInput || "CUR-009412"}</strong>
+            </div>
+            <div className="flex justify-between">
+              <span className="text-muted-foreground">Monto:</span>
+              <strong className="text-primary">{modalConfirmarValidacion?.factura?.valor || "$ 280.00"}</strong>
+            </div>
+          </div>
+
+          <DialogFooter className="pt-2 border-t border-border/60 flex flex-col sm:flex-row gap-2 justify-end">
+            <Button variant="outline" size="sm" onClick={() => setModalConfirmarValidacion(null)}>
+              Cancelar
+            </Button>
+            <Button
+              size="sm"
+              onClick={handleConfirmarValidacionFinal}
+              className="bg-primary text-primary-foreground font-semibold gap-1.5 shadow-sm"
+            >
+              <Check className="size-4" />
+              Confirmar validación
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </WireframeDashboardLayout>
   );
 }

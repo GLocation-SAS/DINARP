@@ -56,9 +56,9 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger
 } from "@/components/ui/dropdown-menu";
-import { WireframeDashboardLayout } from "../../../components/wireframe-dashboard-layout";
-import { WireframeBreadcrumbs } from "../../../components/wireframe-breadcrumbs";
-import { useSimulatedRole } from "../../hooks/use-simulated-role";
+import { WireframeDashboardLayout } from "../../../../components/wireframe-dashboard-layout";
+import { WireframeBreadcrumbs } from "../../../../components/wireframe-breadcrumbs";
+import { useSimulatedRole } from "../../../hooks/use-simulated-role";
 import {
   ROLES_CONFIG,
   ETAPAS_EXPEDIENTE_CONFIG,
@@ -69,7 +69,8 @@ import {
   type CampoCatalogo,
   type EventoHistorial,
   type MockUser
-} from "../../data/catalogo-data";
+} from "../../../data/catalogo-data";
+import { WireframeRoleSelector } from "../../../../components/wireframe-role-selector";
 
 interface ExpedienteClientViewProps {
   initialExpediente: ExpedienteIntegracion;
@@ -523,17 +524,23 @@ export function ExpedienteClientView({ initialExpediente }: ExpedienteClientView
     alert("¡Paso a producción completado! Notificación automática enviada a los coordinadores institucional titular y suplente.");
   };
 
-  // Helper para verificar si el rol activo tiene tarea pendiente en la etapa actual
   const isMyTurn = expediente.responsableActualRol === activeRole;
+  const isCoordinador = activeRole === "COORDINADOR_SINARP";
+  const isDGR = activeRole === "DGR";
+  const isDTD = activeRole === "DTD";
+  const isDPI = activeRole === "DPI";
 
   return (
     <WireframeDashboardLayout
       activeMenu="integracion-fuentes"
       currentRole={activeRole}
       currentUser={currentUser}
+      headerSlot={
+        <WireframeRoleSelector activeRole={activeRole} onRoleChange={setActiveRole} />
+      }
       breadcrumbs={[
         { label: "Catálogo de Interoperabilidad", href: "/wireframes2/catalogo-interoperabilidad" },
-        { label: "Integración de Fuentes", href: "/wireframes2/catalogo-interoperabilidad/integraciones" },
+        { label: "Integración de Fuentes", href: "/wireframes2/catalogo-interoperabilidad/administracion/incorporaciones" },
         { label: expediente.codigoExpediente }
       ]}
     >
@@ -542,22 +549,12 @@ export function ExpedienteClientView({ initialExpediente }: ExpedienteClientView
         {/* Retorno */}
         <div className="flex items-center justify-between gap-4 -mt-2">
           <Button variant="ghost" size="sm" asChild className="gap-1.5 -ml-2 text-muted-foreground hover:text-foreground">
-            <Link href="/wireframes2/catalogo-interoperabilidad/integraciones">
+            <Link href="/wireframes2/catalogo-interoperabilidad/administracion/incorporaciones">
               <ArrowLeft className="size-4" />
               Volver a Integración de Fuentes
             </Link>
           </Button>
 
-          {/* Enlace opcional a Gestión si ya tiene estado OCULTO o PUBLICADO */}
-          {expediente.validacionTecnicaDTD?.estadoCatalogoAsignado === "OCULTO" && (
-            <Button variant="outline" size="sm" asChild className="gap-1.5 text-xs">
-              <Link href="/wireframes2/catalogo-interoperabilidad/gestion">
-                <Layers className="size-3.5" />
-                Ver fuente en Gestión
-                <ExternalLink className="size-3 ml-0.5 opacity-60" />
-              </Link>
-            </Button>
-          )}
         </div>
 
         {/* HEADER DEL EXPEDIENTE */}
@@ -621,23 +618,26 @@ export function ExpedienteClientView({ initialExpediente }: ExpedienteClientView
             </div>
 
             {/* BANNER DINÁMICO DE TAREA ACTIVA PARA EL ROL */}
-            {isMyTurn && (
+            {isMyTurn ? (
               <div className="bg-amber-500/10 border border-amber-500/30 rounded-lg p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                 <div className="flex items-start gap-2.5">
                   <AlertCircle className="size-4 text-amber-600 shrink-0 mt-0.5" />
                   <div>
                     <span className="text-xs font-bold text-foreground block">
-                      Tarea activa asignada a tu perfil ({ROLES_CONFIG[activeRole].shortName}):
+                      Tu tarea ({ROLES_CONFIG[activeRole]?.shortName || activeRole}):
                     </span>
                     <span className="text-xs text-muted-foreground">
-                      {ETAPAS_EXPEDIENTE_CONFIG[expediente.etapaActual]?.descripcion}
+                      {isCoordinador && (expediente.etapaActual === "ETAPA_1_REGISTRO" || expediente.etapaActual === "ETAPA_3_CORRECCION_COORDINADOR") ? "Completa y envía la información de la fuente." :
+                       isCoordinador && expediente.etapaActual === "ETAPA_3_CORRECCION_COORDINADOR" ? "Corrige las observaciones realizadas por DGR." :
+                       isDPI && expediente.etapaActual === "ETAPA_5_PARALELO_DPI_DTD" ? "Clasifica todos los campos de la fuente y adjunta el informe." :
+                       ETAPAS_EXPEDIENTE_CONFIG[expediente.etapaActual]?.descripcion}
                     </span>
                   </div>
                 </div>
 
                 <div className="flex items-center gap-2 shrink-0">
                   {/* ACCIONES COORDINADOR (Paso 3) */}
-                  {activeRole === "COORDINADOR_SINARP" && expediente.etapaActual === "ETAPA_3_CORRECCION_COORDINADOR" && (
+                  {isCoordinador && expediente.etapaActual === "ETAPA_3_CORRECCION_COORDINADOR" && (
                     <Button
                       variant="primary"
                       size="sm"
@@ -650,7 +650,7 @@ export function ExpedienteClientView({ initialExpediente }: ExpedienteClientView
                   )}
 
                   {/* ACCIONES DGR (Paso 2) */}
-                  {activeRole === "DGR" && expediente.etapaActual === "ETAPA_2_REVISION_DGR" && (
+                  {isDGR && expediente.etapaActual === "ETAPA_2_REVISION_DGR" && (
                     <>
                       <Button
                         variant="outline"
@@ -674,7 +674,7 @@ export function ExpedienteClientView({ initialExpediente }: ExpedienteClientView
                   )}
 
                   {/* ACCIONES DTD (Paso 4) */}
-                  {activeRole === "DTD" && expediente.etapaActual === "ETAPA_4_VALIDACION_DTD" && (
+                  {isDTD && expediente.etapaActual === "ETAPA_4_VALIDACION_DTD" && (
                     <Button
                       variant="primary"
                       size="sm"
@@ -687,7 +687,7 @@ export function ExpedienteClientView({ initialExpediente }: ExpedienteClientView
                   )}
 
                   {/* ACCIONES DGR (Paso 6) */}
-                  {activeRole === "DGR" && expediente.etapaActual === "ETAPA_6_VALIDACION_PRE_DGR" && (
+                  {isDGR && expediente.etapaActual === "ETAPA_6_VALIDACION_PRE_DGR" && (
                     <Button
                       variant="primary"
                       size="sm"
@@ -700,7 +700,7 @@ export function ExpedienteClientView({ initialExpediente }: ExpedienteClientView
                   )}
 
                   {/* ACCIONES DGR (Paso 8) */}
-                  {activeRole === "DGR" && expediente.etapaActual === "ETAPA_8_APROBACION_DGR" && (
+                  {isDGR && expediente.etapaActual === "ETAPA_8_APROBACION_DGR" && (
                     <Button
                       variant="primary"
                       size="sm"
@@ -713,7 +713,7 @@ export function ExpedienteClientView({ initialExpediente }: ExpedienteClientView
                   )}
 
                   {/* ACCIONES DTD (Paso 9) */}
-                  {activeRole === "DTD" && expediente.etapaActual === "ETAPA_9_PRODUCCION_DTD" && (
+                  {isDTD && expediente.etapaActual === "ETAPA_9_PRODUCCION_DTD" && (
                     <Button
                       variant="primary"
                       size="sm"
@@ -724,6 +724,13 @@ export function ExpedienteClientView({ initialExpediente }: ExpedienteClientView
                       Registrar paso a producción
                     </Button>
                   )}
+                </div>
+              </div>
+            ) : (
+              <div className="bg-muted/40 border border-border rounded-lg p-3.5 flex items-start gap-2.5 text-xs text-muted-foreground">
+                <Info className="size-4 text-muted-foreground shrink-0 mt-0.5" />
+                <div>
+                  <strong className="text-foreground">No tienes acciones pendientes en esta etapa.</strong> El trámite está siendo gestionado por {expediente.responsableActualNombre}.
                 </div>
               </div>
             )}
@@ -1147,11 +1154,14 @@ export function ExpedienteClientView({ initialExpediente }: ExpedienteClientView
                         </td>
                         <td className="py-2.5 px-3">
                           <Badge
-                            tone={campo.clasificacion === "Accesible" ? "success" : campo.clasificacion === "Confidencial" ? "warning" : "neutral"}
+                            tone="neutral"
                             appearance="soft"
                             size="sm"
+                            className="text-[11px] font-medium gap-1 bg-muted/80 text-foreground border border-border"
                           >
-                            {campo.clasificacion}
+                            {campo.clasificacion === "Accesible" && <Check className="size-2.5 text-muted-foreground" />}
+                            {campo.clasificacion === "Confidencial" && <Lock className="size-2.5 text-muted-foreground" />}
+                            <span>{campo.clasificacion}</span>
                           </Badge>
                         </td>
                         <td className="py-2.5 px-3">
@@ -1227,7 +1237,7 @@ export function ExpedienteClientView({ initialExpediente }: ExpedienteClientView
                             {c.descripcion}
                           </td>
                           <td className="py-2.5 px-3">
-                            {activeRole === "DPI" && !expediente.clasificacionDPI?.completada ? (
+                            {isDPI && !expediente.clasificacionDPI?.completada ? (
                               <select
                                 value={c.clasificacion}
                                 onChange={e => {
@@ -1244,11 +1254,14 @@ export function ExpedienteClientView({ initialExpediente }: ExpedienteClientView
                               </select>
                             ) : (
                               <Badge
-                                tone={c.clasificacion === "Accesible" ? "success" : c.clasificacion === "Confidencial" ? "warning" : "neutral"}
+                                tone="neutral"
                                 appearance="soft"
                                 size="sm"
+                                className="text-[11px] font-medium gap-1 bg-muted/80 text-foreground border border-border"
                               >
-                                {c.clasificacion}
+                                {c.clasificacion === "Accesible" && <Check className="size-2.5 text-muted-foreground" />}
+                                {c.clasificacion === "Confidencial" && <Lock className="size-2.5 text-muted-foreground" />}
+                                <span>{c.clasificacion}</span>
                               </Badge>
                             )}
                           </td>
@@ -1272,7 +1285,7 @@ export function ExpedienteClientView({ initialExpediente }: ExpedienteClientView
                     </div>
                   </div>
 
-                  {activeRole === "DPI" && !expediente.clasificacionDPI?.completada && (
+                  {isDPI && !expediente.clasificacionDPI?.completada && (
                     <Button
                       variant="primary"
                       size="sm"
@@ -1347,7 +1360,7 @@ export function ExpedienteClientView({ initialExpediente }: ExpedienteClientView
                         </span>
                       </div>
                     </div>
-                  ) : activeRole === "DTD" ? (
+                  ) : isDTD ? (
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
                       <div className="flex flex-col gap-1">
                         <Label className="text-[11px] text-muted-foreground">Nombre microservicio</Label>

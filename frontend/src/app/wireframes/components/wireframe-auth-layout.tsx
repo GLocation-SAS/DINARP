@@ -139,7 +139,7 @@ export function WireframeAuthLayout({ children }: WireframeAuthLayoutProps) {
             COLUMNA DERECHA: Card dinámico (Slot)
            ══════════════════════════════════════════════════ */}
         <section className="lg:col-span-5 xl:col-span-5 2xl:col-span-4 w-full flex justify-center">
-          <Card className="w-full max-w-[440px] rounded-3xl border-border bg-card p-7 sm:p-10 shadow-sm flex flex-col" disableHover>
+          <Card className="w-full max-w-[480px] sm:max-w-[500px] rounded-3xl border-border bg-card p-6 sm:p-9 shadow-sm flex flex-col" disableHover>
             {children}
           </Card>
         </section>

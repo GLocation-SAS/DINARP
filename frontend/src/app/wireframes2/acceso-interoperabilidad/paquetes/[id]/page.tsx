@@ -10,11 +10,27 @@ import { Card } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { CheckCircle2, AlertTriangle, FileText, Activity, Server, History, Play } from "lucide-react";
+import {
+  Combobox,
+  ComboboxSelectTrigger,
+  ComboboxContent,
+  ComboboxList,
+  ComboboxItem,
+} from "@/components/ui/combobox";
+
+const estadoPaqueteOptions = [
+  { value: "Disponible para consumo", label: "Estado: Disponible para consumo" },
+];
+
+const roleOptions = [
+  { value: "COORDINADOR_SINARP", label: "Coordinador SINARP" },
+  { value: "APROBADOR", label: "Aprobador" },
+];
 
 export default function DetallePaquetePage({ params }: { params: Promise<{ id: string }> }) {
   const resolvedParams = React.use(params);
-  const [role, setRole] = useSimulatedRole("DTD");
-  const [estadoPaquete, setEstadoPaquete] = useState("Validación técnica requerida");
+  const [role, setRole] = useSimulatedRole("COORDINADOR_SINARP");
+  const [estadoPaquete, setEstadoPaquete] = useState("Disponible para consumo");
   const [activeTab, setActiveTab] = useState("resumen");
 
   // Mock data
@@ -24,15 +40,14 @@ export default function DetallePaquetePage({ params }: { params: Promise<{ id: s
     institucion: "Banco Pichincha",
     fuente: "SRI",
     fechaCreacion: "2026-09-22",
-    responsableActual: "DTD",
+    responsableActual: "Coordinador SINARP",
     campos: [
       { campo: "estadoContribuyente", fuente: "Registro Único de Contribuyentes (RUC)", clasificacion: "Accesible", estado: "Aprobado" },
       { campo: "actividadEconomica", fuente: "Registro Único de Contribuyentes (RUC)", clasificacion: "Accesible", estado: "Aprobado" }
     ],
     seguimiento: [
-      { fecha: "2026-09-22 09:00", evento: "Paquete creado por DGR", actor: "DGR", observacion: "Generación de paquete inicial basada en campos aprobados." },
-      { fecha: "2026-09-22 09:15", evento: "Enviado a DSI", actor: "Sistema" },
-      { fecha: "2026-09-22 09:20", evento: "Validación técnica iniciada", actor: "DTD" }
+      { fecha: "2026-09-22 09:00", evento: "Paquete creado", actor: "Sistema", observacion: "Generación de paquete inicial basada en campos aprobados." },
+      { fecha: "2026-09-22 09:15", evento: "Disponible para consumo", actor: "Sistema" }
     ]
   };
 
@@ -46,24 +61,43 @@ export default function DetallePaquetePage({ params }: { params: Promise<{ id: s
       ]}
       headerSlot={
         <div className="flex gap-2">
-          <select
-            className="h-8 text-xs px-2 py-1 rounded-md border border-border bg-surface text-foreground"
-            value={estadoPaquete}
-            onChange={(e) => setEstadoPaquete(e.target.value)}
+          <Combobox
+            items={estadoPaqueteOptions}
+            value={estadoPaqueteOptions.find(opt => opt.value === estadoPaquete) || estadoPaqueteOptions[0]}
+            onValueChange={(val) => {
+              if (val) setEstadoPaquete(val.value);
+            }}
           >
-            <option value="Validación técnica requerida">Estado: Validación técnica requerida</option>
-            <option value="Validado">Estado: Validado</option>
-            <option value="Disponible para consumo">Estado: Disponible para consumo</option>
-          </select>
-          <select
-            className="h-8 text-xs px-2 py-1 rounded-md border border-border bg-surface text-foreground"
-            value={role}
-            onChange={(e) => setRole(e.target.value as any)}
+            <ComboboxSelectTrigger className="h-8 text-xs min-w-[210px]" />
+            <ComboboxContent align="start" className="min-w-[220px]">
+              <ComboboxList>
+                {estadoPaqueteOptions.map((opt) => (
+                  <ComboboxItem key={opt.value} value={opt}>
+                    {opt.label}
+                  </ComboboxItem>
+                ))}
+              </ComboboxList>
+            </ComboboxContent>
+          </Combobox>
+
+          <Combobox
+            items={roleOptions}
+            value={roleOptions.find(opt => opt.value === role) || roleOptions[0]}
+            onValueChange={(val) => {
+              if (val) setRole(val.value as any);
+            }}
           >
-            <option value="DTD">DSI / Tecnología</option>
-            <option value="DGR">Profesional DGR</option>
-            <option value="COORDINADOR_SINARP">Coordinador SINARP</option>
-          </select>
+            <ComboboxSelectTrigger className="h-8 text-xs min-w-[170px]" />
+            <ComboboxContent align="start" className="min-w-[190px]">
+              <ComboboxList>
+                {roleOptions.map((opt) => (
+                  <ComboboxItem key={opt.value} value={opt}>
+                    {opt.label}
+                  </ComboboxItem>
+                ))}
+              </ComboboxList>
+            </ComboboxContent>
+          </Combobox>
         </div>
       }
     >
@@ -94,48 +128,6 @@ export default function DetallePaquetePage({ params }: { params: Promise<{ id: s
         </div>
 
         {/* Acciones principales por Rol / Estado */}
-        {role === "DTD" && estadoPaquete === "Validación técnica requerida" && (
-          <Card className="p-5 border-l-4 border-l-blue-500 bg-blue-50/50 dark:bg-blue-950/20">
-            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-              <div className="flex gap-3">
-                <AlertTriangle className="size-5 text-blue-600 dark:text-blue-400 shrink-0 mt-0.5" />
-                <div>
-                  <h3 className="font-semibold text-blue-900 dark:text-blue-300">Validación técnica requerida</h3>
-                  <p className="text-sm text-blue-700 dark:text-blue-400 mt-1">
-                    Revise la configuración del paquete y los campos incluidos para confirmar viabilidad técnica.
-                  </p>
-                </div>
-              </div>
-              <div className="flex items-center gap-2 shrink-0">
-                <Button variant="outline">Registrar observación</Button>
-                <Button className="gap-2 bg-blue-600 hover:bg-blue-700 text-white">
-                  <CheckCircle2 className="size-4" />
-                  Validar paquete
-                </Button>
-              </div>
-            </div>
-          </Card>
-        )}
-
-        {role === "DGR" && estadoPaquete === "Validado" && (
-          <Card className="p-5 border-l-4 border-l-green-500 bg-green-50/50 dark:bg-green-950/20">
-            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-              <div className="flex gap-3">
-                <CheckCircle2 className="size-5 text-green-600 dark:text-green-400 shrink-0 mt-0.5" />
-                <div>
-                  <h3 className="font-semibold text-green-900 dark:text-green-300">Paquete validado y listo para entrega</h3>
-                  <p className="text-sm text-green-700 dark:text-green-400 mt-1">
-                    La validación técnica por parte de DSI fue exitosa. Puede emitir la respuesta formal.
-                  </p>
-                </div>
-              </div>
-              <Button className="gap-2 bg-green-600 hover:bg-green-700 text-white shrink-0">
-                <FileText className="size-4" />
-                Emitir respuesta
-              </Button>
-            </div>
-          </Card>
-        )}
 
         {role === "COORDINADOR_SINARP" && estadoPaquete === "Disponible para consumo" && (
           <Card className="p-5 border-l-4 border-l-primary bg-primary/5">
